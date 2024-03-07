@@ -9,11 +9,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.SlideGroupScope
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.animation.AnimationState
 import dev.bnorm.librettist.animation.LaunchedAnimation
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
-import dev.bnorm.librettist.rememberAdvancementBoolean
+import dev.bnorm.librettist.show.rememberAdvancementBoolean
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.text.KotlinCodeText
 import dev.bnorm.librettist.text.flowDiff
@@ -21,7 +22,7 @@ import dev.bnorm.librettist.text.flowLines
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-fun SlideGroupScope.Samples() {
+fun ShowBuilder.Samples() {
     section(title = { Text("Samples") }) {
         slide { SectionHeader() }
         TextLinesAnimationSample()
@@ -31,7 +32,7 @@ fun SlideGroupScope.Samples() {
 }
 
 @Composable
-fun TextAnimationSample() {
+fun SlideScope.TextAnimationSample() {
     val values = listOf(
         """
             fun main() {
@@ -71,7 +72,7 @@ fun TextAnimationSample() {
     }
 }
 
-fun SlideGroupScope.TextLinesAnimationSample() {
+fun ShowBuilder.TextLinesAnimationSample() {
     slide {
         TitleAndBody {
             KotlinCodeText(
@@ -165,7 +166,7 @@ fun SlideGroupScope.TextLinesAnimationSample() {
 }
 
 @Composable
-fun VisibilitySample() {
+fun SlideScope.VisibilitySample() {
     TitleAndBody {
         val visible by rememberAdvancementBoolean()
         Column {
@@ -185,7 +186,7 @@ fun VisibilitySample() {
 }
 
 @Composable
-fun AnimateDiff(values: List<String>, charDelay: Duration = 50.milliseconds, content: @Composable (String) -> Unit) {
+fun SlideScope.AnimateDiff(values: List<String>, charDelay: Duration = 50.milliseconds, content: @Composable (String) -> Unit) {
     val state = rememberAdvancementAnimation()
     AnimateDiff(values, state, charDelay, content)
 }
@@ -215,7 +216,7 @@ fun AnimateDiff(
 }
 
 @Composable
-fun AnimateLines(values: List<String>, charDelay: Duration = 50.milliseconds, content: @Composable (String) -> Unit) {
+fun SlideScope.AnimateLines(values: List<String>, charDelay: Duration = 50.milliseconds, content: @Composable (String) -> Unit) {
     val state = rememberAdvancementAnimation()
     AnimateLines(values, state, charDelay, content)
 }

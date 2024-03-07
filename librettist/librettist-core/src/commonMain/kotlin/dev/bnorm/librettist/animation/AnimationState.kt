@@ -1,8 +1,9 @@
 package dev.bnorm.librettist.animation
 
 import androidx.compose.runtime.*
-import dev.bnorm.librettist.ListenAdvancement
-import dev.bnorm.librettist.lastAdvancement
+import dev.bnorm.librettist.show.Advancement.Direction
+import dev.bnorm.librettist.show.ListenAdvancement
+import dev.bnorm.librettist.show.SlideScope
 import kotlinx.coroutines.CoroutineScope
 
 enum class AnimationState {
@@ -25,24 +26,26 @@ fun LaunchedAnimation(
 }
 
 @Composable
-fun rememberAdvancementAnimation(): MutableState<AnimationState> {
-    val lastAdvancement = lastAdvancement()
+fun SlideScope.rememberAdvancementAnimation(): MutableState<AnimationState> {
     val state = remember {
-        mutableStateOf(if (lastAdvancement.forward) AnimationState.PENDING else AnimationState.COMPLETE)
+        mutableStateOf(direction.toValue(forward = AnimationState.PENDING, backward = AnimationState.COMPLETE))
     }
 
     ListenAdvancement {
-        if (it.forward) {
-            when (state.value) {
-                AnimationState.PENDING -> state.value = AnimationState.RUNNING
-                AnimationState.RUNNING -> state.value = AnimationState.COMPLETE
-                AnimationState.COMPLETE -> return@ListenAdvancement false
+        when (it.direction) {
+            Direction.Forward -> {
+                when (state.value) {
+                    AnimationState.PENDING -> state.value = AnimationState.RUNNING
+                    AnimationState.RUNNING -> state.value = AnimationState.COMPLETE
+                    AnimationState.COMPLETE -> return@ListenAdvancement false
+                }
             }
-        } else {
-            when (state.value) {
-                AnimationState.PENDING -> return@ListenAdvancement false
-                AnimationState.RUNNING -> state.value = AnimationState.PENDING
-                AnimationState.COMPLETE -> state.value = AnimationState.PENDING
+            Direction.Backward -> {
+                when (state.value) {
+                    AnimationState.PENDING -> return@ListenAdvancement false
+                    AnimationState.RUNNING -> state.value = AnimationState.PENDING
+                    AnimationState.COMPLETE -> state.value = AnimationState.PENDING
+                }
             }
         }
 
@@ -53,39 +56,44 @@ fun rememberAdvancementAnimation(): MutableState<AnimationState> {
 }
 
 @Composable
-fun rememberAdvancementAnimations(count: Int): List<MutableState<AnimationState>> {
+fun SlideScope.rememberAdvancementAnimations(count: Int): List<MutableState<AnimationState>> {
     require(count > 1)
-    val lastAdvancement = lastAdvancement()
 
-    var index = remember(count) { if (lastAdvancement.forward) 0 else count - 1 }
+    // TODO should index be a mutable state?
+    var index = remember(count) { direction.toValue(forward = 0, backward = count - 1) }
     val states = remember(count) {
-        val start = if (lastAdvancement.forward) AnimationState.PENDING else AnimationState.COMPLETE
+        val start = direction.toValue(forward = AnimationState.PENDING, backward = AnimationState.COMPLETE)
         List(count) { mutableStateOf(start) }
     }
 
     ListenAdvancement {
         fun handle(state: MutableState<AnimationState>): Boolean {
-            if (it.forward) {
-                when (state.value) {
-                    AnimationState.PENDING -> state.value = AnimationState.RUNNING
-                    AnimationState.RUNNING -> state.value = AnimationState.COMPLETE
+            when (it.direction) {
+                Direction.Forward -> {
+                    when (state.value) {
+                        AnimationState.PENDING -> state.value = AnimationState.RUNNING
+                        AnimationState.RUNNING -> state.value = AnimationState.COMPLETE
 
-                    AnimationState.COMPLETE -> {
-                        index = minOf(index + 1, count - 1)
-                        return false
+                        AnimationState.COMPLETE -> {
+                            index = minOf(index + 1, count - 1)
+                            return false
+                        }
                     }
                 }
-            } else {
-                when (state.value) {
-                    AnimationState.PENDING -> {
-                        index = maxOf(index - 1, 0)
-                        return false
-                    }
 
-                    AnimationState.RUNNING -> state.value = AnimationState.PENDING
-                    AnimationState.COMPLETE -> state.value = AnimationState.PENDING
+                Direction.Backward -> {
+                    when (state.value) {
+                        AnimationState.PENDING -> {
+                            index = maxOf(index - 1, 0)
+                            return false
+                        }
+
+                        AnimationState.RUNNING -> state.value = AnimationState.PENDING
+                        AnimationState.COMPLETE -> state.value = AnimationState.PENDING
+                    }
                 }
             }
+
             return true
         }
 

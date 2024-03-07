@@ -16,12 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.SlideGroupScope
-import dev.bnorm.librettist.rememberAdvancementBoolean
-import dev.bnorm.librettist.rememberAdvancementIndex
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.rememberAdvancementBoolean
+import dev.bnorm.librettist.show.rememberAdvancementIndex
 import dev.bnorm.librettist.section.section
 
-fun SlideGroupScope.AssertionLibraries() {
+fun ShowBuilder.AssertionLibraries() {
     section(title = { Text("Assertion Libraries") }) {
         slide { SectionHeader() }
         KotlinLibraries()
@@ -33,7 +33,7 @@ fun SlideGroupScope.AssertionLibraries() {
 // TODO allowing typing in the names of libraries and having the count increase while the name of the library gets added to the background
 //  This list of libraries could be used later in a summary slide?
 private const val MAX_KOTLIN_LIBRARY_COUNT = 12
-private fun SlideGroupScope.KotlinLibraries() {
+private fun ShowBuilder.KotlinLibraries() {
     slide {
         TitleAndBody {
             Text(howManyKotlinLibraries(withLots = false))
@@ -86,7 +86,7 @@ private fun SlideGroupScope.KotlinLibraries() {
     }
 }
 
-private fun SlideGroupScope.GroovyLibraries() {
+private fun ShowBuilder.GroovyLibraries() {
     slide {
         TitleAndBody {
             Text(howManyKotlinLibraries(withLots = true))
@@ -131,7 +131,7 @@ private fun SlideGroupScope.GroovyLibraries() {
     }
 }
 
-private fun SlideGroupScope.Conclusion() {
+private fun ShowBuilder.Conclusion() {
     slide {
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {

@@ -4,8 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf
-import dev.bnorm.librettist.SlideGroupMarker
-import dev.bnorm.librettist.SlideGroupScope
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.ShowBuilderDsl
+import dev.bnorm.librettist.show.SlideContent
 
 @Immutable
 class SlideSection(
@@ -18,16 +19,16 @@ class SlideSection(
 
 val LocalSlideSection = compositionLocalOf { SlideSection.Empty }
 
-@SlideGroupMarker
-fun SlideGroupScope.section(
+@ShowBuilderDsl
+fun ShowBuilder.section(
     title: @Composable () -> Unit,
-    block: SlideGroupScope.() -> Unit,
+    block: ShowBuilder.() -> Unit,
 ) {
     val upstream = this
     val section = SlideSection(title)
 
-    object : SlideGroupScope {
-        override fun slide(content: @Composable () -> Unit) {
+    object : ShowBuilder {
+        override fun slide(content: SlideContent) {
             upstream.slide {
                 CompositionLocalProvider(LocalSlideSection provides section) {
                     content()

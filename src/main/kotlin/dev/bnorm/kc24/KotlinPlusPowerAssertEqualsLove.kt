@@ -2,11 +2,13 @@ package dev.bnorm.kc24
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.layout.FixedScale
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.sections.AssertionLibraries
 import dev.bnorm.kc24.sections.PowerAssertSetup
 import dev.bnorm.kc24.sections.WhyPowerAssert
@@ -33,7 +35,7 @@ fun Title() {
             Image(
                 painter = painterResource("kotlin_mascot/emoji/kodee-loving.png"),
                 contentDescription = "",
-                contentScale = FixedScale(0.4f)
+                modifier = Modifier.requiredSize(100.dp),
             )
         }
     }

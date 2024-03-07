@@ -21,15 +21,16 @@ import dev.bnorm.kc24.elements.AnimateDiff
 import dev.bnorm.kc24.elements.MacWindow
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.SlideGroupScope
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.animation.rememberAdvancementAnimations
-import dev.bnorm.librettist.rememberAdvancementIndex
+import dev.bnorm.librettist.show.rememberAdvancementIndex
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.text.KotlinCodeText
 import kotlin.time.Duration.Companion.milliseconds
 
-fun SlideGroupScope.WhyPowerAssert() {
-    slide { SectionHeader { Text("I would assert...") } }
+fun ShowBuilder.WhyPowerAssert() {
+    slide { SectionHeader(animateToBody = false) { Text("I would assert...") } }
 
     // TODO instead of striking and going to good assertions...
     //  1. describe that Power-Assert produces good assertion output,
@@ -45,21 +46,19 @@ fun SlideGroupScope.WhyPowerAssert() {
     //  3. requires a custom message if condition is derived from something complex ( easy to forget until something fails )
 }
 
-fun SlideGroupScope.PowerAssertIntro() {
+fun ShowBuilder.PowerAssertIntro() {
     section(title = { Text(introTitle(strike = false)) }) {
         slide { SectionHeader() }
 
         slide {
-            val index by rememberAdvancementIndex(5)
+            val index by rememberAdvancementIndex(4)
             TitleAndBody(title = {
-                Text(introTitle(strike = index > 3))
+                Text(introTitle(strike = index > 2))
             }) {
                 when (index) {
-                    0 -> Unit
+                    0 -> Text("● What is Power-Assert?")
 
-                    1 -> Text("● What is Power-Assert?")
-
-                    2 -> {
+                    1 -> {
                         Text(buildAnnotatedString {
                             append("● ")
                             withStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) {
@@ -84,7 +83,7 @@ fun SlideGroupScope.PowerAssertIntro() {
     }
 }
 
-fun SlideGroupScope.GoodAssertions() {
+fun ShowBuilder.GoodAssertions() {
     section(title = { Text("Good Assertions") }) {
         slide { SectionHeader() }
 
@@ -95,7 +94,7 @@ fun SlideGroupScope.GoodAssertions() {
 }
 
 @Composable
-private fun FirstExample() {
+private fun SlideScope.FirstExample() {
     ExampleTestAssertion(
         header = { Text("Is this a good assertion?") },
         example = {
@@ -116,7 +115,7 @@ private fun FirstExample() {
 }
 
 @Composable
-private fun SecondExample() {
+private fun SlideScope.SecondExample() {
     val (example, output) = rememberAdvancementAnimations(2)
     ExampleTestAssertion2(
         header = { Text("What about this assertion?") },
@@ -150,7 +149,7 @@ private fun SecondExample() {
 }
 
 @Composable
-private fun ThirdExample() {
+private fun SlideScope.ThirdExample() {
     val (example, output) = rememberAdvancementAnimations(2)
     ExampleTestAssertion2(
         header = {
@@ -186,7 +185,7 @@ private fun ThirdExample() {
 }
 
 @Composable
-private fun ExampleTestAssertion(
+private fun SlideScope.ExampleTestAssertion(
     header: @Composable () -> Unit,
     example: @Composable () -> Unit,
     output: @Composable () -> Unit,

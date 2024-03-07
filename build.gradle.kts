@@ -15,8 +15,5 @@ dependencies {
     implementation(project(":librettist:librettist-core"))
 
     testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
+    testImplementation(compose.desktop.uiTestJUnit4)
 }

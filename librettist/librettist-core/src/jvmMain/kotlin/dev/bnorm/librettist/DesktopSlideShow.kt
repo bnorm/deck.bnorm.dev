@@ -19,19 +19,19 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.WindowPlacement
-import androidx.compose.ui.window.WindowState
-import androidx.compose.ui.window.singleWindowApplication
+import androidx.compose.ui.window.*
+import dev.bnorm.librettist.show.*
 
 fun DesktopSlideShow(
     title: String,
     theme: SlideTheme,
-    builder: SlideGroupScope.() -> Unit,
+    builder: ShowBuilder.() -> Unit,
 ) {
     // Pulled from Google Slides with 1 inch = 100 dp
-    val windowState = WindowState(size = DpSize(1000.dp, 800.dp))
     val slideSize = DpSize(1000.dp, 563.dp)
-    val advancementState = AdvancementState()
+
+    val windowState = WindowState(size = DpSize(1000.dp, 800.dp))
+    val showState = ShowState(builder)
 
     fun handleKeyEvent(event: KeyEvent): Boolean {
         // TODO rate-limit holding down the key?
@@ -40,17 +40,16 @@ fun DesktopSlideShow(
                 Key.DirectionRight,
                 Key.Enter,
                 Key.Spacebar,
-                -> Advancement(forward = true)
+                -> Advancement(direction = Advancement.Direction.Forward)
 
                 Key.DirectionLeft,
                 Key.Backspace,
-                -> Advancement(forward = false)
+                -> Advancement(direction = Advancement.Direction.Backward)
 
                 else -> null
             }
             if (advancement != null) {
-                advancementState.handlers.reversed().any { it(advancement) }
-                advancementState.lastAdvancement = advancement
+                showState.advance(advancement)
                 return true
             }
         }
@@ -74,56 +73,45 @@ fun DesktopSlideShow(
         return true
     }
 
-    singleWindowApplication(
-        state = windowState,
-        title = title,
-        onPreviewKeyEvent = ::handleKeyEvent,
-    ) {
-        SlideShow(
-            advancementState = advancementState,
-            showOverview = windowState.placement != WindowPlacement.Fullscreen,
-            theme = theme,
-            targetSize = slideSize,
-            builder = builder,
-        )
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            state = windowState,
+            title = title,
+            onPreviewKeyEvent = ::handleKeyEvent,
+        ) {
+            SlideShow(
+                showState = showState,
+                showOverview = windowState.placement != WindowPlacement.Fullscreen,
+                theme = theme,
+                targetSize = slideSize,
+            )
+        }
     }
 }
 
+
 @Composable
 private fun SlideShow(
-    advancementState: AdvancementState,
+    showState: ShowState,
     showOverview: Boolean,
     theme: SlideTheme,
-    targetSize: DpSize,
-    builder: SlideGroupScope.() -> Unit
+    targetSize: DpSize
 ) {
-    CompositionLocalProvider(LocalAdvancementState provides advancementState) {
-        val slides: List<@Composable () -> Unit> = remember(builder) {
-            buildList {
-                object : SlideGroupScope {
-                    override fun slide(content: @Composable () -> Unit) {
-                        add(content)
-                    }
-                }.builder()
-            }
-        }
-        var slide by rememberAdvancementIndex(slides.size)
-
+    CompositionLocalProvider(LocalShowState provides showState) {
         SlideTheme(theme) {
             Row(modifier = Modifier.fillMaxSize()) {
                 val state = rememberLazyListState()
                 if (showOverview) {
                     SlideShowOverview(
                         targetSize = targetSize,
-                        selectedSlide = slide,
-                        slides = slides,
-                        onSlideSelected = { slide = it },
+                        showState = showState,
                         modifier = Modifier.weight(0.2f),
                         state = state
                     )
                 }
 
-                SlideShowDisplay(targetSize, slide, slides, Modifier.weight(0.8f))
+                SlideShowDisplay(targetSize, showState.index, showState, Modifier.weight(0.8f))
             }
         }
     }
@@ -132,8 +120,8 @@ private fun SlideShow(
 @Composable
 private fun SlideShowDisplay(
     targetSize: DpSize,
-    slide: Int,
-    slides: List<@Composable () -> Unit>,
+    slideIndex: Int,
+    showState: ShowState,
     modifier: Modifier = Modifier,
 ) {
     ScaledBox(
@@ -143,8 +131,9 @@ private fun SlideShowDisplay(
         Surface(modifier = Modifier.fillMaxSize()) {
             // TODO why is this box required for proper alignment?
             Box(modifier = Modifier.fillMaxSize()) {
-                key(slide) {
-                    slides[slide]()
+                key(slideIndex) {
+                    val slide = showState.slides[slideIndex]
+                    showState.slide()
                 }
             }
         }
@@ -177,31 +166,37 @@ private fun ScaledBox(
 @Composable
 private fun SlideShowOverview(
     targetSize: DpSize,
-    selectedSlide: Int,
-    slides: List<@Composable () -> Unit>,
-    onSlideSelected: (Int) -> Unit,
+    showState: ShowState,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
 ) {
-    LazyColumn(modifier = modifier, contentPadding = PaddingValues(8.dp), state = state) {
-        items(slides.size) { index ->
-            Box(modifier = Modifier.padding(8.dp).clickable { onSlideSelected(index) }) {
+    // TODO advancement never happens in the overview, but we need
+    //  to provide a show state anyways so ListenAdvancement doesn't error.
+    //  is there a better way to disable advancement?
+    val constantShowState = remember { ShowState(emptyList()) }
+    CompositionLocalProvider(LocalShowState provides constantShowState) {
+
+        // TODO: use state.animateScrollToItem(selectedSlide) somehow to always keep selected slide visible (but not always at the top)
+        LazyColumn(modifier = modifier, contentPadding = PaddingValues(8.dp), state = state) {
+            items(showState.slides.size) { index ->
+                val slide = remember(index) { showState.slides[index] }
+
                 ScaledBox(
                     targetSize = targetSize,
                     modifier = Modifier.fillMaxWidth()
+                        .padding(8.dp)
                         .aspectRatio(targetSize.width / targetSize.height)
                         .background(MaterialTheme.colors.background)
-                        .then(if (index == selectedSlide) Modifier.border(2.dp, Color.Red) else Modifier)
+                        .clickable { showState.index = index }
+                        .then(if (index == showState.index) Modifier.border(2.dp, Color.Red) else Modifier)
                 ) {
                     Surface(modifier = Modifier.fillMaxSize()) {
                         // TODO why is this box required for proper alignment?
                         Box(modifier = Modifier.fillMaxSize()) {
-                            CompositionLocalProvider(LocalAdvancementState provides AdvancementState()) {
-                                slides[index]()
+                            constantShowState.slide()
                             }
                         }
                     }
-                }
             }
         }
     }

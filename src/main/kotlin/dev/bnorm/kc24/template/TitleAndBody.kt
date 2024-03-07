@@ -25,17 +25,15 @@ fun TitleAndBody(
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 8.dp)
-                .requiredHeight(64.dp),
+                .padding(start = 32.dp, bottom = 8.dp)
+                .requiredHeight(72.dp),
             contentAlignment = Alignment.BottomStart,
         ) {
             ProvideTextStyle(MaterialTheme.typography.h3) {
                 title()
             }
         }
-        Box(
-            modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)),
-        )
+        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
         Box(
             modifier = Modifier.fillMaxWidth().weight(1f)
                 .padding(start = 32.dp, top = 32.dp, end = 32.dp, bottom = 32.dp),
@@ -47,13 +45,9 @@ fun TitleAndBody(
                 }
             }
         }
-        Box(
-            modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)),
-        )
+        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
     }
-    Box(
-        modifier = Modifier.absoluteOffset(920.dp, 494.dp).requiredSize(73.dp, 63.dp),
-    ) {
+    Box(modifier = Modifier.absoluteOffset(920.dp, 494.dp).requiredSize(73.dp, 63.dp)) {
         // TODO make image customizable so Kodee can react to what is on the slide?
         Image(imageVector = Kodee.Petite, contentDescription = "", modifier = Modifier.fillMaxSize())
     }
