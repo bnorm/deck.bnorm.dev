@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
@@ -8,25 +10,25 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     jvm()
-    js {
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
         browser()
     }
 
     sourceSets {
-        commonMain {
+        val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.ui)
-                implementation(compose.material)
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.ui)
+                api(compose.material)
             }
         }
-        jsMain {
+        val jvmMain by getting {
             dependencies {
-            }
-        }
-        jvmMain {
-            dependencies {
+                api(compose.desktop.common)
+
                 implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0-Beta4")
                 implementation("org.apache.commons:commons-text:1.11.0")
             }

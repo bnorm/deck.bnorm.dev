@@ -5,8 +5,9 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("jvm").version(extra["kotlin.version"] as String)
-        id("org.jetbrains.compose").version(extra["compose.version"] as String)
+        kotlin("jvm") version "1.9.22"
+        kotlin("multiplatform") version "1.9.22"
+        id("org.jetbrains.compose") version "1.6.0"
     }
 
     dependencyResolutionManagement {
@@ -20,4 +21,5 @@ pluginManagement {
 
 rootProject.name = "deck.bnorm.dev"
 
+include(":kotlinconf2024")
 include(":librettist:librettist-core")

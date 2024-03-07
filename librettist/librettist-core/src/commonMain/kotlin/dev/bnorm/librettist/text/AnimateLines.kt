@@ -26,14 +26,14 @@ fun String.flowLines(other: String, lineDelay: Duration = 50.milliseconds): Flow
                 for (i in line + 1..<thisLines.size) {
                     appendLine(thisLines[i])
                 }
-            })
+            }.trim())
         }
-    }
+    }.dedup()
 }
 
 fun flowLines(values: List<String>, lineDelay: Duration = 50.milliseconds): Flow<String> {
     require(values.isNotEmpty())
-    return values.zipWithNext { a, b -> a.flowLines(b, lineDelay) }.concat()
+    return values.zipWithNext { a, b -> a.flowLines(b, lineDelay) }.concat().dedup()
 }
 
 @Composable
