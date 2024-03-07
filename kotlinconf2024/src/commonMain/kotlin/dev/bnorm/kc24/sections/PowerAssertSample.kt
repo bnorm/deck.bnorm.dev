@@ -1,6 +1,9 @@
 package dev.bnorm.kc24.sections
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -8,14 +11,17 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacWindow
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.animation.AnimationState
 import dev.bnorm.librettist.animation.LaunchedAnimation
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
+import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.KotlinCodeText
 import dev.bnorm.librettist.text.flowDiff
 import dev.bnorm.librettist.text.flowLines
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -23,8 +29,9 @@ fun ShowBuilder.PowerAssertSample() {
     TextLinesAnimationSample()
 }
 
+@OptIn(ExperimentalResourceApi::class)
 fun ShowBuilder.TextLinesAnimationSample() {
-    section(title = { Text("No Power-Assert 😭") }) {
+    section(title = { Text("No Power-Assert") }) {
         slide { SectionHeader() }
         slide {
             TitleAndBody {
@@ -52,8 +59,31 @@ fun ShowBuilder.TextLinesAnimationSample() {
                 }
             }
         }
+        slide {
+            TitleAndBody(
+                kodee = {
+                    Image(
+                        painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-broken-hearted.png")),
+                        contentDescription = "",
+                        modifier = Modifier.padding(8.dp).requiredSize(200.dp),
+                    )
+                }
+            ) {
+                KotlinCodeText(
+                    """
+                        fun main() {
+                            assert(hello.length == "World".substring(1, 4).length)
+                        }
+                    """.trimIndent()
+                )
+                Spacer(Modifier.padding(top = 16.dp))
+                MacWindow {
+                    Text("java.lang.AssertionError: Assertion failed")
+                }
+            }
+        }
     }
-    section(title = { Text("With Power-Assert 😍") }) {
+    section(title = { Text("With Power-Assert") }) {
         slide { SectionHeader() }
         slide {
             TitleAndBody {
@@ -129,6 +159,40 @@ fun ShowBuilder.TextLinesAnimationSample() {
                     MacWindow {
                         Text(text)
                     }
+                }
+            }
+        }
+        slide {
+            TitleAndBody(
+                kodee = {
+                    Image(
+                        painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-loving.png")),
+                        contentDescription = "",
+                        modifier = Modifier.padding(8.dp).requiredSize(200.dp),
+                    )
+                }
+            ) {
+                KotlinCodeText(
+                    """
+                        fun main() {
+                            assert(hello.length == "World".substring(1, 4).length)
+                        }
+                    """.trimIndent()
+                )
+                Spacer(Modifier.padding(top = 16.dp))
+                MacWindow {
+                    Text(
+                        """
+                            java.lang.AssertionError: Assertion failed
+                            assert(hello.length == "World".substring(1, 4).length)
+                                   |     |      |          |               |
+                                   |     |      |          |               3
+                                   |     |      |          orl
+                                   |     |      false
+                                   |     5
+                                   Hello
+                        """.trimIndent()
+                    )
                 }
             }
         }

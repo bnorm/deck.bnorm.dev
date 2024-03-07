@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,9 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.bnorm.kc24.PreviewSlide
 import dev.bnorm.kc24.image.Kodee
-import dev.bnorm.kc24.image.kodee.Petite
 import dev.bnorm.kc24.image.kodee.Sitting
 import dev.bnorm.librettist.section.LocalSlideSection
 import dev.bnorm.librettist.show.SlideScope
@@ -29,6 +26,7 @@ import dev.bnorm.librettist.show.rememberAdvancementBoolean
 @Composable
 fun SlideScope.SectionHeader(
     animateToBody: Boolean = true,
+    kodee: @Composable () -> Unit = { DefaultCornerKodee() },
     title: @Composable () -> Unit = LocalSlideSection.current.header,
 ) {
     val state by if (animateToBody) rememberAdvancementBoolean() else mutableStateOf(false)
@@ -77,9 +75,8 @@ fun SlideScope.SectionHeader(
         }
     }
     AnimatedVisibility(state, enter = slideInVertically { 3 * it / 2 }, exit = slideOutVertically { 3 * it / 2 }) {
-        Box(modifier = Modifier.absoluteOffset(920.dp, 494.dp).requiredSize(73.dp, 63.dp)) {
-            // TODO make image customizable so Kodee can react to what is on the slide?
-            Image(imageVector = Kodee.Petite, contentDescription = "", modifier = Modifier.fillMaxSize())
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+            kodee()
         }
     }
 }
