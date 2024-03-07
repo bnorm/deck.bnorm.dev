@@ -8,9 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc24.sections.AssertionLibraries
+import dev.bnorm.kc24.sections.PowerAssertSample
 import dev.bnorm.kc24.sections.PowerAssertSetup
-import dev.bnorm.kc24.sections.WhyPowerAssert
 import dev.bnorm.kc24.template.TitleSlide
 import dev.bnorm.librettist.show.ShowBuilder
 import org.jetbrains.compose.resources.DrawableResource
@@ -18,11 +17,9 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
-//        Samples()
     slide { Title() }
-    AssertionLibraries()
-    WhyPowerAssert()
     PowerAssertSetup()
+    PowerAssertSample()
 }
 
 @OptIn(ExperimentalResourceApi::class)

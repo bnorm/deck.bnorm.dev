@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
-import dev.bnorm.kc24.elements.AnimateDiff
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
@@ -22,9 +21,6 @@ fun ShowBuilder.PowerAssertSetup() {
         slide { SectionHeader() }
 
         GradlePlugin()
-
-        // TODO fill out extension slide for
-        GradleExtension()
     }
 }
 
@@ -98,14 +94,6 @@ private fun ShowBuilder.GradlePlugin() {
                     }
                 }
             }
-        }
-    }
-}
-
-private fun ShowBuilder.GradleExtension() {
-    slide {
-        TitleAndBody {
-            Text("Want to exclude source sets from transformation?")
         }
     }
 }
