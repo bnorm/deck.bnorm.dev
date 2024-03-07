@@ -1,10 +1,14 @@
 package dev.bnorm.librettist
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.TextField
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -64,8 +68,15 @@ fun WebSlideShow(
                 theme = theme(),
                 targetSize = slideSize,
             )
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
+
+            Row(Modifier.fillMaxSize()) {
+                val interactionSource = remember { MutableInteractionSource() }
+                Box(modifier = Modifier.fillMaxHeight().weight(0.5f).clickable(interactionSource, indication = null) {
+                    showState.advance(Advancement(direction = Advancement.Direction.Backward))
+                })
+                Box(modifier = Modifier.fillMaxHeight().weight(0.5f).clickable(interactionSource, indication = null) {
+                    showState.advance(Advancement(direction = Advancement.Direction.Forward))
+                })
             }
         }
 
