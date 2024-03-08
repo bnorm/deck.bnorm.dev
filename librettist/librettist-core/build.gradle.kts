@@ -23,6 +23,8 @@ kotlin {
                 api(compose.foundation)
                 api(compose.ui)
                 api(compose.material)
+
+                implementation("de.cketti.unicode:kotlin-codepoints-deluxe:0.7.0")
             }
         }
         val jvmMain by getting {

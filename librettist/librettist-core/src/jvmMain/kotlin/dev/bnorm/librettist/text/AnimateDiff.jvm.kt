@@ -1,11 +1,9 @@
 package dev.bnorm.librettist.text
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.apache.commons.text.diff.ReplacementsFinder
 import org.apache.commons.text.diff.StringsComparator
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 private data class Diff(
     val skipped: Int,
@@ -13,7 +11,7 @@ private data class Diff(
     val to: List<Char>,
 )
 
-actual fun String.flowDiff(other: String, charDelay: Duration): Flow<String> {
+actual fun String.flowDiff(other: String): Flow<String> {
     val diffs = buildList {
         StringsComparator(this@flowDiff, other).script.visit(ReplacementsFinder { skipped, from, to ->
             add(Diff(skipped, from.toList(), to.toList()))
@@ -33,7 +31,6 @@ actual fun String.flowDiff(other: String, charDelay: Duration): Flow<String> {
             for (i in from.indices.reversed()) {
                 if (from[i].isWhitespace()) continue
 
-                delay(charDelay)
                 value = buildString {
                     append(start)
                     for (j in 0..<i) {
@@ -47,7 +44,6 @@ actual fun String.flowDiff(other: String, charDelay: Duration): Flow<String> {
             for (i in to.indices) {
                 if (to[i].isWhitespace()) continue
 
-                delay(charDelay)
                 value = buildString {
                     append(start)
                     for (j in 0..i) {
@@ -59,5 +55,5 @@ actual fun String.flowDiff(other: String, charDelay: Duration): Flow<String> {
                 emit(value)
             }
         }
-    }.dedup()
+    }
 }

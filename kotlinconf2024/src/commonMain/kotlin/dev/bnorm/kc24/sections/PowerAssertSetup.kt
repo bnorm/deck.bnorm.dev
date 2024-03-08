@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -13,7 +14,7 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
-import dev.bnorm.librettist.text.KotlinCodeText
+import dev.bnorm.librettist.text.*
 import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.PowerAssertSetup() {
@@ -26,74 +27,89 @@ fun ShowBuilder.PowerAssertSetup() {
 
 private fun ShowBuilder.GradlePlugin() {
     slide {
-        val ktsValues = listOf(
-            """
-                // build.gradle.kts
-                plugins {
-                    kotlin("jvm") version "2.0.0"
-                }
-            """.trimIndent(),
-            """
-                // build.gradle.kts
-                plugins {
-                    kotlin("jvm") version "2.0.0"
-                
-                }
-            """.trimIndent(),
-            """
-                // build.gradle.kts
-                plugins {
-                    kotlin("jvm") version "2.0.0"
-                    kotlin("plugin.power-assert") version "2.0.0"
-                }
-            """.trimIndent(),
-        )
-
-        val groovyValues = listOf(
-            """
-                // build.gradle
-                plugins {
-                    id "org.jetbrains.kotlin.jvm" version "2.0.0"
-                }
-            """.trimIndent(),
-            """
-                // build.gradle
-                plugins {
-                    id "org.jetbrains.kotlin.jvm" version "2.0.0"
-                
-                }
-            """.trimIndent(),
-            """
-                // build.gradle
-                plugins {
-                    id "org.jetbrains.kotlin.jvm" version "2.0.0"
-                    id "org.jetbrains.kotlin.plugin.power-assert" version "2.0.0"
-                }
-            """.trimIndent(),
-        )
-
         TitleAndBody {
             val state = rememberAdvancementAnimation()
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column {
-                    AnimateDiff(ktsValues, state, charDelay = 50.milliseconds) { text ->
-                        KotlinCodeText(text, modifier = Modifier.weight(0.4f), identifierType = {
-                            when (it) {
-                                "kotlin", "version" -> SpanStyle(
-                                    color = Color(0xFF57AAF7),
-                                    fontStyle = FontStyle.Italic
-                                )
-
-                                else -> null
-                            }
-                        })
+                    AnimateText(ktsSequence, state, delay = 25.milliseconds) {
+                        GradleKtsText(it, modifier = Modifier.Companion.weight(0.4f))
                     }
-                    AnimateDiff(groovyValues, state, charDelay = 38.milliseconds) { text ->
-                        KotlinCodeText(text, modifier = Modifier.weight(0.6f))
+                    AnimateText(groovySequence, state, delay = 19.milliseconds) {
+                        GradleGroovyText(it, modifier = Modifier.weight(0.6f))
                     }
                 }
             }
         }
     }
 }
+
+@Composable
+private fun GradleKtsText(text: String, modifier: Modifier = Modifier) {
+    KotlinCodeText(text, modifier = modifier, identifierType = {
+        when (it) {
+            "kotlin", "version" -> SpanStyle(
+                color = Color(0xFF57AAF7),
+                fontStyle = FontStyle.Italic
+            )
+
+            else -> null
+        }
+    })
+}
+
+@Composable
+private fun GradleGroovyText(text: String, modifier: Modifier = Modifier) {
+    // TODO need a groovy parser?
+    KotlinCodeText(text, modifier = modifier)
+}
+
+private val ktsSequence = startTextAnimation(
+    """
+        // build.gradle.kts
+        plugins {
+            kotlin("jvm") version "2.0.0"
+        }
+    """.trimIndent(),
+).thenDiff(
+    """
+        // build.gradle.kts
+        plugins {
+            kotlin("jvm") version "2.0.0"
+        
+        }
+    """.trimIndent(),
+).thenLineEndDiff(
+    """
+        // build.gradle.kts
+        plugins {
+            kotlin("jvm") version "2.0.0"
+            kotlin("plugin.power-assert") version "2.0.0"
+        }
+    """.trimIndent(),
+)
+
+private val groovySequence = startTextAnimation(
+    """
+        // build.gradle
+        plugins {
+            id "org.jetbrains.kotlin.jvm" version "2.0.0"
+        }
+    """.trimIndent()
+).thenDiff(
+    """
+        // build.gradle
+        plugins {
+            id "org.jetbrains.kotlin.jvm" version "2.0.0"
+        
+        }
+    """.trimIndent(),
+).thenLineEndDiff(
+    """
+        // build.gradle
+        plugins {
+            id "org.jetbrains.kotlin.jvm" version "2.0.0"
+            id "org.jetbrains.kotlin.plugin.power-assert" version "2.0.0"
+        }
+    """.trimIndent(),
+)

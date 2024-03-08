@@ -5,25 +5,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacWindow
+import dev.bnorm.kc24.template.DefaultCornerKodee
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.animation.AnimationState
-import dev.bnorm.librettist.animation.LaunchedAnimation
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.text.KotlinCodeText
-import dev.bnorm.librettist.text.flowDiff
-import dev.bnorm.librettist.text.flowLines
+import dev.bnorm.librettist.show.rememberAdvancementBoolean
+import dev.bnorm.librettist.text.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.PowerAssertSample() {
     TextLinesAnimationSample()
@@ -35,47 +31,25 @@ fun ShowBuilder.TextLinesAnimationSample() {
         slide { SectionHeader() }
         slide {
             TitleAndBody {
-                KotlinCodeText(
-                    """
-                        fun main() {
-                            assert(hello.length == "World".substring(1, 4).length)
-                        }
-                    """.trimIndent()
-                )
+                KotlinCodeText(powerAssertSample)
             }
         }
         slide {
-            TitleAndBody {
-                KotlinCodeText(
-                    """
-                        fun main() {
-                            assert(hello.length == "World".substring(1, 4).length)
-                        }
-                    """.trimIndent()
-                )
-                Spacer(Modifier.padding(top = 16.dp))
-                MacWindow {
-                    Text("java.lang.AssertionError: Assertion failed")
-                }
-            }
-        }
-        slide {
+            val kodeeSad by rememberAdvancementBoolean()
             TitleAndBody(
                 kodee = {
-                    Image(
-                        painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-broken-hearted.png")),
-                        contentDescription = "",
-                        modifier = Modifier.padding(8.dp).requiredSize(200.dp),
-                    )
+                    if (kodeeSad) {
+                        Image(
+                            painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-broken-hearted.png")),
+                            contentDescription = "",
+                            modifier = Modifier.padding(8.dp).requiredSize(200.dp),
+                        )
+                    } else {
+                        DefaultCornerKodee()
+                    }
                 }
             ) {
-                KotlinCodeText(
-                    """
-                        fun main() {
-                            assert(hello.length == "World".substring(1, 4).length)
-                        }
-                    """.trimIndent()
-                )
+                KotlinCodeText(powerAssertSample)
                 Spacer(Modifier.padding(top = 16.dp))
                 MacWindow {
                     Text("java.lang.AssertionError: Assertion failed")
@@ -87,89 +61,24 @@ fun ShowBuilder.TextLinesAnimationSample() {
         slide { SectionHeader() }
         slide {
             TitleAndBody {
-                KotlinCodeText(
-                    """
-                        fun main() {
-                            assert(hello.length == "World".substring(1, 4).length)
-                        }
-                    """.trimIndent()
-                )
+                KotlinCodeText(powerAssertSample)
             }
         }
         slide {
+            val kodeeHappy by rememberAdvancementBoolean()
             val state = rememberAdvancementAnimation()
 
-            val values = listOf(
-                """
-                    java.lang.AssertionError: Assertion failed
-                    assert(hello.length == "World".substring(1, 4).length)
-                """.trimIndent(),
-                """
-                    java.lang.AssertionError: Assertion failed
-                    assert(hello.length == "World".substring(1, 4).length)
-                                                                   |
-                                                                   3
-                """.trimIndent(),
-                """
-                    java.lang.AssertionError: Assertion failed
-                    assert(hello.length == "World".substring(1, 4).length)
-                                                   |               |
-                                                   |               3
-                                                   orl
-                """.trimIndent(),
-                """
-                    java.lang.AssertionError: Assertion failed
-                    assert(hello.length == "World".substring(1, 4).length)
-                                        |          |               |
-                                        |          |               3
-                                        |          orl
-                                        false
-                """.trimIndent(),
-                """
-                    java.lang.AssertionError: Assertion failed
-                    assert(hello.length == "World".substring(1, 4).length)
-                                 |      |          |               |
-                                 |      |          |               3
-                                 |      |          orl
-                                 |      false
-                                 5
-                """.trimIndent(),
-                """
-                    java.lang.AssertionError: Assertion failed
-                    assert(hello.length == "World".substring(1, 4).length)
-                           |     |      |          |               |
-                           |     |      |          |               3
-                           |     |      |          orl
-                           |     |      false
-                           |     5
-                           Hello
-                """.trimIndent(),
-            )
-
-            AnimateLines(values, state) { text: String ->
-                TitleAndBody {
-                    KotlinCodeText(
-                        """
-                            fun main() {
-                                assert(hello.length == "World".substring(1, 4).length)
-                            }
-                        """.trimIndent()
-                    )
-                    Spacer(Modifier.padding(top = 16.dp))
-                    MacWindow {
-                        Text(text)
-                    }
-                }
-            }
-        }
-        slide {
             TitleAndBody(
                 kodee = {
-                    Image(
-                        painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-loving.png")),
-                        contentDescription = "",
-                        modifier = Modifier.padding(8.dp).requiredSize(200.dp),
-                    )
+                    if (kodeeHappy) {
+                        Image(
+                            painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-loving.png")),
+                            contentDescription = "",
+                            modifier = Modifier.padding(8.dp).requiredSize(200.dp),
+                        )
+                    } else {
+                        DefaultCornerKodee()
+                    }
                 }
             ) {
                 KotlinCodeText(
@@ -180,69 +89,71 @@ fun ShowBuilder.TextLinesAnimationSample() {
                     """.trimIndent()
                 )
                 Spacer(Modifier.padding(top = 16.dp))
-                MacWindow {
-                    Text(
-                        """
-                            java.lang.AssertionError: Assertion failed
-                            assert(hello.length == "World".substring(1, 4).length)
-                                   |     |      |          |               |
-                                   |     |      |          |               3
-                                   |     |      |          orl
-                                   |     |      false
-                                   |     5
-                                   Hello
-                        """.trimIndent()
-                    )
+                AnimateText(powerAssertOutput, state) { text: String ->
+                    MacWindow {
+                        Text(text)
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun AnimateDiff(
-    values: List<String>,
-    state: MutableState<AnimationState>,
-    charDelay: Duration = 50.milliseconds,
-    content: @Composable (String) -> Unit
-) {
-    require(values.size >= 2)
-
-    var text by remember {
-        mutableStateOf(if (state.value == AnimationState.PENDING) values.first() else values.last())
-    }
-
-    LaunchedAnimation(state) {
-        when (it) {
-            AnimationState.PENDING -> text = values.first()
-            AnimationState.RUNNING -> flowDiff(values, charDelay).collect { text = it }
-            AnimationState.COMPLETE -> text = values.last()
+val powerAssertSample =
+    """
+        fun main() {
+            assert(hello.length == "World".substring(1, 4).length)
         }
-    }
+    """.trimIndent()
 
-    content(text)
-}
-
-@Composable
-fun AnimateLines(
-    values: List<String>,
-    state: MutableState<AnimationState>,
-    charDelay: Duration = 50.milliseconds,
-    content: @Composable (String) -> Unit
-) {
-    require(values.size >= 2)
-
-    var text by remember(values, state) {
-        mutableStateOf(if (state.value == AnimationState.PENDING) values.first() else values.last())
-    }
-
-    LaunchedAnimation(state) {
-        when (it) {
-            AnimationState.PENDING -> text = values.first()
-            AnimationState.RUNNING -> flowLines(values, charDelay).collect { text = it }
-            AnimationState.COMPLETE -> text = values.last()
-        }
-    }
-
-    content(text)
-}
+val powerAssertOutput = startTextAnimation(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(hello.length == "World".substring(1, 4).length)
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(hello.length == "World".substring(1, 4).length)
+                                                       |
+                                                       3
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(hello.length == "World".substring(1, 4).length)
+                                       |               |
+                                       |               3
+                                       orl
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(hello.length == "World".substring(1, 4).length)
+                            |          |               |
+                            |          |               3
+                            |          orl
+                            false
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(hello.length == "World".substring(1, 4).length)
+                     |      |          |               |
+                     |      |          |               3
+                     |      |          orl
+                     |      false
+                     5
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(hello.length == "World".substring(1, 4).length)
+               |     |      |          |               |
+               |     |      |          |               3
+               |     |      |          orl
+               |     |      false
+               |     5
+               Hello
+    """.trimIndent(),
+)

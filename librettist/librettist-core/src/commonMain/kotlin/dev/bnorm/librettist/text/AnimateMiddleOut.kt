@@ -1,46 +1,30 @@
 package dev.bnorm.librettist.text
 
-import androidx.compose.runtime.*
+import de.cketti.codepoints.deluxe.appendCodePoint
+import de.cketti.codepoints.deluxe.codePointIterator
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-@Composable
-fun String.animateMiddleOut(charDelay: Duration = 50.milliseconds): State<String> {
-    if (isEmpty()) {
-        return mutableStateOf("")
-    } else {
-        val start = substring(0, length / 2)
-        val end = substring((length + 1) / 2, length)
+fun String.flowMiddleOut(charDelay: Duration = 50.milliseconds): Flow<String> {
+    val codePoints = Iterable { codePointIterator() }.toList()
+    return flow {
+        var leftIndex = (codePoints.size - 1) / 2
+        var rightIndex = codePoints.size / 2
 
-        val state = remember {
-            mutableStateOf(
-                when {
-                    length % 2 == 0 -> ""
-                    else -> this[length / 2].toString()
+        emit("")
+        while (leftIndex >= 0) {
+            delay(charDelay)
+            emit(buildString {
+                for (i in leftIndex..rightIndex) {
+                    appendCodePoint(codePoints[i])
                 }
-            )
-        }
+            })
 
-        LaunchedEffect(Unit) {
-            val mutex = Mutex()
-            launch {
-                start.reversed().asIterable().asFlow()
-                    .onEach { if (!it.isWhitespace()) delay(charDelay) }
-                    .collect { mutex.withLock { state.value = it + state.value } }
-            }
-            launch {
-                end.asIterable().asFlow()
-                    .onEach { if (!it.isWhitespace()) delay(charDelay) }
-                    .collect { mutex.withLock { state.value += it } }
-            }
+            leftIndex--
+            rightIndex++
         }
-
-        return state
     }
 }

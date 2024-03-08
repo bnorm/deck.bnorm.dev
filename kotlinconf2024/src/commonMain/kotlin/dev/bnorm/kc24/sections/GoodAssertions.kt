@@ -20,7 +20,7 @@ import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.show.rememberAdvancementIndex
-import dev.bnorm.librettist.text.KotlinCodeText
+import dev.bnorm.librettist.text.*
 import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.GoodAssertions() {
@@ -56,11 +56,9 @@ private fun SlideScope.FirstExample() {
 private fun SlideScope.SecondExample() {
     ExampleTestAssertion(
         example = {
-            AnimateDiff(
-                values = listOf(firstTest, intermediateTest, secondTest),
-                state = rememberAdvancementAnimation(),
-                charDelay = 25.milliseconds,
-            ) { SampleCode(it) }
+            val sequence = startTextAnimation(firstTest)
+                .thenLineEndDiff(secondTest)
+            AnimateText(sequence, delay = 25.milliseconds) { SampleCode(it) }
         },
         output = { SampleOutput(secondOutput) },
         problem = { Text("PROBLEM!") },
@@ -71,11 +69,9 @@ private fun SlideScope.SecondExample() {
 private fun SlideScope.ThirdExample() {
     ExampleTestAssertion(
         example = {
-            AnimateDiff(
-                values = listOf(secondTest, thirdTest),
-                state = rememberAdvancementAnimation(),
-                charDelay = 25.milliseconds,
-            ) { SampleCode(it) }
+            val sequence = startTextAnimation(secondTest)
+                .thenLineEndDiff(thirdTest)
+            AnimateText(sequence, delay = 25.milliseconds) { SampleCode(it) }
         },
         output = { SampleOutput(thirdOutput) },
         problem = { Text("PROBLEM!") },

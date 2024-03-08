@@ -5,5 +5,4 @@ import kotlin.time.Duration
 
 actual fun String.flowDiff(
     other: String,
-    charDelay: Duration
-): Flow<String> = flowLines(other, charDelay) // TODO replace with actual diff algo
+): Flow<String> = flowLines(other) // TODO replace with actual diff algo

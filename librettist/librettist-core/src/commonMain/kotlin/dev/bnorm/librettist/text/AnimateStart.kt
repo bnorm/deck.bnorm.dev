@@ -1,7 +1,7 @@
 package dev.bnorm.librettist.text
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import de.cketti.codepoints.deluxe.appendCodePoint
+import de.cketti.codepoints.deluxe.codePointIterator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -12,9 +12,9 @@ fun String.flowStart(charDelay: Duration = 50.milliseconds): Flow<String> = flow
     val value = StringBuilder()
     emit(value.toString())
 
-    for (char in this@flowStart) {
-        value.append(char)
-        if (!char.isWhitespace()) {
+    for (codePoint in this@flowStart.codePointIterator()) {
+        value.appendCodePoint(codePoint)
+        if (!codePoint.isWhitespace()) {
             delay(charDelay)
             emit(value.toString())
         }
@@ -22,7 +22,3 @@ fun String.flowStart(charDelay: Duration = 50.milliseconds): Flow<String> = flow
 
     emit(value.toString())
 }
-
-@Composable
-fun String.stateStart(charDelay: Duration = 50.milliseconds) =
-    flowStart(charDelay).collectAsState(this)

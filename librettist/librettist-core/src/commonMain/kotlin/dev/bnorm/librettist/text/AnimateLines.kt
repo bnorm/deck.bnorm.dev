@@ -1,16 +1,13 @@
 package dev.bnorm.librettist.text
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import kotlinx.coroutines.delay
+import androidx.compose.runtime.*
+import dev.bnorm.librettist.animation.AnimationState
+import dev.bnorm.librettist.animation.LaunchedAnimation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
-fun String.flowLines(other: String, lineDelay: Duration = 50.milliseconds): Flow<String> {
+fun String.flowLines(other: String): Flow<String> {
     val thisLines = this.lines()
     val otherLines = other.lines()
     require(otherLines.size >= thisLines.size)
@@ -18,7 +15,6 @@ fun String.flowLines(other: String, lineDelay: Duration = 50.milliseconds): Flow
     return flow {
         emit(this@flowLines)
         for (line in otherLines.indices) {
-            delay(lineDelay)
             emit(buildString {
                 for (i in 0..line) {
                     appendLine(otherLines[i])
@@ -28,22 +24,39 @@ fun String.flowLines(other: String, lineDelay: Duration = 50.milliseconds): Flow
                 }
             }.trim())
         }
-    }.dedup()
+    }
 }
 
-fun flowLines(values: List<String>, lineDelay: Duration = 50.milliseconds): Flow<String> {
+fun flowLines(values: List<String>): Flow<String> {
     require(values.isNotEmpty())
-    return values.zipWithNext { a, b -> a.flowLines(b, lineDelay) }.concat().dedup()
+    return values.zipWithNext { a, b -> a.flowLines(b) }.concat()
+}
+
+fun TextAnimationSequence.thenLines(next: String): TextAnimationSequence {
+    val nextFlow = end.flowLines(next)
+    val flow = flow { emitAll(flow); emitAll(nextFlow) }
+    return copy(end = next, flow = flow)
 }
 
 @Composable
-fun String.animateLines(other: String, lineDelay: Duration = 50.milliseconds): State<String> {
-    val flowLines = remember(this, other) { flowLines(other, lineDelay) }
-    return flowLines.collectAsState(this)
-}
+fun AnimateLines(
+    values: List<String>,
+    state: MutableState<AnimationState>,
+    content: @Composable (String) -> Unit
+) {
+    require(values.size >= 2)
 
-@Composable
-fun animateLines(values: List<String>, lineDelay: Duration = 50.milliseconds): State<String> {
-    val flowLines = remember(values) { flowLines(values, lineDelay) }
-    return flowLines.collectAsState(values[0])
+    var text by remember(values, state) {
+        mutableStateOf(if (state.value == AnimationState.PENDING) values.first() else values.last())
+    }
+
+    LaunchedAnimation(state) {
+        when (it) {
+            AnimationState.PENDING -> text = values.first()
+            AnimationState.RUNNING -> flowLines(values).collect { text = it }
+            AnimationState.COMPLETE -> text = values.last()
+        }
+    }
+
+    content(text)
 }
