@@ -46,3 +46,8 @@ kotlin {
 compose.experimental {
     web.application {}
 }
+
+tasks.register<Sync>("site") {
+    from(tasks.named("wasmJsBrowserProductionWebpack"))
+    into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
+}
