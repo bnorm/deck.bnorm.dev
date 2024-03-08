@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+// TODO hook into SeekableTransitionState and KeyframesSpec?
 data class TextAnimationSequence(
     val start: String,
     val end: String,

@@ -30,9 +30,6 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(compose.desktop.common)
-
-                implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0-Beta4")
-                implementation("org.apache.commons:commons-text:1.11.0")
             }
         }
     }

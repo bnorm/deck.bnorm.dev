@@ -60,8 +60,7 @@ private fun GradleKtsText(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 private fun GradleGroovyText(text: String, modifier: Modifier = Modifier) {
-    // TODO need a groovy parser?
-    KotlinCodeText(text, modifier = modifier)
+    GroovyCodeText(text, modifier = modifier)
 }
 
 private val ktsSequence = startTextAnimation(
@@ -93,14 +92,14 @@ private val groovySequence = startTextAnimation(
     """
         // build.gradle
         plugins {
-            id "org.jetbrains.kotlin.jvm" version "2.0.0"
+            id 'org.jetbrains.kotlin.jvm' version '2.0.0'
         }
     """.trimIndent()
 ).thenDiff(
     """
         // build.gradle
         plugins {
-            id "org.jetbrains.kotlin.jvm" version "2.0.0"
+            id 'org.jetbrains.kotlin.jvm' version '2.0.0'
         
         }
     """.trimIndent(),
@@ -108,8 +107,8 @@ private val groovySequence = startTextAnimation(
     """
         // build.gradle
         plugins {
-            id "org.jetbrains.kotlin.jvm" version "2.0.0"
-            id "org.jetbrains.kotlin.plugin.power-assert" version "2.0.0"
+            id 'org.jetbrains.kotlin.jvm' version '2.0.0'
+            id 'org.jetbrains.kotlin.plugin.power-assert' version '2.0.0'
         }
     """.trimIndent(),
 )

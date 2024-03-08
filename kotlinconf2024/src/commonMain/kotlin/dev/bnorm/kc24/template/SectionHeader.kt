@@ -1,8 +1,7 @@
 package dev.bnorm.kc24.template
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,19 +28,21 @@ fun SlideScope.SectionHeader(
     kodee: @Composable () -> Unit = { DefaultCornerKodee() },
     title: @Composable () -> Unit = LocalSlideSection.current.header,
 ) {
-    val state by if (animateToBody) rememberAdvancementBoolean() else mutableStateOf(false)
-    val spacing by animateDpAsState(
-        targetValue = when (state) {
+    val showAsBody by if (animateToBody) rememberAdvancementBoolean() else mutableStateOf(false)
+    val transition = updateTransition(showAsBody, label = "slide type")
+
+    val spacing by transition.animateDp {
+        when (it) {
             false -> 225.dp
             true -> 0.dp
         }
-    )
-    val fontSize by animateFloatAsState(
-        targetValue = when (state) {
+    }
+    val fontSize by transition.animateFloat {
+        when (it) {
             false -> MaterialTheme.typography.h2.fontSize.value
             true -> MaterialTheme.typography.h3.fontSize.value
         }
-    )
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -61,7 +62,11 @@ fun SlideScope.SectionHeader(
         }
         Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
         Column(modifier = Modifier.offset(742.dp, (-146).dp)) {
-            AnimatedVisibility(visible = !state, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(
+                visible = !showAsBody,
+                enter = slideInHorizontally { it },
+                exit = slideOutHorizontally { it },
+            ) {
                 Image(
                     imageVector = Kodee.Sitting,
                     contentDescription = "",
@@ -70,11 +75,11 @@ fun SlideScope.SectionHeader(
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        AnimatedVisibility(state, enter = slideInVertically { it }, exit = slideOutVertically { it }) {
+        AnimatedVisibility(showAsBody, enter = slideInVertically { it }, exit = slideOutVertically { it }) {
             Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
         }
     }
-    AnimatedVisibility(state, enter = slideInVertically { 3 * it / 2 }, exit = slideOutVertically { 3 * it / 2 }) {
+    AnimatedVisibility(showAsBody, enter = slideInVertically { 3 * it / 2 }, exit = slideOutVertically { 3 * it / 2 }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
             kodee()
         }
