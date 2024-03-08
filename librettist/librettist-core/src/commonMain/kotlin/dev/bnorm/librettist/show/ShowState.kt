@@ -30,6 +30,7 @@ class ShowState(
         }
 
     private val handlers = mutableListOf<AdvancementHandler>()
+    private val listeners = mutableListOf<AdvancementListener>() // TODO shared flow?
 
     init {
         // Add default handler for slide index
@@ -51,6 +52,7 @@ class ShowState(
     fun advance(advancement: Advancement) {
         direction = advancement.direction
         handlers.reversed().any { it(advancement) }
+        listeners.forEach { it(advancement) }
     }
 
     fun addAdvancementHandler(handler: AdvancementHandler) {
@@ -60,6 +62,14 @@ class ShowState(
     fun removeAdvancementHandler(handler: AdvancementHandler) {
         handlers.remove(handler)
     }
+
+    fun addAdvancementListener(listener: AdvancementListener) {
+        listeners.add(listener)
+    }
+
+    fun removeAdvancementListener(listener: AdvancementListener) {
+        listeners.remove(listener)
+    }
 }
 
 val LocalShowState = compositionLocalOf<ShowState> {
@@ -67,6 +77,7 @@ val LocalShowState = compositionLocalOf<ShowState> {
 }
 
 typealias AdvancementHandler = (Advancement) -> Boolean
+typealias AdvancementListener = (Advancement) -> Unit
 
 @Composable
 fun ListenAdvancement(handler: AdvancementHandler) {
