@@ -80,7 +80,7 @@ typealias AdvancementHandler = (Advancement) -> Boolean
 typealias AdvancementListener = (Advancement) -> Unit
 
 @Composable
-fun ListenAdvancement(handler: AdvancementHandler) {
+fun HandleAdvancement(handler: AdvancementHandler) {
     val handlerState = rememberUpdatedState(handler)
     val state = LocalShowState.current
     DisposableEffect(handlerState) {

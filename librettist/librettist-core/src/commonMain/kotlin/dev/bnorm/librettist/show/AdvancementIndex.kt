@@ -14,13 +14,13 @@ fun SlideScope.rememberAdvancementIndex(count: Int): State<Int> {
         mutableStateOf(direction.toValue(forward = 0, backward = count - 1))
     }
 
-    ListenAdvancement {
+    HandleAdvancement {
         val value = index.value
         val nextValue = it.direction.toValue(forward = value + 1, backward = value - 1)
 
         val inRange = nextValue in 0..<count
         if (inRange) index.value = nextValue
-        return@ListenAdvancement inRange
+        return@HandleAdvancement inRange
     }
 
     return index

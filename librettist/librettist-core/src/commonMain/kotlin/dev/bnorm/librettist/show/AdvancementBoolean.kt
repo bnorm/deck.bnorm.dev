@@ -14,13 +14,13 @@ fun SlideScope.rememberAdvancementBoolean(): State<Boolean> {
         mutableStateOf(direction.toValue(forward = false, backward = true))
     }
 
-    ListenAdvancement {
+    HandleAdvancement {
         val value = state.value
         val nextValue = direction.toValue(forward = true, backward = false)
 
         val flipped = value != nextValue
         if (flipped) state.value = nextValue
-        return@ListenAdvancement flipped
+        return@HandleAdvancement flipped
     }
 
     return state
