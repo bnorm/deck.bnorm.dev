@@ -23,7 +23,7 @@ fun MacWindow(
     }
 
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
             .border(BorderStroke(2.dp, Color.Black), RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp)),
     ) {
@@ -35,7 +35,7 @@ fun MacWindow(
                     Circle(Color(0xFF28C940))
                 }
             }
-            Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Box(modifier = Modifier.padding(16.dp)) {
                 content()
             }
         }

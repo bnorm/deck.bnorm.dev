@@ -8,8 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc24.sections.PowerAssertSample
-import dev.bnorm.kc24.sections.PowerAssertSetup
+import dev.bnorm.kc24.sections.*
 import dev.bnorm.kc24.template.TitleSlide
 import dev.bnorm.librettist.show.ShowBuilder
 import org.jetbrains.compose.resources.DrawableResource
@@ -18,17 +17,18 @@ import org.jetbrains.compose.resources.painterResource
 
 fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
     slide { Title() }
-    PowerAssertSetup()
+    GoodAssertions()
+    AssertionLibraries()
+    WhatIsPowerAssert()
     PowerAssertSample()
+    PowerAssertSetup()
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun Title() {
     TitleSlide {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Kotlin + Power-Assert = ")
             Image(
                 painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-loving.png")),
