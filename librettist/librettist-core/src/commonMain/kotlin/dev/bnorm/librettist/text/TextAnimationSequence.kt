@@ -12,22 +12,22 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 // TODO hook into SeekableTransitionState and KeyframesSpec?
-data class TextAnimationSequence(
-    val start: String,
-    val end: String,
-    val flow: Flow<String>
+data class AnimationSequence<T>(
+    val start: T,
+    val end: T,
+    val flow: Flow<T>
 )
 
-fun startTextAnimation(start: String): TextAnimationSequence {
-    return TextAnimationSequence(start, start, flowOf(start))
+fun <T> startAnimation(start: T): AnimationSequence<T> {
+    return AnimationSequence(start, start, flowOf(start))
 }
 
 @Composable
-fun AnimateText(
-    sequence: TextAnimationSequence,
+fun <T> AnimateSequence(
+    sequence: AnimationSequence<T>,
     state: MutableState<AnimationState>,
     delay: Duration = 50.milliseconds,
-    content: @Composable (String) -> Unit
+    content: @Composable (T) -> Unit
 ) {
     var text by remember(sequence) {
         mutableStateOf(if (state.value == AnimationState.PENDING) sequence.start else sequence.end)
@@ -44,13 +44,12 @@ fun AnimateText(
     content(text)
 }
 
-
 @Composable
-fun SlideScope.AnimateText(
-    sequence: TextAnimationSequence,
+fun <T> SlideScope.AnimateSequence(
+    sequence: AnimationSequence<T>,
     state: MutableState<AnimationState> = rememberAdvancementAnimation(),
     delay: Duration = 50.milliseconds,
-    content: @Composable (String) -> Unit
+    content: @Composable (T) -> Unit
 ) {
     var text by remember(sequence) {
         mutableStateOf(if (state.value == AnimationState.PENDING) sequence.start else sequence.end)

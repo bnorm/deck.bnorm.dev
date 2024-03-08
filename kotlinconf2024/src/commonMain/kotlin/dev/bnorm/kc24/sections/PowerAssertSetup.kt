@@ -32,10 +32,10 @@ private fun ShowBuilder.GradlePlugin() {
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column {
-                    AnimateText(ktsSequence, state, delay = 25.milliseconds) {
+                    AnimateSequence(ktsSequence, state, delay = 25.milliseconds) {
                         GradleKtsText(it, modifier = Modifier.Companion.weight(0.4f))
                     }
-                    AnimateText(groovySequence, state, delay = 19.milliseconds) {
+                    AnimateSequence(groovySequence, state, delay = 19.milliseconds) {
                         GradleGroovyText(it, modifier = Modifier.weight(0.6f))
                     }
                 }
@@ -55,7 +55,7 @@ private fun GradleKtsText(text: String, modifier: Modifier = Modifier) {
 
             else -> null
         }
-    })
+    }, asScript = true)
 }
 
 @Composable
@@ -63,7 +63,7 @@ private fun GradleGroovyText(text: String, modifier: Modifier = Modifier) {
     GroovyCodeText(text, modifier = modifier)
 }
 
-private val ktsSequence = startTextAnimation(
+private val ktsSequence = startAnimation(
     """
         // build.gradle.kts
         plugins {
@@ -88,7 +88,7 @@ private val ktsSequence = startTextAnimation(
     """.trimIndent(),
 )
 
-private val groovySequence = startTextAnimation(
+private val groovySequence = startAnimation(
     """
         // build.gradle
         plugins {

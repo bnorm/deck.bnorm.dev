@@ -1,7 +1,7 @@
 import kotlin.test.*
 
 class Sample {
-    fun operation(): List<Any> = listOf(1, 2, 3)
+    fun operation(): List<Int> = listOf(1, 2, 3)
 }
 
 internal class SampleTest {
@@ -10,7 +10,7 @@ internal class SampleTest {
 
     @Test
     fun test() {
-        val actual: List<*> = subject.operation()
+        val actual: List<Int> = subject.operation()
         assertEquals(4, actual.size, "Actual: $actual")
     }
 }

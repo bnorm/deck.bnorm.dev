@@ -32,7 +32,7 @@ fun flowLines(values: List<String>): Flow<String> {
     return values.zipWithNext { a, b -> a.flowLines(b) }.concat()
 }
 
-fun TextAnimationSequence.thenLines(next: String): TextAnimationSequence {
+fun AnimationSequence<String>.thenLines(next: String): AnimationSequence<String> {
     val nextFlow = end.flowLines(next)
     val flow = flow { emitAll(flow); emitAll(nextFlow) }
     return copy(end = next, flow = flow)

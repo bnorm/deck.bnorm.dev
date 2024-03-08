@@ -66,7 +66,7 @@ fun String.flowDiff(other: String): Flow<String> {
 }
 
 
-fun TextAnimationSequence.thenDiff(next: String): TextAnimationSequence {
+fun AnimationSequence<String>.thenDiff(next: String): AnimationSequence<String> {
     val nextFlow = end.flowDiff(next)
     val flow = flow { emitAll(flow); emitAll(nextFlow) }
     return copy(end = next, flow = flow)

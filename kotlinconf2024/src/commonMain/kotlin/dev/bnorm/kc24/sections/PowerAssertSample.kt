@@ -5,13 +5,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacWindow
 import dev.bnorm.kc24.template.DefaultCornerKodee
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.LocalShowTheme
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
@@ -31,7 +37,7 @@ fun ShowBuilder.TextLinesAnimationSample() {
         slide { SectionHeader() }
         slide {
             TitleAndBody {
-                KotlinCodeText(powerAssertSample)
+                Text(rememberExampleCodeString(powerAssertSample))
             }
         }
         slide {
@@ -49,7 +55,7 @@ fun ShowBuilder.TextLinesAnimationSample() {
                     }
                 }
             ) {
-                KotlinCodeText(powerAssertSample)
+                Text(rememberExampleCodeString(powerAssertSample))
                 Spacer(Modifier.padding(top = 16.dp))
                 MacWindow {
                     Text("java.lang.AssertionError: Assertion failed")
@@ -61,7 +67,7 @@ fun ShowBuilder.TextLinesAnimationSample() {
         slide { SectionHeader() }
         slide {
             TitleAndBody {
-                KotlinCodeText(powerAssertSample)
+                Text(rememberExampleCodeString(powerAssertSample))
             }
         }
         slide {
@@ -81,21 +87,36 @@ fun ShowBuilder.TextLinesAnimationSample() {
                     }
                 }
             ) {
-                KotlinCodeText(
-                    """
-                        fun main() {
-                            assert(hello.length == "World".substring(1, 4).length)
-                        }
-                    """.trimIndent()
-                )
+                Text(rememberExampleCodeString(powerAssertSample))
                 Spacer(Modifier.padding(top = 16.dp))
-                AnimateText(powerAssertOutput, state) { text: String ->
+                AnimateSequence(powerAssertOutput, state) { text: String ->
                     MacWindow {
                         Text(text)
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun rememberExampleCodeString(text: String): AnnotatedString {
+    val codeStyle = LocalShowTheme.current.code
+    return remember(text) {
+        buildKotlinCodeString(
+            text, codeStyle,
+            identifierType = {
+                when (it) {
+                    // Properties
+                    "length" -> SpanStyle(color = Color(0xFFC77DBB))
+
+                    // Function definitions
+                    "main" -> SpanStyle(color = Color(0xFF56A8F5))
+
+                    else -> null
+                }
+            }
+        )
     }
 }
 
@@ -106,7 +127,7 @@ val powerAssertSample =
         }
     """.trimIndent()
 
-val powerAssertOutput = startTextAnimation(
+val powerAssertOutput = startAnimation(
     """
         java.lang.AssertionError: Assertion failed
         assert(hello.length == "World".substring(1, 4).length)

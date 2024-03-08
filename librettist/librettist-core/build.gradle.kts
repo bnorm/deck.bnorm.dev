@@ -25,6 +25,7 @@ kotlin {
                 api(compose.material)
 
                 implementation("de.cketti.unicode:kotlin-codepoints-deluxe:0.7.0")
+                implementation("com.strumenta:antlr-kotlin-runtime:1.0.0-RC2")
             }
         }
         val jvmMain by getting {

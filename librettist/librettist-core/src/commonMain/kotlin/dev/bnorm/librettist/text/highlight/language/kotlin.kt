@@ -53,12 +53,19 @@ internal fun kt(): Mode {
         className = "subst",
         begin = "\\$\\{",
         end = "}",
-        contains = listOf(hljs.METHOD_GUARD)
+        contains = listOf(hljs.C_NUMBER_MODE)
     )
     var VARIABLE = Mode(
         className = "variable",
-        begin = "\\$" +
-            hljs.UNDERSCORE_IDENT_RE
+        begin = "\\$",
+        starts = Mode(
+            contains = listOf(
+                Mode(
+                    className = "identifier",
+                    begin = hljs.UNDERSCORE_IDENT_RE,
+                )
+            )
+        ),
     )
     var STRING = Mode(
         className = "string",

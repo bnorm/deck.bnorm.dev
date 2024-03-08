@@ -7,15 +7,17 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacWindow
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.animation.rememberAdvancementAnimation
+import dev.bnorm.librettist.LocalShowTheme
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideScope
@@ -46,7 +48,7 @@ fun ShowBuilder.GoodAssertions() {
 @Composable
 private fun SlideScope.FirstExample() {
     ExampleTestAssertion(
-        example = { SampleCode(firstTest) },
+        example = { SampleCode(rememberExampleCodeString(firstTest)) },
         output = { SampleOutput(firstOutput) },
         problem = { Text("PROBLEM!") },
     )
@@ -56,9 +58,10 @@ private fun SlideScope.FirstExample() {
 private fun SlideScope.SecondExample() {
     ExampleTestAssertion(
         example = {
-            val sequence = startTextAnimation(firstTest)
-                .thenLineEndDiff(secondTest)
-            AnimateText(sequence, delay = 25.milliseconds) { SampleCode(it) }
+            val sequence =
+                startAnimation(rememberExampleCodeString(firstTest))
+                    .thenLineEndDiff(rememberExampleCodeString(secondTest))
+            AnimateSequence(sequence, delay = 25.milliseconds) { SampleCode(it) }
         },
         output = { SampleOutput(secondOutput) },
         problem = { Text("PROBLEM!") },
@@ -69,9 +72,10 @@ private fun SlideScope.SecondExample() {
 private fun SlideScope.ThirdExample() {
     ExampleTestAssertion(
         example = {
-            val sequence = startTextAnimation(secondTest)
-                .thenLineEndDiff(thirdTest)
-            AnimateText(sequence, delay = 25.milliseconds) { SampleCode(it) }
+            val sequence =
+                startAnimation(rememberExampleCodeString(secondTest))
+                    .thenLineEndDiff(rememberExampleCodeString(thirdTest))
+            AnimateSequence(sequence, delay = 25.milliseconds) { SampleCode(it) }
         },
         output = { SampleOutput(thirdOutput) },
         problem = { Text("PROBLEM!") },
@@ -86,17 +90,17 @@ private fun SlideScope.ExampleTestAssertion(
 ) {
     val advancement by rememberAdvancementIndex(4)
     TitleAndBody {
-        ProvideTextStyle(MaterialTheme.typography.body2) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column(modifier = Modifier.align(Alignment.TopStart).padding(start = 16.dp)) {
-                    example()
-                    AnimatedVisibility(
-                        visible = advancement == 3,
-                        enter = slideInVertically { 2 * it },
-                        exit = slideOutVertically { 2 * it },
-                    ) { problem() }
-                }
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.align(Alignment.TopStart).padding(start = 16.dp)) {
+                example()
+                AnimatedVisibility(
+                    visible = advancement == 3,
+                    enter = slideInVertically { 2 * it },
+                    exit = slideOutVertically { 2 * it },
+                ) { problem() }
+            }
 
+            ProvideTextStyle(MaterialTheme.typography.body2) {
                 Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
                     AnimatedVisibility(
                         visible = advancement == 1,
@@ -110,16 +114,29 @@ private fun SlideScope.ExampleTestAssertion(
 }
 
 @Composable
-private fun SampleCode(text: String) {
-    KotlinCodeText(
-        text = text,
-        identifierType = {
-            when (it) {
-                "subject" -> SpanStyle(color = Color(0xFFC77DBB))
-                else -> null
+private fun rememberExampleCodeString(text: String): AnnotatedString {
+    val codeStyle = LocalShowTheme.current.code
+    return remember(text) {
+        buildKotlinCodeString(
+            text, codeStyle,
+            identifierType = {
+                when (it) {
+                    // Properties
+                    "subject", "size" -> SpanStyle(color = Color(0xFFC77DBB))
+
+                    // Function declarations
+                    "test" -> SpanStyle(color = Color(0xFF56A8F5))
+
+                    else -> null
+                }
             }
-        }
-    )
+        )
+    }
+}
+
+@Composable
+private fun SampleCode(text: AnnotatedString) {
+    Text(text = text)
 }
 
 @Composable
