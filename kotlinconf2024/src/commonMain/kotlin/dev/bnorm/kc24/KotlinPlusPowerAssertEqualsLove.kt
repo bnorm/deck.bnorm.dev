@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.sections.*
 import dev.bnorm.kc24.template.TitleSlide
@@ -33,7 +34,7 @@ fun Title() {
             Image(
                 painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-loving.png")),
                 contentDescription = "",
-                modifier = Modifier.requiredSize(100.dp),
+                modifier = Modifier.requiredSize(100.dp).graphicsLayer { rotationY = 180f },
             )
         }
     }

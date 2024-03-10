@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
@@ -71,8 +72,8 @@ fun ShowBuilder.TextLinesAnimationSample() {
             }
         }
         slide {
-            val kodeeHappy by rememberAdvancementBoolean()
             val state = rememberAdvancementAnimation()
+            val kodeeHappy by rememberAdvancementBoolean()
 
             TitleAndBody(
                 kodee = {
@@ -80,7 +81,7 @@ fun ShowBuilder.TextLinesAnimationSample() {
                         Image(
                             painter = painterResource(DrawableResource("kotlin_mascot/emoji/kodee-loving.png")),
                             contentDescription = "",
-                            modifier = Modifier.padding(8.dp).requiredSize(200.dp),
+                            modifier = Modifier.padding(8.dp).requiredSize(200.dp).graphicsLayer { rotationY = 180f },
                         )
                     } else {
                         DefaultCornerKodee()

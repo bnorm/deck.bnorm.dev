@@ -1,4 +1,4 @@
-package dev.bnorm.kc24
+  package dev.bnorm.kc24
 
 import dev.bnorm.librettist.DesktopSlideShow
 import dev.bnorm.librettist.show.ShowBuilder
