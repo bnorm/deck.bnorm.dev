@@ -26,7 +26,7 @@ kotlin {
             dependencies {
                 implementation(compose.components.resources)
 
-                implementation(project(":librettist:librettist-core"))
+                implementation("dev.bnorm.librettist:librettist-core")
             }
         }
         jvmMain {

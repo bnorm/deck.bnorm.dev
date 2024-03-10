@@ -1,0 +1,3 @@
+[submodule "librettist"]
+	path = librettist
+	url = git@github.com:bnorm/librettist.git

@@ -21,4 +21,6 @@ pluginManagement {
 
 rootProject.name = "deck.bnorm.dev"
 
+includeBuild("librettist")
+
 include(":kotlinconf2024")
