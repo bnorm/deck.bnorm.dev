@@ -2,7 +2,7 @@ name: Publish Application on GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -17,7 +17,9 @@ jobs:
           java-version: 17
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v2
