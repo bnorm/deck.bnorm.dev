@@ -14,7 +14,7 @@ import dev.bnorm.librettist.section.LocalSlideSection
 @Composable
 fun TitleAndBody(
     title: @Composable () -> Unit = LocalSlideSection.current.header,
-    kodee: @Composable () -> Unit = { DefaultCornerKodee() },
+    kodee: KodeeScope.() -> Unit = {},
     body: @Composable () -> Unit = {},
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -42,7 +42,7 @@ fun TitleAndBody(
         }
         Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
     }
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-        kodee()
+    Box(modifier = Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomEnd) {
+        AnimateKodee { kodee() }
     }
 }
