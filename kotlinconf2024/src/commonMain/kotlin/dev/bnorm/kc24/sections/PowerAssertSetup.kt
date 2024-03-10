@@ -46,7 +46,7 @@ private fun ShowBuilder.GradlePlugin() {
 
 @Composable
 private fun GradleKtsText(text: String, modifier: Modifier = Modifier) {
-    KotlinCodeText(text, modifier = modifier, identifierType = {
+    GradleKtsCodeText(text, modifier = modifier, identifierType = {
         when (it) {
             "kotlin", "version" -> SpanStyle(
                 color = Color(0xFF57AAF7),
@@ -55,7 +55,7 @@ private fun GradleKtsText(text: String, modifier: Modifier = Modifier) {
 
             else -> null
         }
-    }, asScript = true)
+    })
 }
 
 @Composable
