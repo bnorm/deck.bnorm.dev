@@ -1,3 +1,5 @@
+import assertk.assertThat
+import assertk.assertions.hasSize
 import kotlin.test.*
 
 class Sample {
@@ -11,6 +13,6 @@ internal class SampleTest {
     @Test
     fun test() {
         val actual: List<Int> = subject.operation()
-        assertEquals(4, actual.size, "Actual: $actual")
+        assertThat(actual).hasSize(4)
     }
 }

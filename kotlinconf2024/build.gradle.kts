@@ -38,6 +38,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(compose.desktop.uiTestJUnit4)
+                implementation("com.willowtreeapps.assertk:assertk:0.28.0")
             }
         }
     }
