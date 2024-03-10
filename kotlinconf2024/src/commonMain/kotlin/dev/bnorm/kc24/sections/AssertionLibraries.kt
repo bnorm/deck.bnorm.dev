@@ -97,19 +97,19 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
                                 )
                             }
 
-                            // TODO more evenly place text in the background? one repeat in each quadrant?
                             val random = Random(0)
                             for (library in state.libraries.subList(0, state.count)) {
-                                repeat(4) {
+                                for ((x0, y0) in listOf(250 to 100, 250 to -100, -250 to -100, -250 to 100)) {
+                                    val dx = x0 + random.nextInt(-150..150)
+                                    val dy = y0 + random.nextInt(-75..75)
+
                                     Text(
                                         text = library,
-                                        color = LocalContentColor.current.copy(alpha = 0.5f),
+                                        color = LocalContentColor.current.copy(alpha = 0.25f),
+                                        fontSize = 42.sp,
                                         modifier = Modifier
-                                            .rotate(random.nextFloat() * 90f - 45f)
-                                            .offset(
-                                                x = random.nextInt(-400..400).dp,
-                                                y = random.nextInt(-200..200).dp,
-                                            )
+                                            .rotate(random.nextFloat() * 60f - 30f)
+                                            .offset(x = dx.dp, y = dy.dp)
                                             .zIndex(-1f)
                                     )
                                 }
