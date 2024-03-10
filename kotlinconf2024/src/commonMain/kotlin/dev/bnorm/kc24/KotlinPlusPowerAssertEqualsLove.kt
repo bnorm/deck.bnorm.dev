@@ -16,10 +16,12 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
+fun ShowBuilder.KotlinPlusPowerAssertEqualsLove(
+    state: AssertionLibrariesState = AssertionLibrariesState(),
+) {
     slide { Title() }
     GoodAssertions()
-    AssertionLibraries()
+    AssertionLibraries(state)
     WhatIsPowerAssert()
     PowerAssertSample()
     PowerAssertSetup()

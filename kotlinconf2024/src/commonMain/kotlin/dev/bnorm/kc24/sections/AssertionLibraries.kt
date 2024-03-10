@@ -6,7 +6,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -29,31 +28,55 @@ import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlin.random.Random
 import kotlin.random.nextInt
 
-fun ShowBuilder.AssertionLibraries() {
+class AssertionLibrariesState(
+    startingLibraries: List<String>? = KNOWN_KOTLIN_LIBRARIES
+) {
+    val assisted: Boolean = startingLibraries == null
+    var count by mutableIntStateOf(0)
+    val libraries = mutableStateListOf<String>()
+
+    init {
+        if (startingLibraries != null) libraries.addAll(startingLibraries)
+    }
+
+    companion object {
+        val KNOWN_KOTLIN_LIBRARIES = listOf(
+            "kotlin.test",
+            "Strikt",
+            "Kotest",
+            "AssertK",
+            "HamKrest",
+            "Atrium",
+            "Kluent",
+        )
+        val MAX_COUNT = KNOWN_KOTLIN_LIBRARIES.size
+    }
+}
+
+fun ShowBuilder.AssertionLibraries(state: AssertionLibrariesState) {
     section(title = { Text("Assertion Libraries") }) {
         slide { SectionHeader() }
-        KotlinLibraries()
+        KotlinLibraries(state)
         GroovyLibraries()
         Conclusion()
     }
 }
 
-// TODO allowing typing in the names of libraries and having the count increase while the name of the library gets added to the background
-//  This list of libraries could be used later in a summary slide?
-// TODO store these in a global state so they are always remembered
-private const val MAX_KOTLIN_LIBRARY_COUNT = 12
-private val KNOWN_KOTLIN_LIBRARIES =
-    listOf("kotlin.test", "Strikt", "Kotest", "AssertK", "HamKrest", "Atrium", "Kluent")
-
-private fun ShowBuilder.KotlinLibraries() {
+private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
     slide {
-        val libraries = remember { mutableStateListOf<String>() }
-        val answerVisible by rememberAdvancementBoolean()
-
-        ShowAssistTab("Libraries") {
-            // TODO what if there is now assist tab?
-            LibraryAssist(libraries)
+        if (state.assisted) {
+            // TODO what if there is no assist tab?
+            ShowAssistTab("Libraries") {
+                LibraryAssist(state)
+            }
+        } else {
+            val count by rememberAdvancementIndex(AssertionLibrariesState.MAX_COUNT + 1)
+            LaunchedEffect(count) {
+                state.count = count
+            }
         }
+
+        val answerVisible by rememberAdvancementBoolean()
 
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -66,17 +89,17 @@ private fun ShowBuilder.KotlinLibraries() {
                         exit = shrinkOut(shrinkTowards = Alignment.Center),
                     ) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            if (libraries.isNotEmpty()) {
+                            if (state.count > 0) {
                                 Text(
-                                    text = if (libraries.size > MAX_KOTLIN_LIBRARY_COUNT) "Gah!" else libraries.size.toString(),
+                                    text = if (state.count >= AssertionLibrariesState.MAX_COUNT) "Gah!" else state.count.toString(),
                                     style = MaterialTheme.typography.h1,
-                                    fontSize = (60 + 8 * libraries.size).sp,
+                                    fontSize = (60 + 8 * state.count).sp,
                                 )
                             }
 
                             // TODO more evenly place text in the background? one repeat in each quadrant?
                             val random = Random(0)
-                            for (library in libraries) {
+                            for (library in state.libraries.subList(0, state.count)) {
                                 repeat(4) {
                                     Text(
                                         text = library,
@@ -241,7 +264,7 @@ private fun ConcludingQuestion() {
 
 
 @Composable
-private fun LibraryAssist(libraries: SnapshotStateList<String>) {
+private fun LibraryAssist(state: AssertionLibrariesState) {
     Column {
         var text by remember { mutableStateOf("") }
         TextField(
@@ -251,16 +274,24 @@ private fun LibraryAssist(libraries: SnapshotStateList<String>) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    if (text !in libraries) libraries.add(text)
+                    if (text !in state.libraries) {
+                        state.libraries.add(text)
+                        state.count++
+                    }
                     text = ""
                 }
             ),
         )
 
-        for (knownLibrary in KNOWN_KOTLIN_LIBRARIES) {
+        for (knownLibrary in AssertionLibrariesState.KNOWN_KOTLIN_LIBRARIES) {
             Button(
-                onClick = { if (knownLibrary !in libraries) libraries.add(knownLibrary) },
-                enabled = knownLibrary !in libraries,
+                enabled = knownLibrary !in state.libraries,
+                onClick = {
+                    if (knownLibrary !in state.libraries) {
+                        state.libraries.add(knownLibrary)
+                        state.count++
+                    }
+                },
             ) {
                 Text(knownLibrary)
             }
