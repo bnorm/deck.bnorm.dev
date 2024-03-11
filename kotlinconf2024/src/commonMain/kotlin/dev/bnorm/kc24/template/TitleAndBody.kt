@@ -30,8 +30,7 @@ fun TitleAndBody(
         }
         Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
         Box(
-            modifier = Modifier.fillMaxWidth().weight(1f)
-                .padding(start = 32.dp, top = 32.dp, end = 32.dp, bottom = 32.dp),
+            modifier = Modifier.fillMaxWidth().weight(1f).padding(32.dp),
             contentAlignment = Alignment.TopStart,
         ) {
             ProvideTextStyle(MaterialTheme.typography.body1) {

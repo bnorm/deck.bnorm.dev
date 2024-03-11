@@ -22,6 +22,9 @@ fun ShowBuilder.PowerAssertSetup() {
         slide { SectionHeader() }
 
         GradlePlugin()
+
+        // TODO function extension property
+        // TODO exclude source sets property
     }
 }
 

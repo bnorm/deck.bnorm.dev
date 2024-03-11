@@ -37,16 +37,6 @@ fun ShowBuilder.GoodAssertions() {
         slide { SecondExample() }
         slide { ThirdExample() }
         slide { ForthExample() }
-
-        // TODO instead of striking and going to good assertions...
-        //  1. describe that Power-Assert produces good assertion output,
-        //  2. describe the characteristics of good assertion output,
-        //  3. then go into the next section.
-
-        // TODO analyze good assertion problems
-        //  1. lots of assert*() functions ( and that's only kotlin.test )
-        //  2. confusing parameter ( what's expect, what's actual, where's the message go, etc )
-        //  3. requires a custom message if condition is derived from something complex ( easy to forget until something fails )
     }
 }
 
@@ -54,7 +44,7 @@ fun ShowBuilder.GoodAssertions() {
 private fun SlideScope.FirstExample() {
     ExampleTestAssertion(
         example = {
-            SampleCode(rememberExampleCodeString(firstTest))
+            Text(rememberExampleCodeString(firstTest))
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
                 Text("\n\n\n\n    ~~~~~~~~~~", color = Color.Red)
             }
@@ -84,7 +74,7 @@ private fun SlideScope.SecondExample() {
             val sequence =
                 startAnimation(rememberExampleCodeString(firstTest))
                     .thenLineEndDiff(rememberExampleCodeString(secondTest))
-            AnimateSequence(sequence, state, delay = 25.milliseconds) { SampleCode(it) }
+            AnimateSequence(sequence, state, delay = 20.milliseconds) { Text(it) }
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
                 Text("\n\n\n\n                    ~~~~~~~~~~~", color = Color.Red)
             }
@@ -114,7 +104,7 @@ private fun SlideScope.ThirdExample() {
             val sequence =
                 startAnimation(rememberExampleCodeString(secondTest))
                     .thenLineEndDiff(rememberExampleCodeString(thirdTest))
-            AnimateSequence(sequence, state, delay = 25.milliseconds) { SampleCode(it) }
+            AnimateSequence(sequence, state, delay = 25.milliseconds) { Text(it) }
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
                 Text("\n\n\n\n                                 ~~~~~~~~~~~~~~~~~", color = Color.Red)
             }
@@ -139,7 +129,7 @@ private fun SlideScope.ForthExample() {
             val sequence =
                 startAnimation(rememberExampleCodeString(thirdTest))
                     .thenLineEndDiff(rememberExampleCodeString(forthTest))
-            AnimateSequence(sequence, state, delay = 25.milliseconds) { SampleCode(it) }
+            AnimateSequence(sequence, state, delay = 15.milliseconds) { Text(it) }
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
                 Text("\n\n\n\n                       ~~~~~~~", color = Color.Red)
             }
@@ -213,27 +203,6 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
     }
 }
 
-@Composable
-private fun SampleCode(text: AnnotatedString) {
-    Text(text = text)
-}
-
-private val intermediateTest: String = """
-    @Test
-    fun test() {
-        val actual: List<Int> = subject.operation()
-    
-    }
-""".trimIndent()
-
-private val intermediateOutput: String = """
-    org.opentest4j.AssertionFailedError: 
-        [...]
-        at kotlin.test.AssertionsKt.assertEquals${'$'}default(Unknown Source)
-        at SampleTest.test(SampleTest.kt:14)
-        [...]
-""".trimIndent()
-
 private val firstTest: String = """
     @Test
     fun test() {
@@ -286,7 +255,7 @@ private val forthTest: String = """
     @Test
     fun test() {
         val actual: List<Int> = subject.operation()
-        assertThat(actual).hasSize(4) // Using AssertK
+        assertThat(actual).hasSize(4)
     }
 """.trimIndent()
 
