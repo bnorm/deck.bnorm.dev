@@ -34,7 +34,9 @@ import dev.bnorm.librettist.text.thenLines
 fun ShowBuilder.PowerAssertIntro() {
     slide { SectionHeader(animateToBody = false) { Text("I would assert...") } }
 
-    section(title = { Text("Power-Assert!") }) {
+    section(title = { Text("Power-Assert") }) {
+        slide { SectionHeader() }
+
         // TODO lots to improve here
         //  1. better example assertion
         //      - at least 4 values?
@@ -46,6 +48,7 @@ fun ShowBuilder.PowerAssertIntro() {
 
         // TODO adding the magic slide
         //  gradle symbol going across the screen?
+        slide { TitleSlide { Text("Power-Assert Magic!") } }
 
         WithPowerAssert()
     }
