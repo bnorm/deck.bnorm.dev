@@ -1,27 +1,65 @@
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runDesktopComposeUiTest
-import dev.bnorm.kc24.PreviewSlide
-import dev.bnorm.kc24.Title
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import dev.bnorm.kc24.KotlinPlusPowerAssertEqualsLove
+import dev.bnorm.kc24.Theme
+import dev.bnorm.librettist.SlideShow
+import dev.bnorm.librettist.show.Advancement
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.ShowState
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.pdmodel.PDPage
+import org.apache.pdfbox.pdmodel.PDPageContentStream
+import org.apache.pdfbox.pdmodel.common.PDRectangle
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
-import java.nio.file.Files
-import kotlin.io.path.writeBytes
 import kotlin.test.Test
 
 @OptIn(ExperimentalTestApi::class)
 class ExportTest {
     @Test
     fun testDrawSquare() = runDesktopComposeUiTest(1000, 563) {
+        // Pulled from Google Slides with 1 inch = 100 dp
+        val slideSize = DpSize(1000.dp, 563.dp)
+
+        val showState = ShowState(ShowBuilder::KotlinPlusPowerAssertEqualsLove)
         setContent {
-            PreviewSlide(1f) {
-                Title()
-            }
+            SlideShow(
+                showState = showState,
+                showOverview = false,
+                theme = Theme.dark,
+                targetSize = slideSize,
+            )
         }
-        val image = Image.makeFromBitmap(captureToImage().asSkiaBitmap())
-        val output = Files.createTempFile("test-draw-square", ".png")
+
+        val doc = PDDocument()
+        var index = 0
+
+        createPage(captureToImage(), index++, doc)
+        while (showState.index < showState.slides.size - 1) {
+            showState.advance(Advancement(direction = Advancement.Direction.Forward))
+            waitForIdle()
+            createPage(captureToImage(), index++, doc)
+        }
+
+        doc.save("test.pdf")
+        doc.close()
+    }
+
+    private fun createPage(imageBitmap: ImageBitmap, index: Int, doc: PDDocument) {
+        val image = Image.makeFromBitmap(imageBitmap.asSkiaBitmap())
         val bytes = image.encodeToData(EncodedImageFormat.PNG)?.bytes
-        output.writeBytes(bytes ?: error("Could not encode image as png"))
-        println(output)
+        val name = "slide-${index.toString().padStart(3, '0')}"
+
+        val page = PDPage(PDRectangle(1000f, 563f))
+        doc.addPage(page)
+
+        val contentStream = PDPageContentStream(doc, page)
+        contentStream.drawImage(PDImageXObject.createFromByteArray(doc, bytes, name), 0f, 0f)
+        contentStream.close()
     }
 }
