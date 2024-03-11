@@ -35,6 +35,7 @@ fun ShowBuilder.GoodAssertions() {
     section(title = { Text("Good Assertions") }) {
         slide { SectionHeader() }
 
+        // TODO kodee changes for all the difference examples
         slide { FirstExample() }
         slide { SecondExample() }
         slide { ThirdExample() }
@@ -52,18 +53,16 @@ private fun SlideScope.FirstExample() {
             }
         },
         output = {
-            MacWindow {
-                Text(firstOutput)
-                AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
-                    Text("\n                          ~~~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
-                }
+            Text(firstOutput)
+            AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
+                Text("\n                          ~~~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
             }
         },
         problem = {
-            Text(
-                text = "=> assertTrue does not result in a helpful failure",
-                modifier = Modifier.padding(start = 32.dp, top = 32.dp),
-            )
+            Row(modifier = Modifier.padding(start = 32.dp, top = 32.dp)) {
+                Text("=> ", color = Color.Red)
+                Text("assertTrue does not result in a helpful failure")
+            }
         },
     )
 }
@@ -82,18 +81,16 @@ private fun SlideScope.SecondExample() {
             }
         },
         output = {
-            MacWindow {
-                Text(secondOutput)
-                AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
-                    Text("\n                          ~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
-                }
+            Text(secondOutput)
+            AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
+                Text("\n                          ~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
             }
         },
         problem = {
-            Text(
-                text = "=> assertEquals only shows the final values",
-                modifier = Modifier.padding(start = 32.dp, top = 32.dp),
-            )
+            Row(modifier = Modifier.padding(start = 32.dp, top = 32.dp)) {
+                Text("=> ", color = Color.Red)
+                Text("assertEquals only shows the final values")
+            }
         },
     )
 }
@@ -112,13 +109,13 @@ private fun SlideScope.ThirdExample() {
             }
         },
         output = {
-            MacWindow { Text(thirdOutput) }
+            Text(thirdOutput)
         },
         problem = {
-            Text(
-                text = "=> Assertion messages are a maintenance burden",
-                modifier = Modifier.padding(start = 32.dp, top = 32.dp),
-            )
+            Row(modifier = Modifier.padding(start = 32.dp, top = 32.dp)) {
+                Text("=> ", color = Color.Red)
+                Text("Assertion messages are a maintenance burden")
+            }
         },
     )
 }
@@ -131,19 +128,19 @@ private fun SlideScope.ForthExample() {
             val sequence =
                 startAnimation(rememberExampleCodeString(thirdTest))
                     .thenLineEndDiff(rememberExampleCodeString(forthTest))
-            AnimateSequence(sequence, state, delay = 15.milliseconds) { Text(it) }
+            AnimateSequence(sequence, state, delay = 12.milliseconds) { Text(it) }
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
                 Text("\n\n\n\n                        ~~~~~~~~~~", color = Color.Red)
             }
         },
         output = {
-            MacWindow { Text(forthOutput) }
+            Text(forthOutput)
         },
         problem = {
-            Text(
-                text = "=> Lots of assertion functions to choose from",
-                modifier = Modifier.padding(start = 32.dp, top = 32.dp),
-            )
+            Row(modifier = Modifier.padding(start = 32.dp, top = 32.dp)) {
+                Text("=> ", color = Color.Red)
+                Text("Lots of assertion functions to choose from")
+            }
         },
     )
 }
@@ -172,12 +169,19 @@ private fun SlideScope.ExampleTestAssertion(
         }
 
         ProvideTextStyle(MaterialTheme.typography.body2) {
-            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart).animateContentSize()) {
+            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
                 AnimatedVisibility(
                     visible = showOutput,
-                    enter = slideInVertically { 2 * it },
-                    exit = slideOutVertically { 2 * it },
-                ) { output(showProblem) }
+                    enter = slideInVertically { it },
+                    exit = slideOutVertically { it },
+                ) {
+                    MacWindow(
+                        modifier = Modifier.animateContentSize()
+                            .requiredHeight(if (showProblem) 140.dp else 280.dp)
+                    ) {
+                        output(showProblem)
+                    }
+                }
             }
         }
     }

@@ -64,16 +64,11 @@ private fun ShowBuilder.WithoutPowerAssert() {
                 Text(rememberExampleCodeString(powerAssertSample))
             }
 
-            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                AnimatedVisibility(
-                    visible = outputPopup,
-                    enter = slideInVertically { 2 * it },
-                    exit = slideOutVertically { 2 * it },
-                ) {
-                    MacWindow {
-                        Text(simpleOutput.padLines(3))
-                    }
-                }
+            TestFailureOutput(
+                visible = outputPopup,
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
+            ) {
+                Text(simpleOutput)
             }
         }
     }
@@ -82,6 +77,7 @@ private fun ShowBuilder.WithoutPowerAssert() {
 private fun ShowBuilder.WithPowerAssert() {
     slide {
         val outputPopup by rememberAdvancementBoolean()
+        val showCode by rememberAdvancementBoolean()
         val state = rememberAdvancementAnimation()
 
         TitleAndBody(
@@ -90,7 +86,7 @@ private fun ShowBuilder.WithPowerAssert() {
                     KodeeLoving(modifier = Modifier.requiredSize(150.dp).graphicsLayer { rotationY = 180f })
                 }
 
-                show(condition = { outputPopup }) {
+                show(condition = { showCode }) {
                     KodeeSurprised(Modifier.requiredSize(100.dp))
                 }
             }
@@ -99,31 +95,37 @@ private fun ShowBuilder.WithPowerAssert() {
                 Text(rememberExampleCodeString(powerAssertSample))
             }
 
-            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                AnimatedVisibility(
-                    visible = outputPopup,
-                    enter = slideInVertically { 2 * it },
-                    exit = slideOutVertically { 2 * it },
-                ) {
+            TestFailureOutput(
+                visible = outputPopup,
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
+            ) {
+                if (showCode) {
                     AnimateSequence(powerAssertOutput, state) { text ->
-                        MacWindow {
-                            Text(text.padLines(5))
-                        }
+                        Text(text)
                     }
+                } else {
+                    Text(simpleOutput)
                 }
             }
         }
     }
 }
 
-fun String.padLines(count: Int): String {
-    val lines = count { it == '\n' }
-    if (lines >= count) return this
-
-    return buildString {
-        append(this@padLines)
-        repeat(count - lines) {
-            appendLine()
+@Composable
+private fun TestFailureOutput(
+    visible: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Box(modifier = modifier) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = slideInVertically { it },
+            exit = slideOutVertically { it },
+        ) {
+            MacWindow(modifier = Modifier.requiredHeight(280.dp)) {
+                content()
+            }
         }
     }
 }

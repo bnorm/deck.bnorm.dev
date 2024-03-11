@@ -60,25 +60,13 @@ fun ThankYou() {
 private fun PresenterSocials(modifier: Modifier = Modifier) {
     Row(modifier = modifier.fillMaxWidth().requiredHeight(32.dp)) {
         ProvideTextStyle(MaterialTheme.typography.body2) {
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                 Text("Brian Norman")
             }
             Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
-            Box(modifier = Modifier.weight(1.5f), contentAlignment = Alignment.Center) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SocialMastodon()
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text("bnorm@kotlin.social")
-                }
-            }
+            SocialMastodon(username = "bnorm@kotlin.social", modifier = Modifier.weight(1.5f).fillMaxHeight())
             Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SocialGitHub()
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text("@bnorm")
-                }
-            }
+            SocialGitHub(username = "@bnorm", modifier = Modifier.weight(1f).fillMaxHeight())
         }
     }
 }

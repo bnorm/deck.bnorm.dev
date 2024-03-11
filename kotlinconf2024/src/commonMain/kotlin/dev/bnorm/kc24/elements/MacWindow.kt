@@ -1,8 +1,6 @@
 package dev.bnorm.kc24.elements
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,11 +21,7 @@ fun MacWindow(
         Box(modifier = Modifier.padding(start = 9.dp, top = 9.dp).size(12.dp).background(color, shape = CircleShape))
     }
 
-    Box(
-        modifier = modifier
-            .border(BorderStroke(2.dp, Color.Black), RoundedCornerShape(10.dp))
-            .clip(RoundedCornerShape(10.dp)),
-    ) {
+    Box(modifier = modifier.clip(RoundedCornerShape(10.dp))) {
         Column {
             Box(modifier = Modifier.fillMaxWidth().background(Color(0xFFF0F0F1)).height(28.dp)) {
                 Row {
