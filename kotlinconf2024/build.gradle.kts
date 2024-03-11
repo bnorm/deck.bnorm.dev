@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
+    id("com.bnorm.power.kotlin-power-assert") version "0.13.0"
 }
 
 group = "dev.bnorm.kc24"

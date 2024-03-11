@@ -37,13 +37,6 @@ fun ShowBuilder.PowerAssertIntro() {
     section(title = { Text("Power-Assert") }) {
         slide { SectionHeader() }
 
-        // TODO lots to improve here
-        //  1. better example assertion
-        //      - at least 4 values?
-        //      - same as the starting slides?
-        //  2. better slide titles and sectioning?
-        //      - do we need to separate without and with power-assert into different sections?
-
         WithoutPowerAssert()
 
         // TODO adding the magic slide
@@ -51,6 +44,10 @@ fun ShowBuilder.PowerAssertIntro() {
         slide { TitleSlide { Text("Power-Assert Magic!") } }
 
         WithPowerAssert()
+
+        // TODO add more complex example?
+        //  assert(members.filter { it.age > 50 }.size == 3)
+        //     => gandalf, legolas, gimli, aragorn
     }
 }
 
@@ -75,7 +72,7 @@ private fun ShowBuilder.WithoutPowerAssert() {
                         exit = slideOutVertically { 2 * it },
                     ) {
                         MacWindow {
-                            Text(simpleOutput.padLines(4))
+                            Text(simpleOutput.padLines(3))
                         }
                     }
                 }
@@ -111,7 +108,7 @@ private fun ShowBuilder.WithPowerAssert() {
                     ) {
                         AnimateSequence(powerAssertOutput, state) { text ->
                             MacWindow {
-                                Text(text.padLines(7))
+                                Text(text.padLines(5))
                             }
                         }
                     }
@@ -142,10 +139,10 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
             identifierType = {
                 when (it) {
                     // Properties
-                    "length" -> SpanStyle(color = Color(0xFFC77DBB))
+                    "fellowshipOfTheRing", "size" -> SpanStyle(color = Color(0xFFC77DBB))
 
-                    // Function definitions
-                    "main" -> SpanStyle(color = Color(0xFF56A8F5))
+                    // Function declarations
+                    "`test number of members in the fellowship`" -> SpanStyle(color = Color(0xFF56A8F5))
 
                     else -> null
                 }
@@ -156,8 +153,10 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
 
 val powerAssertSample =
     """
-        fun main() {
-            assert(hello.length == "World".substring(1, 4).length)
+        @Test
+        fun `test number of members in the fellowship`() {
+            val members = fellowshipOfTheRing.getCurrentMembers()
+            assert(members.size == 9)
         }
     """.trimIndent()
 
@@ -169,51 +168,30 @@ val simpleOutput =
 val powerAssertOutput = startAnimation(
     """
         java.lang.AssertionError: Assertion failed
-        assert(hello.length == "World".substring(1, 4).length)
+        assert(members.size == 9)
     """.trimIndent(),
 ).thenLines(
     """
         java.lang.AssertionError: Assertion failed
-        assert(hello.length == "World".substring(1, 4).length)
-                                                       |
-                                                       3
-    """.trimIndent(),
-).thenLines(
-    """
-        java.lang.AssertionError: Assertion failed
-        assert(hello.length == "World".substring(1, 4).length)
-                                       |               |
-                                       |               3
-                                       orl
-    """.trimIndent(),
-).thenLines(
-    """
-        java.lang.AssertionError: Assertion failed
-        assert(hello.length == "World".substring(1, 4).length)
-                            |          |               |
-                            |          |               3
-                            |          orl
+        assert(members.size == 9)
+                            |
                             false
     """.trimIndent(),
 ).thenLines(
     """
         java.lang.AssertionError: Assertion failed
-        assert(hello.length == "World".substring(1, 4).length)
-                     |      |          |               |
-                     |      |          |               3
-                     |      |          orl
-                     |      false
-                     5
+        assert(members.size == 9)
+                       |    |
+                       |    false
+                       8
     """.trimIndent(),
 ).thenLines(
     """
         java.lang.AssertionError: Assertion failed
-        assert(hello.length == "World".substring(1, 4).length)
-               |     |      |          |               |
-               |     |      |          |               3
-               |     |      |          orl
-               |     |      false
-               |     5
-               Hello
+        assert(members.size == 9)
+               |       |    |
+               |       |    false
+               |       8
+               [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, ...
     """.trimIndent(),
 )

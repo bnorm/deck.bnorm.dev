@@ -53,7 +53,7 @@ private fun SlideScope.FirstExample() {
             MacWindow {
                 Text(firstOutput)
                 AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
-                    Text("\n                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
+                    Text("\n                          ~~~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
                 }
             }
         },
@@ -76,14 +76,14 @@ private fun SlideScope.SecondExample() {
                     .thenLineEndDiff(rememberExampleCodeString(secondTest))
             AnimateSequence(sequence, state, delay = 20.milliseconds) { Text(it) }
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
-                Text("\n\n\n\n                    ~~~~~~~~~~~", color = Color.Red)
+                Text("\n\n\n\n                    ~~~~~~~~~~~~", color = Color.Red)
             }
         },
         output = {
             MacWindow {
                 Text(secondOutput)
                 AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
-                    Text("\n                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
+                    Text("\n                          ~~~~~~~~~~~~~~~~~~~~~~~~", color = Color.Red)
                 }
             }
         },
@@ -106,7 +106,7 @@ private fun SlideScope.ThirdExample() {
                     .thenLineEndDiff(rememberExampleCodeString(thirdTest))
             AnimateSequence(sequence, state, delay = 25.milliseconds) { Text(it) }
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
-                Text("\n\n\n\n                                 ~~~~~~~~~~~~~~~~~", color = Color.Red)
+                Text("\n\n\n\n                                  ~~~~~~~~~~~~~~~~~~~", color = Color.Red)
             }
         },
         output = {
@@ -131,7 +131,7 @@ private fun SlideScope.ForthExample() {
                     .thenLineEndDiff(rememberExampleCodeString(forthTest))
             AnimateSequence(sequence, state, delay = 15.milliseconds) { Text(it) }
             AnimatedVisibility(visible = it, enter = fadeIn(), exit = fadeOut()) {
-                Text("\n\n\n\n                       ~~~~~~~", color = Color.Red)
+                Text("\n\n\n\n                        ~~~~~~~~~~", color = Color.Red)
             }
         },
         output = {
@@ -158,7 +158,7 @@ private fun SlideScope.ExampleTestAssertion(
 
     TitleAndBody {
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.align(Alignment.TopStart).padding(start = 16.dp)) {
+            Column(modifier = Modifier.align(Alignment.TopStart)) {
                 Box {
                     example(showProblem)
                 }
@@ -191,10 +191,10 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
             identifierType = {
                 when (it) {
                     // Properties
-                    "subject", "size" -> SpanStyle(color = Color(0xFFC77DBB))
+                    "fellowshipOfTheRing", "size" -> SpanStyle(color = Color(0xFFC77DBB))
 
                     // Function declarations
-                    "test" -> SpanStyle(color = Color(0xFF56A8F5))
+                    "`test number of members in the fellowship`" -> SpanStyle(color = Color(0xFF56A8F5))
 
                     else -> null
                 }
@@ -205,64 +205,52 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
 
 private val firstTest: String = """
     @Test
-    fun test() {
-        val actual: List<Int> = subject.operation()
-        assertTrue(4 == actual.size)
+    fun `test number of members in the fellowship`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        assertTrue(members.size == 9)
     }
 """.trimIndent()
 
 private val firstOutput: String = """
-    org.opentest4j.AssertionFailedError: Expected value to be true.
-        [...]
-        at kotlin.test.AssertionsKt.assertEquals${'$'}default(Unknown Source)
-        at SampleTest.test(SampleTest.kt:14)
-        [...]
+    java.lang.AssertionError: Expected value to be true.
+        at [...]
 """.trimIndent()
 
 private val secondTest: String = """
     @Test
-    fun test() {
-        val actual: List<Int> = subject.operation()
-        assertEquals(4, actual.size)
+    fun `test number of members in the fellowship`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        assertEquals(9, members.size)
     }
 """.trimIndent()
 
 private val secondOutput: String = """
-    org.opentest4j.AssertionFailedError: expected: <4> but was: <3>
-        [...]
-        at kotlin.test.AssertionsKt.assertEquals${'$'}default(Unknown Source)
-        at SampleTest.test(SampleTest.kt:14)
-        [...]
+    java.lang.AssertionError: expected:<9> but was:<8>
+        at [...]
 """.trimIndent()
 
 private val thirdTest: String = """
     @Test
-    fun test() {
-        val actual: List<Int> = subject.operation()
-        assertEquals(4, actual.size, "Actual: ${'$'}actual")
+    fun `test number of members in the fellowship`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        assertEquals(9, members.size, "Members: ${'$'}members")
     }
 """.trimIndent()
 
 private val thirdOutput: String = """
-    org.opentest4j.AssertionFailedError: Actual: [1, 2, 3] ==> expected: <4> but was: <3>
-        [...]
-        at kotlin.test.AssertionsKt.assertEquals${'$'}default(Unknown Source)
-        at SampleTest.test(SampleTest.kt:14)
-        [...]
+    java.lang.AssertionError: Members: [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli] expected:<9> but was:<8>
+        at [...]
 """.trimIndent()
 
 private val forthTest: String = """
     @Test
-    fun test() {
-        val actual: List<Int> = subject.operation()
-        assertThat(actual).hasSize(4)
+    fun `test number of members in the fellowship`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        assertThat(members).hasSize(9)
     }
 """.trimIndent()
 
 private val forthOutput: String = """
-    org.opentest4j.AssertionFailedError: expected [size]:<[4]> but was:<[3]> ([1, 2, 3])
-        at SampleTest.test(SampleTest.kt:16)
-
-
-
+    org.opentest4j.AssertionFailedError: expected [size]:<[9]> but was:<[8]> ([Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli])
+        at [...]
 """.trimIndent()
