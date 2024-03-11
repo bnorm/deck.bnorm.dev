@@ -16,7 +16,7 @@ fun TitleSlide(
     content: @Composable () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

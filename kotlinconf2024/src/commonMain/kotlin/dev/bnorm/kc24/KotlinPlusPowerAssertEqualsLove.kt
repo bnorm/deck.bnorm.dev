@@ -8,13 +8,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
 import dev.bnorm.kc24.sections.*
 import dev.bnorm.kc24.template.KodeeLoving
+import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleSlide
 import dev.bnorm.librettist.show.ShowBuilder
 
@@ -34,7 +34,7 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove(
 @Composable
 fun Title() {
     TitleSlide {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.align(Alignment.Center)) {
                 Text("Kotlin + Power-Assert = ")
                 KodeeLoving(modifier = Modifier.requiredSize(100.dp).graphicsLayer { rotationY = 180f })
@@ -48,7 +48,7 @@ fun Title() {
 @Composable
 fun ThankYou() {
     TitleSlide {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
             Text("Thank You!", modifier = Modifier.align(Alignment.Center))
 
             PresenterSocials(Modifier.align(Alignment.BottomCenter))
@@ -63,7 +63,7 @@ private fun PresenterSocials(modifier: Modifier = Modifier) {
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 Text("Brian Norman")
             }
-            Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(Color(0xFF7F52FF)))
+            Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
             Box(modifier = Modifier.weight(1.5f), contentAlignment = Alignment.Center) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     SocialMastodon()
@@ -71,7 +71,7 @@ private fun PresenterSocials(modifier: Modifier = Modifier) {
                     Text("bnorm@kotlin.social")
                 }
             }
-            Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(Color(0xFF7F52FF)))
+            Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     SocialGitHub()

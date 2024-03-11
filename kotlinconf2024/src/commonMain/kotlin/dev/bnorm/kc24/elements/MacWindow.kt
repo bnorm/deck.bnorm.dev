@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+// TODO convert mac window to IntelliJ run tool window?
 @Composable
 fun MacWindow(
     modifier: Modifier = Modifier,

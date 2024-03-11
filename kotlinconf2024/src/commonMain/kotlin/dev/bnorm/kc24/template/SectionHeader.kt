@@ -58,7 +58,7 @@ fun SlideScope.SectionHeader(
                 title()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
+        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(MaterialTheme.colors.primary))
         Column(modifier = Modifier.offset(742.dp, (-146).dp)) {
             AnimatedVisibility(
                 visible = !showAsBody,
@@ -70,7 +70,7 @@ fun SlideScope.SectionHeader(
         }
         Spacer(modifier = Modifier.weight(1f))
         AnimatedVisibility(showAsBody, enter = slideInVertically { it }, exit = slideOutVertically { it }) {
-            Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
+            Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(MaterialTheme.colors.primary))
         }
     }
     AnimatedVisibility(

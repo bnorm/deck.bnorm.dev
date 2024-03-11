@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacWindow
+import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.LocalShowTheme
@@ -157,26 +159,25 @@ private fun SlideScope.ExampleTestAssertion(
     val showProblem = advancement == 2
 
     TitleAndBody {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.align(Alignment.TopStart)) {
-                Box {
-                    example(showProblem)
-                }
-                AnimatedVisibility(
-                    visible = showProblem,
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                ) { problem() }
+        Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+            Box {
+                example(showProblem)
             }
+            // TODO make the output appear higher and then shrink when the problem is displayed
+            AnimatedVisibility(
+                visible = showProblem,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) { problem() }
+        }
 
-            ProvideTextStyle(MaterialTheme.typography.body2) {
-                Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                    AnimatedVisibility(
-                        visible = showOutput,
-                        enter = slideInVertically { 2 * it },
-                        exit = slideOutVertically { 2 * it },
-                    ) { output(showProblem) }
-                }
+        ProvideTextStyle(MaterialTheme.typography.body2) {
+            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart).animateContentSize()) {
+                AnimatedVisibility(
+                    visible = showOutput,
+                    enter = slideInVertically { 2 * it },
+                    exit = slideOutVertically { 2 * it },
+                ) { output(showProblem) }
             }
         }
     }
@@ -195,6 +196,12 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
 
                     // Function declarations
                     "`test number of members in the fellowship`" -> SpanStyle(color = Color(0xFF56A8F5))
+
+                    // Extension functions
+                    "hasSize" -> SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF56A8F5))
+
+                    // Top-level functions
+                    "assertTrue", "assertEquals", "assertThat", "assert" -> SpanStyle(fontStyle = FontStyle.Italic)
 
                     else -> null
                 }

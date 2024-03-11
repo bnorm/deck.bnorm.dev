@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
+import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
@@ -34,7 +36,7 @@ private fun ShowBuilder.GradlePlugin() {
             val state = rememberAdvancementAnimation()
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
-                Column {
+                Column(modifier = Modifier.padding(SLIDE_PADDING)) {
                     AnimateSequence(ktsSequence, state, delay = 25.milliseconds) {
                         GradleKtsText(it, modifier = Modifier.Companion.weight(0.4f))
                     }

@@ -18,6 +18,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
+import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
@@ -29,7 +31,7 @@ import kotlin.random.Random
 import kotlin.random.nextInt
 
 class AssertionLibrariesState(
-    startingLibraries: List<String>? = KNOWN_KOTLIN_LIBRARIES
+    startingLibraries: List<String>? = KNOWN_KOTLIN_LIBRARIES,
 ) {
     val assisted: Boolean = startingLibraries == null
     var count by mutableIntStateOf(0)
@@ -79,40 +81,40 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
         val answerVisible by rememberAdvancementBoolean()
 
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 HowManyKotlinLibraries(answerVisible = answerVisible)
+            }
 
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    AnimatedVisibility(
-                        visible = !answerVisible,
-                        enter = expandIn(expandFrom = Alignment.Center),
-                        exit = shrinkOut(shrinkTowards = Alignment.Center),
-                    ) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            if (state.count > 0) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                AnimatedVisibility(
+                    visible = !answerVisible,
+                    enter = expandIn(expandFrom = Alignment.Center),
+                    exit = shrinkOut(shrinkTowards = Alignment.Center),
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        if (state.count > 0) {
+                            Text(
+                                text = if (state.count >= AssertionLibrariesState.MAX_COUNT) "Gah!" else state.count.toString(),
+                                style = MaterialTheme.typography.h1,
+                                fontSize = (60 + 8 * state.count).sp,
+                            )
+                        }
+
+                        val random = Random(0)
+                        for (library in state.libraries.subList(0, state.count)) {
+                            for ((x0, y0) in listOf(250 to 100, 250 to -100, -250 to -100, -250 to 100)) {
+                                val dx = x0 + random.nextInt(-150..150)
+                                val dy = y0 + random.nextInt(-75..75)
+
                                 Text(
-                                    text = if (state.count >= AssertionLibrariesState.MAX_COUNT) "Gah!" else state.count.toString(),
-                                    style = MaterialTheme.typography.h1,
-                                    fontSize = (60 + 8 * state.count).sp,
+                                    text = library,
+                                    color = LocalContentColor.current.copy(alpha = 0.25f),
+                                    fontSize = 42.sp,
+                                    modifier = Modifier
+                                        .rotate(random.nextFloat() * 60f - 30f)
+                                        .offset(x = dx.dp, y = dy.dp)
+                                        .zIndex(-1f)
                                 )
-                            }
-
-                            val random = Random(0)
-                            for (library in state.libraries.subList(0, state.count)) {
-                                for ((x0, y0) in listOf(250 to 100, 250 to -100, -250 to -100, -250 to 100)) {
-                                    val dx = x0 + random.nextInt(-150..150)
-                                    val dy = y0 + random.nextInt(-75..75)
-
-                                    Text(
-                                        text = library,
-                                        color = LocalContentColor.current.copy(alpha = 0.25f),
-                                        fontSize = 42.sp,
-                                        modifier = Modifier
-                                            .rotate(random.nextFloat() * 60f - 30f)
-                                            .offset(x = dx.dp, y = dy.dp)
-                                            .zIndex(-1f)
-                                    )
-                                }
                             }
                         }
                     }
@@ -125,31 +127,31 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
 private fun ShowBuilder.GroovyLibraries() {
     slide {
         TitleAndBody {
-            HowManyKotlinLibraries(answerVisible = true)
-            Spacer(modifier = Modifier.height(16.dp))
-            HowManyGroovyLibraries(answerVisible = false)
+            Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+                HowManyKotlinLibraries(answerVisible = true)
+                Spacer(modifier = Modifier.height(SLIDE_CONTENT_SPACING))
+                HowManyGroovyLibraries(answerVisible = false)
+            }
         }
     }
     slide {
         val index by rememberAdvancementIndex(3)
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    HowManyKotlinLibraries(answerVisible = true)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HowManyGroovyLibraries(answerVisible = index == 2)
-                }
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    AnimatedVisibility(
-                        visible = index != 2,
-                        enter = expandIn(expandFrom = Alignment.Center),
-                        exit = shrinkOut(shrinkTowards = Alignment.Center),
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Spock!", style = MaterialTheme.typography.h1)
-                            AnimatedVisibility(index == 1) {
-                                Text(text = "(...is that it?)")
-                            }
+            Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+                HowManyKotlinLibraries(answerVisible = true)
+                Spacer(modifier = Modifier.height(SLIDE_CONTENT_SPACING))
+                HowManyGroovyLibraries(answerVisible = index == 2)
+            }
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                AnimatedVisibility(
+                    visible = index != 2,
+                    enter = expandIn(expandFrom = Alignment.Center),
+                    exit = shrinkOut(shrinkTowards = Alignment.Center),
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "Spock!", style = MaterialTheme.typography.h1)
+                        AnimatedVisibility(index == 1) {
+                            Text(text = "(...is that it?)")
                         }
                     }
                 }
@@ -161,11 +163,11 @@ private fun ShowBuilder.GroovyLibraries() {
 private fun ShowBuilder.Conclusion() {
     slide {
         TitleAndBody {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 HowManyKotlinLibraries(answerVisible = true)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(SLIDE_CONTENT_SPACING))
                 HowManyGroovyLibraries(answerVisible = true)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(SLIDE_CONTENT_SPACING))
                 ConcludingQuestion()
             }
         }
@@ -189,7 +191,7 @@ private fun HowManyKotlinLibraries(answerVisible: Boolean) {
             exit = fadeOut() + shrinkVertically(),
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(start = 32.dp, top = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 32.dp, top = SLIDE_CONTENT_SPACING),
                 contentAlignment = Alignment.TopStart
             ) {
                 Text(buildAnnotatedString {
@@ -220,7 +222,7 @@ private fun HowManyGroovyLibraries(answerVisible: Boolean) {
             exit = fadeOut() + shrinkVertically(),
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(start = 32.dp, top = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 32.dp, top = SLIDE_CONTENT_SPACING),
                 contentAlignment = Alignment.TopStart
             ) {
                 Text(buildAnnotatedString {

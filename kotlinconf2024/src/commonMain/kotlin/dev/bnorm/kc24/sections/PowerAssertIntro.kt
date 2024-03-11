@@ -3,10 +3,7 @@ package dev.bnorm.kc24.sections
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacWindow
 import dev.bnorm.kc24.template.*
@@ -62,18 +60,18 @@ private fun ShowBuilder.WithoutPowerAssert() {
                 }
             }
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 Text(rememberExampleCodeString(powerAssertSample))
+            }
 
-                Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                    AnimatedVisibility(
-                        visible = outputPopup,
-                        enter = slideInVertically { 2 * it },
-                        exit = slideOutVertically { 2 * it },
-                    ) {
-                        MacWindow {
-                            Text(simpleOutput.padLines(3))
-                        }
+            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
+                AnimatedVisibility(
+                    visible = outputPopup,
+                    enter = slideInVertically { 2 * it },
+                    exit = slideOutVertically { 2 * it },
+                ) {
+                    MacWindow {
+                        Text(simpleOutput.padLines(3))
                     }
                 }
             }
@@ -97,19 +95,19 @@ private fun ShowBuilder.WithPowerAssert() {
                 }
             }
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 Text(rememberExampleCodeString(powerAssertSample))
+            }
 
-                Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                    AnimatedVisibility(
-                        visible = outputPopup,
-                        enter = slideInVertically { 2 * it },
-                        exit = slideOutVertically { 2 * it },
-                    ) {
-                        AnimateSequence(powerAssertOutput, state) { text ->
-                            MacWindow {
-                                Text(text.padLines(5))
-                            }
+            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
+                AnimatedVisibility(
+                    visible = outputPopup,
+                    enter = slideInVertically { 2 * it },
+                    exit = slideOutVertically { 2 * it },
+                ) {
+                    AnimateSequence(powerAssertOutput, state) { text ->
+                        MacWindow {
+                            Text(text.padLines(5))
                         }
                     }
                 }
@@ -118,7 +116,7 @@ private fun ShowBuilder.WithPowerAssert() {
     }
 }
 
-private fun String.padLines(count: Int): String {
+fun String.padLines(count: Int): String {
     val lines = count { it == '\n' }
     if (lines >= count) return this
 
@@ -143,6 +141,12 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
 
                     // Function declarations
                     "`test number of members in the fellowship`" -> SpanStyle(color = Color(0xFF56A8F5))
+
+                    // Extension functions
+                    "hasSize" -> SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF56A8F5))
+
+                    // Top-level functions
+                    "assertTrue", "assertEquals", "assertThat", "assert" -> SpanStyle(fontStyle = FontStyle.Italic)
 
                     else -> null
                 }

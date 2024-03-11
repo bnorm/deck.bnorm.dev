@@ -7,7 +7,6 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.bnorm.librettist.section.LocalSlideSection
 
@@ -15,7 +14,7 @@ import dev.bnorm.librettist.section.LocalSlideSection
 fun TitleAndBody(
     title: @Composable () -> Unit = LocalSlideSection.current.header,
     kodee: KodeeScope.() -> Unit = {},
-    body: @Composable () -> Unit = {},
+    body: @Composable BoxScope.() -> Unit = {},
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -28,18 +27,13 @@ fun TitleAndBody(
                 title()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
-        Box(
-            modifier = Modifier.fillMaxWidth().weight(1f).padding(32.dp),
-            contentAlignment = Alignment.TopStart,
-        ) {
+        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(MaterialTheme.colors.primary))
+        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
             ProvideTextStyle(MaterialTheme.typography.body1) {
-                Column {
-                    body()
-                }
+                body()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(Color(0xFF7F52FF)))
+        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(MaterialTheme.colors.primary))
     }
     Box(modifier = Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomEnd) {
         AnimateKodee { kodee() }

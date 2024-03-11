@@ -115,9 +115,15 @@ object Theme {
             val jetBrainsMonoTypography = Typography(defaultFontFamily = JetBrainsMono)
             return ShowTheme(
                 colors = darkColors(
+                    // KotlinConf 2024 website colors
+                    // "blue/purple" : 7E53FE or 7F51FF
+                    // "red" : FF2757
+                    // "orange" : FDB60D
+
                     background = Color.Black,
                     surface = Color(0xFF1E1F22),
                     onBackground = Color(0xFFBCBEC4),
+                    primary = Color(0xFF7F51FF),
                 ),
                 typography = jetBrainsMonoTypography.copy(
                     h1 = jetBrainsMonoTypography.h1.copy(fontSize = 60.sp),

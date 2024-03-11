@@ -3,10 +3,15 @@ package dev.bnorm.kc24.sections
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
+import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.section.section
@@ -24,10 +29,12 @@ fun ShowBuilder.PowerAssertFuture() {
 
 private fun ShowBuilder.PowerAssertIdeas() {
     slide {
-
         TitleAndBody {
             // TODO almost everything here should have a KT ticket with it
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
+                verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
+            ) {
                 // TODO show examples for compressed and diffs?
                 AnimateByLine(
                     "=> Improved diagrams",
@@ -46,7 +53,10 @@ private fun ShowBuilder.PowerAssertIdeas() {
 private fun ShowBuilder.HowCanYouHelp() {
     slide {
         TitleAndBody {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
+                verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
+            ) {
                 // TODO kotl.in/issues link?
                 // TODO kotlinlang Slack channel?
                 AnimateByLine(
