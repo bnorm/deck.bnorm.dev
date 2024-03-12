@@ -28,6 +28,7 @@ kotlin {
                 implementation(compose.components.resources)
 
                 implementation("dev.bnorm.librettist:librettist-core")
+                implementation("dev.bnorm.librettist:librettist-text")
             }
         }
         jvmMain {

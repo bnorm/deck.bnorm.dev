@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="librettist-text-wasm-js-1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/librettist/librettist-text/build/libs</output-path>
+    <root id="archive" name="librettist-text-wasm-js-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="librettist.librettist-text.wasmJsMain" />
+    </root>
+  </artifact>
+</component>
