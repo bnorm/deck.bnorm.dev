@@ -139,16 +139,20 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
             identifierType = {
                 when (it) {
                     // Properties
-                    "fellowshipOfTheRing", "size" -> SpanStyle(color = Color(0xFFC77DBB))
+                    "fellowshipOfTheRing", "size"
+                    -> SpanStyle(color = Color(0xFFC77DBB))
 
                     // Function declarations
-                    "`test number of members in the fellowship`" -> SpanStyle(color = Color(0xFF56A8F5))
+                    "`test number of members in the fellowship`"
+                    -> SpanStyle(color = Color(0xFF56A8F5))
 
                     // Extension functions
-                    "hasSize" -> SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF56A8F5))
+                    "hasSize"
+                    -> SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF56A8F5))
 
                     // Top-level functions
-                    "assertTrue", "assertEquals", "assertThat", "assert" -> SpanStyle(fontStyle = FontStyle.Italic)
+                    "assertTrue", "assertEquals", "assertThat", "assert"
+                    -> SpanStyle(fontStyle = FontStyle.Italic)
 
                     else -> null
                 }

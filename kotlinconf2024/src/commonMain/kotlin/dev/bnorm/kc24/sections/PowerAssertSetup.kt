@@ -6,13 +6,17 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.LocalShowTheme
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
@@ -24,7 +28,7 @@ fun ShowBuilder.PowerAssertSetup() {
         slide { SectionHeader() }
 
         GradlePlugin()
-
+        GradleExtension()
         // TODO function extension property
         // TODO exclude source sets property
     }
@@ -35,10 +39,11 @@ private fun ShowBuilder.GradlePlugin() {
         TitleAndBody {
             val state = rememberAdvancementAnimation()
 
-            ProvideTextStyle(MaterialTheme.typography.body2) {
+            ProvideTextStyle(MaterialTheme.typography.body1.copy(fontSize = 23.sp)) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
                     AnimateSequence(ktsSequence, state, delay = 25.milliseconds) {
-                        GradleKtsText(it, modifier = Modifier.Companion.weight(0.4f))
+                        val text = rememberExampleCodeString(it)
+                        Text(text, modifier = Modifier.Companion.weight(0.4f))
                     }
                     AnimateSequence(groovySequence, state, delay = 19.milliseconds) {
                         GradleGroovyText(it, modifier = Modifier.weight(0.6f))
@@ -49,23 +54,63 @@ private fun ShowBuilder.GradlePlugin() {
     }
 }
 
-@Composable
-private fun GradleKtsText(text: String, modifier: Modifier = Modifier) {
-    GradleKtsCodeText(text, modifier = modifier, identifierType = {
-        when (it) {
-            "kotlin", "version" -> SpanStyle(
-                color = Color(0xFF57AAF7),
-                fontStyle = FontStyle.Italic
-            )
+private fun ShowBuilder.GradleExtension() {
+    slide {
+        TitleAndBody {
+            ProvideTextStyle(MaterialTheme.typography.body1.copy(fontSize = 23.sp)) {
+                Column(modifier = Modifier.padding(SLIDE_PADDING)) {
+                    val sequence1 = startAnimation(rememberExampleCodeString(ktsConfigEmpty))
+                        .thenLines(rememberExampleCodeString(ktsConfigFunctionsEmpty))
+                    val sequence2 = startAnimation(rememberExampleCodeString(ktsConfigFunctionsEmpty))
+                        .thenLines(rememberExampleCodeString(ktsConfigFunctionsComplete))
+                    val sequence3 = startAnimation(rememberExampleCodeString(ktsConfigFunctionsComplete))
+                        .thenLines(rememberExampleCodeString(ktsConfigExcludeEmpty))
+                    val sequence4 = startAnimation(rememberExampleCodeString(ktsConfigExcludeEmpty))
+                        .thenLines(rememberExampleCodeString(ktsConfigExcludeComplete))
 
-            else -> null
+                    AnimateSequences(listOf(sequence1, sequence2, sequence3, sequence4)) {
+                        Text(it)
+                    }
+                }
+            }
         }
-    })
+    }
 }
 
 @Composable
 private fun GradleGroovyText(text: String, modifier: Modifier = Modifier) {
     GroovyCodeText(text, modifier = modifier)
+}
+
+@Composable
+private fun rememberExampleCodeString(text: String): AnnotatedString {
+    val codeStyle = LocalShowTheme.current.code
+    return remember(text) {
+        buildGradleKtsCodeString(
+            text, codeStyle,
+            identifierType = {
+                when (it) {
+                    // Properties
+                    "class"
+                    -> codeStyle.keyword
+
+                    // Annotation type
+                    "ExperimentalKotlinGradlePluginApi",
+                    -> codeStyle.annotation
+
+                    // Properties
+                    "functions", "excludedSourceSets",
+                    -> SpanStyle(color = Color(0xFFC77DBB))
+
+                    // Extension functions
+                    "kotlin", "version", "powerAssert",
+                    -> SpanStyle(color = Color(0xFF57AAF7), fontStyle = FontStyle.Italic)
+
+                    else -> null
+                }
+            }
+        )
+    }
 }
 
 private val ktsSequence = startAnimation(
@@ -117,3 +162,78 @@ private val groovySequence = startAnimation(
         }
     """.trimIndent(),
 )
+
+val ktsConfigEmpty =
+    """
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        powerAssert {
+        
+        
+        
+        
+        
+        
+        
+        
+        }
+    """.trimIndent()
+
+val ktsConfigFunctionsEmpty =
+    """
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        powerAssert {
+            functions.addAll(
+            
+            
+            )
+        
+        
+        
+        
+        }
+    """.trimIndent()
+
+val ktsConfigFunctionsComplete =
+    """
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        powerAssert {
+            functions.addAll(
+                "kotlin.test.assertTrue",
+                "kotlin.test.assertEquals",
+            )
+        
+        
+        
+        
+        }
+    """.trimIndent()
+
+val ktsConfigExcludeEmpty =
+    """
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        powerAssert {
+            functions.addAll(
+                "kotlin.test.assertTrue",
+                "kotlin.test.assertEquals",
+            )
+            excludedSourceSets.addAll(
+        
+        
+            )
+        }
+    """.trimIndent()
+
+val ktsConfigExcludeComplete =
+    """
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        powerAssert {
+            functions.addAll(
+                "kotlin.test.assertTrue",
+                "kotlin.test.assertEquals",
+            )
+            excludedSourceSets.addAll(
+                "commonMain",
+                "jvmMain",
+            )
+        }
+    """.trimIndent()
