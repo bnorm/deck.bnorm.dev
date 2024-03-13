@@ -1,5 +1,7 @@
 import assertk.assertThat
 import assertk.assertions.hasSize
+import dev.bnorm.assert.assertSoftly
+import dev.bnorm.assert.assert
 import kotlin.test.*
 
 enum class Race {
@@ -46,38 +48,47 @@ internal class FellowshipOfTheRingTest {
     private val fellowshipOfTheRing = FellowshipOfTheRing
 
     @Test
-    fun `test number of members in the fellowship1`() {
+    fun `test members of the fellowship1`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assertTrue(members.size == 9)
     }
 
     @Test
-    fun `test number of members in the fellowship2`() {
+    fun `test members of the fellowship2`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assertEquals(9, members.size)
     }
 
     @Test
-    fun `test number of members in the fellowship3`() {
+    fun `test members of the fellowship3`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assertEquals(9, members.size, "Members: $members")
     }
 
     @Test
-    fun `test number of members in the fellowship4`() {
+    fun `test members of the fellowship4`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assertThat(members).hasSize(9)
     }
 
     @Test
-    fun `test number of members in the fellowship5`() {
+    fun `test members of the fellowship5`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assert(members.size == 9)
     }
 
     @Test
-    fun `test number of members in the fellowship6`() {
+    fun `test members of the fellowship6`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assert(members.filter { it.age > 50 }.size == 3)
+    }
+
+    @Test
+    fun `test members of the fellowship7`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        assertSoftly {
+            assert(members.find { it.name == "Frodo" }?.age == 23)
+            assert(members.find { it.name == "Aragorn" }?.age == 60)
+        }
     }
 }

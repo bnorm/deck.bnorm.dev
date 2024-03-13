@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
-    id("com.bnorm.power.kotlin-power-assert") version "0.13.0"
+    id("com.bnorm.power.kotlin-power-assert")
 }
 
 group = "dev.bnorm.kc24"
@@ -54,4 +54,16 @@ compose.experimental {
 tasks.register<Sync>("site") {
     from(tasks.named("wasmJsBrowserProductionWebpack"))
     into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
+}
+
+configure<com.bnorm.power.PowerAssertGradleExtension> {
+    functions += listOf(
+        "dev.bnorm.assert.AssertScope.assert",
+        "dev.bnorm.assert.assert",
+    )
+    excludedSourceSets += listOf(
+        "commonMain",
+        "jvmMain",
+        "jsWasmMain",
+    )
 }
