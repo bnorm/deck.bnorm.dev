@@ -3,7 +3,9 @@ package dev.bnorm.kc24.sections
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -101,7 +103,7 @@ private fun ShowBuilder.WithPowerAssert() {
             ) {
                 if (showCode) {
                     AnimateSequence(powerAssertOutput, state) { text ->
-                        Text(text)
+                        Text(text, modifier = Modifier.wrapContentWidth(Alignment.Start, unbounded = true))
                     }
                 } else {
                     Text(simpleOutput)
@@ -123,8 +125,10 @@ private fun TestFailureOutput(
             enter = slideInVertically { it },
             exit = slideOutVertically { it },
         ) {
-            MacWindow(modifier = Modifier.requiredHeight(280.dp)) {
-                content()
+            MacWindow(modifier = Modifier.requiredHeight(280.dp).background(MaterialTheme.colors.background)) {
+                Box(modifier = Modifier.padding(16.dp)) {
+                    content()
+                }
             }
         }
     }
@@ -143,7 +147,7 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
                     -> SpanStyle(color = Color(0xFFC77DBB))
 
                     // Function declarations
-                    "`test number of members in the fellowship`"
+                    "`test members of the fellowship`"
                     -> SpanStyle(color = Color(0xFF56A8F5))
 
                     // Extension functions
@@ -161,21 +165,22 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
     }
 }
 
-val powerAssertSample =
+// language=kotlin
+private val powerAssertSample =
     """
         @Test
-        fun `test number of members in the fellowship`() {
+        fun `test members of the fellowship`() {
             val members = fellowshipOfTheRing.getCurrentMembers()
             assert(members.size == 9)
         }
     """.trimIndent()
 
-val simpleOutput =
+private val simpleOutput =
     """
         java.lang.AssertionError: Assertion failed
     """.trimIndent()
 
-val powerAssertOutput = startAnimation(
+private val powerAssertOutput = startAnimation(
     """
         java.lang.AssertionError: Assertion failed
         assert(members.size == 9)
@@ -202,6 +207,6 @@ val powerAssertOutput = startAnimation(
                |       |    |
                |       |    false
                |       8
-               [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, ...
+               [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
     """.trimIndent(),
 )

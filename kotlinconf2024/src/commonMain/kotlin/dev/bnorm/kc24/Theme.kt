@@ -127,14 +127,14 @@ object Theme {
                 ),
                 typography = jetBrainsMonoTypography.copy(
                     h1 = jetBrainsMonoTypography.h1.copy(fontSize = 60.sp),
-                    h2 = jetBrainsMonoTypography.h2.copy(fontSize = 48.sp),
-                    h3 = jetBrainsMonoTypography.h3.copy(fontSize = 34.sp),
-                    h4 = jetBrainsMonoTypography.h4.copy(fontSize = 24.sp),
-                    h5 = jetBrainsMonoTypography.h5.copy(fontSize = 20.sp),
-                    h6 = jetBrainsMonoTypography.h6.copy(fontSize = 16.sp),
+                    h2 = jetBrainsMonoTypography.h2.copy(fontSize = 54.sp),
+                    h3 = jetBrainsMonoTypography.h3.copy(fontSize = 48.sp),
+                    h4 = jetBrainsMonoTypography.h4.copy(fontSize = 42.sp),
+                    h5 = jetBrainsMonoTypography.h5.copy(fontSize = 36.sp),
+                    h6 = jetBrainsMonoTypography.h6.copy(fontSize = 30.sp),
                     subtitle1 = jetBrainsMonoTypography.subtitle1.copy(fontSize = 48.sp),
-                    body1 = jetBrainsMonoTypography.body1.copy(fontSize = 24.sp),
-                    body2 = jetBrainsMonoTypography.body2.copy(fontSize = 20.sp),
+                    body1 = jetBrainsMonoTypography.body1.copy(fontSize = 20.sp, lineHeight = 30.sp),
+                    body2 = jetBrainsMonoTypography.body2.copy(fontSize = 16.sp, lineHeight = 24.sp),
 
                     subtitle2 = jetBrainsMonoTypography.subtitle2.copy(fontSize = 14.sp),
                     button = jetBrainsMonoTypography.button.copy(fontSize = 14.sp),
@@ -175,5 +175,4 @@ object Theme {
                 )
             )
         }
-
 }

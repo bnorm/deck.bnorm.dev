@@ -250,7 +250,8 @@ private fun ConcludingQuestion() {
                     append("Kotlin")
                 }
                 append("-specific libraries,")
-            }, style = MaterialTheme.typography.h3
+            },
+            style = MaterialTheme.typography.h5
         )
         Text(
             text = buildAnnotatedString {
@@ -259,7 +260,8 @@ private fun ConcludingQuestion() {
                     append("Groovy")
                 }
                 append("-specific library?")
-            }, style = MaterialTheme.typography.h3
+            },
+            style = MaterialTheme.typography.h5
         )
     }
 }

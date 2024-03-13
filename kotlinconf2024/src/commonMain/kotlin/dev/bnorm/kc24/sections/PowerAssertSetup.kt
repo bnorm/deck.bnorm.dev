@@ -17,9 +17,10 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.LocalShowTheme
-import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
+import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -42,8 +43,7 @@ private fun ShowBuilder.GradlePlugin() {
             ProvideTextStyle(MaterialTheme.typography.body1.copy(fontSize = 23.sp)) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
                     AnimateSequence(ktsSequence, state, delay = 25.milliseconds) {
-                        val text = rememberExampleCodeString(it)
-                        Text(text, modifier = Modifier.Companion.weight(0.4f))
+                        Text(it, modifier = Modifier.Companion.weight(0.4f))
                     }
                     AnimateSequence(groovySequence, state, delay = 19.milliseconds) {
                         GradleGroovyText(it, modifier = Modifier.weight(0.6f))
@@ -59,15 +59,15 @@ private fun ShowBuilder.GradleExtension() {
         TitleAndBody {
             ProvideTextStyle(MaterialTheme.typography.body1.copy(fontSize = 23.sp)) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    val sequence1 = startAnimation(rememberExampleCodeString(ktsConfigEmpty))
-                        .thenLines(rememberExampleCodeString(ktsConfigFunctionsEmpty))
-                    val sequence2 = startAnimation(rememberExampleCodeString(ktsConfigFunctionsEmpty))
-                        .thenLines(rememberExampleCodeString(ktsConfigFunctionsComplete))
-                    val sequence3 = startAnimation(rememberExampleCodeString(ktsConfigFunctionsComplete))
-                        .thenLines(rememberExampleCodeString(ktsConfigExcludeEmpty))
-                    val sequence4 = startAnimation(rememberExampleCodeString(ktsConfigExcludeEmpty))
-                        .thenLines(rememberExampleCodeString(ktsConfigExcludeComplete))
-
+                    // TODO this could probably be easier with some kind of animation spec builder?
+                    /**
+                     * buildAnimation(ktsConfigEmpty) {
+                     *     onAdvance { thenLines(ktsConfigFunctionsEmpty) }
+                     *     onAdvance { thenLines(ktsConfigFunctionsComplete) }
+                     *     onAdvance { thenLines(ktsConfigExcludeEmpty) }
+                     *     onAdvance { thenLines(ktsConfigExcludeComplete) }
+                     * }
+                     */
                     AnimateSequences(listOf(sequence1, sequence2, sequence3, sequence4)) {
                         Text(it)
                     }
@@ -82,61 +82,72 @@ private fun GradleGroovyText(text: String, modifier: Modifier = Modifier) {
     GroovyCodeText(text, modifier = modifier)
 }
 
-@Composable
-private fun rememberExampleCodeString(text: String): AnnotatedString {
-    val codeStyle = LocalShowTheme.current.code
-    return remember(text) {
-        buildGradleKtsCodeString(
-            text, codeStyle,
-            identifierType = {
-                when (it) {
-                    // Properties
-                    "class"
-                    -> codeStyle.keyword
+private fun styleIdentifier(
+    it: String,
+    codeStyle: ShowTheme.CodeStyle,
+) = when (it) {
+    // Properties
+    "class",
+    -> codeStyle.keyword
 
-                    // Annotation type
-                    "ExperimentalKotlinGradlePluginApi",
-                    -> codeStyle.annotation
+    // Annotation type
+    "ExperimentalKotlinGradlePluginApi",
+    -> codeStyle.annotation
 
-                    // Properties
-                    "functions", "excludedSourceSets",
-                    -> SpanStyle(color = Color(0xFFC77DBB))
+    // Properties
+    "functions", "excludedSourceSets",
+    -> SpanStyle(color = Color(0xFFC77DBB))
 
-                    // Extension functions
-                    "kotlin", "version", "powerAssert",
-                    -> SpanStyle(color = Color(0xFF57AAF7), fontStyle = FontStyle.Italic)
+    // Extension functions
+    "kotlin", "version", "powerAssert",
+    -> SpanStyle(color = Color(0xFF57AAF7), fontStyle = FontStyle.Italic)
 
-                    else -> null
-                }
-            }
-        )
-    }
+    else -> null
 }
 
-private val ktsSequence = startAnimation(
-    """
-        // build.gradle.kts
-        plugins {
-            kotlin("jvm") version "2.0.0"
+private val ktsSequence: AnimationSequence<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = LocalShowTheme.current.code
+        fun buildString(text: String) = buildGradleKtsCodeString(
+            text = text,
+            codeStyle = codeStyle,
+            identifierType = { styleIdentifier(it, codeStyle) }
+        )
+
+        return remember {
+            startAnimation(
+                buildString(
+                    """
+                        // build.gradle.kts
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                        }
+                    """.trimIndent(),
+                ),
+            ).thenLines(
+                buildString(
+                    """
+                        // build.gradle.kts
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                        
+                        }
+                    """.trimIndent(),
+                ),
+            ).thenLineEndDiff(
+                buildString(
+                    """
+                        // build.gradle.kts
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                            kotlin("plugin.power-assert") version "2.0.0"
+                        }
+                    """.trimIndent(),
+                ),
+            )
         }
-    """.trimIndent(),
-).thenDiff(
-    """
-        // build.gradle.kts
-        plugins {
-            kotlin("jvm") version "2.0.0"
-        
-        }
-    """.trimIndent(),
-).thenLineEndDiff(
-    """
-        // build.gradle.kts
-        plugins {
-            kotlin("jvm") version "2.0.0"
-            kotlin("plugin.power-assert") version "2.0.0"
-        }
-    """.trimIndent(),
-)
+    }
 
 private val groovySequence = startAnimation(
     """
@@ -145,7 +156,7 @@ private val groovySequence = startAnimation(
             id 'org.jetbrains.kotlin.jvm' version '2.0.0'
         }
     """.trimIndent()
-).thenDiff(
+).thenLines(
     """
         // build.gradle
         plugins {
@@ -163,7 +174,7 @@ private val groovySequence = startAnimation(
     """.trimIndent(),
 )
 
-val ktsConfigEmpty =
+private val ktsConfigEmpty =
     """
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         powerAssert {
@@ -178,7 +189,7 @@ val ktsConfigEmpty =
         }
     """.trimIndent()
 
-val ktsConfigFunctionsEmpty =
+private val ktsConfigFunctionsEmpty =
     """
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         powerAssert {
@@ -193,7 +204,7 @@ val ktsConfigFunctionsEmpty =
         }
     """.trimIndent()
 
-val ktsConfigFunctionsComplete =
+private val ktsConfigFunctionsComplete =
     """
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         powerAssert {
@@ -208,7 +219,7 @@ val ktsConfigFunctionsComplete =
         }
     """.trimIndent()
 
-val ktsConfigExcludeEmpty =
+private val ktsConfigExcludeEmpty =
     """
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         powerAssert {
@@ -223,7 +234,7 @@ val ktsConfigExcludeEmpty =
         }
     """.trimIndent()
 
-val ktsConfigExcludeComplete =
+private val ktsConfigExcludeComplete =
     """
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         powerAssert {
@@ -237,3 +248,67 @@ val ktsConfigExcludeComplete =
             )
         }
     """.trimIndent()
+
+val sequence1: AnimationSequence<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = LocalShowTheme.current.code
+        fun buildString(text: String) = buildGradleKtsCodeString(
+            text = text,
+            codeStyle = codeStyle,
+            identifierType = { styleIdentifier(it, codeStyle) }
+        )
+
+        return remember {
+            startAnimation(buildString(ktsConfigEmpty))
+                .thenLines(buildString(ktsConfigFunctionsEmpty))
+        }
+    }
+
+val sequence2: AnimationSequence<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = LocalShowTheme.current.code
+        fun buildString(text: String) = buildGradleKtsCodeString(
+            text = text,
+            codeStyle = codeStyle,
+            identifierType = { styleIdentifier(it, codeStyle) }
+        )
+
+        return remember {
+            startAnimation(buildString(ktsConfigFunctionsEmpty))
+                .thenLines(buildString(ktsConfigFunctionsComplete))
+        }
+    }
+
+val sequence3: AnimationSequence<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = LocalShowTheme.current.code
+        fun buildString(text: String) = buildGradleKtsCodeString(
+            text = text,
+            codeStyle = codeStyle,
+            identifierType = { styleIdentifier(it, codeStyle) }
+        )
+
+        return remember {
+            startAnimation(buildString(ktsConfigFunctionsComplete))
+                .thenLines(buildString(ktsConfigExcludeEmpty))
+        }
+    }
+
+val sequence4: AnimationSequence<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = LocalShowTheme.current.code
+        fun buildString(text: String) = buildGradleKtsCodeString(
+            text = text,
+            codeStyle = codeStyle,
+            identifierType = { styleIdentifier(it, codeStyle) }
+        )
+
+        return remember {
+            startAnimation(buildString(ktsConfigExcludeEmpty))
+                .thenLines(buildString(ktsConfigExcludeComplete))
+        }
+    }

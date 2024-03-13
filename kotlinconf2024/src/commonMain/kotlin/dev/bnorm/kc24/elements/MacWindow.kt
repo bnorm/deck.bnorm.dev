@@ -30,7 +30,7 @@ fun MacWindow(
                     Circle(Color(0xFF28C940))
                 }
             }
-            Box(modifier = Modifier.padding(16.dp)) {
+            Box {
                 content()
             }
         }
