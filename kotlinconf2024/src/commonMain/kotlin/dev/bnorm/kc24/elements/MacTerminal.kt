@@ -10,9 +10,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-// TODO convert mac window to IntelliJ run tool window?
+// TODO convert mac terminal to IntelliJ run tool window?
 @Composable
-fun MacWindow(
+fun MacTerminal(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -21,7 +21,7 @@ fun MacWindow(
         Box(modifier = Modifier.padding(start = 9.dp, top = 9.dp).size(12.dp).background(color, shape = CircleShape))
     }
 
-    Box(modifier = modifier.clip(RoundedCornerShape(10.dp))) {
+    Box(modifier = modifier.background(Color.Black).clip(RoundedCornerShape(10.dp))) {
         Column {
             Box(modifier = Modifier.fillMaxWidth().background(Color(0xFFF0F0F1)).height(28.dp)) {
                 Row {

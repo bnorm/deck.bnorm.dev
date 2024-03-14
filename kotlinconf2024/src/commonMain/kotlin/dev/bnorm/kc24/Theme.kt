@@ -149,6 +149,11 @@ object Theme {
                     annotation = SpanStyle(Color(0xFFBBB529)),
                     comment = SpanStyle(Color(0xFF7A7E85)),
                     string = SpanStyle(Color(0xFF6AAB73)),
+                    property = SpanStyle(color = Color(0xFFC77DBB)),
+                    functionDeclaration = SpanStyle(color = Color(0xFF56A8F5)),
+                    extensionFunctionCall = SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic),
+                    staticFunctionCall = SpanStyle(fontStyle = FontStyle.Italic),
+                    typeParameters = SpanStyle(color = Color(0xFF16BAAC)),
                 )
             )
         }
@@ -172,6 +177,11 @@ object Theme {
                     annotation = SpanStyle(Color(0xFFBBB529)),
                     comment = SpanStyle(Color(0xFF808080)),
                     string = SpanStyle(Color(0xFF067D17)),
+                    property = SpanStyle(Color(0xFF000000)),
+                    functionDeclaration = SpanStyle(Color(0xFF000000)),
+                    extensionFunctionCall = SpanStyle(Color(0xFF000000)),
+                    staticFunctionCall = SpanStyle(Color(0xFF000000)),
+                    typeParameters = SpanStyle(Color(0xFF000000)),
                 )
             )
         }

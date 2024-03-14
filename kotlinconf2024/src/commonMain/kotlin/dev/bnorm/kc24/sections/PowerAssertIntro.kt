@@ -3,24 +3,19 @@ package dev.bnorm.kc24.sections
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc24.elements.MacWindow
+import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.*
-import dev.bnorm.librettist.LocalShowTheme
+import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.AnimationState
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
@@ -125,7 +120,7 @@ private fun TestFailureOutput(
             enter = slideInVertically { it },
             exit = slideOutVertically { it },
         ) {
-            MacWindow(modifier = Modifier.requiredHeight(280.dp).background(MaterialTheme.colors.background)) {
+            MacTerminal(modifier = Modifier.requiredHeight(280.dp)) {
                 Box(modifier = Modifier.padding(16.dp)) {
                     content()
                 }
@@ -136,33 +131,18 @@ private fun TestFailureOutput(
 
 @Composable
 private fun rememberExampleCodeString(text: String): AnnotatedString {
-    val codeStyle = LocalShowTheme.current.code
+    val codeStyle = ShowTheme.code
     return remember(text) {
-        buildKotlinCodeString(
-            text, codeStyle,
-            identifierType = {
-                when (it) {
-                    // Properties
-                    "fellowshipOfTheRing", "size"
-                    -> SpanStyle(color = Color(0xFFC77DBB))
-
-                    // Function declarations
-                    "`test members of the fellowship`"
-                    -> SpanStyle(color = Color(0xFF56A8F5))
-
-                    // Extension functions
-                    "hasSize"
-                    -> SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF56A8F5))
-
-                    // Top-level functions
-                    "assertTrue", "assertEquals", "assertThat", "assert"
-                    -> SpanStyle(fontStyle = FontStyle.Italic)
-
-                    else -> null
-                }
-            }
-        )
+        buildKotlinCodeString(text, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
     }
+}
+
+private fun String.toExampleStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+    "fellowshipOfTheRing", "size" -> codeStyle.property
+    "`test members of the fellowship`" -> codeStyle.functionDeclaration
+    "hasSize" -> codeStyle.extensionFunctionCall
+    "assertTrue", "assertEquals", "assertThat", "assert" -> codeStyle.staticFunctionCall
+    else -> null
 }
 
 // language=kotlin

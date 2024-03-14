@@ -2,7 +2,6 @@ package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -15,16 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc24.elements.MacWindow
+import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.LocalShowTheme
+import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
@@ -171,11 +168,10 @@ private fun SlideScope.ExampleTestAssertion(
                     enter = slideInVertically { it },
                     exit = slideOutVertically { it },
                 ) {
-                    MacWindow(
+                    MacTerminal(
                         modifier = Modifier.animateContentSize()
                             .requiredHeight(280.dp)
                             .offset(y = outputOffset)
-                            .background(MaterialTheme.colors.background)
                     ) {
                         Box(modifier = Modifier.padding(16.dp)) {
                             output(showProblem)
@@ -189,29 +185,18 @@ private fun SlideScope.ExampleTestAssertion(
 
 @Composable
 private fun rememberExampleCodeString(text: String): AnnotatedString {
-    val codeStyle = LocalShowTheme.current.code
+    val codeStyle = ShowTheme.code
     return remember(text) {
-        buildKotlinCodeString(
-            text, codeStyle,
-            identifierType = {
-                when (it) {
-                    // Properties
-                    "fellowshipOfTheRing", "size" -> SpanStyle(color = Color(0xFFC77DBB))
-
-                    // Function declarations
-                    "`test members of the fellowship`" -> SpanStyle(color = Color(0xFF56A8F5))
-
-                    // Extension functions
-                    "hasSize" -> SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF56A8F5))
-
-                    // Top-level functions
-                    "assertTrue", "assertEquals", "assertThat", "assert" -> SpanStyle(fontStyle = FontStyle.Italic)
-
-                    else -> null
-                }
-            }
-        )
+        buildKotlinCodeString(text, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
     }
+}
+
+private fun String.toExampleStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+    "fellowshipOfTheRing", "size" -> codeStyle.property
+    "`test members of the fellowship`" -> codeStyle.functionDeclaration
+    "hasSize" -> codeStyle.extensionFunctionCall
+    "assertTrue", "assertEquals", "assertThat", "assert" -> codeStyle.staticFunctionCall
+    else -> null
 }
 
 @Composable

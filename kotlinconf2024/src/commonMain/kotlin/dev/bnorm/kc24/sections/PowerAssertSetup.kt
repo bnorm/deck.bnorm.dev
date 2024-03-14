@@ -8,15 +8,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.LocalShowTheme
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.section.section
@@ -82,37 +78,22 @@ private fun GradleGroovyText(text: String, modifier: Modifier = Modifier) {
     GroovyCodeText(text, modifier = modifier)
 }
 
-private fun styleIdentifier(
-    it: String,
-    codeStyle: ShowTheme.CodeStyle,
-) = when (it) {
-    // Properties
-    "class",
-    -> codeStyle.keyword
-
-    // Annotation type
-    "ExperimentalKotlinGradlePluginApi",
-    -> codeStyle.annotation
-
-    // Properties
-    "functions", "excludedSourceSets",
-    -> SpanStyle(color = Color(0xFFC77DBB))
-
-    // Extension functions
-    "kotlin", "version", "powerAssert",
-    -> SpanStyle(color = Color(0xFF57AAF7), fontStyle = FontStyle.Italic)
-
+private fun String.toStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+    "class" -> codeStyle.keyword
+    "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation
+    "functions", "excludedSourceSets" -> codeStyle.property
+    "kotlin", "version", "powerAssert" -> codeStyle.extensionFunctionCall
     else -> null
 }
 
 private val ktsSequence: AnimationSequence<AnnotatedString>
     @Composable
     get() {
-        val codeStyle = LocalShowTheme.current.code
+        val codeStyle = ShowTheme.code
         fun buildString(text: String) = buildGradleKtsCodeString(
             text = text,
             codeStyle = codeStyle,
-            identifierType = { styleIdentifier(it, codeStyle) }
+            identifierType = { it.toStyle(codeStyle) }
         )
 
         return remember {
@@ -252,11 +233,11 @@ private val ktsConfigExcludeComplete =
 val sequence1: AnimationSequence<AnnotatedString>
     @Composable
     get() {
-        val codeStyle = LocalShowTheme.current.code
+        val codeStyle = ShowTheme.code
         fun buildString(text: String) = buildGradleKtsCodeString(
             text = text,
             codeStyle = codeStyle,
-            identifierType = { styleIdentifier(it, codeStyle) }
+            identifierType = { it.toStyle(codeStyle) }
         )
 
         return remember {
@@ -268,11 +249,11 @@ val sequence1: AnimationSequence<AnnotatedString>
 val sequence2: AnimationSequence<AnnotatedString>
     @Composable
     get() {
-        val codeStyle = LocalShowTheme.current.code
+        val codeStyle = ShowTheme.code
         fun buildString(text: String) = buildGradleKtsCodeString(
             text = text,
             codeStyle = codeStyle,
-            identifierType = { styleIdentifier(it, codeStyle) }
+            identifierType = { it.toStyle(codeStyle) }
         )
 
         return remember {
@@ -284,11 +265,11 @@ val sequence2: AnimationSequence<AnnotatedString>
 val sequence3: AnimationSequence<AnnotatedString>
     @Composable
     get() {
-        val codeStyle = LocalShowTheme.current.code
+        val codeStyle = ShowTheme.code
         fun buildString(text: String) = buildGradleKtsCodeString(
             text = text,
             codeStyle = codeStyle,
-            identifierType = { styleIdentifier(it, codeStyle) }
+            identifierType = { it.toStyle(codeStyle) }
         )
 
         return remember {
@@ -300,11 +281,11 @@ val sequence3: AnimationSequence<AnnotatedString>
 val sequence4: AnimationSequence<AnnotatedString>
     @Composable
     get() {
-        val codeStyle = LocalShowTheme.current.code
+        val codeStyle = ShowTheme.code
         fun buildString(text: String) = buildGradleKtsCodeString(
             text = text,
             codeStyle = codeStyle,
-            identifierType = { styleIdentifier(it, codeStyle) }
+            identifierType = { it.toStyle(codeStyle) }
         )
 
         return remember {

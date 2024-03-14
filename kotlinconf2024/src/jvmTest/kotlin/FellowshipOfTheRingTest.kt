@@ -80,11 +80,20 @@ internal class FellowshipOfTheRingTest {
     @Test
     fun `test members of the fellowship6`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
-        assert(members.filter { it.age > 50 }.size == 3)
+        assert(members.any { it.name == "Boromir" } &&
+                members.any { it.name == "Aragorn" } ||
+                members.any { it.name == "Elrond" })
     }
 
     @Test
     fun `test members of the fellowship7`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        assert((members.find { it.name == "Frodo" }?.age == 23) and
+                (members.find { it.name == "Aragorn" }?.age == 60))
+    }
+
+    @Test
+    fun `test members of the fellowship8`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assertSoftly {
             assert(members.find { it.name == "Frodo" }?.age == 23)

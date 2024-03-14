@@ -1,13 +1,8 @@
 package dev.bnorm.kc24.sections
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,130 +13,252 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc24.elements.MacWindow
+import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.LocalShowTheme
+import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.rememberAdvancementBoolean
+import dev.bnorm.librettist.show.rememberAdvancementIndex
+import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 
 fun ShowBuilder.AdvancedPowerAssert() {
     section(title = { Text("Advanced Power-Assert") }) {
         slide { SectionHeader() }
 
+        ComplexExpressions()
+        SoftAssert()
+
         // TODO extra use cases like
-        //  1. advanced expressions (chaining, &&/||, multi-line)
-        //  2. soft-assert
-        //  3. logging?
+        //  3. logging? (dbg)
+    }
+}
 
-        slide {
-            TitleAndBody {
-                val showOutput by rememberAdvancementBoolean()
+private fun ShowBuilder.ComplexExpressions() {
+    slide {
+        TitleAndBody {
+            val showOutput by rememberAdvancementBoolean()
 
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(rememberExampleCodeString(softAssertExample))
+            Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                Text(complexAssertExample)
+            }
+            OutputText(complexAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
+        }
+    }
+}
+
+private fun ShowBuilder.SoftAssert() {
+    slide {
+        TitleAndBody {
+            val showRight by rememberAdvancementIndex(2)
+
+            Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                Text(softAssertSetup)
+            }
+
+            SidePanel(
+                visible = showRight == 1,
+                modifier = Modifier.align(Alignment.TopEnd).requiredWidth(750.dp),
+            ) {
+                Text(softAsserGradle)
+            }
+        }
+    }
+
+    slide {
+        TitleAndBody {
+            val showOutput by rememberAdvancementBoolean()
+
+            Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                Text(softAssertExample)
+            }
+
+            OutputText(softAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
+        }
+    }
+}
+
+@Composable
+private fun OutputText(text: String, visible: Boolean, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxWidth()) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = slideInVertically { it },
+            exit = slideOutVertically { it },
+        ) {
+            MacTerminal(modifier = Modifier.heightIn(min = 400.dp)) {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                        .wrapContentWidth(Alignment.Start, unbounded = true),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SidePanel(visible: Boolean, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(modifier = modifier.fillMaxHeight()) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = slideInHorizontally { it },
+            exit = slideOutHorizontally { it },
+        ) {
+            Row {
+                Spacer(modifier = Modifier.background(Color(0xFF313438)).width(2.dp).fillMaxHeight())
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(start = SLIDE_PADDING, top = SLIDE_PADDING)
+                        .wrapContentWidth(Alignment.Start, unbounded = true)
+                ) {
+                    content()
                 }
-                Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                    AnimatedVisibility(
-                        visible = showOutput,
-                        enter = slideInVertically { it },
-                        exit = slideOutVertically { it },
-                    ) {
-                        MacWindow(modifier = Modifier.background(MaterialTheme.colors.background)) {
-                            Text(
-                                text = softAssertOutput,
-                                style = MaterialTheme.typography.body2,
-                                modifier = Modifier.padding(start = 16.dp, top = 16.dp).wrapContentWidth(Alignment.Start, unbounded = true),
-                            )
+            }
+        }
+    }
+}
+
+// ======================= //
+// ===== Text Values ===== //
+// ======================= //
+
+private fun String.toSetupStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+    "assert", "assertSoftly" -> codeStyle.functionDeclaration
+    "R" -> codeStyle.typeParameters
+    else -> null
+}
+
+private fun String.toExampleStyle(codeStyle: ShowTheme.CodeStyle): SpanStyle? {
+    return when (this) {
+        "fellowshipOfTheRing", "age", "name" -> codeStyle.property
+        "`test members of the fellowship`" -> codeStyle.functionDeclaration
+        "find", "any" -> codeStyle.extensionFunctionCall
+        "assertSoftly" -> codeStyle.staticFunctionCall
+        else -> null
+    }
+}
+
+private fun String.toGradleKtsStyle(codeStyle: ShowTheme.CodeStyle): SpanStyle? {
+    return when (this) {
+        "class" -> codeStyle.keyword
+        "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation
+        "functions" -> codeStyle.property
+        "powerAssert" -> codeStyle.extensionFunctionCall
+        else -> null
+    }
+}
+
+// language=kotlin
+private val complexAssertExample: AnnotatedString
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            buildKotlinCodeString(
+                text = """
+                    @Test
+                    fun `test members of the fellowship`() {
+                        val members = fellowshipOfTheRing.getCurrentMembers()
+                        assert(members.any { it.name == "Boromir" } &&
+                                members.any { it.name == "Aragorn" } ||
+                                members.any { it.name == "Elrond" })
+                    }
+                """.trimIndent(),
+                codeStyle = codeStyle,
+                identifierType = { it.toExampleStyle(codeStyle) }
+            )
+        }
+    }
+
+private val complexAssertOutput = """
+java.lang.AssertionError: Assertion failed
+assert(members.any { it.name == "Boromir" } &&
+       |       |
+       |       false
+       [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
+        members.any { it.name == "Aragorn" } ||
+        members.any { it.name == "Elrond" })
+        |       |
+        |       false
+        [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
+    at [...]
+""".trimIndent()
+
+// language=kotlin
+private val softAssertSetup: AnnotatedString
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            buildKotlinCodeString(
+                text = """
+                    package com.example    
+                
+                    typealias LazyMessage = () -> Any
+                
+                    interface AssertScope {
+                        fun assert(assertion: Boolean, lazyMessage: LazyMessage? = null)
+                    }
+                
+                    fun <R> assertSoftly(block: AssertScope.() -> R): R
+                """.trimIndent(),
+                codeStyle = codeStyle,
+                identifierType = { it.toSetupStyle(codeStyle) }
+            )
+        }
+    }
+
+// language=kotlin
+private val softAsserGradle: AnnotatedString
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            buildGradleKtsCodeString(
+                text = """
+                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                    powerAssert {
+                        functions.addAll(
+                            "com.example.AssertScope.assert",
+                        )
+                    }
+                """.trimIndent(),
+                codeStyle = codeStyle,
+                identifierType = { it.toGradleKtsStyle(codeStyle) }
+            )
+        }
+    }
+
+// language=kotlin
+private val softAssertExample: AnnotatedString
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            buildKotlinCodeString(
+                text = """
+                    @Test
+                    fun `test members of the fellowship`() {
+                        val members = fellowshipOfTheRing.getCurrentMembers()
+                        assertSoftly {
+                            assert(members.find { it.name == "Frodo" }?.age == 23)
+                            assert(members.find { it.name == "Aragorn" }?.age == 60)
                         }
                     }
-                }
-            }
+                """.trimIndent(),
+                codeStyle = codeStyle,
+                identifierType = { it.toExampleStyle(codeStyle) }
+            )
         }
     }
-}
-
-@Composable
-private fun rememberSetupCodeString(text: String): AnnotatedString {
-    val codeStyle = LocalShowTheme.current.code
-    return remember(text) {
-        buildKotlinCodeString(
-            text, codeStyle,
-            identifierType = {
-                when (it) {
-                    // Function declarations
-                    "assert", "assertSoftly",
-                    -> SpanStyle(color = Color(0xFF56A8F5))
-
-                    // Type parameter
-                    "R",
-                    -> SpanStyle(color = Color(0xFF16BAAC))
-
-                    else -> null
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun rememberExampleCodeString(text: String): AnnotatedString {
-    val codeStyle = LocalShowTheme.current.code
-    return remember(text) {
-        buildKotlinCodeString(
-            text, codeStyle,
-            identifierType = {
-                when (it) {
-                    // Properties
-                    "fellowshipOfTheRing", "age", "name",
-                    -> SpanStyle(color = Color(0xFFC77DBB))
-
-                    // Function declarations
-                    "`test members of the fellowship`",
-                    -> SpanStyle(color = Color(0xFF56A8F5))
-
-                    // Extension functions
-                    "find",
-                    -> SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF56A8F5))
-
-                    // Top-level functions
-                    "assertSoftly",
-                    -> SpanStyle(fontStyle = FontStyle.Italic)
-
-                    else -> null
-                }
-            }
-        )
-    }
-}
-
-// language=kotlin
-private val softAssertSetup = """
-    typealias LazyMessage = () -> Any
-
-    interface AssertScope {
-        fun assert(assertion: Boolean, lazyMessage: LazyMessage? = null)
-    }
-
-    fun <R> assertSoftly(block: AssertScope.() -> R): R
-""".trimIndent()
-
-// language=kotlin
-private val softAssertExample = """
-    @Test
-    fun `test members of the fellowship`() {
-        val members = fellowshipOfTheRing.getCurrentMembers()
-        assertSoftly {
-            assert(members.find { it.name == "Frodo" }?.age == 23)
-            assert(members.find { it.name == "Aragorn" }?.age == 60)
-        }
-    }
-""".trimIndent()
 
 private val softAssertOutput = """
 Multiple failed assertions
