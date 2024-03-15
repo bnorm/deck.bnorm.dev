@@ -37,7 +37,7 @@ fun Title() {
         Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.align(Alignment.Center)) {
                 Text("Kotlin + Power-Assert = ")
-                KodeeLoving(modifier = Modifier.requiredSize(100.dp).graphicsLayer { rotationY = 180f })
+                KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
             }
 
             PresenterSocials(Modifier.align(Alignment.BottomCenter))
@@ -58,14 +58,14 @@ fun ThankYou() {
 
 @Composable
 private fun PresenterSocials(modifier: Modifier = Modifier) {
-    Row(modifier = modifier.fillMaxWidth().requiredHeight(32.dp)) {
+    Row(modifier = modifier.fillMaxWidth().requiredHeight(64.dp)) {
         ProvideTextStyle(MaterialTheme.typography.body2) {
             Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                 Text("Brian Norman")
             }
-            Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
+            Spacer(modifier = Modifier.requiredWidth(4.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
             SocialMastodon(username = "bnorm@kotlin.social", modifier = Modifier.weight(1.5f).fillMaxHeight())
-            Spacer(modifier = Modifier.requiredWidth(2.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
+            Spacer(modifier = Modifier.requiredWidth(4.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
             SocialGitHub(username = "@bnorm", modifier = Modifier.weight(1f).fillMaxHeight())
         }
     }

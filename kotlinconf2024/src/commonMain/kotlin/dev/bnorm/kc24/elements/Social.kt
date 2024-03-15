@@ -23,7 +23,7 @@ fun SocialMastodon(username: String, modifier: Modifier = Modifier) {
             painter = painterResource(DrawableResource("social/mastodon.png")),
             contentDescription = "",
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(32.dp))
         Text(username)
     }
 }
@@ -40,7 +40,7 @@ fun SocialGitHub(username: String, modifier: Modifier = Modifier) {
             painter = painterResource(DrawableResource("social/github-white.png")),
             contentDescription = "",
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(32.dp))
         Text(username)
     }
 }

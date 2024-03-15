@@ -1,3 +1,5 @@
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -6,7 +8,9 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.KotlinPlusPowerAssertEqualsLove
 import dev.bnorm.kc24.Theme
-import dev.bnorm.librettist.SlideShow
+import dev.bnorm.librettist.DEFAULT_SLIDE_SIZE
+import dev.bnorm.librettist.ShowTheme
+import dev.bnorm.librettist.SlideShowDisplay
 import dev.bnorm.librettist.show.Advancement
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.ShowState
@@ -21,19 +25,20 @@ import kotlin.test.Test
 
 @OptIn(ExperimentalTestApi::class)
 class ExportTest {
-    @Test
-    fun testDrawSquare() = runDesktopComposeUiTest(1000, 563) {
-        // Pulled from Google Slides with 1 inch = 100 dp
-        val slideSize = DpSize(1000.dp, 563.dp)
+    private val width = DEFAULT_SLIDE_SIZE.width.value
+    private val height = DEFAULT_SLIDE_SIZE.height.value
 
+    @Test
+    fun testDrawSquare() = runDesktopComposeUiTest(width.toInt(), height.toInt()) {
         val showState = ShowState(ShowBuilder::KotlinPlusPowerAssertEqualsLove)
         setContent {
-            SlideShow(
-                showState = showState,
-                showOverview = false,
-                theme = Theme.dark,
-                targetSize = slideSize,
-            )
+            ShowTheme(Theme.dark) {
+                SlideShowDisplay(
+                    showState = showState,
+                    slideSize = DpSize(width.dp, height.dp),
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
 
         val doc = PDDocument()
@@ -55,7 +60,7 @@ class ExportTest {
         val bytes = image.encodeToData(EncodedImageFormat.PNG)?.bytes
         val name = "slide-${index.toString().padStart(3, '0')}"
 
-        val page = PDPage(PDRectangle(1000f, 563f))
+        val page = PDPage(PDRectangle(width, height))
         doc.addPage(page)
 
         val contentStream = PDPageContentStream(doc, page)

@@ -53,7 +53,7 @@ private fun ShowBuilder.WithoutPowerAssert() {
         TitleAndBody(
             kodee = {
                 show(condition = { outputPopup }) {
-                    KodeeBrokenHearted(modifier = Modifier.requiredSize(150.dp))
+                    KodeeBrokenHearted(modifier = Modifier.requiredSize(300.dp))
                 }
             }
         ) {
@@ -80,11 +80,11 @@ private fun ShowBuilder.WithPowerAssert() {
         TitleAndBody(
             kodee = {
                 show(condition = { state.value == AnimationState.COMPLETE }) {
-                    KodeeLoving(modifier = Modifier.requiredSize(150.dp).graphicsLayer { rotationY = 180f })
+                    KodeeLoving(modifier = Modifier.requiredSize(300.dp).graphicsLayer { rotationY = 180f })
                 }
 
                 show(condition = { showCode }) {
-                    KodeeSurprised(Modifier.requiredSize(100.dp))
+                    KodeeSurprised(Modifier.requiredSize(200.dp))
                 }
             }
         ) {
@@ -120,8 +120,8 @@ private fun TestFailureOutput(
             enter = slideInVertically { it },
             exit = slideOutVertically { it },
         ) {
-            MacTerminal(modifier = Modifier.requiredHeight(280.dp)) {
-                Box(modifier = Modifier.padding(16.dp)) {
+            MacTerminal(modifier = Modifier.requiredHeight(560.dp)) {
+                Box(modifier = Modifier.padding(32.dp)) {
                     content()
                 }
             }

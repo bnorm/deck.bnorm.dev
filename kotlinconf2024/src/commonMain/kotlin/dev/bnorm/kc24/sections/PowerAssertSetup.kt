@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
@@ -36,7 +35,7 @@ private fun ShowBuilder.GradlePlugin() {
         TitleAndBody {
             val state = rememberAdvancementAnimation()
 
-            ProvideTextStyle(MaterialTheme.typography.body1.copy(fontSize = 23.sp)) {
+            ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
                     AnimateSequence(ktsSequence, state, delay = 25.milliseconds) {
                         Text(it, modifier = Modifier.Companion.weight(0.4f))
@@ -53,7 +52,7 @@ private fun ShowBuilder.GradlePlugin() {
 private fun ShowBuilder.GradleExtension() {
     slide {
         TitleAndBody {
-            ProvideTextStyle(MaterialTheme.typography.body1.copy(fontSize = 23.sp)) {
+            ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
                     // TODO this could probably be easier with some kind of animation spec builder?
                     /**

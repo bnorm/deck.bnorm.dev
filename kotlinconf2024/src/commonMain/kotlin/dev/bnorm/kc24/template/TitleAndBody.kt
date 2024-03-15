@@ -19,23 +19,23 @@ fun TitleAndBody(
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier.fillMaxWidth()
-                .padding(start = 32.dp, bottom = 8.dp)
-                .requiredHeight(72.dp),
+                .padding(horizontal = SLIDE_PADDING, vertical = 32.dp)
+                .requiredHeight(130.dp),
             contentAlignment = Alignment.BottomStart,
         ) {
             ProvideTextStyle(MaterialTheme.typography.h3) {
                 title()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(MaterialTheme.colors.primary))
+        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
             ProvideTextStyle(MaterialTheme.typography.body1) {
                 body()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(2.dp).background(MaterialTheme.colors.primary))
+        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
     }
-    Box(modifier = Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomEnd) {
+    Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
         AnimateKodee { kodee() }
     }
 }

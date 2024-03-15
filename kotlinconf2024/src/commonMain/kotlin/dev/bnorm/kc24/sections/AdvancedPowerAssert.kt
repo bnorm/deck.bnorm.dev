@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,12 +42,14 @@ fun ShowBuilder.AdvancedPowerAssert() {
 private fun ShowBuilder.ComplexExpressions() {
     slide {
         TitleAndBody {
-            val showOutput by rememberAdvancementBoolean()
+            ProvideTextStyle(MaterialTheme.typography.body2) {
+                val showOutput by rememberAdvancementBoolean()
 
-            Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                Text(complexAssertExample)
+                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                    Text(complexAssertExample)
+                }
+                OutputText(complexAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
             }
-            OutputText(complexAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
         }
     }
 }
@@ -54,30 +57,34 @@ private fun ShowBuilder.ComplexExpressions() {
 private fun ShowBuilder.SoftAssert() {
     slide {
         TitleAndBody {
-            val showRight by rememberAdvancementIndex(2)
+            ProvideTextStyle(MaterialTheme.typography.body2) {
+                val showRight by rememberAdvancementIndex(2)
 
-            Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                Text(softAssertSetup)
-            }
+                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                    Text(softAssertSetup)
+                }
 
-            SidePanel(
-                visible = showRight == 1,
-                modifier = Modifier.align(Alignment.TopEnd).requiredWidth(750.dp),
-            ) {
-                Text(softAsserGradle)
+                SidePanel(
+                    visible = showRight == 1,
+                    modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
+                ) {
+                    Text(softAsserGradle)
+                }
             }
         }
     }
 
     slide {
         TitleAndBody {
-            val showOutput by rememberAdvancementBoolean()
+            ProvideTextStyle(MaterialTheme.typography.body2) {
+                val showOutput by rememberAdvancementBoolean()
 
-            Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                Text(softAssertExample)
+                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                    Text(softAssertExample)
+                }
+
+                OutputText(softAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
             }
-
-            OutputText(softAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
         }
     }
 }
@@ -90,11 +97,10 @@ private fun OutputText(text: String, visible: Boolean, modifier: Modifier = Modi
             enter = slideInVertically { it },
             exit = slideOutVertically { it },
         ) {
-            MacTerminal(modifier = Modifier.heightIn(min = 400.dp)) {
+            MacTerminal(modifier = Modifier.heightIn(min = 800.dp)) {
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                    modifier = Modifier.padding(start = 32.dp, top = 32.dp)
                         .wrapContentWidth(Alignment.Start, unbounded = true),
                 )
             }
@@ -111,7 +117,7 @@ private fun SidePanel(visible: Boolean, modifier: Modifier = Modifier, content: 
             exit = slideOutHorizontally { it },
         ) {
             Row {
-                Spacer(modifier = Modifier.background(Color(0xFF313438)).width(2.dp).fillMaxHeight())
+                Spacer(modifier = Modifier.background(Color(0xFF313438)).width(4.dp).fillMaxHeight())
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

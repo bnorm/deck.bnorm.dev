@@ -126,20 +126,20 @@ object Theme {
                     primary = Color(0xFF7F51FF),
                 ),
                 typography = jetBrainsMonoTypography.copy(
-                    h1 = jetBrainsMonoTypography.h1.copy(fontSize = 60.sp),
-                    h2 = jetBrainsMonoTypography.h2.copy(fontSize = 54.sp),
-                    h3 = jetBrainsMonoTypography.h3.copy(fontSize = 48.sp),
-                    h4 = jetBrainsMonoTypography.h4.copy(fontSize = 42.sp),
-                    h5 = jetBrainsMonoTypography.h5.copy(fontSize = 36.sp),
-                    h6 = jetBrainsMonoTypography.h6.copy(fontSize = 30.sp),
-                    subtitle1 = jetBrainsMonoTypography.subtitle1.copy(fontSize = 48.sp),
-                    body1 = jetBrainsMonoTypography.body1.copy(fontSize = 20.sp, lineHeight = 30.sp),
-                    body2 = jetBrainsMonoTypography.body2.copy(fontSize = 16.sp, lineHeight = 24.sp),
+                    h1 = jetBrainsMonoTypography.h1.copy(fontSize = 118.sp, lineHeight = 136.sp),
+                    h2 = jetBrainsMonoTypography.h2.copy(fontSize = 98.sp, lineHeight = 118.sp),
+                    h3 = jetBrainsMonoTypography.h3.copy(fontSize = 84.sp, lineHeight = 98.sp),
+                    h4 = jetBrainsMonoTypography.h3.copy(fontSize = 72.sp, lineHeight = 84.sp),
+                    body1 = jetBrainsMonoTypography.body1.copy(fontSize = 44.sp, lineHeight = 56.sp),
+                    body2 = jetBrainsMonoTypography.body2.copy(fontSize = 36.sp, lineHeight = 46.sp),
 
-                    subtitle2 = jetBrainsMonoTypography.subtitle2.copy(fontSize = 14.sp),
-                    button = jetBrainsMonoTypography.button.copy(fontSize = 14.sp),
-                    caption = jetBrainsMonoTypography.caption.copy(fontSize = 12.sp),
-                    overline = jetBrainsMonoTypography.overline.copy(fontSize = 10.sp)
+                    h5 = jetBrainsMonoTypography.h5.copy(fontSize = 0.sp),
+                    h6 = jetBrainsMonoTypography.h6.copy(fontSize = 0.sp),
+                    subtitle1 = jetBrainsMonoTypography.subtitle1.copy(fontSize = 0.sp),
+                    subtitle2 = jetBrainsMonoTypography.subtitle2.copy(fontSize = 0.sp),
+                    button = jetBrainsMonoTypography.button.copy(fontSize = 0.sp),
+                    caption = jetBrainsMonoTypography.caption.copy(fontSize = 0.sp),
+                    overline = jetBrainsMonoTypography.overline.copy(fontSize = 0.sp)
                 ),
                 code = ShowTheme.CodeStyle(
                     simple = SpanStyle(Color(0xFFBCBEC4)),

@@ -56,7 +56,7 @@ fun DefaultCornerKodee() {
     Image(
         imageVector = Kodee.Petite,
         contentDescription = "",
-        modifier = Modifier.requiredSize(73.dp, 63.dp),
+        modifier = Modifier.requiredSize(146.dp, 126.dp),
     )
 }
 
@@ -91,7 +91,7 @@ fun KodeeBrokenHearted(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun KodeeSitting(modifier: Modifier) {
+fun KodeeSitting(modifier: Modifier = Modifier) {
     Image(
         imageVector = Kodee.Sitting,
         contentDescription = "",

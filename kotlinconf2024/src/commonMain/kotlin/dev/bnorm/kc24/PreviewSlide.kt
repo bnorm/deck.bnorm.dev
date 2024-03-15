@@ -12,8 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
+import dev.bnorm.librettist.DEFAULT_SLIDE_SIZE
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.show.Advancement
 import dev.bnorm.librettist.show.LocalShowState
@@ -34,7 +33,7 @@ fun PreviewSlide(
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background),
                 contentAlignment = Alignment.Center,
             ) {
-                Box(modifier = Modifier.requiredSize(DpSize(1000.dp, 563.dp)).scale(scale)) {
+                Box(modifier = Modifier.requiredSize(DEFAULT_SLIDE_SIZE).scale(scale)) {
                     Surface(modifier = Modifier.fillMaxSize()) {
                         // TODO why is this box required for proper alignment?
                         Box(modifier = Modifier.fillMaxSize()) {

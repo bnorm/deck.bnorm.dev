@@ -96,20 +96,20 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
                             Text(
                                 text = if (state.count >= AssertionLibrariesState.MAX_COUNT) "Gah!" else state.count.toString(),
                                 style = MaterialTheme.typography.h1,
-                                fontSize = (60 + 8 * state.count).sp,
+                                fontSize = (120 + 16 * state.count).sp,
                             )
                         }
 
                         val random = Random(0)
                         for (library in state.libraries.subList(0, state.count)) {
-                            for ((x0, y0) in listOf(250 to 100, 250 to -100, -250 to -100, -250 to 100)) {
-                                val dx = x0 + random.nextInt(-150..150)
-                                val dy = y0 + random.nextInt(-75..75)
+                            for ((x0, y0) in listOf(500 to 200, 500 to -200, -500 to -200, -500 to 200)) {
+                                val dx = x0 + random.nextInt(-300..300)
+                                val dy = y0 + random.nextInt(-150..150)
 
                                 Text(
                                     text = library,
                                     color = LocalContentColor.current.copy(alpha = 0.25f),
-                                    fontSize = 42.sp,
+                                    fontSize = 84.sp,
                                     modifier = Modifier
                                         .rotate(random.nextFloat() * 60f - 30f)
                                         .offset(x = dx.dp, y = dy.dp)
@@ -191,7 +191,7 @@ private fun HowManyKotlinLibraries(answerVisible: Boolean) {
             exit = fadeOut() + shrinkVertically(),
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(start = 32.dp, top = SLIDE_CONTENT_SPACING),
+                modifier = Modifier.fillMaxWidth().padding(start = 64.dp, top = SLIDE_CONTENT_SPACING),
                 contentAlignment = Alignment.TopStart
             ) {
                 Text(buildAnnotatedString {
@@ -222,7 +222,7 @@ private fun HowManyGroovyLibraries(answerVisible: Boolean) {
             exit = fadeOut() + shrinkVertically(),
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(start = 32.dp, top = SLIDE_CONTENT_SPACING),
+                modifier = Modifier.fillMaxWidth().padding(start = 64.dp, top = SLIDE_CONTENT_SPACING),
                 contentAlignment = Alignment.TopStart
             ) {
                 Text(buildAnnotatedString {
@@ -239,7 +239,7 @@ private fun HowManyGroovyLibraries(answerVisible: Boolean) {
 @Composable
 private fun ConcludingQuestion() {
     Column(
-        modifier = Modifier.fillMaxSize().padding(top = 32.dp),
+        modifier = Modifier.fillMaxSize().padding(top = 64.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

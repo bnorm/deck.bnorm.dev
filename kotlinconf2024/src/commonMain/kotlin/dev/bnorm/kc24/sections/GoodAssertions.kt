@@ -55,7 +55,7 @@ private fun SlideScope.FirstExample() {
             TextWithError(firstOutput, problemVisible, firstOutputRange)
         },
         problem = {
-            Row(modifier = Modifier.padding(start = 32.dp, top = 16.dp)) {
+            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                 Text("=> ", color = Color.Red)
                 Text("assertTrue does not result in a helpful failure")
             }
@@ -78,7 +78,7 @@ private fun SlideScope.SecondExample() {
             TextWithError(secondOutput, problemVisible, secondOutputRange)
         },
         problem = {
-            Row(modifier = Modifier.padding(start = 32.dp, top = 16.dp)) {
+            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                 Text("=> ", color = Color.Red)
                 Text("assertEquals only shows the final values")
             }
@@ -101,7 +101,7 @@ private fun SlideScope.ThirdExample() {
             Text(thirdOutput)
         },
         problem = {
-            Row(modifier = Modifier.padding(start = 32.dp, top = 16.dp)) {
+            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                 Text("=> ", color = Color.Red)
                 Text("Assertion messages are a maintenance burden")
             }
@@ -124,7 +124,7 @@ private fun SlideScope.ForthExample() {
             Text(forthOutput)
         },
         problem = {
-            Row(modifier = Modifier.padding(start = 32.dp, top = 16.dp)) {
+            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                 Text("=> ", color = Color.Red)
                 Text("Lots of assertion functions to choose from")
             }
@@ -143,7 +143,7 @@ private fun SlideScope.ExampleTestAssertion(
     val showProblem = advancement == 2
     val outputOffset by animateDpAsState(
         targetValue = when (showProblem) {
-            true -> 140.dp
+            true -> 280.dp
             false -> 0.dp
         }
     )
@@ -170,10 +170,10 @@ private fun SlideScope.ExampleTestAssertion(
                 ) {
                     MacTerminal(
                         modifier = Modifier.animateContentSize()
-                            .requiredHeight(280.dp)
+                            .requiredHeight(560.dp)
                             .offset(y = outputOffset)
                     ) {
-                        Box(modifier = Modifier.padding(16.dp)) {
+                        Box(modifier = Modifier.padding(32.dp)) {
                             output(showProblem)
                         }
                     }
@@ -224,8 +224,8 @@ private fun TextWithError(text: AnnotatedString, errorVisible: Boolean, textRang
 fun Modifier.errorUnderline(layout: TextLayoutResult?, textRange: TextRange, color: Color): Modifier {
     if (layout == null || color == Color.Transparent) return this
     return drawBehind {
-        val thickness = 2f
-        val amplitude = 1.dp.toPx()
+        val thickness = 4f
+        val amplitude = 2.dp.toPx()
         val wiggles = 4
 
         // TODO combine indexes that are adjacent?
