@@ -8,11 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.librettist.section.LocalSlideSection
+import dev.bnorm.librettist.show.SlideSection
 
 @Composable
 fun TitleAndBody(
-    title: @Composable () -> Unit = LocalSlideSection.current.header,
+    title: @Composable () -> Unit = SlideSection.header,
     kodee: KodeeScope.() -> Unit = {},
     body: @Composable BoxScope.() -> Unit = {},
 ) {

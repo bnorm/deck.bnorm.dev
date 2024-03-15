@@ -21,7 +21,7 @@ import dev.bnorm.librettist.animation.AnimateSequence
 import dev.bnorm.librettist.animation.AnimationState
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.section.section
+import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.rememberAdvancementBoolean
 import dev.bnorm.librettist.text.buildKotlinCodeString

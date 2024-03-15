@@ -25,7 +25,7 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.rememberAdvancementBoolean
 import dev.bnorm.librettist.show.rememberAdvancementIndex
-import dev.bnorm.librettist.section.section
+import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlin.random.Random
 import kotlin.random.nextInt

@@ -15,7 +15,7 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.*
-import dev.bnorm.librettist.section.section
+import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.*
 import kotlin.time.Duration.Companion.milliseconds

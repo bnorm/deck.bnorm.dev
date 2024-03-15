@@ -18,14 +18,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.bnorm.librettist.section.LocalSlideSection
 import dev.bnorm.librettist.show.SlideScope
+import dev.bnorm.librettist.show.SlideSection
 import dev.bnorm.librettist.show.rememberAdvancementBoolean
 
 @Composable
 fun SlideScope.SectionHeader(
     animateToBody: Boolean = true,
-    title: @Composable () -> Unit = LocalSlideSection.current.header,
+    title: @Composable () -> Unit = SlideSection.header,
 ) {
     val showAsBody by if (animateToBody) rememberAdvancementBoolean() else mutableStateOf(false)
     val transition = updateTransition(showAsBody, label = "slide type")
