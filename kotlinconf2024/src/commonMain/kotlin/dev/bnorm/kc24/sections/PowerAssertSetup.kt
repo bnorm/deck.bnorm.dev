@@ -12,6 +12,7 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.*
 import dev.bnorm.librettist.section.section
@@ -77,7 +78,7 @@ private fun GradleGroovyText(text: String, modifier: Modifier = Modifier) {
     GroovyCodeText(text, modifier = modifier)
 }
 
-private fun String.toStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+private fun String.toStyle(codeStyle: Highlighting) = when (this) {
     "class" -> codeStyle.keyword
     "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation
     "functions", "excludedSourceSets" -> codeStyle.property

@@ -19,6 +19,7 @@ import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
@@ -136,13 +137,13 @@ private fun SidePanel(visible: Boolean, modifier: Modifier = Modifier, content: 
 // ===== Text Values ===== //
 // ======================= //
 
-private fun String.toSetupStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+private fun String.toSetupStyle(codeStyle: Highlighting) = when (this) {
     "assert", "assertSoftly" -> codeStyle.functionDeclaration
     "R" -> codeStyle.typeParameters
     else -> null
 }
 
-private fun String.toExampleStyle(codeStyle: ShowTheme.CodeStyle): SpanStyle? {
+private fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
     return when (this) {
         "fellowshipOfTheRing", "age", "name" -> codeStyle.property
         "`test members of the fellowship`" -> codeStyle.functionDeclaration
@@ -152,7 +153,7 @@ private fun String.toExampleStyle(codeStyle: ShowTheme.CodeStyle): SpanStyle? {
     }
 }
 
-private fun String.toGradleKtsStyle(codeStyle: ShowTheme.CodeStyle): SpanStyle? {
+private fun String.toGradleKtsStyle(codeStyle: Highlighting): SpanStyle? {
     return when (this) {
         "class" -> codeStyle.keyword
         "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation

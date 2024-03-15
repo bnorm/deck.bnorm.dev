@@ -21,6 +21,7 @@ import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.AnimateSequence
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
@@ -191,7 +192,7 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
     }
 }
 
-private fun String.toExampleStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+private fun String.toExampleStyle(codeStyle: Highlighting) = when (this) {
     "fellowshipOfTheRing", "size" -> codeStyle.property
     "`test members of the fellowship`" -> codeStyle.functionDeclaration
     "hasSize" -> codeStyle.extensionFunctionCall

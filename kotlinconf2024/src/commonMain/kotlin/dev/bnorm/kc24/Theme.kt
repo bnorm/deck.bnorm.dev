@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.Font
@@ -141,7 +142,7 @@ object Theme {
                     caption = jetBrainsMonoTypography.caption.copy(fontSize = 0.sp),
                     overline = jetBrainsMonoTypography.overline.copy(fontSize = 0.sp)
                 ),
-                code = ShowTheme.CodeStyle(
+                code = Highlighting(
                     simple = SpanStyle(Color(0xFFBCBEC4)),
                     number = SpanStyle(Color(0xFF2AACB8)),
                     keyword = SpanStyle(Color(0xFFCF8E6D)),
@@ -169,7 +170,7 @@ object Theme {
                     surface = Color(0xFFF5F5F5),
                 ),
                 typography = jetBrainsMonoTypography,
-                code = ShowTheme.CodeStyle(
+                code = Highlighting(
                     simple = SpanStyle(Color(0xFF000000)),
                     number = SpanStyle(Color(0xFF4A86E8)),
                     keyword = SpanStyle(Color(0xFF000080)),

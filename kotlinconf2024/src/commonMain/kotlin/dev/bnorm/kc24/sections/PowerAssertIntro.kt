@@ -15,6 +15,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.*
+import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.AnimateSequence
 import dev.bnorm.librettist.animation.AnimationState
@@ -137,7 +138,7 @@ private fun rememberExampleCodeString(text: String): AnnotatedString {
     }
 }
 
-private fun String.toExampleStyle(codeStyle: ShowTheme.CodeStyle) = when (this) {
+private fun String.toExampleStyle(codeStyle: Highlighting) = when (this) {
     "fellowshipOfTheRing", "size" -> codeStyle.property
     "`test members of the fellowship`" -> codeStyle.functionDeclaration
     "hasSize" -> codeStyle.extensionFunctionCall
