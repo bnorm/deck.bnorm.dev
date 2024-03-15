@@ -13,7 +13,7 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.animation.rememberAdvancementAnimation
+import dev.bnorm.librettist.animation.*
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.*

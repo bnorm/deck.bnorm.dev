@@ -16,14 +16,14 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.ShowTheme
+import dev.bnorm.librettist.animation.AnimateSequence
 import dev.bnorm.librettist.animation.AnimationState
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
+import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.rememberAdvancementBoolean
-import dev.bnorm.librettist.text.AnimateSequence
 import dev.bnorm.librettist.text.buildKotlinCodeString
-import dev.bnorm.librettist.text.startAnimation
 import dev.bnorm.librettist.text.thenLines
 
 fun ShowBuilder.PowerAssertIntro() {

@@ -22,14 +22,14 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.ShowTheme
+import dev.bnorm.librettist.animation.AnimateSequence
 import dev.bnorm.librettist.animation.rememberAdvancementAnimation
+import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.section.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.show.rememberAdvancementIndex
-import dev.bnorm.librettist.text.AnimateSequence
 import dev.bnorm.librettist.text.buildKotlinCodeString
-import dev.bnorm.librettist.text.startAnimation
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlin.time.Duration.Companion.milliseconds
 
