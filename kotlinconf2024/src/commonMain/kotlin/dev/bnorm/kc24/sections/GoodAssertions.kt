@@ -150,32 +150,34 @@ private fun SlideScope.ExampleTestAssertion(
     )
 
     TitleAndBody {
-        Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-            Box {
-                example(showProblem)
-            }
-            // TODO make the output appear higher and then shrink when the problem is displayed
-            AnimatedVisibility(
-                visible = showProblem,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) { problem() }
-        }
-
-        ProvideTextStyle(MaterialTheme.typography.body2) {
-            Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+                Box {
+                    example(showProblem)
+                }
+                // TODO make the output appear higher and then shrink when the problem is displayed
                 AnimatedVisibility(
-                    visible = showOutput,
-                    enter = slideInVertically { it },
-                    exit = slideOutVertically { it },
-                ) {
-                    MacTerminal(
-                        modifier = Modifier.animateContentSize()
-                            .requiredHeight(560.dp)
-                            .offset(y = outputOffset)
+                    visible = showProblem,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) { problem() }
+            }
+
+            ProvideTextStyle(MaterialTheme.typography.body2) {
+                Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
+                    AnimatedVisibility(
+                        visible = showOutput,
+                        enter = slideInVertically { it },
+                        exit = slideOutVertically { it },
                     ) {
-                        Box(modifier = Modifier.padding(32.dp)) {
-                            output(showProblem)
+                        MacTerminal(
+                            modifier = Modifier.animateContentSize()
+                                .requiredHeight(560.dp)
+                                .offset(y = outputOffset)
+                        ) {
+                            Box(modifier = Modifier.padding(32.dp)) {
+                                output(showProblem)
+                            }
                         }
                     }
                 }

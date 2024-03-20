@@ -21,10 +21,10 @@ import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.rememberAdvancementBoolean
 import dev.bnorm.librettist.show.rememberAdvancementIndex
+import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 
@@ -43,13 +43,15 @@ fun ShowBuilder.AdvancedPowerAssert() {
 private fun ShowBuilder.ComplexExpressions() {
     slide {
         TitleAndBody {
-            ProvideTextStyle(MaterialTheme.typography.body2) {
-                val showOutput by rememberAdvancementBoolean()
+            Box(modifier = Modifier.fillMaxSize()) {
+                ProvideTextStyle(MaterialTheme.typography.body2) {
+                    val showOutput by rememberAdvancementBoolean()
 
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(complexAssertExample)
+                    Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                        Text(complexAssertExample)
+                    }
+                    OutputText(complexAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
                 }
-                OutputText(complexAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
             }
         }
     }
@@ -58,18 +60,20 @@ private fun ShowBuilder.ComplexExpressions() {
 private fun ShowBuilder.SoftAssert() {
     slide {
         TitleAndBody {
-            ProvideTextStyle(MaterialTheme.typography.body2) {
-                val showRight by rememberAdvancementIndex(2)
+            Box(modifier = Modifier.fillMaxSize()) {
+                ProvideTextStyle(MaterialTheme.typography.body2) {
+                    val showRight by rememberAdvancementIndex(2)
 
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(softAssertSetup)
-                }
+                    Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                        Text(softAssertSetup)
+                    }
 
-                SidePanel(
-                    visible = showRight == 1,
-                    modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
-                ) {
-                    Text(softAsserGradle)
+                    SidePanel(
+                        visible = showRight == 1,
+                        modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
+                    ) {
+                        Text(softAsserGradle)
+                    }
                 }
             }
         }
@@ -77,14 +81,16 @@ private fun ShowBuilder.SoftAssert() {
 
     slide {
         TitleAndBody {
-            ProvideTextStyle(MaterialTheme.typography.body2) {
-                val showOutput by rememberAdvancementBoolean()
+            Box(modifier = Modifier.fillMaxSize()) {
+                ProvideTextStyle(MaterialTheme.typography.body2) {
+                    val showOutput by rememberAdvancementBoolean()
 
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(softAssertExample)
+                    Box(modifier = Modifier.padding(SLIDE_PADDING)) {
+                        Text(softAssertExample)
+                    }
+
+                    OutputText(softAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
                 }
-
-                OutputText(softAssertOutput, showOutput, modifier = Modifier.align(Alignment.BottomStart))
             }
         }
     }
@@ -153,6 +159,13 @@ private fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
     }
 }
 
+private fun String.toExtendedExampleStyle(codeStyle: Highlighting): SpanStyle? {
+    return when (this) {
+        "assert" -> codeStyle.staticFunctionCall
+        else -> null
+    }
+}
+
 private fun String.toGradleKtsStyle(codeStyle: Highlighting): SpanStyle? {
     return when (this) {
         "class" -> codeStyle.keyword
@@ -180,7 +193,7 @@ private val complexAssertExample: AnnotatedString
                     }
                 """.trimIndent(),
                 codeStyle = codeStyle,
-                identifierType = { it.toExampleStyle(codeStyle) }
+                identifierType = { it.toExampleStyle(codeStyle) ?: it.toExtendedExampleStyle(codeStyle) }
             )
         }
     }

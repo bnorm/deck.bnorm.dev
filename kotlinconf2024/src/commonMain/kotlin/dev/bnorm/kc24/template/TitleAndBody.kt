@@ -14,7 +14,7 @@ import dev.bnorm.librettist.show.SlideSection
 fun TitleAndBody(
     title: @Composable () -> Unit = SlideSection.header,
     kodee: KodeeScope.() -> Unit = {},
-    body: @Composable BoxScope.() -> Unit = {},
+    body: @Composable () -> Unit = {},
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Box(

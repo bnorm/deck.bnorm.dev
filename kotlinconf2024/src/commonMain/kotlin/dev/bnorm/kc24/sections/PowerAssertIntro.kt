@@ -58,15 +58,17 @@ private fun ShowBuilder.WithoutPowerAssert() {
                 }
             }
         ) {
-            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Text(rememberExampleCodeString(powerAssertSample))
-            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+                    Text(rememberExampleCodeString(powerAssertSample))
+                }
 
-            TestFailureOutput(
-                visible = outputPopup,
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
-            ) {
-                Text(simpleOutput)
+                TestFailureOutput(
+                    visible = outputPopup,
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
+                ) {
+                    Text(simpleOutput)
+                }
             }
         }
     }
@@ -89,20 +91,22 @@ private fun ShowBuilder.WithPowerAssert() {
                 }
             }
         ) {
-            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Text(rememberExampleCodeString(powerAssertSample))
-            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+                    Text(rememberExampleCodeString(powerAssertSample))
+                }
 
-            TestFailureOutput(
-                visible = outputPopup,
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
-            ) {
-                if (showCode) {
-                    AnimateSequence(powerAssertOutput, state) { text ->
-                        Text(text, modifier = Modifier.wrapContentWidth(Alignment.Start, unbounded = true))
+                TestFailureOutput(
+                    visible = outputPopup,
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
+                ) {
+                    if (showCode) {
+                        AnimateSequence(powerAssertOutput, state) { text ->
+                            Text(text, modifier = Modifier.wrapContentWidth(Alignment.Start, unbounded = true))
+                        }
+                    } else {
+                        Text(simpleOutput)
                     }
-                } else {
-                    Text(simpleOutput)
                 }
             }
         }
