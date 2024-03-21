@@ -7,8 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,15 +21,13 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.rememberAdvancementBoolean
-import dev.bnorm.librettist.show.rememberAdvancementIndex
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 
 fun ShowBuilder.AdvancedPowerAssert() {
     section(title = { Text("Advanced Power-Assert") }) {
-        slide { SectionHeader() }
+        SectionHeader()
 
         ComplexExpressions()
         SoftAssert()
@@ -41,11 +38,11 @@ fun ShowBuilder.AdvancedPowerAssert() {
 }
 
 private fun ShowBuilder.ComplexExpressions() {
-    slide {
+    slide(advancements = 2) {
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {
                 ProvideTextStyle(MaterialTheme.typography.body2) {
-                    val showOutput by rememberAdvancementBoolean()
+                    val showOutput = advancement == 1
 
                     Box(modifier = Modifier.padding(SLIDE_PADDING)) {
                         Text(complexAssertExample)
@@ -58,18 +55,16 @@ private fun ShowBuilder.ComplexExpressions() {
 }
 
 private fun ShowBuilder.SoftAssert() {
-    slide {
+    slide(advancements = 2) {
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {
                 ProvideTextStyle(MaterialTheme.typography.body2) {
-                    val showRight by rememberAdvancementIndex(2)
-
                     Box(modifier = Modifier.padding(SLIDE_PADDING)) {
                         Text(softAssertSetup)
                     }
 
                     SidePanel(
-                        visible = showRight == 1,
+                        visible = advancement == 1,
                         modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
                     ) {
                         Text(softAsserGradle)
@@ -79,11 +74,11 @@ private fun ShowBuilder.SoftAssert() {
         }
     }
 
-    slide {
+    slide(advancements = 2) {
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {
                 ProvideTextStyle(MaterialTheme.typography.body2) {
-                    val showOutput by rememberAdvancementBoolean()
+                    val showOutput = advancement == 1
 
                     Box(modifier = Modifier.padding(SLIDE_PADDING)) {
                         Text(softAssertExample)

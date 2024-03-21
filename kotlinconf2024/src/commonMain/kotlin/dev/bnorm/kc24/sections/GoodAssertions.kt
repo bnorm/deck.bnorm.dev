@@ -25,123 +25,132 @@ import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateListAsState
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.*
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideScope
+import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 
 fun ShowBuilder.GoodAssertions() {
     section(title = { Text("Good Assertions") }) {
-        slide { SectionHeader() }
+        SectionHeader()
 
         // TODO kodee changes for all the difference examples
-        slide { FirstExample() }
-        slide { SecondExample() }
-        slide { ThirdExample() }
-        slide { ForthExample() }
+        FirstExample()
+        SecondExample()
+        ThirdExample()
+        ForthExample()
+    }
+}
+
+private fun ShowBuilder.FirstExample() {
+    slide(advancements = 3) {
+        ExampleTestAssertion(
+            example = { problemVisible ->
+                TextWithError(rememberExampleCodeString(firstTest), problemVisible, firstTest.rangeOf("assertTrue"))
+            },
+            output = { problemVisible ->
+                TextWithError(firstOutput, problemVisible, firstOutputRange)
+            },
+            problem = {
+                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
+                    Text("=> ", color = Color.Red)
+                    Text("assertTrue does not result in a helpful failure")
+                }
+            },
+        )
+    }
+}
+
+private fun ShowBuilder.SecondExample() {
+    slide(advancements = 4) {
+        val example = advancement >= 1
+        ExampleTestAssertion(
+            advancementOffset = -1,
+            example = { problemVisible ->
+                val text by animateListAsState(
+                    targetIndex = if (example) firstToSecondTest.lastIndex else 0,
+                    values = firstToSecondTest,
+                )
+
+                TextWithError(text, problemVisible, secondTestRange)
+            },
+            output = { problemVisible ->
+                TextWithError(secondOutput, problemVisible, secondOutputRange)
+            },
+            problem = {
+                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
+                    Text("=> ", color = Color.Red)
+                    Text("assertEquals only shows the final values")
+                }
+            },
+        )
+    }
+}
+
+private fun ShowBuilder.ThirdExample() {
+    slide(advancements = 4) {
+        val example = advancement >= 1
+        ExampleTestAssertion(
+            advancementOffset = -1,
+            example = { problemVisible ->
+                val values = secondToThirdTest
+                val text by animateListAsState(
+                    targetIndex = if (example) values.lastIndex else 0,
+                    values = values,
+                )
+
+                TextWithError(text, problemVisible, thirdTestRange)
+            },
+            output = {
+                Text(thirdOutput)
+            },
+            problem = {
+                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
+                    Text("=> ", color = Color.Red)
+                    Text("Assertion messages are a maintenance burden")
+                }
+            },
+        )
+    }
+}
+
+private fun ShowBuilder.ForthExample() {
+    slide(advancements = 4) {
+        val example = advancement >= 1
+        ExampleTestAssertion(
+            advancementOffset = -1,
+            example = { problemVisible ->
+                val values = thirdToForth
+                val text by animateListAsState(
+                    targetIndex = if (example) values.lastIndex else 0,
+                    values = values,
+                )
+
+                TextWithError(text, problemVisible, forthTestRange)
+            },
+            output = {
+                Text(forthOutput)
+            },
+            problem = {
+                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
+                    Text("=> ", color = Color.Red)
+                    Text("Lots of assertion functions to choose from")
+                }
+            },
+        )
     }
 }
 
 @Composable
-private fun SlideScope.FirstExample() {
-    ExampleTestAssertion(
-        example = { problemVisible ->
-            TextWithError(rememberExampleCodeString(firstTest), problemVisible, firstTest.rangeOf("assertTrue"))
-        },
-        output = { problemVisible ->
-            TextWithError(firstOutput, problemVisible, firstOutputRange)
-        },
-        problem = {
-            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                Text("=> ", color = Color.Red)
-                Text("assertTrue does not result in a helpful failure")
-            }
-        },
-    )
-}
-
-@Composable
-private fun SlideScope.SecondExample() {
-    val example by rememberAdvancementBoolean()
-    ExampleTestAssertion(
-        example = { problemVisible ->
-            val text by animateListAsState(
-                targetIndex = if (example) firstToSecondTest.lastIndex else 0,
-                values = firstToSecondTest,
-            )
-
-            TextWithError(text, problemVisible, secondTestRange)
-        },
-        output = { problemVisible ->
-            TextWithError(secondOutput, problemVisible, secondOutputRange)
-        },
-        problem = {
-            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                Text("=> ", color = Color.Red)
-                Text("assertEquals only shows the final values")
-            }
-        },
-    )
-}
-
-@Composable
-private fun SlideScope.ThirdExample() {
-    val example by rememberAdvancementBoolean()
-    ExampleTestAssertion(
-        example = { problemVisible ->
-            val values = secondToThirdTest
-            val text by animateListAsState(
-                targetIndex = if (example) values.lastIndex else 0,
-                values = values,
-            )
-
-            TextWithError(text, problemVisible, thirdTestRange)
-        },
-        output = {
-            Text(thirdOutput)
-        },
-        problem = {
-            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                Text("=> ", color = Color.Red)
-                Text("Assertion messages are a maintenance burden")
-            }
-        },
-    )
-}
-
-@Composable
-private fun SlideScope.ForthExample() {
-    val example by rememberAdvancementBoolean()
-    ExampleTestAssertion(
-        example = { problemVisible ->
-            val values = thirdToForth
-            val text by animateListAsState(
-                targetIndex = if (example) values.lastIndex else 0,
-                values = values,
-            )
-
-            TextWithError(text, problemVisible, forthTestRange)
-        },
-        output = {
-            Text(forthOutput)
-        },
-        problem = {
-            Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                Text("=> ", color = Color.Red)
-                Text("Lots of assertion functions to choose from")
-            }
-        },
-    )
-}
-
-@Composable
 private fun SlideScope.ExampleTestAssertion(
+    advancementOffset: Int = 0,
     example: @Composable (Boolean) -> Unit,
     output: @Composable (Boolean) -> Unit,
     problem: @Composable () -> Unit,
 ) {
-    val advancement by rememberAdvancementIndex(3)
-    val showOutput = advancement >= 1
-    val showProblem = advancement == 2
+    val showOutput = advancement + advancementOffset >= 1
+    val showProblem = advancement + advancementOffset == 2
     val outputOffset by animateDpAsState(
         targetValue = when (showProblem) {
             true -> 280.dp
@@ -233,6 +242,8 @@ fun Modifier.errorUnderline(layout: TextLayoutResult?, textRange: TextRange, col
 
         // TODO combine indexes that are adjacent?
         for (i in textRange.min..<textRange.max) {
+            if (i >= layout.layoutInput.text.length) break
+
             val rect = layout.getBoundingBox(i)
 
             val width = rect.right - rect.left

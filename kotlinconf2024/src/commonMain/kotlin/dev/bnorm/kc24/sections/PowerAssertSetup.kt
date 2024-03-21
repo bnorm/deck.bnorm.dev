@@ -21,8 +21,6 @@ import dev.bnorm.librettist.animation.AnimationSequence
 import dev.bnorm.librettist.animation.animateListAsState
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.rememberAdvancementBoolean
-import dev.bnorm.librettist.show.rememberAdvancementIndex
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.GroovyCodeText
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
@@ -31,7 +29,7 @@ import dev.bnorm.librettist.text.thenLines
 
 fun ShowBuilder.PowerAssertSetup() {
     section(title = { Text("Power-Assert Setup") }) {
-        slide { SectionHeader() }
+        SectionHeader()
 
         GradlePlugin()
         GradleExtension()
@@ -41,23 +39,25 @@ fun ShowBuilder.PowerAssertSetup() {
 }
 
 private fun ShowBuilder.GradlePlugin() {
-    slide {
+    slide(advancements = 2) {
         TitleAndBody {
-            val state by rememberAdvancementBoolean()
+            val state = advancement == 1
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
+                    val ktsValues = ktsSequence
                     val ktsText by animateListAsState(
-                        targetIndex = if (state) ktsSequence.lastIndex else 0,
-                        values = ktsSequence,
+                        targetIndex = if (state) ktsValues.lastIndex else 0,
+                        values = ktsValues,
                         animationSpec = tween(
                             durationMillis = 1_000,
                             easing = LinearEasing
                         )
                     )
+                    val groovyValues = groovySequence
                     val groovyText by animateListAsState(
-                        targetIndex = if (state) groovySequence.lastIndex else 0,
-                        values = groovySequence,
+                        targetIndex = if (state) groovyValues.lastIndex else 0,
+                        values = groovyValues,
                         animationSpec = tween(
                             durationMillis = 1_000,
                             easing = LinearEasing
@@ -73,11 +73,10 @@ private fun ShowBuilder.GradlePlugin() {
 }
 
 private fun ShowBuilder.GradleExtension() {
-    slide {
+    slide(advancements = 5) {
         TitleAndBody {
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    val advancement by rememberAdvancementIndex(5)
                     // TODO this could probably be easier with some kind of animation spec builder?
                     /**
                      * buildAnimation(ktsConfigEmpty) {

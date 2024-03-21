@@ -11,23 +11,37 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.bnorm.librettist.show.SlideScope
+import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
-import dev.bnorm.librettist.show.rememberAdvancementBoolean
+
+fun ShowBuilder.SectionHeader(
+    animateToBody: Boolean = true,
+    title: (@Composable () -> Unit)? = null,
+) {
+    if (animateToBody) {
+        slide(advancements = 2) {
+            val title = title ?: SlideSection.header
+            SectionHeaderImpl(showAsBody = advancement == 1, title)
+        }
+    } else {
+        slide {
+            val title = title ?: SlideSection.header
+            SectionHeaderImpl(showAsBody = false, title)
+        }
+    }
+}
 
 @Composable
-fun SlideScope.SectionHeader(
-    animateToBody: Boolean = true,
-    title: @Composable () -> Unit = SlideSection.header,
+private fun SectionHeaderImpl(
+    showAsBody: Boolean,
+    title: @Composable () -> Unit,
 ) {
-    val showAsBody by if (animateToBody) rememberAdvancementBoolean() else mutableStateOf(false)
     val transition = updateTransition(showAsBody, label = "slide type")
 
     val spacing by transition.animateDp {

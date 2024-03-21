@@ -23,10 +23,8 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.rememberAdvancementBoolean
-import dev.bnorm.librettist.show.rememberAdvancementIndex
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.assist.ShowAssistTab
+import dev.bnorm.librettist.show.section
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -57,7 +55,7 @@ class AssertionLibrariesState(
 
 fun ShowBuilder.AssertionLibraries(state: AssertionLibrariesState) {
     section(title = { Text("Assertion Libraries") }) {
-        slide { SectionHeader() }
+        SectionHeader()
         KotlinLibraries(state)
         GroovyLibraries()
         Conclusion()
@@ -65,21 +63,8 @@ fun ShowBuilder.AssertionLibraries(state: AssertionLibrariesState) {
 }
 
 private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
-    slide {
-        if (state.assisted) {
-            // TODO what if there is no assist tab?
-            ShowAssistTab("Libraries") {
-                LibraryAssist(state)
-            }
-        } else {
-            val count by rememberAdvancementIndex(AssertionLibrariesState.MAX_COUNT + 1)
-            LaunchedEffect(count) {
-                state.count = count
-            }
-        }
-
-        val answerVisible by rememberAdvancementBoolean()
-
+    @Composable
+    fun impl(answerVisible: Boolean, count: Int) {
         TitleAndBody {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 HowManyKotlinLibraries(answerVisible = answerVisible)
@@ -92,16 +77,16 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
                     exit = shrinkOut(shrinkTowards = Alignment.Center),
                 ) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        if (state.count > 0) {
+                        if (count > 0) {
                             Text(
-                                text = if (state.count >= AssertionLibrariesState.MAX_COUNT) "Gah!" else state.count.toString(),
+                                text = if (count >= AssertionLibrariesState.MAX_COUNT) "Gah!" else count.toString(),
                                 style = MaterialTheme.typography.h1,
-                                fontSize = (120 + 16 * state.count).sp,
+                                fontSize = (120 + 16 * count).sp,
                             )
                         }
 
                         val random = Random(0)
-                        for (library in state.libraries.subList(0, state.count)) {
+                        for (library in state.libraries.subList(0, count)) {
                             for ((x0, y0) in listOf(500 to 200, 500 to -200, -500 to -200, -500 to 200)) {
                                 val dx = x0 + random.nextInt(-300..300)
                                 val dy = y0 + random.nextInt(-150..150)
@@ -122,6 +107,24 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
             }
         }
     }
+
+
+    if (state.assisted) {
+        slide(advancements = 2) {
+            // TODO what if there is no assist tab?
+            ShowAssistTab("Libraries") {
+                LibraryAssist(state)
+            }
+
+            val answerVisible = advancement == 1
+            impl(answerVisible, state.count)
+        }
+    } else {
+        slide(advancements = AssertionLibrariesState.MAX_COUNT + 2) {
+            val answerVisible = advancement == AssertionLibrariesState.MAX_COUNT + 1
+            impl(answerVisible, minOf(advancement, AssertionLibrariesState.MAX_COUNT))
+        }
+    }
 }
 
 private fun ShowBuilder.GroovyLibraries() {
@@ -134,23 +137,22 @@ private fun ShowBuilder.GroovyLibraries() {
             }
         }
     }
-    slide {
-        val index by rememberAdvancementIndex(3)
+    slide(advancements = 3) {
         TitleAndBody {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 HowManyKotlinLibraries(answerVisible = true)
                 Spacer(modifier = Modifier.height(SLIDE_CONTENT_SPACING))
-                HowManyGroovyLibraries(answerVisible = index == 2)
+                HowManyGroovyLibraries(answerVisible = advancement == 2)
             }
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 AnimatedVisibility(
-                    visible = index != 2,
+                    visible = advancement != 2,
                     enter = expandIn(expandFrom = Alignment.Center),
                     exit = shrinkOut(shrinkTowards = Alignment.Center),
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Spock!", style = MaterialTheme.typography.h1)
-                        AnimatedVisibility(index == 1) {
+                        AnimatedVisibility(advancement == 1) {
                             Text(text = "(...is that it?)")
                         }
                     }

@@ -1,7 +1,13 @@
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
+import androidx.compose.ui.test.DesktopComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import androidx.compose.ui.unit.DpSize
@@ -9,11 +15,9 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.KotlinPlusPowerAssertEqualsLove
 import dev.bnorm.kc24.Theme
 import dev.bnorm.librettist.DEFAULT_SLIDE_SIZE
+import dev.bnorm.librettist.ScaledBox
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.SlideShowDisplay
-import dev.bnorm.librettist.show.Advancement
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.ShowState
+import dev.bnorm.librettist.show.*
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
@@ -30,29 +34,38 @@ class ExportTest {
 
     @Test
     fun testDrawSquare() = runDesktopComposeUiTest(width.toInt(), height.toInt()) {
-        val showState = ShowState(ShowBuilder::KotlinPlusPowerAssertEqualsLove)
-        setContent {
-            ShowTheme(Theme.dark) {
-                SlideShowDisplay(
-                    showState = showState,
-                    slideSize = DpSize(width.dp, height.dp),
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
-
         val doc = PDDocument()
-        var index = 0
 
-        createPage(captureToImage(), index++, doc)
-        while (showState.index < showState.slides.size - 1) {
-            showState.advance(Advancement(direction = Advancement.Direction.Forward))
-            waitForIdle()
-            createPage(captureToImage(), index++, doc)
+        val slides = buildSlides(ShowBuilder::KotlinPlusPowerAssertEqualsLove)
+        for ((page, advancement) in slides.advancements.withIndex()) {
+            setSlide(slides, advancement)
+            createPage(captureToImage(), page, doc)
         }
 
         doc.save("test.pdf")
         doc.close()
+    }
+
+    private fun DesktopComposeUiTest.setSlide(slides: List<Slide>, slideIndex: Pair<Int, Int>) {
+        setContent {
+            val content = slides[slideIndex.first].content
+            val scope = SlideScope(slideIndex.second)
+
+            ShowTheme(Theme.dark) {
+                ScaledBox(
+                    targetSize = DpSize(width.dp, height.dp),
+                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)
+                ) {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            key(slideIndex.first, slideIndex.second) {
+                                scope.content()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun createPage(imageBitmap: ImageBitmap, index: Int, doc: PDDocument) {

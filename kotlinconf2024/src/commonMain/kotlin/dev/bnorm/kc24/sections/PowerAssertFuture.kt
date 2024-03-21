@@ -7,27 +7,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideScope
-import dev.bnorm.librettist.show.rememberAdvancementIndex
+import dev.bnorm.librettist.show.section
 
 fun ShowBuilder.PowerAssertFuture() {
     section(title = { Text("Future of Power-Assert") }) {
-        slide { SectionHeader() }
+        SectionHeader()
         PowerAssertIdeas()
         HowCanYouHelp()
     }
 }
 
 private fun ShowBuilder.PowerAssertIdeas() {
-    slide {
+    slide(advancements = 7) {
         TitleAndBody {
             // TODO almost everything here should have a KT ticket with it
             Column(
@@ -50,7 +48,7 @@ private fun ShowBuilder.PowerAssertIdeas() {
 }
 
 private fun ShowBuilder.HowCanYouHelp() {
-    slide {
+    slide(advancements = 4) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -75,10 +73,9 @@ private fun SlideScope.AnimateByLine(
 ) {
     if (lines.isEmpty()) return
 
-    val index by rememberAdvancementIndex(lines.size)
     for ((i, line) in lines.withIndex()) {
         AnimatedVisibility(
-            visible = index >= i,
+            visible = advancement >= i,
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically(),
         ) { Text(line) }

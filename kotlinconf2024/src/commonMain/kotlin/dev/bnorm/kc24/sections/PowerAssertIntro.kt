@@ -20,16 +20,15 @@ import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateListAsState
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.rememberAdvancementBoolean
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLines
 
 fun ShowBuilder.PowerAssertIntro() {
-    slide { SectionHeader(animateToBody = false) { Text("I would assert...") } }
+    SectionHeader(animateToBody = false) { Text("I would assert...") }
 
     section(title = { Text("Power-Assert") }) {
-        slide { SectionHeader() }
+        SectionHeader()
 
         WithoutPowerAssert()
 
@@ -46,8 +45,8 @@ fun ShowBuilder.PowerAssertIntro() {
 }
 
 private fun ShowBuilder.WithoutPowerAssert() {
-    slide {
-        val outputPopup by rememberAdvancementBoolean()
+    slide(advancements = 2) {
+        val outputPopup = advancement == 1
 
         TitleAndBody(
             kodee = {
@@ -73,10 +72,10 @@ private fun ShowBuilder.WithoutPowerAssert() {
 }
 
 private fun ShowBuilder.WithPowerAssert() {
-    slide {
-        val outputPopup by rememberAdvancementBoolean()
-        val showCode by rememberAdvancementBoolean()
-        val state by rememberAdvancementBoolean()
+    slide(advancements = 4) {
+        val outputPopup = advancement >= 1
+        val showCode = advancement >= 2
+        val state = advancement == 3
         val outputText by animateListAsState(
             targetIndex = if (state) powerAssertOutput.lastIndex else 0,
             values = powerAssertOutput,
