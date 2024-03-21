@@ -1,11 +1,14 @@
 package dev.bnorm.kc24.sections
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -14,11 +17,17 @@ import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.animation.*
-import dev.bnorm.librettist.show.section
+import dev.bnorm.librettist.animation.AnimationSequence
+import dev.bnorm.librettist.animation.animateListAsState
+import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.text.*
-import kotlin.time.Duration.Companion.milliseconds
+import dev.bnorm.librettist.show.rememberAdvancementBoolean
+import dev.bnorm.librettist.show.rememberAdvancementIndex
+import dev.bnorm.librettist.show.section
+import dev.bnorm.librettist.text.GroovyCodeText
+import dev.bnorm.librettist.text.buildGradleKtsCodeString
+import dev.bnorm.librettist.text.thenLineEndDiff
+import dev.bnorm.librettist.text.thenLines
 
 fun ShowBuilder.PowerAssertSetup() {
     section(title = { Text("Power-Assert Setup") }) {
@@ -34,16 +43,29 @@ fun ShowBuilder.PowerAssertSetup() {
 private fun ShowBuilder.GradlePlugin() {
     slide {
         TitleAndBody {
-            val state = rememberAdvancementAnimation()
+            val state by rememberAdvancementBoolean()
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    AnimateSequence(ktsSequence, state, delay = 25.milliseconds) {
-                        Text(it, modifier = Modifier.Companion.weight(0.4f))
-                    }
-                    AnimateSequence(groovySequence, state, delay = 19.milliseconds) {
-                        GradleGroovyText(it, modifier = Modifier.weight(0.6f))
-                    }
+                    val ktsText by animateListAsState(
+                        targetIndex = if (state) ktsSequence.lastIndex else 0,
+                        values = ktsSequence,
+                        animationSpec = tween(
+                            durationMillis = 1_000,
+                            easing = LinearEasing
+                        )
+                    )
+                    val groovyText by animateListAsState(
+                        targetIndex = if (state) groovySequence.lastIndex else 0,
+                        values = groovySequence,
+                        animationSpec = tween(
+                            durationMillis = 1_000,
+                            easing = LinearEasing
+                        )
+                    )
+
+                    Text(ktsText, modifier = Modifier.Companion.weight(0.4f))
+                    GradleGroovyText(groovyText, modifier = Modifier.weight(0.6f))
                 }
             }
         }
@@ -55,6 +77,7 @@ private fun ShowBuilder.GradleExtension() {
         TitleAndBody {
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
+                    val advancement by rememberAdvancementIndex(5)
                     // TODO this could probably be easier with some kind of animation spec builder?
                     /**
                      * buildAnimation(ktsConfigEmpty) {
@@ -64,9 +87,16 @@ private fun ShowBuilder.GradleExtension() {
                      *     onAdvance { thenLines(ktsConfigExcludeComplete) }
                      * }
                      */
-                    AnimateSequences(listOf(sequence1, sequence2, sequence3, sequence4)) {
-                        Text(it)
-                    }
+                    Text(
+                        when (advancement) {
+                            0 -> sequence1.start
+                            1 -> sequence1.end
+                            2 -> sequence2.end
+                            3 -> sequence3.end
+                            4 -> sequence4.end
+                            else -> error("!")
+                        }
+                    )
                 }
             }
         }
@@ -86,7 +116,7 @@ private fun String.toStyle(codeStyle: Highlighting) = when (this) {
     else -> null
 }
 
-private val ktsSequence: AnimationSequence<AnnotatedString>
+private val ktsSequence: List<AnnotatedString>
     @Composable
     get() {
         val codeStyle = ShowTheme.code
@@ -126,7 +156,7 @@ private val ktsSequence: AnimationSequence<AnnotatedString>
                         }
                     """.trimIndent(),
                 ),
-            )
+            ).sequence.toList()
         }
     }
 
@@ -153,7 +183,7 @@ private val groovySequence = startAnimation(
             id 'org.jetbrains.kotlin.plugin.power-assert' version '2.0.0'
         }
     """.trimIndent(),
-)
+).sequence.toList()
 
 private val ktsConfigEmpty =
     """

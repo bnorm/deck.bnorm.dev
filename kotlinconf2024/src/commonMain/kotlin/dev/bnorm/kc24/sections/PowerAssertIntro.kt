@@ -17,13 +17,11 @@ import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.animation.AnimateSequence
-import dev.bnorm.librettist.animation.AnimationState
-import dev.bnorm.librettist.animation.rememberAdvancementAnimation
+import dev.bnorm.librettist.animation.animateListAsState
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.rememberAdvancementBoolean
+import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLines
 
@@ -78,11 +76,16 @@ private fun ShowBuilder.WithPowerAssert() {
     slide {
         val outputPopup by rememberAdvancementBoolean()
         val showCode by rememberAdvancementBoolean()
-        val state = rememberAdvancementAnimation()
+        val state by rememberAdvancementBoolean()
+        val outputText by animateListAsState(
+            targetIndex = if (state) powerAssertOutput.lastIndex else 0,
+            values = powerAssertOutput,
+        )
 
         TitleAndBody(
             kodee = {
-                show(condition = { state.value == AnimationState.COMPLETE }) {
+                show(condition = { outputText == powerAssertOutput.last() }) {
+                    // TODO can this be moved out of the way of the example?
                     KodeeLoving(modifier = Modifier.requiredSize(300.dp).graphicsLayer { rotationY = 180f })
                 }
 
@@ -101,9 +104,7 @@ private fun ShowBuilder.WithPowerAssert() {
                     modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
                 ) {
                     if (showCode) {
-                        AnimateSequence(powerAssertOutput, state) { text ->
-                            Text(text, modifier = Modifier.wrapContentWidth(Alignment.Start, unbounded = true))
-                        }
+                        Text(outputText, modifier = Modifier.wrapContentWidth(Alignment.Start, unbounded = true))
                     } else {
                         Text(simpleOutput)
                     }
@@ -194,4 +195,4 @@ private val powerAssertOutput = startAnimation(
                |       8
                [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
     """.trimIndent(),
-)
+).sequence.toList()

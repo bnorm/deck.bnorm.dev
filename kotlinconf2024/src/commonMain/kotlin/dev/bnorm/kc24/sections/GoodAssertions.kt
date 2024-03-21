@@ -23,16 +23,11 @@ import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.animation.AnimateSequence
-import dev.bnorm.librettist.animation.rememberAdvancementAnimation
+import dev.bnorm.librettist.animation.animateListAsState
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.section
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideScope
-import dev.bnorm.librettist.show.rememberAdvancementIndex
+import dev.bnorm.librettist.show.*
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
-import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.GoodAssertions() {
     section(title = { Text("Good Assertions") }) {
@@ -66,14 +61,15 @@ private fun SlideScope.FirstExample() {
 
 @Composable
 private fun SlideScope.SecondExample() {
-    val state = rememberAdvancementAnimation()
+    val example by rememberAdvancementBoolean()
     ExampleTestAssertion(
         example = { problemVisible ->
-            val sequence = startAnimation(rememberExampleCodeString(firstTest))
-                    .thenLineEndDiff(rememberExampleCodeString(secondTest))
-            AnimateSequence(sequence, state, delay = 20.milliseconds) {
-                TextWithError(it, problemVisible, secondTestRange)
-            }
+            val text by animateListAsState(
+                targetIndex = if (example) firstToSecondTest.lastIndex else 0,
+                values = firstToSecondTest,
+            )
+
+            TextWithError(text, problemVisible, secondTestRange)
         },
         output = { problemVisible ->
             TextWithError(secondOutput, problemVisible, secondOutputRange)
@@ -89,14 +85,16 @@ private fun SlideScope.SecondExample() {
 
 @Composable
 private fun SlideScope.ThirdExample() {
-    val state = rememberAdvancementAnimation()
+    val example by rememberAdvancementBoolean()
     ExampleTestAssertion(
         example = { problemVisible ->
-            val sequence = startAnimation(rememberExampleCodeString(secondTest))
-                    .thenLineEndDiff(rememberExampleCodeString(thirdTest))
-            AnimateSequence(sequence, state, delay = 25.milliseconds) {
-                TextWithError(it, problemVisible, thirdTestRange)
-            }
+            val values = secondToThirdTest
+            val text by animateListAsState(
+                targetIndex = if (example) values.lastIndex else 0,
+                values = values,
+            )
+
+            TextWithError(text, problemVisible, thirdTestRange)
         },
         output = {
             Text(thirdOutput)
@@ -112,14 +110,16 @@ private fun SlideScope.ThirdExample() {
 
 @Composable
 private fun SlideScope.ForthExample() {
-    val state = rememberAdvancementAnimation()
+    val example by rememberAdvancementBoolean()
     ExampleTestAssertion(
         example = { problemVisible ->
-            val sequence = startAnimation(rememberExampleCodeString(thirdTest))
-                    .thenLineEndDiff(rememberExampleCodeString(forthTest))
-            AnimateSequence(sequence, state, delay = 12.milliseconds) {
-                TextWithError(it, problemVisible, forthTestRange)
-            }
+            val values = thirdToForth
+            val text by animateListAsState(
+                targetIndex = if (example) values.lastIndex else 0,
+                values = values,
+            )
+
+            TextWithError(text, problemVisible, forthTestRange)
         },
         output = {
             Text(forthOutput)
@@ -292,12 +292,34 @@ private val secondTest: String = """
 
 val secondTestRange = secondTest.rangeOf("members.size")
 
+private val firstToSecondTest: List<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            val first = buildKotlinCodeString(firstTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            startAnimation(first).thenLineEndDiff(second).sequence.toList()
+        }
+    }
+
 private val secondOutput: String = """
     java.lang.AssertionError: expected:<9> but was:<8>
         at [...]
 """.trimIndent()
 
 val secondOutputRange = secondOutput.rangeOf("expected:<9> but was:<8>")
+
+private val secondToThirdTest: List<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            startAnimation(second).thenLineEndDiff(third).sequence.toList()
+        }
+    }
 
 // language=kotlin
 private val thirdTest: String = """
@@ -314,6 +336,17 @@ private val thirdOutput: String = """
     java.lang.AssertionError: Members: [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli] expected:<9> but was:<8>
         at [...]
 """.trimIndent()
+
+private val thirdToForth: List<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            val forth = buildKotlinCodeString(forthTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            startAnimation(third).thenLineEndDiff(forth).sequence.toList()
+        }
+    }
 
 // language=kotlin
 private val forthTest: String = """
