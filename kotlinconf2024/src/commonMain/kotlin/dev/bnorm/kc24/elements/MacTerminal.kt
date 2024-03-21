@@ -21,7 +21,8 @@ fun MacTerminal(
         Box(modifier = Modifier.padding(start = 18.dp, top = 18.dp).size(24.dp).background(color, shape = CircleShape))
     }
 
-    Box(modifier = modifier.background(Color.Black).clip(RoundedCornerShape(20.dp))) {
+    // TODO only clip the top corners?
+    Box(modifier = modifier.clip(RoundedCornerShape(20.dp)).background(Color.Black)) {
         Column {
             Box(modifier = Modifier.fillMaxWidth().background(Color(0xFFF0F0F1)).height(56.dp)) {
                 Row {
