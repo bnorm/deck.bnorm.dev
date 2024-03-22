@@ -69,10 +69,10 @@ private fun ShowBuilder.FirstExample() {
 }
 
 private fun ShowBuilder.SecondExample() {
-    slide(advancements = 4) {
-        val example = transition.createChildTransition { it >= 1 }
+    slide(advancements = 3) {
+        val example = transition.createChildTransition { it >= 0 }
         ExampleTestAssertion(
-            transition = transition.createChildTransition { it - 1 },
+            transition = transition,
             example = { problemVisible ->
                 val values = firstToSecondTest
                 val text by example.animateList(
@@ -96,10 +96,10 @@ private fun ShowBuilder.SecondExample() {
 }
 
 private fun ShowBuilder.ThirdExample() {
-    slide(advancements = 4) {
-        val example = transition.createChildTransition { it >= 1 }
+    slide(advancements = 3) {
+        val example = transition.createChildTransition { it >= 0 }
         ExampleTestAssertion(
-            transition = transition.createChildTransition { it - 1 },
+            transition = transition,
             example = { problemVisible ->
                 val values = secondToThirdTest
                 val text by example.animateList(
@@ -123,10 +123,10 @@ private fun ShowBuilder.ThirdExample() {
 }
 
 private fun ShowBuilder.ForthExample() {
-    slide(advancements = 4) {
-        val example = transition.createChildTransition { it >= 1 }
+    slide(advancements = 3) {
+        val example = transition.createChildTransition { it >= 0 }
         ExampleTestAssertion(
-            transition = transition.createChildTransition { it - 1 },
+            transition = transition,
             example = { problemVisible ->
                 val values = thirdToForth
                 val text by example.animateList(
@@ -159,10 +159,10 @@ private fun ExampleTestAssertion(
     val showProblem = transition.createChildTransition { it == 2 }
     val outputOffset by transition.animateDp {
         when {
-            it <= 0 -> 600.dp // Output off-screen
             it == 1 -> 40.dp // Output in middle of screen
-            it >= 2 -> 320.dp // Output at bottom of screen
-            else -> error("!") // Branches are exhaustive
+            it == 2 -> 320.dp // Output at bottom of screen
+            else -> 600.dp // Output off-screen
+//            else -> error("!") // Branches are exhaustive
         }
     }
 

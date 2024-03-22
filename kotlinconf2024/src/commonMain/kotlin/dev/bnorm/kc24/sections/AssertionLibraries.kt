@@ -124,8 +124,8 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
         }
     } else {
         slide(advancements = AssertionLibrariesState.MAX_COUNT + 2) {
-            val answerVisible = transition.createChildTransition { it == AssertionLibrariesState.MAX_COUNT + 1 }
-            val libraryCount = transition.createChildTransition { minOf(it, AssertionLibrariesState.MAX_COUNT) }
+            val answerVisible = transition.createChildTransition { it >= AssertionLibrariesState.MAX_COUNT + 1 }
+            val libraryCount = transition.createChildTransition { it.coerceIn(0..AssertionLibrariesState.MAX_COUNT) }
             impl(answerVisible, libraryCount.targetState)
         }
     }
@@ -142,9 +142,9 @@ private fun ShowBuilder.GroovyLibraries() {
         }
     }
     slide(advancements = 3) {
-        val spockVisible = transition.createChildTransition { it != 2 }
-        val questionVisible = transition.createChildTransition { it == 1 }
-        val answerVisible = transition.createChildTransition { it == 2 }
+        val spockVisible = transition.createChildTransition { it < 2 }
+        val questionVisible = transition.createChildTransition { it >= 1 }
+        val answerVisible = transition.createChildTransition { it >= 2 }
 
         TitleAndBody {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {

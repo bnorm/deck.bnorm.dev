@@ -1,7 +1,11 @@
 package dev.bnorm.kc24.sections
 
-import androidx.compose.animation.*
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +19,6 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.show.section
 
 fun ShowBuilder.PowerAssertFuture() {
@@ -36,6 +39,7 @@ private fun ShowBuilder.PowerAssertIdeas() {
             ) {
                 // TODO show examples for compressed and diffs?
                 AnimateByLine(
+                    transition = transition,
                     "=> Improved diagrams",
                     "   => Diagram formatting improvements",
                     "   => Diffs for strings and collections",
@@ -59,6 +63,7 @@ private fun ShowBuilder.HowCanYouHelp() {
                 // TODO kotl.in/issues link?
                 // TODO kotlinlang Slack channel?
                 AnimateByLine(
+                    transition = transition,
                     "=> How do you get involved?",
                     "   => Try out Power-Assert!",
                     "   => Report any compilation errors",
@@ -70,7 +75,8 @@ private fun ShowBuilder.HowCanYouHelp() {
 }
 
 @Composable
-private fun SlideScope<Int>.AnimateByLine(
+private fun AnimateByLine(
+    transition: Transition<Int>,
     vararg lines: String,
 ) {
     if (lines.isEmpty()) return

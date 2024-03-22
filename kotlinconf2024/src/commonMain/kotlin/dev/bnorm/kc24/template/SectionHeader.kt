@@ -19,16 +19,16 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
-import dev.bnorm.librettist.show.slideForBoolean
 
+// TODO build SectionFooter for section ending animations?
 fun ShowBuilder.SectionHeader(
     animateToBody: Boolean = true,
     title: (@Composable () -> Unit)? = null,
 ) {
     if (animateToBody) {
-        slideForBoolean {
+        slide {
             SectionHeaderImpl(
-                showAsBody = transition,
+                showAsBody = transition.createChildTransition { it > 0 },
                 title = title ?: SlideSection.header,
             )
         }

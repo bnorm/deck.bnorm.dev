@@ -51,7 +51,7 @@ private fun ShowBuilder.WithoutPowerAssert() {
     slideForBoolean {
         TitleAndBody(
             kodee = {
-                show(condition = { transition.currentState }) {
+                show(condition = { transition.currentState && transition.targetState }) {
                     KodeeBrokenHearted(modifier = Modifier.requiredSize(300.dp))
                 }
             }
@@ -76,12 +76,12 @@ private fun ShowBuilder.WithPowerAssert() {
     slide(advancements = 4) {
         val outputPopup = transition.createChildTransition { it >= 1 }
         val showCode = transition.createChildTransition { it >= 2 }
-        val state = transition.createChildTransition { it == 3 }
-        val outputText by state.animateList(powerAssertOutput) { if (it) powerAssertOutput.lastIndex else 0 }
+        val showDiagram = transition.createChildTransition { it >= 3 }
+        val outputText by showDiagram.animateList(powerAssertOutput) { if (it) powerAssertOutput.lastIndex else 0 }
 
         TitleAndBody(
             kodee = {
-                show(condition = { state.currentState && state.targetState}) {
+                show(condition = { showDiagram.currentState && showDiagram.targetState}) {
                     // TODO can this be moved out of the way of the example?
                     KodeeLoving(modifier = Modifier.requiredSize(300.dp).graphicsLayer { rotationY = 180f })
                 }

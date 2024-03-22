@@ -73,11 +73,13 @@ private fun ShowBuilder.GradleExtension() {
                      */
                     val text = transition.createChildTransition {
                         when (it) {
+                            -1 -> sequence1.start
                             0 -> sequence1.start
                             1 -> sequence1.end
                             2 -> sequence2.end
                             3 -> sequence3.end
                             4 -> sequence4.end
+                            5 -> sequence4.end
                             else -> error("!")
                         }
                     }
