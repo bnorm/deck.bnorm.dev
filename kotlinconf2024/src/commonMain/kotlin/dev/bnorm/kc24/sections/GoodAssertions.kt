@@ -4,6 +4,7 @@ package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.ExperimentalTransitionApi
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.*
@@ -29,10 +30,8 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.librettist.animation.animateListAsState
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
@@ -52,6 +51,7 @@ fun ShowBuilder.GoodAssertions() {
 private fun ShowBuilder.FirstExample() {
     slide(advancements = 3) {
         ExampleTestAssertion(
+            transition = transition,
             example = { problemVisible ->
                 TextWithError(rememberExampleCodeString(firstTest), problemVisible, firstTest.rangeOf("assertTrue"))
             },
@@ -72,7 +72,7 @@ private fun ShowBuilder.SecondExample() {
     slide(advancements = 4) {
         val example = transition.createChildTransition { it >= 1 }
         ExampleTestAssertion(
-            advancementOffset = -1,
+            transition = transition.createChildTransition { it - 1 },
             example = { problemVisible ->
                 val values = firstToSecondTest
                 val text by example.animateList(
@@ -99,7 +99,7 @@ private fun ShowBuilder.ThirdExample() {
     slide(advancements = 4) {
         val example = transition.createChildTransition { it >= 1 }
         ExampleTestAssertion(
-            advancementOffset = -1,
+            transition = transition.createChildTransition { it - 1 },
             example = { problemVisible ->
                 val values = secondToThirdTest
                 val text by example.animateList(
@@ -126,7 +126,7 @@ private fun ShowBuilder.ForthExample() {
     slide(advancements = 4) {
         val example = transition.createChildTransition { it >= 1 }
         ExampleTestAssertion(
-            advancementOffset = -1,
+            transition = transition.createChildTransition { it - 1 },
             example = { problemVisible ->
                 val values = thirdToForth
                 val text by example.animateList(
@@ -150,18 +150,19 @@ private fun ShowBuilder.ForthExample() {
 }
 
 @Composable
-private fun SlideScope.ExampleTestAssertion(
-    advancementOffset: Int = 0,
+private fun ExampleTestAssertion(
+    transition: Transition<Int>, // TODO convert to an enum?
     example: @Composable (Boolean) -> Unit,
     output: @Composable (Boolean) -> Unit,
     problem: @Composable () -> Unit,
 ) {
-    val showOutput = transition.createChildTransition { advancementOffset + it >= 1 }
-    val showProblem = transition.createChildTransition { advancementOffset + it == 2 }
-    val outputOffset by showProblem.animateDp {
-        when (it) {
-            true -> 280.dp
-            false -> 0.dp
+    val showProblem = transition.createChildTransition { it == 2 }
+    val outputOffset by transition.animateDp {
+        when {
+            it <= 0 -> 600.dp // Output off-screen
+            it == 1 -> 40.dp // Output in middle of screen
+            it >= 2 -> 320.dp // Output at bottom of screen
+            else -> error("!") // Branches are exhaustive
         }
     }
 
@@ -171,7 +172,6 @@ private fun SlideScope.ExampleTestAssertion(
                 Box {
                     example(showProblem.targetState)
                 }
-                // TODO make the output appear higher and then shrink when the problem is displayed
                 showProblem.AnimatedVisibility(
                     enter = fadeIn(),
                     exit = fadeOut(),
@@ -180,18 +180,13 @@ private fun SlideScope.ExampleTestAssertion(
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                    showOutput.AnimatedVisibility(
-                        enter = slideInVertically { it },
-                        exit = slideOutVertically { it },
+                    MacTerminal(
+                        modifier = Modifier.animateContentSize()
+                            .requiredHeight(600.dp)
+                            .offset(y = outputOffset)
                     ) {
-                        MacTerminal(
-                            modifier = Modifier.animateContentSize()
-                                .requiredHeight(560.dp)
-                                .offset(y = outputOffset)
-                        ) {
-                            Box(modifier = Modifier.padding(32.dp)) {
-                                output(showProblem.targetState)
-                            }
+                        Box(modifier = Modifier.padding(32.dp)) {
+                            output(showProblem.targetState)
                         }
                     }
                 }

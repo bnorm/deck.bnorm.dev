@@ -28,6 +28,7 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.show.section
+import dev.bnorm.librettist.show.slideForBoolean
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -70,7 +71,7 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
     fun impl(answerVisible: Transition<Boolean>, count: Int) {
         TitleAndBody {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                HowManyKotlinLibraries(answerVisible = answerVisible.currentState)
+                HowManyKotlinLibraries(answerVisible = answerVisible.targetState)
             }
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -113,20 +114,19 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
 
 
     if (state.assisted) {
-        slide(advancements = 2) {
+        slideForBoolean {
             // TODO what if there is no assist tab?
             ShowAssistTab("Libraries") {
                 LibraryAssist(state)
             }
 
-            val answerVisible = transition.createChildTransition { it == 1 }
-            impl(answerVisible, state.count)
+            impl(transition, state.count)
         }
     } else {
         slide(advancements = AssertionLibrariesState.MAX_COUNT + 2) {
             val answerVisible = transition.createChildTransition { it == AssertionLibrariesState.MAX_COUNT + 1 }
             val libraryCount = transition.createChildTransition { minOf(it, AssertionLibrariesState.MAX_COUNT) }
-            impl(answerVisible, libraryCount.currentState)
+            impl(answerVisible, libraryCount.targetState)
         }
     }
 }
@@ -150,7 +150,7 @@ private fun ShowBuilder.GroovyLibraries() {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 HowManyKotlinLibraries(answerVisible = true)
                 Spacer(modifier = Modifier.height(SLIDE_CONTENT_SPACING))
-                HowManyGroovyLibraries(answerVisible = answerVisible.currentState)
+                HowManyGroovyLibraries(answerVisible = answerVisible.targetState)
             }
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 spockVisible.AnimatedVisibility(

@@ -19,15 +19,16 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
+import dev.bnorm.librettist.show.slideForBoolean
 
 fun ShowBuilder.SectionHeader(
     animateToBody: Boolean = true,
     title: (@Composable () -> Unit)? = null,
 ) {
     if (animateToBody) {
-        slide(advancements = 2) {
+        slideForBoolean {
             SectionHeaderImpl(
-                showAsBody = transition.createChildTransition { it == 1 },
+                showAsBody = transition,
                 title = title ?: SlideSection.header,
             )
         }

@@ -21,6 +21,7 @@ import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.section
+import dev.bnorm.librettist.show.slideForBoolean
 import dev.bnorm.librettist.text.GroovyCodeText
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
@@ -38,19 +39,17 @@ fun ShowBuilder.PowerAssertSetup() {
 }
 
 private fun ShowBuilder.GradlePlugin() {
-    slide(advancements = 2) {
+    slideForBoolean {
         TitleAndBody {
-            val state = transition.createChildTransition { it == 1 }
-
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
                     val ktsValues = ktsSequence
                     val groovyValues = groovySequence
 
-                    val ktsText by state.animateList(ktsValues) { if (it) ktsValues.lastIndex else 0 }
+                    val ktsText by transition.animateList(ktsValues) { if (it) ktsValues.lastIndex else 0 }
                     Text(ktsText, modifier = Modifier.Companion.weight(0.4f))
 
-                    val groovyText by state.animateList(groovyValues) { if (it) groovyValues.lastIndex else 0 }
+                    val groovyText by transition.animateList(groovyValues) { if (it) groovyValues.lastIndex else 0 }
                     GradleGroovyText(groovyText, modifier = Modifier.weight(0.6f))
                 }
             }
@@ -82,7 +81,7 @@ private fun ShowBuilder.GradleExtension() {
                             else -> error("!")
                         }
                     }
-                    Text(text.currentState)
+                    Text(text.targetState)
                 }
             }
         }

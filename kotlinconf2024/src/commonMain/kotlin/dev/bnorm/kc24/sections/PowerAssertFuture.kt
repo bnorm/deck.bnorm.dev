@@ -70,7 +70,7 @@ private fun ShowBuilder.HowCanYouHelp() {
 }
 
 @Composable
-private fun SlideScope.AnimateByLine(
+private fun SlideScope<Int>.AnimateByLine(
     vararg lines: String,
 ) {
     if (lines.isEmpty()) return
