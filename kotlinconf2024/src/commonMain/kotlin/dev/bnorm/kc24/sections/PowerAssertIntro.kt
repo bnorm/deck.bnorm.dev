@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
@@ -17,7 +18,7 @@ import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.animation.animateListAsState
+import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.section
@@ -46,11 +47,11 @@ fun ShowBuilder.PowerAssertIntro() {
 
 private fun ShowBuilder.WithoutPowerAssert() {
     slide(advancements = 2) {
-        val outputPopup = advancement == 1
+        val outputPopup = transition.createChildTransition { it == 1 }
 
         TitleAndBody(
             kodee = {
-                show(condition = { outputPopup }) {
+                show(condition = { outputPopup.currentState }) {
                     KodeeBrokenHearted(modifier = Modifier.requiredSize(300.dp))
                 }
             }
@@ -61,7 +62,7 @@ private fun ShowBuilder.WithoutPowerAssert() {
                 }
 
                 TestFailureOutput(
-                    visible = outputPopup,
+                    visible = outputPopup.currentState,
                     modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
                 ) {
                     Text(simpleOutput)
@@ -73,22 +74,20 @@ private fun ShowBuilder.WithoutPowerAssert() {
 
 private fun ShowBuilder.WithPowerAssert() {
     slide(advancements = 4) {
-        val outputPopup = advancement >= 1
-        val showCode = advancement >= 2
-        val state = advancement == 3
-        val outputText by animateListAsState(
-            targetIndex = if (state) powerAssertOutput.lastIndex else 0,
-            values = powerAssertOutput,
-        )
+
+        val outputPopup = transition.createChildTransition { it >= 1 }
+        val showCode = transition.createChildTransition { it >= 2 }
+        val state = transition.createChildTransition { it == 3 }
+        val outputText by state.animateList(powerAssertOutput) { if (it) powerAssertOutput.lastIndex else 0 }
 
         TitleAndBody(
             kodee = {
-                show(condition = { outputText == powerAssertOutput.last() }) {
+                show(condition = { !state.isRunning && state.currentState }) {
                     // TODO can this be moved out of the way of the example?
                     KodeeLoving(modifier = Modifier.requiredSize(300.dp).graphicsLayer { rotationY = 180f })
                 }
 
-                show(condition = { showCode }) {
+                show(condition = { showCode.currentState }) {
                     KodeeSurprised(Modifier.requiredSize(200.dp))
                 }
             }
@@ -99,10 +98,10 @@ private fun ShowBuilder.WithPowerAssert() {
                 }
 
                 TestFailureOutput(
-                    visible = outputPopup,
+                    visible = outputPopup.currentState,
                     modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
                 ) {
-                    if (showCode) {
+                    if (showCode.currentState) {
                         Text(outputText, modifier = Modifier.wrapContentWidth(Alignment.Start, unbounded = true))
                     } else {
                         Text(simpleOutput)

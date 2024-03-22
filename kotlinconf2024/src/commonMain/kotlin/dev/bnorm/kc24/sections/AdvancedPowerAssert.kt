@@ -1,19 +1,22 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
- import androidx.compose.runtime.remember
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
@@ -42,7 +45,7 @@ private fun ShowBuilder.ComplexExpressions() {
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {
                 ProvideTextStyle(MaterialTheme.typography.body2) {
-                    val showOutput = advancement == 1
+                    val showOutput = transition.createChildTransition { it == 1 }
 
                     Box(modifier = Modifier.padding(SLIDE_PADDING)) {
                         Text(complexAssertExample)
@@ -59,12 +62,14 @@ private fun ShowBuilder.SoftAssert() {
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {
                 ProvideTextStyle(MaterialTheme.typography.body2) {
+                    val showSidePanel = transition.createChildTransition { it == 1 }
+
                     Box(modifier = Modifier.padding(SLIDE_PADDING)) {
                         Text(softAssertSetup)
                     }
 
                     SidePanel(
-                        visible = advancement == 1,
+                        visible = showSidePanel,
                         modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
                     ) {
                         Text(softAsserGradle)
@@ -78,7 +83,7 @@ private fun ShowBuilder.SoftAssert() {
         TitleAndBody {
             Box(modifier = Modifier.fillMaxSize()) {
                 ProvideTextStyle(MaterialTheme.typography.body2) {
-                    val showOutput = advancement == 1
+                    val showOutput = transition.createChildTransition { it == 1 }
 
                     Box(modifier = Modifier.padding(SLIDE_PADDING)) {
                         Text(softAssertExample)
@@ -92,10 +97,9 @@ private fun ShowBuilder.SoftAssert() {
 }
 
 @Composable
-private fun OutputText(text: String, visible: Boolean, modifier: Modifier = Modifier) {
+private fun OutputText(text: String, visible: Transition<Boolean>, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth()) {
-        AnimatedVisibility(
-            visible = visible,
+        visible.AnimatedVisibility(
             enter = slideInVertically { it },
             exit = slideOutVertically { it },
         ) {
@@ -111,10 +115,9 @@ private fun OutputText(text: String, visible: Boolean, modifier: Modifier = Modi
 }
 
 @Composable
-private fun SidePanel(visible: Boolean, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+private fun SidePanel(visible: Transition<Boolean>, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Box(modifier = modifier.fillMaxHeight()) {
-        AnimatedVisibility(
-            visible = visible,
+        visible.AnimatedVisibility(
             enter = slideInHorizontally { it },
             exit = slideOutHorizontally { it },
         ) {

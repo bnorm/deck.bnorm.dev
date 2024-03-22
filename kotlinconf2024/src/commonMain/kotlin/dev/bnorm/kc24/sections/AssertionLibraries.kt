@@ -1,6 +1,8 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
@@ -64,15 +67,15 @@ fun ShowBuilder.AssertionLibraries(state: AssertionLibrariesState) {
 
 private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
     @Composable
-    fun impl(answerVisible: Boolean, count: Int) {
+    fun impl(answerVisible: Transition<Boolean>, count: Int) {
         TitleAndBody {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                HowManyKotlinLibraries(answerVisible = answerVisible)
+                HowManyKotlinLibraries(answerVisible = answerVisible.currentState)
             }
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                AnimatedVisibility(
-                    visible = !answerVisible,
+                answerVisible.AnimatedVisibility(
+                    visible = { !it },
                     enter = expandIn(expandFrom = Alignment.Center),
                     exit = shrinkOut(shrinkTowards = Alignment.Center),
                 ) {
@@ -116,13 +119,14 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
                 LibraryAssist(state)
             }
 
-            val answerVisible = advancement == 1
+            val answerVisible = transition.createChildTransition { it == 1 }
             impl(answerVisible, state.count)
         }
     } else {
         slide(advancements = AssertionLibrariesState.MAX_COUNT + 2) {
-            val answerVisible = advancement == AssertionLibrariesState.MAX_COUNT + 1
-            impl(answerVisible, minOf(advancement, AssertionLibrariesState.MAX_COUNT))
+            val answerVisible = transition.createChildTransition { it == AssertionLibrariesState.MAX_COUNT + 1 }
+            val libraryCount = transition.createChildTransition { minOf(it, AssertionLibrariesState.MAX_COUNT) }
+            impl(answerVisible, libraryCount.currentState)
         }
     }
 }
@@ -138,21 +142,24 @@ private fun ShowBuilder.GroovyLibraries() {
         }
     }
     slide(advancements = 3) {
+        val spockVisible = transition.createChildTransition { it != 2 }
+        val questionVisible = transition.createChildTransition { it == 1 }
+        val answerVisible = transition.createChildTransition { it == 2 }
+
         TitleAndBody {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 HowManyKotlinLibraries(answerVisible = true)
                 Spacer(modifier = Modifier.height(SLIDE_CONTENT_SPACING))
-                HowManyGroovyLibraries(answerVisible = advancement == 2)
+                HowManyGroovyLibraries(answerVisible = answerVisible.currentState)
             }
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                AnimatedVisibility(
-                    visible = advancement != 2,
+                spockVisible.AnimatedVisibility(
                     enter = expandIn(expandFrom = Alignment.Center),
                     exit = shrinkOut(shrinkTowards = Alignment.Center),
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Spock!", style = MaterialTheme.typography.h1)
-                        AnimatedVisibility(advancement == 1) {
+                        questionVisible.AnimatedVisibility {
                             Text(text = "(...is that it?)")
                         }
                     }

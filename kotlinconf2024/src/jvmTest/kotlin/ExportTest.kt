@@ -1,3 +1,5 @@
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,7 +51,7 @@ class ExportTest {
     private fun DesktopComposeUiTest.setSlide(slides: List<Slide>, slideIndex: Pair<Int, Int>) {
         setContent {
             val content = slides[slideIndex.first].content
-            val scope = SlideScope(slideIndex.second)
+            val scope = SlideScope(rememberTransition(MutableTransitionState(slideIndex.second)))
 
             ShowTheme(Theme.dark) {
                 ScaledBox(

@@ -1,7 +1,6 @@
 package dev.bnorm.kc24.sections
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -18,7 +17,7 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.AnimationSequence
-import dev.bnorm.librettist.animation.animateListAsState
+import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.section
@@ -41,30 +40,17 @@ fun ShowBuilder.PowerAssertSetup() {
 private fun ShowBuilder.GradlePlugin() {
     slide(advancements = 2) {
         TitleAndBody {
-            val state = advancement == 1
+            val state = transition.createChildTransition { it == 1 }
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
                     val ktsValues = ktsSequence
-                    val ktsText by animateListAsState(
-                        targetIndex = if (state) ktsValues.lastIndex else 0,
-                        values = ktsValues,
-                        animationSpec = tween(
-                            durationMillis = 1_000,
-                            easing = LinearEasing
-                        )
-                    )
                     val groovyValues = groovySequence
-                    val groovyText by animateListAsState(
-                        targetIndex = if (state) groovyValues.lastIndex else 0,
-                        values = groovyValues,
-                        animationSpec = tween(
-                            durationMillis = 1_000,
-                            easing = LinearEasing
-                        )
-                    )
 
+                    val ktsText by state.animateList(ktsValues) { if (it) ktsValues.lastIndex else 0 }
                     Text(ktsText, modifier = Modifier.Companion.weight(0.4f))
+
+                    val groovyText by state.animateList(groovyValues) { if (it) groovyValues.lastIndex else 0 }
                     GradleGroovyText(groovyText, modifier = Modifier.weight(0.6f))
                 }
             }
@@ -86,8 +72,8 @@ private fun ShowBuilder.GradleExtension() {
                      *     onAdvance { thenLines(ktsConfigExcludeComplete) }
                      * }
                      */
-                    Text(
-                        when (advancement) {
+                    val text = transition.createChildTransition {
+                        when (it) {
                             0 -> sequence1.start
                             1 -> sequence1.end
                             2 -> sequence2.end
@@ -95,7 +81,8 @@ private fun ShowBuilder.GradleExtension() {
                             4 -> sequence4.end
                             else -> error("!")
                         }
-                    )
+                    }
+                    Text(text.currentState)
                 }
             }
         }

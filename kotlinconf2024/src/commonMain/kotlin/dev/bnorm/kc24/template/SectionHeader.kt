@@ -1,10 +1,9 @@
+@file:OptIn(ExperimentalAnimationApi::class, ExperimentalTransitionApi::class)
+
 package dev.bnorm.kc24.template
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
 
@@ -26,31 +26,33 @@ fun ShowBuilder.SectionHeader(
 ) {
     if (animateToBody) {
         slide(advancements = 2) {
-            val title = title ?: SlideSection.header
-            SectionHeaderImpl(showAsBody = advancement == 1, title)
+            SectionHeaderImpl(
+                showAsBody = transition.createChildTransition { it == 1 },
+                title = title ?: SlideSection.header,
+            )
         }
     } else {
         slide {
-            val title = title ?: SlideSection.header
-            SectionHeaderImpl(showAsBody = false, title)
+            SectionHeaderImpl(
+                showAsBody = transition.createChildTransition { false },
+                title = title ?: SlideSection.header,
+            )
         }
     }
 }
 
 @Composable
 private fun SectionHeaderImpl(
-    showAsBody: Boolean,
+    showAsBody: Transition<Boolean>,
     title: @Composable () -> Unit,
 ) {
-    val transition = updateTransition(showAsBody, label = "slide type")
-
-    val spacing by transition.animateDp {
+    val spacing by showAsBody.animateDp {
         when (it) {
             false -> 450.dp
             true -> 32.dp
         }
     }
-    val textStyle = transition.animateTextStyle(MaterialTheme.typography.h2, MaterialTheme.typography.h3)
+    val textStyle = showAsBody.animateTextStyle(MaterialTheme.typography.h2, MaterialTheme.typography.h3)
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -67,8 +69,8 @@ private fun SectionHeaderImpl(
         Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         Row(modifier = Modifier.offset(y = (-268).dp), horizontalArrangement = Arrangement.End) {
             Spacer(Modifier.weight(1f))
-            AnimatedVisibility(
-                visible = !showAsBody,
+            showAsBody.AnimatedVisibility(
+                visible = { !it },
                 enter = fadeIn() + slideInHorizontally { it },
                 exit = slideOutHorizontally { it } + fadeOut(),
             ) {
@@ -76,12 +78,11 @@ private fun SectionHeaderImpl(
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        AnimatedVisibility(showAsBody, enter = slideInVertically { it }, exit = slideOutVertically { it }) {
+        showAsBody.AnimatedVisibility(enter = slideInVertically { it }, exit = slideOutVertically { it }) {
             Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         }
     }
-    AnimatedVisibility(
-        showAsBody,
+    showAsBody.AnimatedVisibility(
         enter = fadeIn() + slideInHorizontally { it },
         exit = slideOutHorizontally { it } + fadeOut(),
     ) {

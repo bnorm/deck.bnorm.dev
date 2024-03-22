@@ -1,7 +1,11 @@
+@file:OptIn(ExperimentalTransitionApi::class, ExperimentalAnimationApi::class)
+
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.ExperimentalTransitionApi
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -17,12 +21,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
+import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.animateListAsState
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
@@ -64,13 +70,14 @@ private fun ShowBuilder.FirstExample() {
 
 private fun ShowBuilder.SecondExample() {
     slide(advancements = 4) {
-        val example = advancement >= 1
+        val example = transition.createChildTransition { it >= 1 }
         ExampleTestAssertion(
             advancementOffset = -1,
             example = { problemVisible ->
-                val text by animateListAsState(
-                    targetIndex = if (example) firstToSecondTest.lastIndex else 0,
-                    values = firstToSecondTest,
+                val values = firstToSecondTest
+                val text by example.animateList(
+                    values = values,
+                    targetIndexByState = { if (it) values.lastIndex else 0 },
                 )
 
                 TextWithError(text, problemVisible, secondTestRange)
@@ -90,14 +97,14 @@ private fun ShowBuilder.SecondExample() {
 
 private fun ShowBuilder.ThirdExample() {
     slide(advancements = 4) {
-        val example = advancement >= 1
+        val example = transition.createChildTransition { it >= 1 }
         ExampleTestAssertion(
             advancementOffset = -1,
             example = { problemVisible ->
                 val values = secondToThirdTest
-                val text by animateListAsState(
-                    targetIndex = if (example) values.lastIndex else 0,
+                val text by example.animateList(
                     values = values,
+                    targetIndexByState = { if (it) values.lastIndex else 0 },
                 )
 
                 TextWithError(text, problemVisible, thirdTestRange)
@@ -117,14 +124,14 @@ private fun ShowBuilder.ThirdExample() {
 
 private fun ShowBuilder.ForthExample() {
     slide(advancements = 4) {
-        val example = advancement >= 1
+        val example = transition.createChildTransition { it >= 1 }
         ExampleTestAssertion(
             advancementOffset = -1,
             example = { problemVisible ->
                 val values = thirdToForth
-                val text by animateListAsState(
-                    targetIndex = if (example) values.lastIndex else 0,
+                val text by example.animateList(
                     values = values,
+                    targetIndexByState = { if (it) values.lastIndex else 0 },
                 )
 
                 TextWithError(text, problemVisible, forthTestRange)
@@ -149,24 +156,23 @@ private fun SlideScope.ExampleTestAssertion(
     output: @Composable (Boolean) -> Unit,
     problem: @Composable () -> Unit,
 ) {
-    val showOutput = advancement + advancementOffset >= 1
-    val showProblem = advancement + advancementOffset == 2
-    val outputOffset by animateDpAsState(
-        targetValue = when (showProblem) {
+    val showOutput = transition.createChildTransition { advancementOffset + it >= 1 }
+    val showProblem = transition.createChildTransition { advancementOffset + it == 2 }
+    val outputOffset by showProblem.animateDp {
+        when (it) {
             true -> 280.dp
             false -> 0.dp
         }
-    )
+    }
 
     TitleAndBody {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 Box {
-                    example(showProblem)
+                    example(showProblem.targetState)
                 }
                 // TODO make the output appear higher and then shrink when the problem is displayed
-                AnimatedVisibility(
-                    visible = showProblem,
+                showProblem.AnimatedVisibility(
                     enter = fadeIn(),
                     exit = fadeOut(),
                 ) { problem() }
@@ -174,8 +180,7 @@ private fun SlideScope.ExampleTestAssertion(
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                    AnimatedVisibility(
-                        visible = showOutput,
+                    showOutput.AnimatedVisibility(
                         enter = slideInVertically { it },
                         exit = slideOutVertically { it },
                     ) {
@@ -185,7 +190,7 @@ private fun SlideScope.ExampleTestAssertion(
                                 .offset(y = outputOffset)
                         ) {
                             Box(modifier = Modifier.padding(32.dp)) {
-                                output(showProblem)
+                                output(showProblem.targetState)
                             }
                         }
                     }

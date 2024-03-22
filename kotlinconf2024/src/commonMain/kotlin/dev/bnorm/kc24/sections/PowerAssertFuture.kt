@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
@@ -74,8 +76,7 @@ private fun SlideScope.AnimateByLine(
     if (lines.isEmpty()) return
 
     for ((i, line) in lines.withIndex()) {
-        AnimatedVisibility(
-            visible = advancement >= i,
+        transition.createChildTransition { it >= i }.AnimatedVisibility(
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically(),
         ) { Text(line) }

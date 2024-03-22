@@ -22,6 +22,14 @@ kotlin {
         }
     }
 
+    compilerOptions {
+        optIn.addAll(
+            "androidx.compose.animation.core.ExperimentalTransitionApi",
+            "androidx.compose.animation.ExperimentalAnimationApi",
+            "org.jetbrains.compose.resources.ExperimentalResourceApi",
+        )
+    }
+
     sourceSets {
         commonMain {
             dependencies {
