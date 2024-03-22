@@ -25,27 +25,21 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 
 fun ShowBuilder.GoodAssertions() {
-    section(title = { Text("Good Assertions") }) {
-        SectionHeader()
-
-        // TODO kodee changes for all the difference examples
-        FirstExample()
-        SecondExample()
-        ThirdExample()
-        ForthExample()
-    }
+    // TODO kodee changes for all the difference examples
+    FirstExample()
+    SecondExample()
+    ThirdExample()
+    ForthExample()
 }
 
 private fun ShowBuilder.FirstExample() {

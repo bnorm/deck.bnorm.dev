@@ -19,9 +19,7 @@ fun TitleAndBody(
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = SLIDE_PADDING, vertical = 32.dp)
-                .requiredHeight(130.dp),
-            contentAlignment = Alignment.BottomStart,
+                .padding(start = SLIDE_PADDING, top = SLIDE_PADDING, bottom = SLIDE_CONTENT_SPACING),
         ) {
             ProvideTextStyle(MaterialTheme.typography.h3) {
                 title()

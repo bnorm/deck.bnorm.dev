@@ -23,11 +23,9 @@ import androidx.compose.ui.zIndex
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.assist.ShowAssistTab
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.slideForBoolean
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -58,12 +56,9 @@ class AssertionLibrariesState(
 }
 
 fun ShowBuilder.AssertionLibraries(state: AssertionLibrariesState) {
-    section(title = { Text("Assertion Libraries") }) {
-        SectionHeader()
-        KotlinLibraries(state)
-        GroovyLibraries()
-        Conclusion()
-    }
+    KotlinLibraries(state)
+    GroovyLibraries()
+    Conclusion()
 }
 
 private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {

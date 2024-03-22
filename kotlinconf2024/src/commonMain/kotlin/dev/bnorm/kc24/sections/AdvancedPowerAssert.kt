@@ -21,26 +21,20 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
 import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.slideForBoolean
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 
 fun ShowBuilder.AdvancedPowerAssert() {
-    section(title = { Text("Advanced Power-Assert") }) {
-        SectionHeader()
+    ComplexExpressions()
+    SoftAssert()
 
-        ComplexExpressions()
-        SoftAssert()
-
-        // TODO extra use cases like
-        //  3. logging? (dbg)
-    }
+    // TODO extra use cases like
+    //  3. logging? (dbg)
 }
 
 private fun ShowBuilder.ComplexExpressions() {

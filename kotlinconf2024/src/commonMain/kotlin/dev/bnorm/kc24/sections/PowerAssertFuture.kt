@@ -16,17 +16,12 @@ import androidx.compose.ui.Modifier
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.section
 
 fun ShowBuilder.PowerAssertFuture() {
-    section(title = { Text("Future of Power-Assert") }) {
-        SectionHeader()
-        PowerAssertIdeas()
-        HowCanYouHelp()
-    }
+    PowerAssertIdeas()
+    HowCanYouHelp()
 }
 
 private fun ShowBuilder.PowerAssertIdeas() {

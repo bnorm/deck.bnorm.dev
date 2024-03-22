@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,48 +21,64 @@ import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
 
-// TODO build SectionFooter for section ending animations?
 fun ShowBuilder.SectionHeader(
-    animateToBody: Boolean = true,
+    animateFromBody: Boolean = false,
+    animateToBody: Boolean = false,
+    title: String,
+) {
+    slide {
+        SectionHeader(
+            showAsBody = transition.createChildTransition {
+                when {
+                    it < 0 -> animateFromBody
+                    it == 0 -> false
+                    it > 0 -> animateToBody
+                    else -> error("!") // Branches are exhaustive
+                }
+            },
+            title = { Text(title) },
+        )
+    }
+}
+
+fun ShowBuilder.SectionHeader(
+    animateFromBody: Boolean = false,
+    animateToBody: Boolean = false,
     title: (@Composable () -> Unit)? = null,
 ) {
-    if (animateToBody) {
-        slide {
-            SectionHeaderImpl(
-                showAsBody = transition.createChildTransition { it > 0 },
-                title = title ?: SlideSection.header,
-            )
-        }
-    } else {
-        slide {
-            SectionHeaderImpl(
-                showAsBody = transition.createChildTransition { false },
-                title = title ?: SlideSection.header,
-            )
-        }
+    slide {
+        SectionHeader(
+            showAsBody = transition.createChildTransition {
+                when {
+                    it < 0 -> animateFromBody
+                    it == 0 -> false
+                    it > 0 -> animateToBody
+                    else -> error("!") // Branches are exhaustive
+                }
+            },
+            title = title ?: SlideSection.header,
+        )
     }
 }
 
 @Composable
-private fun SectionHeaderImpl(
+fun SectionHeader(
     showAsBody: Transition<Boolean>,
-    title: @Composable () -> Unit,
+    title: @Composable () -> Unit = SlideSection.header,
 ) {
     val spacing by showAsBody.animateDp {
         when (it) {
-            false -> 450.dp
-            true -> 32.dp
+            false -> 400.dp
+            true -> 0.dp
         }
     }
     val textStyle = showAsBody.animateTextStyle(MaterialTheme.typography.h2, MaterialTheme.typography.h3)
 
     Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.requiredHeight(spacing).animateContentSize())
         Box(
             modifier = Modifier.fillMaxWidth()
-                .padding(top = spacing, start = SLIDE_PADDING, bottom = 32.dp)
-                .requiredHeight(130.dp)
-                .animateContentSize(),
-            contentAlignment = Alignment.BottomStart,
+                .padding(start = SLIDE_PADDING, top = SLIDE_PADDING, bottom = SLIDE_CONTENT_SPACING),
         ) {
             ProvideTextStyle(textStyle) {
                 title()

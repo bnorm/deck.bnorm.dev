@@ -22,29 +22,22 @@ import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.slideForBoolean
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLines
 
 fun ShowBuilder.PowerAssertIntro() {
-    SectionHeader(animateToBody = false) { Text("I would assert...") }
+    WithoutPowerAssert()
 
-    section(title = { Text("Power-Assert") }) {
-        SectionHeader()
+    // TODO adding the magic slide
+    //  gradle symbol going across the screen?
+    slide { TitleSlide { Text("Power-Assert Magic!") } }
 
-        WithoutPowerAssert()
+    WithPowerAssert()
 
-        // TODO adding the magic slide
-        //  gradle symbol going across the screen?
-        slide { TitleSlide { Text("Power-Assert Magic!") } }
-
-        WithPowerAssert()
-
-        // TODO add more complex example?
-        //  assert(members.filter { it.age > 50 }.size == 3)
-        //     => gandalf, legolas, gimli, aragorn
-    }
+    // TODO add more complex example?
+    //  assert(members.filter { it.age > 50 }.size == 3)
+    //     => gandalf, legolas, gimli, aragorn
 }
 
 private fun ShowBuilder.WithoutPowerAssert() {

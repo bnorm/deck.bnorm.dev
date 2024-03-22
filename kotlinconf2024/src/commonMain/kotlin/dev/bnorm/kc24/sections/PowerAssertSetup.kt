@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
@@ -20,7 +19,6 @@ import dev.bnorm.librettist.animation.AnimationSequence
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.show.slideForBoolean
 import dev.bnorm.librettist.text.GroovyCodeText
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
@@ -28,14 +26,10 @@ import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
 
 fun ShowBuilder.PowerAssertSetup() {
-    section(title = { Text("Power-Assert Setup") }) {
-        SectionHeader()
-
-        GradlePlugin()
-        GradleExtension()
-        // TODO function extension property
-        // TODO exclude source sets property
-    }
+    GradlePlugin()
+    GradleExtension()
+    // TODO function extension property
+    // TODO exclude source sets property
 }
 
 private fun ShowBuilder.GradlePlugin() {
