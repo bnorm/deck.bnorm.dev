@@ -21,8 +21,7 @@ import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.slideForBoolean
+import dev.bnorm.librettist.show.*
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLines
 
@@ -44,7 +43,7 @@ private fun ShowBuilder.WithoutPowerAssert() {
     slideForBoolean {
         TitleAndBody(
             kodee = {
-                show(condition = { transition.currentState && transition.targetState }) {
+                show(condition = { transition.currentState.toBoolean() && transition.targetState.toBoolean() }) {
                     KodeeBrokenHearted(modifier = Modifier.requiredSize(300.dp))
                 }
             }
@@ -55,7 +54,7 @@ private fun ShowBuilder.WithoutPowerAssert() {
                 }
 
                 TestFailureOutput(
-                    visible = transition,
+                    visible = transition.createChildTransition { it.toBoolean() },
                     modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)
                 ) {
                     Text(simpleOutput)
@@ -66,10 +65,10 @@ private fun ShowBuilder.WithoutPowerAssert() {
 }
 
 private fun ShowBuilder.WithPowerAssert() {
-    slide(advancements = 4) {
-        val outputPopup = transition.createChildTransition { it >= 1 }
-        val showCode = transition.createChildTransition { it >= 2 }
-        val showDiagram = transition.createChildTransition { it >= 3 }
+    slide(states = 4) {
+        val outputPopup = transition.createChildTransition { it.toInt() >= 1 }
+        val showCode = transition.createChildTransition { it.toInt() >= 2 }
+        val showDiagram = transition.createChildTransition { it.toInt() >= 3 }
         val outputText by showDiagram.animateList(powerAssertOutput) { if (it) powerAssertOutput.lastIndex else 0 }
 
         TitleAndBody(

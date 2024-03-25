@@ -31,6 +31,8 @@ import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideState
+import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 
@@ -43,7 +45,7 @@ fun ShowBuilder.GoodAssertions() {
 }
 
 private fun ShowBuilder.FirstExample() {
-    slide(advancements = 3) {
+    slide(states = 3) {
         ExampleTestAssertion(
             transition = transition,
             example = { problemVisible ->
@@ -63,8 +65,8 @@ private fun ShowBuilder.FirstExample() {
 }
 
 private fun ShowBuilder.SecondExample() {
-    slide(advancements = 3) {
-        val example = transition.createChildTransition { it >= 0 }
+    slide(states = 3) {
+        val example = transition.createChildTransition { it != SlideState.Entering }
         ExampleTestAssertion(
             transition = transition,
             example = { problemVisible ->
@@ -90,8 +92,8 @@ private fun ShowBuilder.SecondExample() {
 }
 
 private fun ShowBuilder.ThirdExample() {
-    slide(advancements = 3) {
-        val example = transition.createChildTransition { it >= 0 }
+    slide(states = 3) {
+        val example = transition.createChildTransition { it != SlideState.Entering }
         ExampleTestAssertion(
             transition = transition,
             example = { problemVisible ->
@@ -117,8 +119,8 @@ private fun ShowBuilder.ThirdExample() {
 }
 
 private fun ShowBuilder.ForthExample() {
-    slide(advancements = 3) {
-        val example = transition.createChildTransition { it >= 0 }
+    slide(states = 3) {
+        val example = transition.createChildTransition { it != SlideState.Entering }
         ExampleTestAssertion(
             transition = transition,
             example = { problemVisible ->
@@ -145,16 +147,16 @@ private fun ShowBuilder.ForthExample() {
 
 @Composable
 private fun ExampleTestAssertion(
-    transition: Transition<Int>, // TODO convert to an enum?
+    transition: Transition<out SlideState<Int>>, // TODO convert to an enum?
     example: @Composable (Boolean) -> Unit,
     output: @Composable (Boolean) -> Unit,
     problem: @Composable () -> Unit,
 ) {
-    val showProblem = transition.createChildTransition { it == 2 }
+    val showProblem = transition.createChildTransition { it.toInt() == 2 }
     val outputOffset by transition.animateDp {
-        when {
-            it == 1 -> 40.dp // Output in middle of screen
-            it == 2 -> 320.dp // Output at bottom of screen
+        when (it.toInt()) {
+            1 -> 40.dp // Output in middle of screen
+            2 -> 320.dp // Output at bottom of screen
             else -> 600.dp // Output off-screen
 //            else -> error("!") // Branches are exhaustive
         }

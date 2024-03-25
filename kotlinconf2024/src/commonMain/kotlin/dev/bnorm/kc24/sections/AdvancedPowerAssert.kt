@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -26,6 +27,7 @@ import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.slideForBoolean
+import dev.bnorm.librettist.show.toBoolean
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 
@@ -45,7 +47,11 @@ private fun ShowBuilder.ComplexExpressions() {
                     Box(modifier = Modifier.padding(SLIDE_PADDING)) {
                         Text(complexAssertExample)
                     }
-                    OutputText(complexAssertOutput, transition, modifier = Modifier.align(Alignment.BottomStart))
+                    OutputText(
+                        text = complexAssertOutput,
+                        visible = transition.createChildTransition { it.toBoolean() },
+                        modifier = Modifier.align(Alignment.BottomStart)
+                    )
                 }
             }
         }
@@ -62,7 +68,7 @@ private fun ShowBuilder.SoftAssert() {
                     }
 
                     SidePanel(
-                        visible = transition,
+                        visible = transition.createChildTransition { it.toBoolean() },
                         modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
                     ) {
                         Text(softAsserGradle)
@@ -80,7 +86,11 @@ private fun ShowBuilder.SoftAssert() {
                         Text(softAssertExample)
                     }
 
-                    OutputText(softAssertOutput, transition, modifier = Modifier.align(Alignment.BottomStart))
+                    OutputText(
+                        text = softAssertOutput,
+                        visible = transition.createChildTransition { it.toBoolean() },
+                        modifier = Modifier.align(Alignment.BottomStart)
+                    )
                 }
             }
         }

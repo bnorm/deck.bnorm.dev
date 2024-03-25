@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
+import dev.bnorm.librettist.show.SlideState
 
 fun ShowBuilder.SectionHeader(
     animateFromBody: Boolean = false,
@@ -29,11 +30,10 @@ fun ShowBuilder.SectionHeader(
     slide {
         SectionHeader(
             showAsBody = transition.createChildTransition {
-                when {
-                    it < 0 -> animateFromBody
-                    it == 0 -> false
-                    it > 0 -> animateToBody
-                    else -> error("!") // Branches are exhaustive
+                when (it) {
+                    SlideState.Entering -> animateFromBody
+                    SlideState.Exiting -> animateToBody
+                    is SlideState.Index -> false
                 }
             },
             title = { Text(title) },
@@ -49,11 +49,10 @@ fun ShowBuilder.SectionHeader(
     slide {
         SectionHeader(
             showAsBody = transition.createChildTransition {
-                when {
-                    it < 0 -> animateFromBody
-                    it == 0 -> false
-                    it > 0 -> animateToBody
-                    else -> error("!") // Branches are exhaustive
+                when (it) {
+                    SlideState.Entering -> animateFromBody
+                    SlideState.Exiting -> animateToBody
+                    is SlideState.Index -> false
                 }
             },
             title = title ?: SlideSection.header,

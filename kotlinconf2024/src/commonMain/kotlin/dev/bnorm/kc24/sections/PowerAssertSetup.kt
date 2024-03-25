@@ -20,6 +20,8 @@ import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.slideForBoolean
+import dev.bnorm.librettist.show.toBoolean
+import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.GroovyCodeText
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
@@ -40,10 +42,10 @@ private fun ShowBuilder.GradlePlugin() {
                     val ktsValues = ktsSequence
                     val groovyValues = groovySequence
 
-                    val ktsText by transition.animateList(ktsValues) { if (it) ktsValues.lastIndex else 0 }
+                    val ktsText by transition.animateList(ktsValues) { if (it.toBoolean()) ktsValues.lastIndex else 0 }
                     Text(ktsText, modifier = Modifier.Companion.weight(0.4f))
 
-                    val groovyText by transition.animateList(groovyValues) { if (it) groovyValues.lastIndex else 0 }
+                    val groovyText by transition.animateList(groovyValues) { if (it.toBoolean()) groovyValues.lastIndex else 0 }
                     GradleGroovyText(groovyText, modifier = Modifier.weight(0.6f))
                 }
             }
@@ -52,7 +54,7 @@ private fun ShowBuilder.GradlePlugin() {
 }
 
 private fun ShowBuilder.GradleExtension() {
-    slide(advancements = 5) {
+    slide(states = 5) {
         TitleAndBody {
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
@@ -66,15 +68,14 @@ private fun ShowBuilder.GradleExtension() {
                      * }
                      */
                     val text = transition.createChildTransition {
-                        when (it) {
+                        when (it.toInt()) {
                             -1 -> sequence1.start
                             0 -> sequence1.start
                             1 -> sequence1.end
                             2 -> sequence2.end
                             3 -> sequence3.end
                             4 -> sequence4.end
-                            5 -> sequence4.end
-                            else -> error("!")
+                            else -> sequence4.end
                         }
                     }
                     Text(text.targetState)

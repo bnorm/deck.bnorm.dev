@@ -29,6 +29,8 @@ import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideState
+import dev.bnorm.librettist.show.toInt
 
 fun ShowBuilder.PowerAssertFuture() {
     PowerAssertIdeas()
@@ -36,7 +38,7 @@ fun ShowBuilder.PowerAssertFuture() {
 }
 
 private fun ShowBuilder.PowerAssertIdeas() {
-    slide(advancements = 7) {
+    slide(states = 7) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -59,7 +61,7 @@ private fun ShowBuilder.PowerAssertIdeas() {
 }
 
 private fun ShowBuilder.HowCanYouHelp() {
-    slide(advancements = 4) {
+    slide(states = 4) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -81,14 +83,14 @@ private fun ShowBuilder.HowCanYouHelp() {
 
 @Composable
 private fun AnimateByLine(
-    transition: Transition<Int>,
+    transition: Transition<out SlideState<Int>>,
     vararg lines: Pair<String, Set<String>>,
 ) {
     if (lines.isEmpty()) return
 
     for ((i, pair) in lines.withIndex()) {
         val (line, tickets) = pair
-        transition.createChildTransition { it >= i }.AnimatedVisibility(
+        transition.createChildTransition { it.toInt() >= i }.AnimatedVisibility(
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically(),
         ) {

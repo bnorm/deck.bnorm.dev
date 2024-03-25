@@ -38,8 +38,8 @@ class ExportTest {
         val doc = PDDocument()
 
         val slides = buildSlides(ShowBuilder::KotlinPlusPowerAssertEqualsLove)
-        for ((page, advancement) in slides.advancements.withIndex()) {
-            setSlide(slides, advancement)
+        for ((page, index) in slides.indices.withIndex()) {
+            setSlide(slides, index)
             createPage(captureToImage(), page, doc)
         }
 
@@ -47,10 +47,10 @@ class ExportTest {
         doc.close()
     }
 
-    private fun DesktopComposeUiTest.setSlide(slides: List<Slide>, slideIndex: Pair<Int, Int>) {
+    private fun DesktopComposeUiTest.setSlide(slides: List<Slide>, index: Slide.Index) {
         setContent {
-            val content = slides[slideIndex.first].content
-            val scope = SlideScope(rememberTransition(MutableTransitionState(slideIndex.second)))
+            val content = slides[index.index].content
+            val scope = SlideScope(rememberTransition(MutableTransitionState(SlideState.Index(index.state))))
 
             ShowTheme(Theme.dark) {
                 ScaledBox(
@@ -58,7 +58,7 @@ class ExportTest {
                     modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)
                 ) {
                     Surface(modifier = Modifier.fillMaxSize()) {
-                        key(slideIndex.first, slideIndex.second) {
+                        key(index) {
                             scope.content()
                         }
                     }
