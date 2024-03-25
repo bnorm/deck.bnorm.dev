@@ -24,6 +24,7 @@ import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.*
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLines
+import kotlinx.collections.immutable.toImmutableList
 
 fun ShowBuilder.PowerAssertIntro() {
     WithoutPowerAssert()
@@ -183,4 +184,4 @@ private val powerAssertOutput = startAnimation(
                |       8
                [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
     """.trimIndent(),
-).sequence.toList()
+).sequence.toImmutableList()

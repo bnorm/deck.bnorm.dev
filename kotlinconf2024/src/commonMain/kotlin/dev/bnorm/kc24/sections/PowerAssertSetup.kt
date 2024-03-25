@@ -19,13 +19,15 @@ import dev.bnorm.librettist.animation.AnimationSequence
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.slideForBoolean
 import dev.bnorm.librettist.show.toBoolean
-import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.GroovyCodeText
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 fun ShowBuilder.PowerAssertSetup() {
     GradlePlugin()
@@ -39,13 +41,14 @@ private fun ShowBuilder.GradlePlugin() {
         TitleAndBody {
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Column(modifier = Modifier.padding(SLIDE_PADDING)) {
+                    val child = transition.createChildTransition { it.toBoolean() }
+
                     val ktsValues = ktsSequence
+                    val ktsText by child.animateList(ktsValues) { if (it) ktsValues.lastIndex else 0 }
+                    Text(ktsText, modifier = Modifier.weight(0.4f))
+
                     val groovyValues = groovySequence
-
-                    val ktsText by transition.animateList(ktsValues) { if (it.toBoolean()) ktsValues.lastIndex else 0 }
-                    Text(ktsText, modifier = Modifier.Companion.weight(0.4f))
-
-                    val groovyText by transition.animateList(groovyValues) { if (it.toBoolean()) groovyValues.lastIndex else 0 }
+                    val groovyText by child.animateList(groovyValues) { if (it) groovyValues.lastIndex else 0 }
                     GradleGroovyText(groovyText, modifier = Modifier.weight(0.6f))
                 }
             }
@@ -67,18 +70,19 @@ private fun ShowBuilder.GradleExtension() {
                      *     onAdvance { thenLines(ktsConfigExcludeComplete) }
                      * }
                      */
-                    val text = transition.createChildTransition {
-                        when (it.toInt()) {
-                            -1 -> sequence1.start
+                    val text = when (val it = transition.targetState) {
+                        SlideState.Entering -> sequence1.start
+                        SlideState.Exiting -> sequence4.end
+                        is SlideState.Index -> when (it.value) {
                             0 -> sequence1.start
                             1 -> sequence1.end
                             2 -> sequence2.end
                             3 -> sequence3.end
                             4 -> sequence4.end
-                            else -> sequence4.end
+                            else -> error("!")
                         }
                     }
-                    Text(text.targetState)
+                    Text(text)
                 }
             }
         }
@@ -98,7 +102,7 @@ private fun String.toStyle(codeStyle: Highlighting) = when (this) {
     else -> null
 }
 
-private val ktsSequence: List<AnnotatedString>
+private val ktsSequence: ImmutableList<AnnotatedString>
     @Composable
     get() {
         val codeStyle = ShowTheme.code
@@ -138,7 +142,7 @@ private val ktsSequence: List<AnnotatedString>
                         }
                     """.trimIndent(),
                 ),
-            ).sequence.toList()
+            ).sequence.toImmutableList()
         }
     }
 
@@ -165,7 +169,7 @@ private val groovySequence = startAnimation(
             id 'org.jetbrains.kotlin.plugin.power-assert' version '2.0.0'
         }
     """.trimIndent(),
-).sequence.toList()
+).sequence.toImmutableList()
 
 private val ktsConfigEmpty =
     """

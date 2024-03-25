@@ -35,6 +35,8 @@ import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 fun ShowBuilder.GoodAssertions() {
     // TODO kodee changes for all the difference examples
@@ -153,14 +155,13 @@ private fun ExampleTestAssertion(
     problem: @Composable () -> Unit,
 ) {
     val showProblem = transition.createChildTransition { it.toInt() == 2 }
-    val outputOffset by transition.animateDp {
+    val outputOffset by transition.createChildTransition {
         when (it.toInt()) {
             1 -> 40.dp // Output in middle of screen
             2 -> 320.dp // Output at bottom of screen
             else -> 600.dp // Output off-screen
-//            else -> error("!") // Branches are exhaustive
         }
-    }
+    }.animateDp { it }
 
     TitleAndBody {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -299,14 +300,14 @@ private val secondTest: String = """
 
 val secondTestRange = secondTest.rangeOf("members.size")
 
-private val firstToSecondTest: List<AnnotatedString>
+private val firstToSecondTest: ImmutableList<AnnotatedString>
     @Composable
     get() {
         val codeStyle = ShowTheme.code
         return remember {
             val first = buildKotlinCodeString(firstTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
             val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(first).thenLineEndDiff(second).sequence.toList()
+            startAnimation(first).thenLineEndDiff(second).sequence.toImmutableList()
         }
     }
 
@@ -317,14 +318,14 @@ private val secondOutput: String = """
 
 val secondOutputRange = secondOutput.rangeOf("expected:<9> but was:<8>")
 
-private val secondToThirdTest: List<AnnotatedString>
+private val secondToThirdTest: ImmutableList<AnnotatedString>
     @Composable
     get() {
         val codeStyle = ShowTheme.code
         return remember {
             val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
             val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(second).thenLineEndDiff(third).sequence.toList()
+            startAnimation(second).thenLineEndDiff(third).sequence.toImmutableList()
         }
     }
 
@@ -344,14 +345,14 @@ private val thirdOutput: String = """
         at [...]
 """.trimIndent()
 
-private val thirdToForth: List<AnnotatedString>
+private val thirdToForth: ImmutableList<AnnotatedString>
     @Composable
     get() {
         val codeStyle = ShowTheme.code
         return remember {
             val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
             val forth = buildKotlinCodeString(forthTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(third).thenLineEndDiff(forth).sequence.toList()
+            startAnimation(third).thenLineEndDiff(forth).sequence.toImmutableList()
         }
     }
 

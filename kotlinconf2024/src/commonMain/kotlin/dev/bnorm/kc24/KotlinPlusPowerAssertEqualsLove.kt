@@ -25,6 +25,7 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.thenLineEndDiff
+import kotlinx.collections.immutable.toImmutableList
 
 fun ShowBuilder.KotlinPlusPowerAssertEqualsLove(
     state: AssertionLibrariesState = AssertionLibrariesState(),
@@ -131,7 +132,7 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove(
 private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
     slide(states = 0) {
         SectionHeader(showAsBody = updateTransition(false)) {
-            val values = startAnimation(previousTitle).thenLineEndDiff(nextTitle).sequence.toList()
+            val values = startAnimation(previousTitle).thenLineEndDiff(nextTitle).sequence.toImmutableList()
             val text by transition.animateList(values) { if (it == SlideState.Exiting) values.lastIndex else 0 }
             Text(text)
         }
