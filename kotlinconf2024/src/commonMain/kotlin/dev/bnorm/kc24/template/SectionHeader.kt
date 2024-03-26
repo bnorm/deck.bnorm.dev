@@ -84,12 +84,13 @@ fun SectionHeader(
             }
         }
         Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
-        Row(modifier = Modifier.offset(y = (-268).dp), horizontalArrangement = Arrangement.End) {
+        Row(modifier = Modifier.offset(y = (-294).dp), horizontalArrangement = Arrangement.End) {
             Spacer(Modifier.weight(1f))
             showAsBody.AnimatedVisibility(
                 visible = { !it },
                 enter = fadeIn() + slideInHorizontally { it },
                 exit = slideOutHorizontally { it } + fadeOut(),
+                modifier = Modifier.wrapContentHeight(align = Alignment.Top, unbounded = true)
             ) {
                 KodeeSitting(Modifier.requiredSize(516.dp))
             }
