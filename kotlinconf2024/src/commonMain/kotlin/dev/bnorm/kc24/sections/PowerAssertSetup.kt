@@ -27,7 +27,6 @@ import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 
 fun ShowBuilder.PowerAssertSetup() {
     GradlePlugin()
@@ -142,7 +141,7 @@ private val ktsSequence: ImmutableList<AnnotatedString>
                         }
                     """.trimIndent(),
                 ),
-            ).sequence.toImmutableList()
+            ).toList()
         }
     }
 
@@ -169,7 +168,7 @@ private val groovySequence = startAnimation(
             id 'org.jetbrains.kotlin.plugin.power-assert' version '2.0.0'
         }
     """.trimIndent(),
-).sequence.toImmutableList()
+).toList()
 
 private val ktsConfigEmpty =
     """

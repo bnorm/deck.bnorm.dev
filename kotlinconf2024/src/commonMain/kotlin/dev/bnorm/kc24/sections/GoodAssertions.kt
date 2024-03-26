@@ -18,14 +18,14 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
-import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
@@ -35,23 +35,30 @@ import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
+import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 
 fun ShowBuilder.GoodAssertions() {
     // TODO kodee changes for all the difference examples
     FirstExample()
+    ExampleTransition { firstToSecondTest }
     SecondExample()
+    ExampleTransition { secondToThirdTest }
     ThirdExample()
+    ExampleTransition { thirdToForth }
     ForthExample()
+    ExampleTransition { forthToFifth }
+    FinalExample()
 }
 
 private fun ShowBuilder.FirstExample() {
     slide(states = 3) {
+        val state = transition.exampleTransition()
         ExampleTestAssertion(
-            transition = transition,
+            transition = state,
             example = { problemVisible ->
-                TextWithError(rememberExampleCodeString(firstTest), problemVisible, firstTest.rangeOf("assertTrue"))
+                val test = rememberExampleCodeString(firstTest)
+                TextWithError(test, problemVisible, firstTestRange)
             },
             output = { problemVisible ->
                 TextWithError(firstOutput, problemVisible, firstOutputRange)
@@ -62,23 +69,23 @@ private fun ShowBuilder.FirstExample() {
                     Text("assertTrue does not result in a helpful failure")
                 }
             },
+            kodee = {
+                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                    KodeeBrokenHearted(modifier = Modifier.requiredSize(200.dp))
+                }
+            }
         )
     }
 }
 
 private fun ShowBuilder.SecondExample() {
     slide(states = 3) {
-        val example = transition.createChildTransition { it != SlideState.Entering }
+        val state = transition.exampleTransition()
         ExampleTestAssertion(
-            transition = transition,
+            transition = state,
             example = { problemVisible ->
-                val values = firstToSecondTest
-                val text by example.animateList(
-                    values = values,
-                    targetIndexByState = { if (it) values.lastIndex else 0 },
-                )
-
-                TextWithError(text, problemVisible, secondTestRange)
+                val test = rememberExampleCodeString(secondTest)
+                TextWithError(test, problemVisible, secondTestRange)
             },
             output = { problemVisible ->
                 TextWithError(secondOutput, problemVisible, secondOutputRange)
@@ -89,23 +96,23 @@ private fun ShowBuilder.SecondExample() {
                     Text("assertEquals only shows the final values")
                 }
             },
+            kodee = {
+                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                    KodeeLost(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
+                }
+            }
         )
     }
 }
 
 private fun ShowBuilder.ThirdExample() {
     slide(states = 3) {
-        val example = transition.createChildTransition { it != SlideState.Entering }
+        val state = transition.exampleTransition()
         ExampleTestAssertion(
-            transition = transition,
+            transition = state,
             example = { problemVisible ->
-                val values = secondToThirdTest
-                val text by example.animateList(
-                    values = values,
-                    targetIndexByState = { if (it) values.lastIndex else 0 },
-                )
-
-                TextWithError(text, problemVisible, thirdTestRange)
+                val test = rememberExampleCodeString(thirdTest)
+                TextWithError(test, problemVisible, thirdTestRange)
             },
             output = {
                 Text(thirdOutput)
@@ -116,23 +123,23 @@ private fun ShowBuilder.ThirdExample() {
                     Text("Assertion messages are a maintenance burden")
                 }
             },
+            kodee = {
+                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                    KodeeExcited(modifier = Modifier.requiredSize(200.dp))
+                }
+            }
         )
     }
 }
 
 private fun ShowBuilder.ForthExample() {
     slide(states = 3) {
-        val example = transition.createChildTransition { it != SlideState.Entering }
+        val state = transition.exampleTransition()
         ExampleTestAssertion(
-            transition = transition,
+            transition = state,
             example = { problemVisible ->
-                val values = thirdToForth
-                val text by example.animateList(
-                    values = values,
-                    targetIndexByState = { if (it) values.lastIndex else 0 },
-                )
-
-                TextWithError(text, problemVisible, forthTestRange)
+                val test = rememberExampleCodeString(forthTest)
+                TextWithError(test, problemVisible, forthTestRange)
             },
             output = {
                 Text(forthOutput)
@@ -143,27 +150,92 @@ private fun ShowBuilder.ForthExample() {
                     Text("Lots of assertion functions to choose from")
                 }
             },
+            kodee = {
+                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                    KodeeExcited(modifier = Modifier.requiredSize(200.dp))
+                }
+            }
         )
+    }
+}
+
+private fun ShowBuilder.FinalExample() {
+    slide(states = 3) {
+        val output = fifthOutput
+        val outputIndex = transition.createChildTransition {
+            val value = it.toInt()
+            when {
+                value <= 1 -> 0
+                value >= 2 -> output.lastIndex
+                else -> error("!") // Exhaustive
+            }
+        }
+        val exampleState = transition.createChildTransition {
+            val value = it.toInt()
+            when {
+                value <= 0 -> ExampleState.ShowExample
+                value >= 1 -> ExampleState.ShowOutput
+                else -> error("!") // Exhaustive
+            }
+        }
+        ExampleTestAssertion(
+            transition = exampleState,
+            example = { problemVisible ->
+                val test = rememberExampleCodeString(finalTest)
+                TextWithError(test, problemVisible, fifthTestRange)
+            },
+            output = {
+                val outputText = outputIndex.animateList(output) { it }.value
+                Text(outputText)
+            },
+            kodee = {
+                show(condition = { transition.currentState.toInt() >= 2 && transition.targetState.toInt() >= 2 }) {
+                    KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
+                }
+
+                show(condition = { transition.currentState.toInt() >= 1 && transition.targetState.toInt() >= 1 }) {
+                    KodeeBrokenHearted(modifier = Modifier.requiredSize(200.dp))
+                }
+            }
+        )
+    }
+}
+
+enum class ExampleState {
+    ShowExample,
+    ShowOutput,
+    ShowProblem,
+}
+
+@Composable
+fun Transition<out SlideState<Int>>.exampleTransition(): Transition<ExampleState> {
+    return createChildTransition {
+        when (it.toInt()) {
+            1 -> ExampleState.ShowOutput
+            2 -> ExampleState.ShowProblem
+            else -> ExampleState.ShowExample
+        }
     }
 }
 
 @Composable
 private fun ExampleTestAssertion(
-    transition: Transition<out SlideState<Int>>, // TODO convert to an enum?
+    transition: Transition<ExampleState>, // TODO convert to an enum?
     example: @Composable (Boolean) -> Unit,
-    output: @Composable (Boolean) -> Unit,
-    problem: @Composable () -> Unit,
+    output: @Composable (Boolean) -> Unit = {},
+    problem: @Composable () -> Unit = {},
+    kodee: KodeeScope.() -> Unit = {},
 ) {
-    val showProblem = transition.createChildTransition { it.toInt() == 2 }
+    val showProblem = transition.createChildTransition { it == ExampleState.ShowProblem }
     val outputOffset by transition.createChildTransition {
-        when (it.toInt()) {
-            1 -> 40.dp // Output in middle of screen
-            2 -> 320.dp // Output at bottom of screen
-            else -> 600.dp // Output off-screen
+        when (it) {
+            ExampleState.ShowExample -> 600.dp // Output off-screen
+            ExampleState.ShowOutput -> 40.dp // Output in middle of screen
+            ExampleState.ShowProblem -> 320.dp // Output at bottom of screen
         }
     }.animateDp { it }
 
-    TitleAndBody {
+    TitleAndBody(kodee = kodee) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
                 Box {
@@ -189,6 +261,28 @@ private fun ExampleTestAssertion(
                 }
             }
         }
+    }
+}
+
+private fun ShowBuilder.ExampleTransition(
+    strings: @Composable () -> ImmutableList<AnnotatedString>,
+) {
+    slide(states = 0) {
+        val next = transition.createChildTransition { it == SlideState.Exiting }
+        ExampleTestAssertion(
+            transition = transition.createChildTransition { ExampleState.ShowExample },
+            example = { _ ->
+                val values = strings()
+                val text = next.animateList(
+                    values = values,
+                    targetIndexByState = { if (it) values.lastIndex else 0 },
+                )
+
+                Text(text.value)
+            },
+            output = { },
+            problem = { },
+        )
     }
 }
 
@@ -282,6 +376,8 @@ private val firstTest: String = """
     }
 """.trimIndent()
 
+val firstTestRange = firstTest.rangeOf("assertTrue")
+
 private val firstOutput: String = """
     java.lang.AssertionError: Expected value to be true.
         at [...]
@@ -307,7 +403,7 @@ private val firstToSecondTest: ImmutableList<AnnotatedString>
         return remember {
             val first = buildKotlinCodeString(firstTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
             val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(first).thenLineEndDiff(second).sequence.toImmutableList()
+            startAnimation(first).thenLineEndDiff(second).toList()
         }
     }
 
@@ -325,7 +421,7 @@ private val secondToThirdTest: ImmutableList<AnnotatedString>
         return remember {
             val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
             val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(second).thenLineEndDiff(third).sequence.toImmutableList()
+            startAnimation(second).thenLineEndDiff(third).toList()
         }
     }
 
@@ -352,7 +448,7 @@ private val thirdToForth: ImmutableList<AnnotatedString>
         return remember {
             val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
             val forth = buildKotlinCodeString(forthTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(third).thenLineEndDiff(forth).sequence.toImmutableList()
+            startAnimation(third).thenLineEndDiff(forth).toList()
         }
     }
 
@@ -371,3 +467,61 @@ private val forthOutput: String = """
     org.opentest4j.AssertionFailedError: expected [size]:<[9]> but was:<[8]> ([Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli])
         at [...]
 """.trimIndent()
+
+
+private val forthToFifth: ImmutableList<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            val forth = buildKotlinCodeString(forthTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            val fifth = buildKotlinCodeString(finalTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+            startAnimation(forth).thenLineEndDiff(fifth).toList()
+        }
+    }
+
+// language=kotlin
+private val finalTest: String = """
+    @Test
+    fun `test members of the fellowship`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        assert(members.size == 9)
+    }
+""".trimIndent()
+
+val fifthTestRange = finalTest.rangeOf("hasSize(9)")
+
+private val fifthOutput = startAnimation(
+    """
+        java.lang.AssertionError: Assertion failed
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(members.size == 9)
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(members.size == 9)
+                            |
+                            false
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(members.size == 9)
+                       |    |
+                       |    false
+                       8
+    """.trimIndent(),
+).thenLines(
+    """
+        java.lang.AssertionError: Assertion failed
+        assert(members.size == 9)
+               |       |    |
+               |       |    false
+               |       8
+               [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
+    """.trimIndent(),
+).toList()

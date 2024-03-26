@@ -8,6 +8,7 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -25,7 +26,6 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.thenLineEndDiff
-import kotlinx.collections.immutable.toImmutableList
 
 fun ShowBuilder.KotlinPlusPowerAssertEqualsLove(
     state: AssertionLibrariesState = AssertionLibrariesState(),
@@ -132,7 +132,9 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove(
 private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
     slide(states = 0) {
         SectionHeader(showAsBody = updateTransition(false)) {
-            val values = startAnimation(previousTitle).thenLineEndDiff(nextTitle).sequence.toImmutableList()
+            val values = remember(previousTitle, nextTitle) {
+                startAnimation(previousTitle).thenLineEndDiff(nextTitle).toList()
+            }
             val text by transition.animateList(values) { if (it == SlideState.Exiting) values.lastIndex else 0 }
             Text(text)
         }
