@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
+import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.sections.*
 import dev.bnorm.kc24.template.KodeeLoving
 import dev.bnorm.kc24.template.SLIDE_PADDING
@@ -135,7 +136,9 @@ private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) 
             val values = remember(previousTitle, nextTitle) {
                 startAnimation(previousTitle).thenLineEndDiff(nextTitle).toList()
             }
-            val text by transition.animateList(values) { if (it == SlideState.Exiting) values.lastIndex else 0 }
+            val text by transition.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
+                if (it == SlideState.Exiting) values.lastIndex else 0
+            }
             Text(text)
         }
     }

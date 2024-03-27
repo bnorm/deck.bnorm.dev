@@ -16,12 +16,16 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
+import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.*
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.slideForBoolean
+import dev.bnorm.librettist.show.toBoolean
+import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLines
 
@@ -69,7 +73,9 @@ private fun ShowBuilder.WithPowerAssert() {
         val outputPopup = transition.createChildTransition { it.toInt() >= 1 }
         val showCode = transition.createChildTransition { it.toInt() >= 2 }
         val showDiagram = transition.createChildTransition { it.toInt() >= 3 }
-        val outputText by showDiagram.animateList(powerAssertOutput) { if (it) powerAssertOutput.lastIndex else 0 }
+        val outputText by showDiagram.animateList(powerAssertOutput, transitionSpec = { defaultSpec() }) {
+            if (it) powerAssertOutput.lastIndex else 0
+        }
 
         TitleAndBody(
             kodee = {
@@ -111,8 +117,8 @@ private fun TestFailureOutput(
 ) {
     Box(modifier = modifier) {
         visible.AnimatedVisibility(
-            enter = slideInVertically { it },
-            exit = slideOutVertically { it },
+            enter = slideInVertically(defaultSpec()) { it },
+            exit = slideOutVertically(defaultSpec()) { it },
         ) {
             MacTerminal(modifier = Modifier.requiredHeight(560.dp)) {
                 Box(modifier = Modifier.padding(32.dp)) {

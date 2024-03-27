@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
@@ -27,6 +28,7 @@ import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
+import kotlin.time.Duration.Companion.seconds
 
 fun ShowBuilder.PowerAssertSetup() {
     GradlePlugin()
@@ -43,11 +45,15 @@ private fun ShowBuilder.GradlePlugin() {
                     val child = transition.createChildTransition { it.toBoolean() }
 
                     val ktsValues = ktsSequence
-                    val ktsText by child.animateList(ktsValues) { if (it) ktsValues.lastIndex else 0 }
+                    val ktsText by child.animateList(ktsValues, transitionSpec = { typingSpec(duration = 1.seconds) }) {
+                        if (it) ktsValues.lastIndex else 0
+                    }
                     Text(ktsText, modifier = Modifier.weight(0.4f))
 
                     val groovyValues = groovySequence
-                    val groovyText by child.animateList(groovyValues) { if (it) groovyValues.lastIndex else 0 }
+                    val groovyText by child.animateList(groovyValues, transitionSpec = { typingSpec(duration = 1.seconds) }) {
+                        if (it) groovyValues.lastIndex else 0
+                    }
                     GradleGroovyText(groovyText, modifier = Modifier.weight(0.6f))
                 }
             }

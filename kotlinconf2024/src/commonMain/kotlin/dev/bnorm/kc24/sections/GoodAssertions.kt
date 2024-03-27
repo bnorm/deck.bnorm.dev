@@ -2,11 +2,14 @@
 
 package dev.bnorm.kc24.sections
 
-import androidx.compose.animation.*
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -25,6 +28,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
+import dev.bnorm.kc24.elements.defaultSpec
+import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
@@ -37,6 +42,7 @@ import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
+import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.GoodAssertions() {
     // TODO kodee changes for all the difference examples
@@ -185,7 +191,10 @@ private fun ShowBuilder.FinalExample() {
                 TextWithError(test, problemVisible, fifthTestRange)
             },
             output = {
-                val outputText = outputIndex.animateList(output) { it }.value
+                val outputText by outputIndex.animateList(
+                    output,
+                    transitionSpec = { typingSpec(count = output.size, charDelay = 100.milliseconds) },
+                ) { it }
                 Text(outputText)
             },
             kodee = {
@@ -233,7 +242,7 @@ private fun ExampleTestAssertion(
             ExampleState.ShowOutput -> 40.dp // Output in middle of screen
             ExampleState.ShowProblem -> 320.dp // Output at bottom of screen
         }
-    }.animateDp { it }
+    }.animateDp(transitionSpec = { defaultSpec() }) { it }
 
     TitleAndBody(kodee = kodee) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -242,17 +251,15 @@ private fun ExampleTestAssertion(
                     example(showProblem.targetState)
                 }
                 showProblem.AnimatedVisibility(
-                    enter = fadeIn(),
-                    exit = fadeOut(),
+                    enter = fadeIn(defaultSpec()),
+                    exit = fadeOut(defaultSpec()),
                 ) { problem() }
             }
 
             ProvideTextStyle(MaterialTheme.typography.body2) {
                 Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
                     MacTerminal(
-                        modifier = Modifier.animateContentSize()
-                            .requiredHeight(600.dp)
-                            .offset(y = outputOffset)
+                        modifier = Modifier.requiredHeight(600.dp).offset(y = outputOffset)
                     ) {
                         Box(modifier = Modifier.padding(32.dp)) {
                             output(showProblem.targetState)
@@ -274,9 +281,9 @@ private fun ShowBuilder.ExampleTransition(
             example = { _ ->
                 val values = strings()
                 val text = next.animateList(
-                    values = values,
-                    targetIndexByState = { if (it) values.lastIndex else 0 },
-                )
+                    values,
+                    transitionSpec = { typingSpec(count = values.size) },
+                ) { if (it) values.lastIndex else 0 }
 
                 Text(text.value)
             },
@@ -309,11 +316,13 @@ private fun TextWithError(text: String, errorVisible: Boolean, textRange: TextRa
 
 @Composable
 private fun TextWithError(text: AnnotatedString, errorVisible: Boolean, textRange: TextRange) {
+    // TODO hook into transition
     val color by animateColorAsState(
         when (errorVisible) {
             true -> Color.Red
             false -> Color.Transparent
-        }
+        },
+        defaultSpec(),
     )
 
     var layout by remember { mutableStateOf<TextLayoutResult?>(null) }

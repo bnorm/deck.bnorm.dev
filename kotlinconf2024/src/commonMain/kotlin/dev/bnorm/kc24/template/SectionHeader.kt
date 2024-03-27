@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.AnimatedVisibility
+import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
 import dev.bnorm.librettist.show.SlideState
@@ -65,16 +66,20 @@ fun SectionHeader(
     showAsBody: Transition<Boolean>,
     title: @Composable () -> Unit = SlideSection.header,
 ) {
-    val spacing by showAsBody.animateDp {
+    val spacing by showAsBody.animateDp(transitionSpec = { defaultSpec() }) {
         when (it) {
             false -> 400.dp
             true -> 0.dp
         }
     }
-    val textStyle = showAsBody.animateTextStyle(MaterialTheme.typography.h2, MaterialTheme.typography.h3)
+    val textStyle = showAsBody.animateTextStyle(
+        whenFalse = MaterialTheme.typography.h2,
+        whenTrue = MaterialTheme.typography.h3,
+        transitionSpec = { defaultSpec() },
+    )
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.requiredHeight(spacing).animateContentSize())
+        Spacer(modifier = Modifier.requiredHeight(spacing))
         Box(
             modifier = Modifier.fillMaxWidth()
                 .padding(start = SLIDE_PADDING, top = SLIDE_PADDING, bottom = SLIDE_CONTENT_SPACING),
@@ -84,25 +89,27 @@ fun SectionHeader(
             }
         }
         Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
-        Row(modifier = Modifier.offset(y = (-294).dp), horizontalArrangement = Arrangement.End) {
-            Spacer(Modifier.weight(1f))
+        Box(modifier = Modifier.fillMaxWidth().offset(y = (-294).dp), contentAlignment = Alignment.TopEnd) {
             showAsBody.AnimatedVisibility(
                 visible = { !it },
-                enter = fadeIn() + slideInHorizontally { it },
-                exit = slideOutHorizontally { it } + fadeOut(),
+                enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
+                exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
                 modifier = Modifier.wrapContentHeight(align = Alignment.Top, unbounded = true)
             ) {
                 KodeeSitting(Modifier.requiredSize(516.dp))
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        showAsBody.AnimatedVisibility(enter = slideInVertically { it }, exit = slideOutVertically { it }) {
+        showAsBody.AnimatedVisibility(
+            enter = slideInVertically(defaultSpec()) { it },
+            exit = slideOutVertically(defaultSpec()) { it },
+        ) {
             Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         }
     }
     showAsBody.AnimatedVisibility(
-        enter = fadeIn() + slideInHorizontally { it },
-        exit = slideOutHorizontally { it } + fadeOut(),
+        enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
+        exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
     ) {
         Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
             DefaultCornerKodee()
@@ -114,20 +121,21 @@ fun SectionHeader(
 private fun Transition<Boolean>.animateTextStyle(
     whenFalse: TextStyle,
     whenTrue: TextStyle,
+    transitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Float> = { spring() },
 ): TextStyle {
-    val fontSize by animateFloat {
+    val fontSize by animateFloat(transitionSpec) {
         when (it) {
             false -> whenFalse.fontSize.value
             true -> whenTrue.fontSize.value
         }
     }
-    val lineHeight by animateFloat {
+    val lineHeight by animateFloat(transitionSpec) {
         when (it) {
             false -> whenFalse.lineHeight.value
             true -> whenTrue.lineHeight.value
         }
     }
-    val letterSpacing by animateFloat {
+    val letterSpacing by animateFloat(transitionSpec) {
         when (it) {
             false -> whenFalse.letterSpacing.value
             true -> whenTrue.letterSpacing.value

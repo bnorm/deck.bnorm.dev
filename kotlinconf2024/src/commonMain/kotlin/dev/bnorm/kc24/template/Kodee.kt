@@ -1,7 +1,9 @@
 package dev.bnorm.kc24.template
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -32,6 +34,8 @@ interface KodeeScope {
 fun AnimateKodee(
     builder: KodeeScope.() -> Unit
 ) {
+    fun <T> spec(): FiniteAnimationSpec<T> = tween()
+
     val icons = remember(builder) {
         buildList {
             object : KodeeScope {
@@ -48,14 +52,14 @@ fun AnimateKodee(
         val itemVisible = !somethingVisible && condition()
         somethingVisible = somethingVisible || itemVisible
 
-        AnimatedVisibility(visible = itemVisible, enter = fadeIn(), exit = fadeOut()) {
+        AnimatedVisibility(visible = itemVisible, enter = fadeIn(spec()), exit = fadeOut(spec())) {
             content()
         }
     }
 
     AnimatedVisibility(
         visible = !somethingVisible,
-        enter = fadeIn(), exit = fadeOut(),
+        enter = fadeIn(spec()), exit = fadeOut(spec()),
     ) { DefaultCornerKodee() }
 }
 

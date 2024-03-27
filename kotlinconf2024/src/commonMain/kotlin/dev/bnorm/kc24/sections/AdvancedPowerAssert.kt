@@ -21,6 +21,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
+import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.Highlighting
@@ -101,8 +102,8 @@ private fun ShowBuilder.SoftAssert() {
 private fun OutputText(text: String, visible: Transition<Boolean>, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth()) {
         visible.AnimatedVisibility(
-            enter = slideInVertically { it },
-            exit = slideOutVertically { it },
+            enter = slideInVertically(defaultSpec()) { it },
+            exit = slideOutVertically(defaultSpec()) { it },
         ) {
             MacTerminal(modifier = Modifier.heightIn(min = 800.dp)) {
                 Text(
@@ -119,8 +120,8 @@ private fun OutputText(text: String, visible: Transition<Boolean>, modifier: Mod
 private fun SidePanel(visible: Transition<Boolean>, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Box(modifier = modifier.fillMaxHeight()) {
         visible.AnimatedVisibility(
-            enter = slideInHorizontally { it },
-            exit = slideOutHorizontally { it },
+            enter = slideInHorizontally(defaultSpec()) { it },
+            exit = slideOutHorizontally(defaultSpec()) { it },
         ) {
             Row {
                 Spacer(modifier = Modifier.background(Color(0xFF313438)).width(4.dp).fillMaxHeight())

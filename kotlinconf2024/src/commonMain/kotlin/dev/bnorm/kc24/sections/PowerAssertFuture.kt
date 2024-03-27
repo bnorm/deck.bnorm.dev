@@ -25,6 +25,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import dev.bnorm.kc24.elements.AnimatedVisibility
+import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
@@ -91,8 +92,8 @@ private fun AnimateByLine(
     for ((i, pair) in lines.withIndex()) {
         val (line, tickets) = pair
         transition.createChildTransition { it.toInt() >= i }.AnimatedVisibility(
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically(),
+            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
         ) {
             if (tickets.isEmpty()) {
                 Text(line)

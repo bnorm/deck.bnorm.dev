@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import dev.bnorm.kc24.elements.AnimatedVisibility
+import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
@@ -74,8 +75,8 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 answerVisible.AnimatedVisibility(
                     visible = { !it },
-                    enter = expandIn(expandFrom = Alignment.Center),
-                    exit = shrinkOut(shrinkTowards = Alignment.Center),
+                    enter = expandIn(defaultSpec(), expandFrom = Alignment.Center),
+                    exit = shrinkOut(defaultSpec(), shrinkTowards = Alignment.Center),
                 ) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         if (count > 0) {
@@ -151,12 +152,15 @@ private fun ShowBuilder.GroovyLibraries() {
             }
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 spockVisible.AnimatedVisibility(
-                    enter = expandIn(expandFrom = Alignment.Center),
-                    exit = shrinkOut(shrinkTowards = Alignment.Center),
+                    enter = expandIn(defaultSpec(), expandFrom = Alignment.Center),
+                    exit = shrinkOut(defaultSpec(), shrinkTowards = Alignment.Center),
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Spock!", style = MaterialTheme.typography.h1)
-                        questionVisible.AnimatedVisibility {
+                        questionVisible.AnimatedVisibility(
+                            enter = expandIn(defaultSpec(), expandFrom = Alignment.Center),
+                            exit = shrinkOut(defaultSpec(), shrinkTowards = Alignment.Center),
+                        ) {
                             Text(text = "(...is that it?)")
                         }
                     }
@@ -193,8 +197,8 @@ private fun HowManyKotlinLibraries(answerVisible: Boolean) {
 
         AnimatedVisibility(
             visible = answerVisible,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically(),
+            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth().padding(start = 64.dp, top = SLIDE_CONTENT_SPACING),
@@ -224,8 +228,8 @@ private fun HowManyGroovyLibraries(answerVisible: Boolean) {
 
         AnimatedVisibility(
             visible = answerVisible,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically(),
+            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth().padding(start = 64.dp, top = SLIDE_CONTENT_SPACING),
