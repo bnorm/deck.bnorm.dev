@@ -31,7 +31,7 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
-import dev.bnorm.librettist.show.toInt
+import dev.bnorm.librettist.show.compareTo
 
 fun ShowBuilder.PowerAssertFuture() {
     PowerAssertIdeas()
@@ -91,7 +91,7 @@ private fun AnimateByLine(
 
     for ((i, pair) in lines.withIndex()) {
         val (line, tickets) = pair
-        transition.createChildTransition { it.toInt() >= i }.AnimatedVisibility(
+        transition.createChildTransition { it >= i }.AnimatedVisibility(
             enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
             exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
         ) {

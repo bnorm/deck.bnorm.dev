@@ -2,18 +2,18 @@
 
 package dev.bnorm.kc24.sections
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.ExperimentalTransitionApi
-import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,10 +26,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc24.elements.AnimatedVisibility
-import dev.bnorm.kc24.elements.MacTerminal
-import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.kc24.elements.typingSpec
+import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
@@ -37,234 +34,243 @@ import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
-import dev.bnorm.librettist.show.toInt
+import dev.bnorm.librettist.show.slideForValues
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
+import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.GoodAssertions() {
-    // TODO kodee changes for all the difference examples
     FirstExample()
     ExampleTransition { firstToSecondTest }
     SecondExample()
     ExampleTransition { secondToThirdTest }
     ThirdExample()
     ExampleTransition { thirdToForth }
-    ForthExample()
+    ForthExample(forthTest)
     ExampleTransition { forthToFifth }
     FinalExample()
+
+    // TODO do we need an exit transition before the next section?
 }
 
 private fun ShowBuilder.FirstExample() {
-    slide(states = 3) {
-        val state = transition.exampleTransition()
-        ExampleTestAssertion(
-            transition = state,
-            example = { problemVisible ->
-                val test = rememberExampleCodeString(firstTest)
-                TextWithError(test, problemVisible, firstTestRange)
-            },
-            output = { problemVisible ->
-                TextWithError(firstOutput, problemVisible, firstOutputRange)
-            },
-            problem = {
-                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                    Text("=> ", color = Color.Red)
-                    Text("assertTrue does not result in a helpful failure")
-                }
-            },
+    val states = listOf(
+        TemplateState.Example,
+        TemplateState.Output(0),
+        TemplateState.Conclusion(0, "Clear assertion condition", pro = true),
+        TemplateState.Conclusion(1, "Useless failure message", pro = false),
+        // TODO more conclusions?
+    )
+    slideForValues(states) {
+        val state = transition.toTemplate()
+        TitleAndBody(
             kodee = {
-                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                show(condition = { state.atType<TemplateState.Output>() }) {
                     KodeeBrokenHearted(modifier = Modifier.requiredSize(200.dp))
                 }
             }
-        )
+        ) {
+            ExampleTestAssertion(
+                transition = state,
+                example = { Text(rememberExampleCodeString(firstTest)) },
+                output = { Text(firstOutput) },
+                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+            )
+        }
     }
 }
 
 private fun ShowBuilder.SecondExample() {
-    slide(states = 3) {
-        val state = transition.exampleTransition()
-        ExampleTestAssertion(
-            transition = state,
-            example = { problemVisible ->
-                val test = rememberExampleCodeString(secondTest)
-                TextWithError(test, problemVisible, secondTestRange)
-            },
-            output = { problemVisible ->
-                TextWithError(secondOutput, problemVisible, secondOutputRange)
-            },
-            problem = {
-                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                    Text("=> ", color = Color.Red)
-                    Text("assertEquals only shows the final values")
-                }
-            },
+    val states = listOf(
+        TemplateState.Example,
+        TemplateState.Output(0),
+        TemplateState.Conclusion(0, "Improved failure message", pro = true),
+        TemplateState.Conclusion(1, "No intermediate values", pro = false),
+        // TODO more conclusions?
+    )
+    slideForValues(states) {
+        val state = transition.toTemplate()
+        TitleAndBody(
             kodee = {
-                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                show(condition = { state.atType<TemplateState.Output>() }) {
                     KodeeLost(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
                 }
             }
-        )
+        ) {
+            ExampleTestAssertion(
+                transition = state,
+                example = { Text(rememberExampleCodeString(secondTest)) },
+                output = { Text(secondOutput) },
+                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+            )
+        }
     }
 }
 
 private fun ShowBuilder.ThirdExample() {
-    slide(states = 3) {
-        val state = transition.exampleTransition()
-        ExampleTestAssertion(
-            transition = state,
-            example = { problemVisible ->
-                val test = rememberExampleCodeString(thirdTest)
-                TextWithError(test, problemVisible, thirdTestRange)
-            },
-            output = {
-                Text(thirdOutput)
-            },
-            problem = {
-                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                    Text("=> ", color = Color.Red)
-                    Text("Assertion messages are a maintenance burden")
-                }
-            },
+    val states = listOf(
+        TemplateState.Example,
+        TemplateState.Output(0),
+        TemplateState.Conclusion(0, "Complete failure message", pro = true),
+        TemplateState.Conclusion(1, "Message maintenance burden", pro = false),
+        // TODO more conclusions?
+    )
+    slideForValues(states) {
+        val state = transition.toTemplate()
+        TitleAndBody(
             kodee = {
-                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                show(condition = { state.atType<TemplateState.Output>() }) {
                     KodeeExcited(modifier = Modifier.requiredSize(200.dp))
                 }
             }
-        )
+        ) {
+            ExampleTestAssertion(
+                transition = state,
+                example = { Text(rememberExampleCodeString(thirdTest)) },
+                output = { Text(thirdOutput) },
+                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+            )
+        }
     }
 }
 
-private fun ShowBuilder.ForthExample() {
-    slide(states = 3) {
-        val state = transition.exampleTransition()
-        ExampleTestAssertion(
-            transition = state,
-            example = { problemVisible ->
-                val test = rememberExampleCodeString(forthTest)
-                TextWithError(test, problemVisible, forthTestRange)
-            },
-            output = {
-                Text(forthOutput)
-            },
-            problem = {
-                Row(modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
-                    Text("=> ", color = Color.Red)
-                    Text("Lots of assertion functions to choose from")
-                }
-            },
+private fun ShowBuilder.ForthExample(exampleText: String) {
+    val states = listOf(
+        TemplateState.Example,
+        TemplateState.Output(0),
+        TemplateState.Conclusion(0, "Complete failure message", pro = true),
+        TemplateState.Conclusion(1, "Mental load for functions", pro = false),
+        TemplateState.Conclusion(2, "Library bike-shedding", pro = false),
+        // TODO more conclusions?
+    )
+    slideForValues(states) {
+        val state = transition.toTemplate()
+        TitleAndBody(
             kodee = {
-                show(condition = { state.at(ExampleState.ShowOutput) }) {
+                show(condition = { state.atType<TemplateState.Output>() }) {
                     KodeeExcited(modifier = Modifier.requiredSize(200.dp))
                 }
             }
-        )
+        ) {
+            ExampleTestAssertion(
+                transition = state,
+                example = { Text(rememberExampleCodeString(exampleText)) },
+                output = { Text(forthOutput) },
+                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+            )
+        }
     }
 }
 
 private fun ShowBuilder.FinalExample() {
-    slide(states = 3) {
-        val output = fifthOutput
-        val outputIndex = transition.createChildTransition {
-            val value = it.toInt()
-            when {
-                value <= 1 -> 0
-                value >= 2 -> output.lastIndex
-                else -> error("!") // Exhaustive
-            }
-        }
-        val exampleState = transition.createChildTransition {
-            val value = it.toInt()
-            when {
-                value <= 0 -> ExampleState.ShowExample
-                value >= 1 -> ExampleState.ShowOutput
-                else -> error("!") // Exhaustive
-            }
-        }
-        ExampleTestAssertion(
-            transition = exampleState,
-            example = { problemVisible ->
-                val test = rememberExampleCodeString(finalTest)
-                TextWithError(test, problemVisible, fifthTestRange)
-            },
-            output = {
-                val outputText by outputIndex.animateList(
-                    output,
-                    transitionSpec = { typingSpec(count = output.size, charDelay = 100.milliseconds) },
-                ) { it }
-                Text(outputText)
-            },
+    val states = listOf(
+        TemplateState.Example,
+        TemplateState.Output(0),
+        TemplateState.Output(1),
+        TemplateState.Output(2),
+    )
+    slideForValues(states) {
+        val state = transition.toTemplate(exiting = states.last())
+
+        val outputValues = fifthOutput
+        val outputText by state.animateText(
+            values = outputValues,
+            transitionSpec = { typingSpec(count = outputValues.size - 1, charDelay = 100.milliseconds) },
+            showLast = { it is TemplateState.Output && it.index > 0 }
+        )
+
+        val titleValues = remember { startAnimation("Assertions").thenLineEndDiff("Power-Assert").toList() }
+        val titleText by state.animateText(
+            values = titleValues,
+            transitionSpec = { typingSpec(count = titleValues.size - 1) },
+            showLast = {  it is TemplateState.Output && it.index >= 2  }
+        )
+
+        TitleAndBody(
+            title = { Text(titleText) },
             kodee = {
-                show(condition = { transition.currentState.toInt() >= 2 && transition.targetState.toInt() >= 2 }) {
+                show(condition = {
+                    state.currentState.let { it is TemplateState.Output && it.index >= 1 } &&
+                            state.targetState.let { it is TemplateState.Output && it.index >= 1 }
+                }) {
                     KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
                 }
 
-                show(condition = { transition.currentState.toInt() >= 1 && transition.targetState.toInt() >= 1 }) {
-                    KodeeBrokenHearted(modifier = Modifier.requiredSize(200.dp))
+                show(condition = { state.between(TemplateState.Output(0), TemplateState.Output(1)) }) {
+                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+                }
+
+                show(condition = { state.atType<TemplateState.Output>() }) {
+                    KodeeSad(modifier = Modifier.requiredSize(150.dp))
                 }
             }
-        )
+        ) {
+            ExampleTestAssertion(
+                transition = state,
+                example = { Text(rememberExampleCodeString(finalTest)) },
+                output = { Text(outputText) }
+            )
+        }
     }
-}
-
-enum class ExampleState {
-    ShowExample,
-    ShowOutput,
-    ShowProblem,
 }
 
 @Composable
-fun Transition<out SlideState<Int>>.exampleTransition(): Transition<ExampleState> {
+fun Transition<out SlideState<TemplateState>>.toTemplate(
+    entering: TemplateState = TemplateState.Example,
+    exiting: TemplateState = TemplateState.Example,
+): Transition<TemplateState> {
     return createChildTransition {
-        when (it.toInt()) {
-            1 -> ExampleState.ShowOutput
-            2 -> ExampleState.ShowProblem
-            else -> ExampleState.ShowExample
+        when (it) {
+            SlideState.Entering -> entering
+            SlideState.Exiting -> exiting
+            is SlideState.Index -> it.value
         }
     }
+}
+
+sealed interface TemplateState {
+    data object Example : TemplateState
+    data class Output(val index: Int) : TemplateState
+    data class Conclusion(val index: Int, val text: String, val pro: Boolean) : TemplateState
 }
 
 @Composable
 private fun ExampleTestAssertion(
-    transition: Transition<ExampleState>, // TODO convert to an enum?
-    example: @Composable (Boolean) -> Unit,
-    output: @Composable (Boolean) -> Unit = {},
-    problem: @Composable () -> Unit = {},
-    kodee: KodeeScope.() -> Unit = {},
+    transition: Transition<out TemplateState>, // TODO convert to an enum?
+    example: @Composable () -> Unit,
+    output: @Composable () -> Unit = {},
+    conclusions: @Composable () -> Unit = {},
 ) {
-    val showProblem = transition.createChildTransition { it == ExampleState.ShowProblem }
+    val showConclusions = transition.createChildTransition { it is TemplateState.Conclusion }
     val outputOffset by transition.createChildTransition {
         when (it) {
-            ExampleState.ShowExample -> 600.dp // Output off-screen
-            ExampleState.ShowOutput -> 40.dp // Output in middle of screen
-            ExampleState.ShowProblem -> 320.dp // Output at bottom of screen
+            TemplateState.Example -> 600.dp // Output off-screen
+            is TemplateState.Output -> 40.dp // Output in middle of screen
+            is TemplateState.Conclusion -> 320.dp // Output at bottom of screen
         }
     }.animateDp(transitionSpec = { defaultSpec() }) { it }
 
-    TitleAndBody(kodee = kodee) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Box {
-                    example(showProblem.targetState)
-                }
-                showProblem.AnimatedVisibility(
-                    enter = fadeIn(defaultSpec()),
-                    exit = fadeOut(defaultSpec()),
-                ) { problem() }
-            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+            Box { example() }
+            showConclusions.AnimatedVisibility(
+                enter = fadeIn(defaultSpec()),
+                exit = fadeOut(defaultSpec()),
+            ) { conclusions() }
+        }
 
-            ProvideTextStyle(MaterialTheme.typography.body2) {
-                Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart)) {
-                    MacTerminal(
-                        modifier = Modifier.requiredHeight(600.dp).offset(y = outputOffset)
-                    ) {
-                        Box(modifier = Modifier.padding(32.dp)) {
-                            output(showProblem.targetState)
-                        }
-                    }
+        MacTerminal(
+            modifier = Modifier.fillMaxWidth()
+                .align(Alignment.BottomStart)
+                .requiredHeight(600.dp)
+                .offset(y = outputOffset)
+        ) {
+            Box(modifier = Modifier.padding(32.dp)) {
+                ProvideTextStyle(MaterialTheme.typography.body2) {
+                    output()
                 }
             }
         }
@@ -275,21 +281,23 @@ private fun ShowBuilder.ExampleTransition(
     strings: @Composable () -> ImmutableList<AnnotatedString>,
 ) {
     slide(states = 0) {
-        val next = transition.createChildTransition { it == SlideState.Exiting }
-        ExampleTestAssertion(
-            transition = transition.createChildTransition { ExampleState.ShowExample },
-            example = { _ ->
-                val values = strings()
-                val text = next.animateList(
-                    values,
-                    transitionSpec = { typingSpec(count = values.size) },
-                ) { if (it) values.lastIndex else 0 }
+        val values = strings()
+        val next = transition.createChildTransition { if (it == SlideState.Exiting) values.lastIndex else 0 }
+        fun Transition.Segment<Int>.(): FiniteAnimationSpec<AnnotatedString> {
+            return typingSpec(count = abs(targetState - initialState))
+        }
 
-                Text(text.value)
-            },
-            output = { },
-            problem = { },
-        )
+        val text by next.animateList(
+            values = values,
+            transitionSpec = { typingSpec(count = abs(targetState - initialState)) },
+        ) { it }
+
+        TitleAndBody {
+            ExampleTestAssertion(
+                transition = transition.createChildTransition { TemplateState.Example },
+                example = { Text(text) },
+            )
+        }
     }
 }
 
@@ -307,6 +315,68 @@ private fun String.toExampleStyle(codeStyle: Highlighting) = when (this) {
     "hasSize" -> codeStyle.extensionFunctionCall
     "assertTrue", "assertEquals", "assertThat", "assert" -> codeStyle.staticFunctionCall
     else -> null
+}
+
+@Composable
+private fun <T> Transition<T>.animateText(
+    values: ImmutableList<String>,
+    transitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Int> = { spring() },
+    showLast: (T) -> Boolean,
+): State<String> {
+    val outputIndex = createChildTransition(transformToChildState = showLast)
+    return outputIndex.animateList(
+        values = values,
+        transitionSpec = transitionSpec,
+    ) { if (it) values.lastIndex else 0 }
+}
+
+@Composable
+private fun Transition<TemplateState>.ShowConclusions(
+    conclusions: List<TemplateState.Conclusion>,
+) {
+    Row(modifier = Modifier.fillMaxWidth().padding(32.dp)) {
+        Column(modifier = Modifier.weight(1f)) {
+            for (conclusion in conclusions.filter { it.pro }) {
+                AnimateConclusion(conclusion.index, conclusion.text, conclusion.pro)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            for (conclusion in conclusions.filter { !it.pro }) {
+                AnimateConclusion(conclusion.index, conclusion.text, conclusion.pro)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun Transition<TemplateState>.AnimateConclusion(index: Int, text: String, pro: Boolean) {
+    AnimatedVisibility(
+        visible = { it is TemplateState.Conclusion && it.index >= index },
+        enter = fadeIn(defaultSpec()),
+        exit = fadeOut(defaultSpec()),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (pro) {
+                Icon(
+                    Icons.Filled.Done,
+                    tint = Color.White,
+                    contentDescription = "",
+                    modifier = Modifier.size(48.dp).background(Color(0xFF009900), shape = CircleShape)
+                )
+            } else {
+                Icon(
+                    Icons.Filled.Close,
+                    tint = Color.White,
+                    contentDescription = "",
+                    modifier = Modifier.size(48.dp).background(Color(0xFF990000), shape = CircleShape)
+                )
+            }
+            Spacer(Modifier.width(16.dp))
+            Text(text)
+        }
+    }
 }
 
 @Composable
@@ -369,7 +439,7 @@ fun Modifier.errorUnderline(layout: TextLayoutResult?, textRange: TextRange, col
     }
 }
 
-// TODO make range an annotation within the code somehow? `/*<error>*/`?
+// TODO make range an annotation within the code somehow? <!ERROR!>...<!> / <!WARN!>...<!>
 fun String.rangeOf(string: String): TextRange {
     val index = indexOf(string)
     if (index == -1) return TextRange.Zero
@@ -385,14 +455,10 @@ private val firstTest: String = """
     }
 """.trimIndent()
 
-val firstTestRange = firstTest.rangeOf("assertTrue")
-
 private val firstOutput: String = """
     java.lang.AssertionError: Expected value to be true.
         at [...]
 """.trimIndent()
-
-val firstOutputRange = firstOutput.rangeOf("Expected value to be true.")
 
 // language=kotlin
 private val secondTest: String = """
@@ -402,8 +468,6 @@ private val secondTest: String = """
         assertEquals(9, members.size)
     }
 """.trimIndent()
-
-val secondTestRange = secondTest.rangeOf("members.size")
 
 private val firstToSecondTest: ImmutableList<AnnotatedString>
     @Composable
@@ -420,8 +484,6 @@ private val secondOutput: String = """
     java.lang.AssertionError: expected:<9> but was:<8>
         at [...]
 """.trimIndent()
-
-val secondOutputRange = secondOutput.rangeOf("expected:<9> but was:<8>")
 
 private val secondToThirdTest: ImmutableList<AnnotatedString>
     @Composable
@@ -442,8 +504,6 @@ private val thirdTest: String = """
         assertEquals(9, members.size, "Members: ${'$'}members")
     }
 """.trimIndent()
-
-val thirdTestRange = thirdTest.rangeOf("\"Members: ${'$'}members\"")
 
 private val thirdOutput: String = """
     java.lang.AssertionError: Members: [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli] expected:<9> but was:<8>
@@ -470,8 +530,6 @@ private val forthTest: String = """
     }
 """.trimIndent()
 
-val forthTestRange = forthTest.rangeOf("hasSize(9)")
-
 private val forthOutput: String = """
     org.opentest4j.AssertionFailedError: expected [size]:<[9]> but was:<[8]> ([Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli])
         at [...]
@@ -497,8 +555,6 @@ private val finalTest: String = """
         assert(members.size == 9)
     }
 """.trimIndent()
-
-val fifthTestRange = finalTest.rangeOf("hasSize(9)")
 
 private val fifthOutput = startAnimation(
     """

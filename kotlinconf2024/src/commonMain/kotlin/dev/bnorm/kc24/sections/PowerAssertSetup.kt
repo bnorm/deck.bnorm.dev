@@ -31,10 +31,12 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlin.time.Duration.Companion.seconds
 
 fun ShowBuilder.PowerAssertSetup() {
+    // TODO Amper config
+    // TODO remove groovy script example?
+    //  - text could be bigger with just the kts example
+    //  - more emphasizes how simple the setup is
+    // TODO should setup be a side-panel of the first power-assert example?
     GradlePlugin()
-    GradleExtension()
-    // TODO function extension property
-    // TODO exclude source sets property
 }
 
 private fun ShowBuilder.GradlePlugin() {

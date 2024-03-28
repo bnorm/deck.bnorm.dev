@@ -25,11 +25,8 @@ import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.*
 import dev.bnorm.librettist.show.assist.ShowAssistTab
-import dev.bnorm.librettist.show.slideForBoolean
-import dev.bnorm.librettist.show.toBoolean
-import dev.bnorm.librettist.show.toInt
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -122,7 +119,7 @@ private fun ShowBuilder.KotlinLibraries(state: AssertionLibrariesState) {
         }
     } else {
         slide(states = AssertionLibrariesState.MAX_COUNT + 2) {
-            val answerVisible = transition.createChildTransition { it.toInt() >= AssertionLibrariesState.MAX_COUNT + 1 }
+            val answerVisible = transition.createChildTransition { it >= AssertionLibrariesState.MAX_COUNT + 1 }
             val libraryCount = transition.createChildTransition { it.toInt().coerceIn(0..AssertionLibrariesState.MAX_COUNT) }
             impl(answerVisible, libraryCount.targetState)
         }
@@ -140,9 +137,9 @@ private fun ShowBuilder.GroovyLibraries() {
         }
     }
     slide(states = 3) {
-        val spockVisible = transition.createChildTransition { it.toInt() < 2 }
-        val questionVisible = transition.createChildTransition { it.toInt() >= 1 }
-        val answerVisible = transition.createChildTransition { it.toInt() >= 2 }
+        val spockVisible = transition.createChildTransition { it < 2 }
+        val questionVisible = transition.createChildTransition { it >= 1 }
+        val answerVisible = transition.createChildTransition { it >= 2 }
 
         TitleAndBody {
             Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {

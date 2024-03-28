@@ -33,11 +33,18 @@ import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 
 fun ShowBuilder.AdvancedPowerAssert() {
+    // TODO examples
+    //  # Complex, multiline example to show completeness of diagram
+    //  # assertTrue so contracts work -> show functions configuration, just a quick intro
+    //  # require/check -> show includedSourceSets configuration
+    //  # assertEquals configuration to show all parameters get transformed -> show plugin configuration, details on required signature
+    //  # creating our own functions (assertSoftly?) -> function doesn't need to throw
+    //  # ??? other? logging/dbg?
+
+    // TODO does each example need it's own title+header?
+
     ComplexExpressions()
     SoftAssert()
-
-    // TODO extra use cases like
-    //  3. logging? (dbg)
 }
 
 private fun ShowBuilder.ComplexExpressions() {

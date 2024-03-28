@@ -2,7 +2,6 @@ package dev.bnorm.kc24.template
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -22,12 +21,6 @@ import org.jetbrains.compose.resources.painterResource
 
 interface KodeeScope {
     fun show(condition: () -> Boolean, content: @Composable () -> Unit)
-
-    fun <T> Transition<T>.at(state: T): Boolean = !isRunning && currentState == state
-
-    fun <T> Transition<T>.between(a: T, b: T): Boolean {
-        return at(a) || at(b) || targetState == a && currentState == b || targetState == b && currentState == a
-    }
 }
 
 @Composable
@@ -76,6 +69,11 @@ fun KodeeExcited(modifier: Modifier = Modifier) {
 @Composable
 fun KodeeLoving(modifier: Modifier = Modifier) {
     Kodee("kotlin_mascot/emoji/kodee-loving.png", modifier)
+}
+
+@Composable
+fun KodeeSad(modifier: Modifier = Modifier) {
+    Kodee("kotlin_mascot/emoji/kodee-sad.png", modifier)
 }
 
 @Composable

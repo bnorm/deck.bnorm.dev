@@ -23,9 +23,9 @@ import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.compareTo
 import dev.bnorm.librettist.show.slideForBoolean
 import dev.bnorm.librettist.show.toBoolean
-import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLines
 
@@ -70,9 +70,9 @@ private fun ShowBuilder.WithoutPowerAssert() {
 
 private fun ShowBuilder.WithPowerAssert() {
     slide(states = 4) {
-        val outputPopup = transition.createChildTransition { it.toInt() >= 1 }
-        val showCode = transition.createChildTransition { it.toInt() >= 2 }
-        val showDiagram = transition.createChildTransition { it.toInt() >= 3 }
+        val outputPopup = transition.createChildTransition { it >= 1 }
+        val showCode = transition.createChildTransition { it >= 2 }
+        val showDiagram = transition.createChildTransition { it >= 3 }
         val outputText by showDiagram.animateList(powerAssertOutput, transitionSpec = { defaultSpec() }) {
             if (it) powerAssertOutput.lastIndex else 0
         }
