@@ -19,6 +19,7 @@ import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.AnimationSequence
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
+import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.slideForBoolean
@@ -109,7 +110,7 @@ private fun String.toStyle(codeStyle: Highlighting) = when (this) {
     else -> null
 }
 
-private val ktsSequence: ImmutableList<AnnotatedString>
+val ktsSequence: ImmutableList<AnnotatedString>
     @Composable
     get() {
         val codeStyle = ShowTheme.code
@@ -123,16 +124,14 @@ private val ktsSequence: ImmutableList<AnnotatedString>
             startAnimation(
                 buildString(
                     """
-                        // build.gradle.kts
                         plugins {
                             kotlin("jvm") version "2.0.0"
                         }
                     """.trimIndent(),
                 ),
-            ).thenLines(
+            ).then(
                 buildString(
                     """
-                        // build.gradle.kts
                         plugins {
                             kotlin("jvm") version "2.0.0"
                         
@@ -142,7 +141,6 @@ private val ktsSequence: ImmutableList<AnnotatedString>
             ).thenLineEndDiff(
                 buildString(
                     """
-                        // build.gradle.kts
                         plugins {
                             kotlin("jvm") version "2.0.0"
                             kotlin("plugin.power-assert") version "2.0.0"
@@ -160,7 +158,7 @@ private val groovySequence = startAnimation(
             id 'org.jetbrains.kotlin.jvm' version '2.0.0'
         }
     """.trimIndent()
-).thenLines(
+).then(
     """
         // build.gradle
         plugins {

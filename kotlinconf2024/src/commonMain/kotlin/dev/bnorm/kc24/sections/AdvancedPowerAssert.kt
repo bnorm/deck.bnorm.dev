@@ -2,11 +2,8 @@ package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -15,12 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.MacTerminal
+import dev.bnorm.kc24.elements.SidePanel
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
@@ -118,29 +115,6 @@ private fun OutputText(text: String, visible: Transition<Boolean>, modifier: Mod
                     modifier = Modifier.padding(start = 32.dp, top = 32.dp)
                         .wrapContentWidth(Alignment.Start, unbounded = true),
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SidePanel(visible: Transition<Boolean>, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Box(modifier = modifier.fillMaxHeight()) {
-        visible.AnimatedVisibility(
-            enter = slideInHorizontally(defaultSpec()) { it },
-            exit = slideOutHorizontally(defaultSpec()) { it },
-        ) {
-            Row {
-                Spacer(modifier = Modifier.background(Color(0xFF313438)).width(4.dp).fillMaxHeight())
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.surface)
-                        .padding(start = SLIDE_PADDING, top = SLIDE_PADDING)
-                        .wrapContentWidth(Alignment.Start, unbounded = true)
-                ) {
-                    content()
-                }
             }
         }
     }

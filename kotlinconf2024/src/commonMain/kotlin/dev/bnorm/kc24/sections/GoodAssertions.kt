@@ -4,6 +4,7 @@ package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
@@ -39,6 +41,10 @@ import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -49,7 +55,7 @@ fun ShowBuilder.GoodAssertions() {
     ExampleTransition { secondToThirdTest }
     ThirdExample()
     ExampleTransition { thirdToForth }
-    ForthExample(forthTest)
+    ForthExample()
     ExampleTransition { forthToFifth }
     FinalExample()
 
@@ -59,9 +65,9 @@ fun ShowBuilder.GoodAssertions() {
 private fun ShowBuilder.FirstExample() {
     val states = listOf(
         TemplateState.Example,
-        TemplateState.Output(0),
-        TemplateState.Conclusion(0, "Clear assertion condition", pro = true),
-        TemplateState.Conclusion(1, "Useless failure message", pro = false),
+        TemplateState.Output(index = 0),
+        TemplateState.Conclusion.Pro(text = "Clear assertion condition"),
+        TemplateState.Conclusion.Con(text = "Useless failure message"),
         // TODO more conclusions?
     )
     slideForValues(states) {
@@ -77,7 +83,9 @@ private fun ShowBuilder.FirstExample() {
                 transition = state,
                 example = { Text(rememberExampleCodeString(firstTest)) },
                 output = { Text(firstOutput) },
-                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+                conclusions = {
+                    state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>().toImmutableList())
+                },
             )
         }
     }
@@ -86,9 +94,9 @@ private fun ShowBuilder.FirstExample() {
 private fun ShowBuilder.SecondExample() {
     val states = listOf(
         TemplateState.Example,
-        TemplateState.Output(0),
-        TemplateState.Conclusion(0, "Improved failure message", pro = true),
-        TemplateState.Conclusion(1, "No intermediate values", pro = false),
+        TemplateState.Output(index = 0),
+        TemplateState.Conclusion.Pro(text = "Improved failure message"),
+        TemplateState.Conclusion.Con(text = "No intermediate values"),
         // TODO more conclusions?
     )
     slideForValues(states) {
@@ -104,7 +112,9 @@ private fun ShowBuilder.SecondExample() {
                 transition = state,
                 example = { Text(rememberExampleCodeString(secondTest)) },
                 output = { Text(secondOutput) },
-                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+                conclusions = {
+                    state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>().toImmutableList())
+                },
             )
         }
     }
@@ -113,9 +123,9 @@ private fun ShowBuilder.SecondExample() {
 private fun ShowBuilder.ThirdExample() {
     val states = listOf(
         TemplateState.Example,
-        TemplateState.Output(0),
-        TemplateState.Conclusion(0, "Complete failure message", pro = true),
-        TemplateState.Conclusion(1, "Message maintenance burden", pro = false),
+        TemplateState.Output(index = 0),
+        TemplateState.Conclusion.Pro(text = "Complete failure message"),
+        TemplateState.Conclusion.Con(text = "Message maintenance burden"),
         // TODO more conclusions?
     )
     slideForValues(states) {
@@ -131,19 +141,21 @@ private fun ShowBuilder.ThirdExample() {
                 transition = state,
                 example = { Text(rememberExampleCodeString(thirdTest)) },
                 output = { Text(thirdOutput) },
-                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+                conclusions = {
+                    state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>().toImmutableList())
+                },
             )
         }
     }
 }
 
-private fun ShowBuilder.ForthExample(exampleText: String) {
+private fun ShowBuilder.ForthExample() {
     val states = listOf(
         TemplateState.Example,
-        TemplateState.Output(0),
-        TemplateState.Conclusion(0, "Complete failure message", pro = true),
-        TemplateState.Conclusion(1, "Mental load for functions", pro = false),
-        TemplateState.Conclusion(2, "Library bike-shedding", pro = false),
+        TemplateState.Output(index = 0),
+        TemplateState.Conclusion.Pro(text = "Complete failure message"),
+        TemplateState.Conclusion.Con(text = "Mental load for functions"),
+        TemplateState.Conclusion.Con(text = "Library bike-shedding"),
         // TODO more conclusions?
     )
     slideForValues(states) {
@@ -157,9 +169,11 @@ private fun ShowBuilder.ForthExample(exampleText: String) {
         ) {
             ExampleTestAssertion(
                 transition = state,
-                example = { Text(rememberExampleCodeString(exampleText)) },
+                example = { Text(rememberExampleCodeString(forthTest)) },
                 output = { Text(forthOutput) },
-                conclusions = { state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>()) },
+                conclusions = {
+                    state.ShowConclusions(states.filterIsInstance<TemplateState.Conclusion>().toImmutableList())
+                },
             )
         }
     }
@@ -168,51 +182,66 @@ private fun ShowBuilder.ForthExample(exampleText: String) {
 private fun ShowBuilder.FinalExample() {
     val states = listOf(
         TemplateState.Example,
-        TemplateState.Output(0),
-        TemplateState.Output(1),
-        TemplateState.Output(2),
+        TemplateState.Output(index = 0), // show output
+        TemplateState.Output(index = 1), // show gradle
+        TemplateState.Output(index = 2), // change gradle
+        TemplateState.Output(index = 3), // hide gradle
+        TemplateState.Output(index = 4), // change output
     )
     slideForValues(states) {
         val state = transition.toTemplate(exiting = states.last())
 
         val outputValues = fifthOutput
-        val outputText by state.animateText(
+        val outputText by state.animateList(
             values = outputValues,
             transitionSpec = { typingSpec(count = outputValues.size - 1, charDelay = 100.milliseconds) },
-            showLast = { it is TemplateState.Output && it.index > 0 }
+            showLast = { it.index >= 4 }
         )
 
-        val titleValues = remember { startAnimation("Assertions").thenLineEndDiff("Power-Assert").toList() }
-        val titleText by state.animateText(
-            values = titleValues,
-            transitionSpec = { typingSpec(count = titleValues.size - 1) },
-            showLast = {  it is TemplateState.Output && it.index >= 2  }
+        val gradleValues = ktsSequence
+        val gradleText by state.animateList(
+            values = gradleValues,
+            transitionSpec = { typingSpec(count = gradleValues.size - 1) },
+            showLast = { it.index >= 2 }
         )
 
         TitleAndBody(
-            title = { Text(titleText) },
             kodee = {
-                show(condition = {
-                    state.currentState.let { it is TemplateState.Output && it.index >= 1 } &&
-                            state.targetState.let { it is TemplateState.Output && it.index >= 1 }
-                }) {
+                show(condition = { state.currentState.index >= 4 && state.targetState.index >= 4 }) {
                     KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
                 }
 
-                show(condition = { state.between(TemplateState.Output(0), TemplateState.Output(1)) }) {
+                show(condition = { state.currentState.index >= 2 || state.targetState.index >= 2 }) {
                     KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
                 }
 
-                show(condition = { state.atType<TemplateState.Output>() }) {
+                show(condition = { state.currentState is TemplateState.Output }) {
                     KodeeSad(modifier = Modifier.requiredSize(150.dp))
                 }
             }
         ) {
-            ExampleTestAssertion(
-                transition = state,
-                example = { Text(rememberExampleCodeString(finalTest)) },
-                output = { Text(outputText) }
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                ExampleTestAssertion(
+                    transition = state,
+                    example = { Text(rememberExampleCodeString(finalTest)) },
+                    output = { Text(outputText) }
+                )
+
+                SidePanel(
+                    visible = state.createChildTransition { it.index in 1..2 },
+                    modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            // TODO use icon from IntelliJ
+                            Image("gradle/ICON-GRADLE-ALT_MONO-REV.png", Modifier.size(36.dp))
+                            Spacer(Modifier.width(16.dp))
+                            Text(text = "build.gradle.kts", fontSize = 28.sp, lineHeight = 28.sp)
+                        }
+                    }
+                ) {
+                    Text(gradleText)
+                }
+            }
         }
     }
 }
@@ -234,8 +263,20 @@ fun Transition<out SlideState<TemplateState>>.toTemplate(
 sealed interface TemplateState {
     data object Example : TemplateState
     data class Output(val index: Int) : TemplateState
-    data class Conclusion(val index: Int, val text: String, val pro: Boolean) : TemplateState
+    sealed interface Conclusion : TemplateState {
+        val text: String
+
+        data class Pro(override val text: String) : Conclusion
+        data class Con(override val text: String) : Conclusion
+    }
 }
+
+val TemplateState.index: Int
+    get() = when (this) {
+        TemplateState.Example -> Int.MIN_VALUE
+        is TemplateState.Output -> index
+        is TemplateState.Conclusion -> Int.MIN_VALUE
+    }
 
 @Composable
 private fun ExampleTestAssertion(
@@ -318,13 +359,12 @@ private fun String.toExampleStyle(codeStyle: Highlighting) = when (this) {
 }
 
 @Composable
-private fun <T> Transition<T>.animateText(
-    values: ImmutableList<String>,
+private fun <T, V> Transition<T>.animateList(
+    values: ImmutableList<V>,
     transitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Int> = { spring() },
-    showLast: (T) -> Boolean,
-): State<String> {
-    val outputIndex = createChildTransition(transformToChildState = showLast)
-    return outputIndex.animateList(
+    showLast: @Composable (T) -> Boolean,
+): State<V> {
+    return createChildTransition(transformToChildState = showLast).animateList(
         values = values,
         transitionSpec = transitionSpec,
     ) { if (it) values.lastIndex else 0 }
@@ -332,18 +372,24 @@ private fun <T> Transition<T>.animateText(
 
 @Composable
 private fun Transition<TemplateState>.ShowConclusions(
-    conclusions: List<TemplateState.Conclusion>,
+    conclusions: ImmutableList<TemplateState>,
 ) {
-    Row(modifier = Modifier.fillMaxWidth().padding(32.dp)) {
+    val withIndex = remember(conclusions) {
+        conclusions.filterIsInstance<TemplateState.Conclusion>()
+            .mapIndexed { index, conclusion -> index to conclusion }
+    }
+    val state = createChildTransition { conclusions.indexOf(it) }
+
+    Row(modifier = Modifier.fillMaxWidth().padding(SLIDE_CONTENT_SPACING)) {
         Column(modifier = Modifier.weight(1f)) {
-            for (conclusion in conclusions.filter { it.pro }) {
-                AnimateConclusion(conclusion.index, conclusion.text, conclusion.pro)
+            for ((index, conclusion) in withIndex.filter { it.second is TemplateState.Conclusion.Pro }) {
+                state.AnimateConclusion(index, conclusion.text, pro = true)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
         Column(modifier = Modifier.weight(1f)) {
-            for (conclusion in conclusions.filter { !it.pro }) {
-                AnimateConclusion(conclusion.index, conclusion.text, conclusion.pro)
+            for ((index, conclusion) in withIndex.filter { it.second is TemplateState.Conclusion.Con }) {
+                state.AnimateConclusion(index, conclusion.text, pro = false)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -351,9 +397,9 @@ private fun Transition<TemplateState>.ShowConclusions(
 }
 
 @Composable
-private fun Transition<TemplateState>.AnimateConclusion(index: Int, text: String, pro: Boolean) {
+private fun Transition<Int>.AnimateConclusion(index: Int, text: String, pro: Boolean) {
     AnimatedVisibility(
-        visible = { it is TemplateState.Conclusion && it.index >= index },
+        visible = { it >= index },
         enter = fadeIn(defaultSpec()),
         exit = fadeOut(defaultSpec()),
     ) {
@@ -377,6 +423,17 @@ private fun Transition<TemplateState>.AnimateConclusion(index: Int, text: String
             Text(text)
         }
     }
+}
+
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun Image(path: String, modifier: Modifier) {
+    Image(
+        painter = painterResource(DrawableResource(path)),
+        contentDescription = "",
+        modifier = modifier,
+    )
 }
 
 @Composable

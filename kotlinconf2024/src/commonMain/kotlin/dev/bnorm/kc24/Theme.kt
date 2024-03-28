@@ -132,11 +132,11 @@ object Theme {
                     h3 = jetBrainsMonoTypography.h3.copy(fontSize = 84.sp, lineHeight = 98.sp),
                     h4 = jetBrainsMonoTypography.h3.copy(fontSize = 72.sp, lineHeight = 84.sp),
                     h5 = jetBrainsMonoTypography.h5.copy(fontSize = 62.sp, lineHeight = 72.sp),
+                    subtitle1 = jetBrainsMonoTypography.subtitle1.copy(fontSize = 28.sp, lineHeight = 36.sp),
                     body1 = jetBrainsMonoTypography.body1.copy(fontSize = 44.sp, lineHeight = 56.sp),
                     body2 = jetBrainsMonoTypography.body2.copy(fontSize = 36.sp, lineHeight = 46.sp),
 
                     h6 = jetBrainsMonoTypography.h6.copy(fontSize = 0.sp),
-                    subtitle1 = jetBrainsMonoTypography.subtitle1.copy(fontSize = 0.sp),
                     subtitle2 = jetBrainsMonoTypography.subtitle2.copy(fontSize = 0.sp),
                     button = jetBrainsMonoTypography.button.copy(fontSize = 0.sp),
                     caption = jetBrainsMonoTypography.caption.copy(fontSize = 0.sp),

@@ -38,17 +38,12 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
     //  - make sure the main point here is emphasized!!!
     //  - improve the flow between the section
 
-    section(title = "Assertions") {
+    section(title = "Asserts") {
         SectionHeader(animateToBody = true)
         GoodAssertions()
     }
 
-    section(title = "Power-Assert Setup") {
-        SectionHeader(animateToBody = true)
-        PowerAssertSetup()
-    }
-
-    section(title = "Advanced Power-Assert") {
+    section(title = "Power-Assert") {
         SectionHeader(animateToBody = true)
         AdvancedPowerAssert()
     }
