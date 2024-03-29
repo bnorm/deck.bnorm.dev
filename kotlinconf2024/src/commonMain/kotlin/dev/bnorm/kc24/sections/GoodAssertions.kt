@@ -3,7 +3,10 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.ExperimentalTransitionApi
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -27,16 +30,17 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
+import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.slideForValues
+import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
@@ -63,6 +67,9 @@ fun ShowBuilder.GoodAssertions() {
 }
 
 private fun ShowBuilder.FirstExample() {
+    // TODO slide in example like power-assert examples?
+    //  - others can be text changes since we're going updates
+
     val states = listOf(
         TemplateState.Example,
         TemplateState.Output(index = 0),
@@ -74,7 +81,10 @@ private fun ShowBuilder.FirstExample() {
         val state = transition.toTemplate()
         TitleAndBody(
             kodee = {
-                show(condition = { state.atType<TemplateState.Output>() }) {
+                show(condition = {
+                    (state.currentState is TemplateState.Output || state.currentState is TemplateState.Conclusion) &&
+                            (state.targetState is TemplateState.Output || state.targetState is TemplateState.Conclusion)
+                }) {
                     KodeeBrokenHearted(modifier = Modifier.requiredSize(200.dp))
                 }
             }
@@ -103,7 +113,10 @@ private fun ShowBuilder.SecondExample() {
         val state = transition.toTemplate()
         TitleAndBody(
             kodee = {
-                show(condition = { state.atType<TemplateState.Output>() }) {
+                show(condition = {
+                    (state.currentState is TemplateState.Output || state.currentState is TemplateState.Conclusion) &&
+                            (state.targetState is TemplateState.Output || state.targetState is TemplateState.Conclusion)
+                }) {
                     KodeeLost(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
                 }
             }
@@ -132,7 +145,10 @@ private fun ShowBuilder.ThirdExample() {
         val state = transition.toTemplate()
         TitleAndBody(
             kodee = {
-                show(condition = { state.atType<TemplateState.Output>() }) {
+                show(condition = {
+                    (state.currentState is TemplateState.Output || state.currentState is TemplateState.Conclusion) &&
+                            (state.targetState is TemplateState.Output || state.targetState is TemplateState.Conclusion)
+                }) {
                     KodeeExcited(modifier = Modifier.requiredSize(200.dp))
                 }
             }
@@ -162,7 +178,10 @@ private fun ShowBuilder.ForthExample() {
         val state = transition.toTemplate()
         TitleAndBody(
             kodee = {
-                show(condition = { state.atType<TemplateState.Output>() }) {
+                show(condition = {
+                    (state.currentState is TemplateState.Output || state.currentState is TemplateState.Conclusion) &&
+                            (state.targetState is TemplateState.Output || state.targetState is TemplateState.Conclusion)
+                }) {
                     KodeeExcited(modifier = Modifier.requiredSize(200.dp))
                 }
             }
@@ -192,18 +211,18 @@ private fun ShowBuilder.FinalExample() {
         val state = transition.toTemplate(exiting = states.last())
 
         val outputValues = fifthOutput
-        val outputText by state.animateList(
+        val outputState = state.createChildTransition { it.index >= 4 }
+        val outputText by outputState.animateList(
             values = outputValues,
             transitionSpec = { typingSpec(count = outputValues.size - 1, charDelay = 100.milliseconds) },
-            showLast = { it.index >= 4 }
-        )
+        ) { if (it) outputValues.lastIndex else 0 }
 
         val gradleValues = ktsSequence
-        val gradleText by state.animateList(
+        val gradleState = state.createChildTransition { it.index >= 2 }
+        val gradleText by gradleState.animateList(
             values = gradleValues,
             transitionSpec = { typingSpec(count = gradleValues.size - 1) },
-            showLast = { it.index >= 2 }
-        )
+        ) { if (it) gradleValues.lastIndex else 0 }
 
         TitleAndBody(
             kodee = {
@@ -215,7 +234,7 @@ private fun ShowBuilder.FinalExample() {
                     KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
                 }
 
-                show(condition = { state.currentState is TemplateState.Output }) {
+                show(condition = { state.atType<TemplateState.Output>() }) {
                     KodeeSad(modifier = Modifier.requiredSize(150.dp))
                 }
             }
@@ -227,20 +246,11 @@ private fun ShowBuilder.FinalExample() {
                     output = { Text(outputText) }
                 )
 
-                SidePanel(
+                GradleFile(
+                    text = gradleText,
                     visible = state.createChildTransition { it.index in 1..2 },
-                    modifier = Modifier.align(Alignment.TopEnd).requiredWidth(1500.dp),
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            // TODO use icon from IntelliJ
-                            Image("gradle/ICON-GRADLE-ALT_MONO-REV.png", Modifier.size(36.dp))
-                            Spacer(Modifier.width(16.dp))
-                            Text(text = "build.gradle.kts", fontSize = 28.sp, lineHeight = 28.sp)
-                        }
-                    }
-                ) {
-                    Text(gradleText)
-                }
+                    modifier = Modifier.align(Alignment.TopEnd),
+                )
             }
         }
     }
@@ -324,10 +334,6 @@ private fun ShowBuilder.ExampleTransition(
     slide(states = 0) {
         val values = strings()
         val next = transition.createChildTransition { if (it == SlideState.Exiting) values.lastIndex else 0 }
-        fun Transition.Segment<Int>.(): FiniteAnimationSpec<AnnotatedString> {
-            return typingSpec(count = abs(targetState - initialState))
-        }
-
         val text by next.animateList(
             values = values,
             transitionSpec = { typingSpec(count = abs(targetState - initialState)) },
@@ -358,16 +364,12 @@ private fun String.toExampleStyle(codeStyle: Highlighting) = when (this) {
     else -> null
 }
 
-@Composable
-private fun <T, V> Transition<T>.animateList(
-    values: ImmutableList<V>,
-    transitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Int> = { spring() },
-    showLast: @Composable (T) -> Boolean,
-): State<V> {
-    return createChildTransition(transformToChildState = showLast).animateList(
-        values = values,
-        transitionSpec = transitionSpec,
-    ) { if (it) values.lastIndex else 0 }
+private fun String.toStyle(codeStyle: Highlighting) = when (this) {
+    "class" -> codeStyle.keyword
+    "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation
+    "functions", "excludedSourceSets" -> codeStyle.property
+    "kotlin", "version", "powerAssert" -> codeStyle.extensionFunctionCall
+    else -> null
 }
 
 @Composable
@@ -647,3 +649,44 @@ private val fifthOutput = startAnimation(
                [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
     """.trimIndent(),
 ).toList()
+
+val ktsSequence: ImmutableList<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        fun buildString(text: String) = buildGradleKtsCodeString(
+            text = text,
+            codeStyle = codeStyle,
+            identifierType = { it.toStyle(codeStyle) }
+        )
+
+        return remember {
+            startAnimation(
+                buildString(
+                    """
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                        }
+                    """.trimIndent(),
+                ),
+            ).then(
+                buildString(
+                    """
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                        
+                        }
+                    """.trimIndent(),
+                ),
+            ).thenLineEndDiff(
+                buildString(
+                    """
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                            kotlin("plugin.power-assert") version "2.0.0"
+                        }
+                    """.trimIndent(),
+                ),
+            ).toList()
+        }
+    }

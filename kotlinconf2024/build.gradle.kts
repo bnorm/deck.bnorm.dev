@@ -66,6 +66,10 @@ tasks.register<Sync>("site") {
 
 configure<com.bnorm.power.PowerAssertGradleExtension> {
     functions += listOf(
+        "kotlin.require",
+        "kotlin.test.assertTrue",
+        "kotlin.test.assertNotNull",
+        "kotlin.test.assertEquals",
         "dev.bnorm.assert.AssertScope.assert",
         "dev.bnorm.assert.assert",
     )

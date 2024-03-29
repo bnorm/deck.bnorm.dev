@@ -1,8 +1,11 @@
 import assertk.assertThat
 import assertk.assertions.hasSize
-import dev.bnorm.assert.assertSoftly
 import dev.bnorm.assert.assert
-import kotlin.test.*
+import dev.bnorm.assert.assertSoftly
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 enum class Race {
     Hobbit,
@@ -26,7 +29,7 @@ data class Character(
     }
 }
 
-object FellowshipOfTheRing {
+data object FellowshipOfTheRing {
     private val members = listOf(
         Character(name = "Frodo", race = Race.Hobbit, age = 50, alive = true),
         Character(name = "Sam", race = Race.Hobbit, age = 38, alive = true),
@@ -41,6 +44,11 @@ object FellowshipOfTheRing {
 
     fun getAllMembers(): List<Character> = members
     fun getCurrentMembers(): List<Character> = members.filter { it.alive }
+
+    operator fun get(index: Int): Character {
+        require(index in members.indices)
+        return members[index]
+    }
 }
 
 internal class FellowshipOfTheRingTest {
@@ -88,12 +96,26 @@ internal class FellowshipOfTheRingTest {
     @Test
     fun `test members of the fellowship7`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
-        assert((members.find { it.name == "Frodo" }?.age == 23) and
-                (members.find { it.name == "Aragorn" }?.age == 60))
+        val aragorn = members.find { it.name == "Aragorn" }
+        assertTrue(aragorn != null)
+        assertTrue(aragorn.age < 60)
     }
 
     @Test
     fun `test members of the fellowship8`() {
+        fellowshipOfTheRing[10]
+    }
+
+    @Test
+    fun `test members of the fellowship9`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
+        val aragorn = members.find { it.name == "Aragorn" }
+        val boromir = members.find { it.name == "Boromir" }
+        assertEquals(aragorn?.race, boromir?.race)
+    }
+
+    @Test
+    fun `test members of the fellowship10`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assertSoftly {
             assert(members.find { it.name == "Frodo" }?.age == 23)

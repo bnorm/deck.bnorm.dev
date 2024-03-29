@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 
 @ExperimentalAnimationApi
 @Composable
-fun Transition<Boolean>.AnimatedVisibility(
+fun Transition<out Boolean>.AnimatedVisibility(
     modifier: Modifier = Modifier,
     enter: EnterTransition = fadeIn() + expandIn(),
     exit: ExitTransition = shrinkOut() + fadeOut(),

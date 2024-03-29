@@ -19,7 +19,6 @@ import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.sections.AdvancedPowerAssert
 import dev.bnorm.kc24.sections.GoodAssertions
 import dev.bnorm.kc24.sections.PowerAssertFuture
-import dev.bnorm.kc24.sections.PowerAssertSetup
 import dev.bnorm.kc24.template.KodeeLoving
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
@@ -38,20 +37,21 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
     //  - make sure the main point here is emphasized!!!
     //  - improve the flow between the section
 
-    section(title = "Asserts") {
+    section(title = "Assertions") {
         SectionHeader(animateToBody = true)
         GoodAssertions()
     }
 
-    section(title = "Power-Assert") {
+    section(title = "Examples") {
         SectionHeader(animateToBody = true)
         AdvancedPowerAssert()
     }
 
-    // TODO should there be an internals section?
-    //  - explain more how functions are transformed and signature requirements
+    // TODO should there be an advanced section?
+    //  - creating our own functions (assertSoftly?) -> function doesn't need to throw
+    //    - explain more how functions are transformed and signature requirements
 
-    section(title = "Future of Power-Assert") {
+    section(title = "Future") {
         SectionHeader(animateToBody = true)
         PowerAssertFuture()
     }
