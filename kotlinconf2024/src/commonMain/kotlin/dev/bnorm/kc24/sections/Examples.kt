@@ -41,7 +41,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ShowBuilder.AdvancedPowerAssert() {
+fun ShowBuilder.Examples() {
     // TODO examples
     //  # Complex, multiline example to show completeness of diagram
     //  # assertTrue so contracts work -> show functions configuration, just a quick intro

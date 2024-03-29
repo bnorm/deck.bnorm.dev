@@ -33,7 +33,7 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.compareTo
 
-fun ShowBuilder.PowerAssertFuture() {
+fun ShowBuilder.Future() {
     PowerAssertIdeas()
     HowCanYouHelp()
 }

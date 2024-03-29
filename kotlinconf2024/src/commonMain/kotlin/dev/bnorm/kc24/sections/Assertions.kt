@@ -52,7 +52,7 @@ import org.jetbrains.compose.resources.painterResource
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ShowBuilder.GoodAssertions() {
+fun ShowBuilder.Assertions() {
     FirstExample()
     ExampleTransition { firstToSecondTest }
     SecondExample()

@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
 import dev.bnorm.kc24.elements.typingSpec
-import dev.bnorm.kc24.sections.AdvancedPowerAssert
-import dev.bnorm.kc24.sections.GoodAssertions
-import dev.bnorm.kc24.sections.PowerAssertFuture
+import dev.bnorm.kc24.sections.Examples
+import dev.bnorm.kc24.sections.Assertions
+import dev.bnorm.kc24.sections.Future
 import dev.bnorm.kc24.template.KodeeLoving
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.SectionHeader
@@ -39,12 +39,12 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     section(title = "Assertions") {
         SectionHeader(animateToBody = true)
-        GoodAssertions()
+        Assertions()
     }
 
     section(title = "Examples") {
         SectionHeader(animateToBody = true)
-        AdvancedPowerAssert()
+        Examples()
     }
 
     // TODO should there be an advanced section?
@@ -53,7 +53,7 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     section(title = "Future") {
         SectionHeader(animateToBody = true)
-        PowerAssertFuture()
+        Future()
     }
 
     // TODO summary slide?
