@@ -68,11 +68,11 @@ private fun ShowBuilder.HowCanYouHelp() {
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
-                // TODO kotl.in/issues link?
-                // TODO kotlinlang Slack channel?
+                // TODO is this the same as the summary slide?
+                // TODO combine with the summary slide?
                 AnimateByLine(
                     transition = transition,
-                    "=> How do you get involved?" to emptySet(),
+                    "=> We're looking for your feedback!" to emptySet(),
                     "   => Try out Power-Assert!" to emptySet(),
                     "   => Report any compilation errors" to emptySet(),
                     "   => Report any strange diagrams" to emptySet(),
@@ -126,7 +126,6 @@ private fun buildStringWithTicketLink(
     tickets: Set<String>,
     contentColor: Color,
 ): AnnotatedString {
-
     return buildAnnotatedString {
         withStyle(SpanStyle(color = contentColor)) {
             append(line)

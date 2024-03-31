@@ -73,7 +73,7 @@ fun SectionHeader(
         }
     }
     val textStyle = showAsBody.animateTextStyle(
-        whenFalse = MaterialTheme.typography.h1,
+        whenFalse = MaterialTheme.typography.h2,
         whenTrue = MaterialTheme.typography.h3,
         transitionSpec = { defaultSpec() },
     )

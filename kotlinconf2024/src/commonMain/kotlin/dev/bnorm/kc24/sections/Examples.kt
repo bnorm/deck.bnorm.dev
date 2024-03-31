@@ -1,30 +1,18 @@
 package dev.bnorm.kc24.sections
 
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.kc24.elements.GradleFile
-import dev.bnorm.kc24.elements.OutputText
-import dev.bnorm.kc24.elements.gradleTextDiff
+import dev.bnorm.kc24.template.Example
 import dev.bnorm.kc24.template.ExampleCarousel
-import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.kc24.template.slideForExample
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.slideForValues
-import dev.bnorm.librettist.show.toValue
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
@@ -37,6 +25,9 @@ fun ShowBuilder.Examples() {
     //    - make part of another example?
     //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
 
+    // TODO should each example have conclusions?
+    // TODO should each example end with a question that leads into the next example?
+
     ExampleCarousel { AnnotatedString("") to complexAssertExample }
     ComplexExpressions()
     ExampleCarousel { complexAssertExample to assertTrueExample }
@@ -47,33 +38,15 @@ fun ShowBuilder.Examples() {
     AssertEquals()
 }
 
-data class ExampleState(
-    val gradleIndex: Int = 0,
-    val showGradle: Boolean = false,
-    val showOutput: Boolean = false,
-)
-
 private fun ShowBuilder.ComplexExpressions() {
-    val states = listOf(
-        ExampleState(),
-        ExampleState(showOutput = true),
-        ExampleState(),
-    )
-    slideForValues(states) {
-        val state = transition.createChildTransition { it.toValue(states.first(), states.last()) }
-
+    slideForExample(
+        builder = {
+            openOutput()
+            closeOutput()
+        }
+    ) {
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(complexAssertExample)
-                }
-
-                OutputText(
-                    text = complexAssertOutput,
-                    visible = state.createChildTransition { it.showOutput },
-                    modifier = Modifier.align(Alignment.BottomStart)
-                )
-            }
+            Example(complexAssertExample, null, complexAssertOutput)
         }
     }
 }
@@ -83,108 +56,51 @@ private fun ShowBuilder.AssertTrue() {
     //  - start with assert and show error for UNSAFE_CALL?
     //  - switch to assertTrue and show without diagram?
 
-    val states = listOf(
-        ExampleState(),
-        ExampleState(showGradle = true),
-        ExampleState(gradleIndex = 1, showGradle = true),
-        ExampleState(gradleIndex = 2, showGradle = true),
-        ExampleState(gradleIndex = 2),
-        ExampleState(gradleIndex = 2, showOutput = true),
-        ExampleState(gradleIndex = 2),
-    )
-    slideForValues(states) {
-        val state = transition.createChildTransition { it.toValue(states.first(), states.last()) }
-
+    slideForExample(
+        builder = {
+            openGradle()
+            updateGradle()
+            updateGradle()
+            closeGradle()
+            openOutput()
+            closeOutput()
+        }
+    ) {
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(assertTrueExample)
-                }
-
-                val gradleText by state.gradleTextDiff(assertTrueGradleSequence)
-                GradleFile(
-                    text = gradleText,
-                    visible = state.createChildTransition { it.showGradle },
-                    modifier = Modifier.align(Alignment.TopEnd),
-                )
-
-                OutputText(
-                    text = assertTrueOutput,
-                    visible = state.createChildTransition { it.showOutput },
-                    modifier = Modifier.align(Alignment.BottomStart)
-                )
-            }
+            Example(assertTrueExample, assertTrueGradleSequence, assertTrueOutput)
         }
     }
 }
 
 private fun ShowBuilder.Require() {
-    val states = listOf(
-        ExampleState(),
-        ExampleState(showGradle = true),
-        ExampleState(gradleIndex = 1, showGradle = true),
-        ExampleState(gradleIndex = 2, showGradle = true),
-        ExampleState(gradleIndex = 2),
-        ExampleState(gradleIndex = 2, showOutput = true),
-        ExampleState(gradleIndex = 2),
-    )
-    slideForValues(states) {
-        val state = transition.createChildTransition { it.toValue(states.first(), states.last()) }
-
+    slideForExample(
+        builder = {
+            openGradle()
+            updateGradle()
+            updateGradle()
+            closeGradle()
+            openOutput()
+            closeOutput()
+        }
+    ) {
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(requireExample)
-                }
-
-                val gradleText by state.gradleTextDiff(requireGradleSequence)
-                GradleFile(
-                    text = gradleText,
-                    visible = state.createChildTransition { it.showGradle },
-                    modifier = Modifier.align(Alignment.TopEnd),
-                )
-
-                OutputText(
-                    text = requireOutput,
-                    visible = state.createChildTransition { it.showOutput },
-                    modifier = Modifier.align(Alignment.BottomStart)
-                )
-            }
+            Example(requireExample, requireGradleSequence, requireOutput)
         }
     }
 }
 
 private fun ShowBuilder.AssertEquals() {
-    val states = listOf(
-        ExampleState(),
-        ExampleState(showGradle = true),
-        ExampleState(gradleIndex = 1, showGradle = true),
-        ExampleState(gradleIndex = 1),
-        ExampleState(gradleIndex = 1, showOutput = true),
-        ExampleState(gradleIndex = 1),
-    )
-    slideForValues(states) {
-        val state = transition.createChildTransition { it.toValue(states.first(), states.last()) }
-
+    slideForExample(
+        builder = {
+            openGradle()
+            updateGradle()
+            closeGradle()
+            openOutput()
+            closeOutput()
+        }
+    ) {
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(assertEqualsExample)
-                }
-
-                val gradleText by state.gradleTextDiff(assertEqualsGradleSequence)
-                GradleFile(
-                    text = gradleText,
-                    visible = state.createChildTransition { it.showGradle },
-                    modifier = Modifier.align(Alignment.TopEnd),
-                )
-
-                OutputText(
-                    text = assertEqualsOutput,
-                    visible = state.createChildTransition { it.showOutput },
-                    modifier = Modifier.align(Alignment.BottomStart)
-                )
-            }
+            Example(assertEqualsExample, assertEqualsGradleSequence, assertEqualsOutput)
         }
     }
 }
@@ -223,8 +139,7 @@ private val complexAssertExample: AnnotatedString
             buildKotlinCodeString(
                 // language=kotlin
                 text = """
-                    @Test
-                    fun `test members of the fellowship`() {
+                    @Test fun `test members of the fellowship`() {
                         val members = fellowshipOfTheRing.getCurrentMembers()
                         assert(members.any { it.name == "Boromir" } &&
                                 members.any { it.name == "Aragorn" } ||
@@ -268,8 +183,7 @@ private val assertTrueExample: AnnotatedString
             buildKotlinCodeString(
                 // language=kotlin
                 text = """
-                    @Test
-                    fun `test members of the fellowship`() {
+                    @Test fun `test members of the fellowship`() {
                         val members = fellowshipOfTheRing.getCurrentMembers()
                         val aragorn = members.find { it.name == "Aragorn" }
                         assertTrue(aragorn != null)
@@ -596,8 +510,7 @@ private val assertEqualsExample: AnnotatedString
             buildKotlinCodeString(
                 // language=kotlin
                 text = """
-                    @Test
-                    fun `test members of the fellowship`() {
+                    @Test fun `test members of the fellowship`() {
                         val members = fellowshipOfTheRing.getAllMembers()
                         val aragorn = members.find { it.name == "Aragorn" }
                         val boromir = members.find { it.name == "Boromir" }

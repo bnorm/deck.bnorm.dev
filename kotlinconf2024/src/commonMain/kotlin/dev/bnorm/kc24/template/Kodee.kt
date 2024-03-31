@@ -2,6 +2,7 @@ package dev.bnorm.kc24.template
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,6 +22,14 @@ import org.jetbrains.compose.resources.painterResource
 
 interface KodeeScope {
     fun show(condition: () -> Boolean, content: @Composable () -> Unit)
+
+    fun <T> Transition<out T>.both(condition: (T) -> Boolean, content: @Composable () -> Unit) {
+        show(condition = { condition(currentState) && condition(targetState) }, content)
+    }
+
+    fun <T> Transition<out T>.either(condition: (T) -> Boolean, content: @Composable () -> Unit) {
+        show(condition = { condition(currentState) || condition(targetState) }, content)
+    }
 }
 
 @Composable

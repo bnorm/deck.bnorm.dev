@@ -17,13 +17,10 @@ import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.sections.Advanced
-import dev.bnorm.kc24.sections.Examples
 import dev.bnorm.kc24.sections.Assertions
+import dev.bnorm.kc24.sections.Examples
 import dev.bnorm.kc24.sections.Future
-import dev.bnorm.kc24.template.KodeeLoving
-import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.SectionHeader
-import dev.bnorm.kc24.template.TitleSlide
+import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
@@ -38,36 +35,31 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
     //  - make sure the main point here is emphasized!!!
     //  - improve the flow between the section
 
-    section(title = "Assertions") {
+    // TODO slide transition between sections?
+
+    section(title = "What is a good assert?") {
         SectionHeader(animateToBody = true)
         Assertions()
     }
 
-    section(title = "Examples") {
+    section(title = "Why use Power-Assert?") {
         SectionHeader(animateToBody = true)
         Examples()
     }
 
+    // TODO combine with previous section
+    //  - make function signature a side point somehow?
     section(title = "Advanced") {
         SectionHeader(animateToBody = true)
         Advanced()
     }
 
-    section(title = "Future") {
+    section(title = "What's next?") {
         SectionHeader(animateToBody = true)
         Future()
     }
 
-    // TODO summary slide?
-    //  - make this the last slide instead of the ThankYou
-    //  - kotl.in shorted links
-    //    - link to docs for plugin? kotl.in/power-assert?
-    //    - add link to kotlin-lang Slack channel? kotl.in/power-assert-slack?
-    //    - add link to the slide show itself? deck.bnorm.dev/kotlinconf2024
-    //    - make all of these clickable
-    //  - QR code?
-
-    slide { ThankYou() }
+    slide { Summary() }
 }
 
 private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
@@ -99,10 +91,24 @@ fun Title() {
 }
 
 @Composable
-fun ThankYou() {
+fun Summary() {
     TitleSlide {
         Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-            Text("Thank You!", modifier = Modifier.align(Alignment.Center))
+
+            // TODO can we do something more stylistically interesting with this?
+            Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Thank You!")
+                Spacer(Modifier.requiredHeight(SLIDE_CONTENT_SPACING))
+                ProvideTextStyle(MaterialTheme.typography.body1) {
+                    Column {
+                        // TODO create these links
+                        // TODO make these links clickable
+                        Text("         Docs: kotl.in/power-assert")
+                        Text("        Slack: kotl.in/power-assert-slack")
+                        Text("       Slides: deck.bnorm.dev/kotlinconf2024")
+                    }
+                }
+            }
 
             PresenterSocials(Modifier.align(Alignment.BottomCenter))
         }

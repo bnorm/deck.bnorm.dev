@@ -13,27 +13,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.kc24.elements.*
-import dev.bnorm.kc24.template.ExampleCarousel
-import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.kc24.elements.AnimatedVisibility
+import dev.bnorm.kc24.elements.defaultSpec
+import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
-import dev.bnorm.librettist.show.*
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
 
 fun ShowBuilder.Advanced() {
+    // TODO
+    //  - this as a whole separate section doesn't make a lot of sense
+    //  - could easily make it an aside in the examples section after the `assertEquals` example
+
     FunctionSignature()
     ExampleCarousel(
         start = {
@@ -48,7 +50,6 @@ fun ShowBuilder.Advanced() {
     SoftAssertSetup()
     ExampleCarousel { softAssertSetup to softAssertExample }
     SoftAssertExample()
-    ExampleCarousel { softAssertExample to AnnotatedString("") }
 }
 
 private fun ShowBuilder.FunctionSignature() {
@@ -61,7 +62,7 @@ private fun ShowBuilder.FunctionSignature() {
 }
 
 @Composable
-private fun Transition<Int>.FunctionSignature() {
+private fun Transition<out Int>.FunctionSignature() {
     // TODO explain function signature requirements
     // Start with: assertCustom(value: CustomClass)
     //
@@ -88,53 +89,35 @@ private fun Transition<Int>.FunctionSignature() {
 private fun ShowBuilder.SoftAssertSetup() {
     // TODO show what the implementation looks like?
 
-    val states = listOf(
-        ExampleState(),
-        ExampleState(showGradle = true),
-        ExampleState(gradleIndex = 1, showGradle = true),
-        ExampleState(gradleIndex = 1),
-    )
-    slideForValues(states) {
-        val state = transition.createChildTransition { it.toValue(states.first(), states.last()) }
-
+    slideForExample(
+        builder = {
+            openGradle()
+            updateGradle()
+            closeGradle()
+        }
+    ) {
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(softAssertSetup)
-                }
-
-                val gradleText by state.gradleTextDiff(softAsserGradleSequence)
-                GradleFile(
-                    text = gradleText,
-                    visible = state.createChildTransition { it.showGradle },
-                    modifier = Modifier.align(Alignment.TopEnd),
-                )
-            }
+            Example(softAssertSetup, softAsserGradleSequence)
         }
     }
 }
 
 private fun ShowBuilder.SoftAssertExample() {
     // TODO better soft-assert example
-    slideForBoolean {
-        TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.padding(SLIDE_PADDING)) {
-                    Text(softAssertExample)
-                }
 
-                OutputText(
-                    text = softAssertOutput,
-                    visible = transition.createChildTransition { it.toBoolean() },
-                    modifier = Modifier.align(Alignment.BottomStart)
-                )
-            }
+    slideForExample(
+        builder = {
+            openOutput()
+        }
+    ) {
+        TitleAndBody {
+            Example(softAssertExample, null, softAssertOutput)
         }
     }
 }
 
 @Composable
-private fun Transition<Int>.AnimateByLine(
+private fun Transition<out Int>.AnimateByLine(
     vararg lines: @Composable () -> Unit,
 ) {
     if (lines.isEmpty()) return
@@ -325,8 +308,7 @@ private val softAssertExample: AnnotatedString
             buildKotlinCodeString(
                 // language=kotlin
                 text = """
-                    @Test
-                    fun `test members of the fellowship`() {
+                    @Test fun `test members of the fellowship`() {
                         val members = fellowshipOfTheRing.getCurrentMembers()
                         assertSoftly {
                             assert(members.find { it.name == "Frodo" }?.age == 23)

@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.bnorm.kc24.sections.ExampleState
+import dev.bnorm.kc24.template.ExampleState
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.librettist.animation.animateList
 import kotlinx.collections.immutable.ImmutableList
@@ -30,7 +30,7 @@ import kotlin.math.abs
 @Composable
 fun GradleFile(
     text: AnnotatedString,
-    visible: Transition<Boolean>,
+    visible: Transition<out Boolean>,
     modifier: Modifier = Modifier,
     scrollState: ScrollState = rememberScrollState(Int.MAX_VALUE),
 ) {
@@ -68,7 +68,7 @@ fun GradleFile(
 }
 
 @Composable
-fun Transition<ExampleState>.gradleTextDiff(
+fun Transition<out ExampleState>.gradleTextDiff(
     values: ImmutableList<AnnotatedString>,
     transitionSpec: @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<Int> = {
         typingSpec(count = values.size - 1)
@@ -86,7 +86,7 @@ fun Transition<ExampleState>.gradleTextDiff(
 }
 
 @Composable
-fun Transition<ExampleState>.gradleTextDiff(
+fun Transition<out ExampleState>.gradleTextDiff(
     sequence: ImmutableList<ImmutableList<AnnotatedString>>,
 ): State<AnnotatedString> {
     val values = remember(sequence) { sequence.flatten().toImmutableList() }
