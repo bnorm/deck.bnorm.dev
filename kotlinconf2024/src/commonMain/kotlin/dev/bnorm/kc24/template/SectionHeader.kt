@@ -68,28 +68,25 @@ fun SectionHeader(
 ) {
     val spacing by showAsBody.animateDp(transitionSpec = { defaultSpec() }) {
         when (it) {
-            false -> 400.dp
+            false -> 440.dp
             true -> 0.dp
         }
     }
     val textStyle = showAsBody.animateTextStyle(
-        whenFalse = MaterialTheme.typography.h2,
+        whenFalse = MaterialTheme.typography.h1,
         whenTrue = MaterialTheme.typography.h3,
         transitionSpec = { defaultSpec() },
     )
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.requiredHeight(spacing))
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .padding(start = SLIDE_PADDING, top = SLIDE_PADDING, bottom = SLIDE_CONTENT_SPACING),
-        ) {
+    Column(Modifier.fillMaxSize()) {
+        Spacer(Modifier.requiredHeight(spacing))
+        Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
             ProvideTextStyle(textStyle) {
                 title()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
-        Box(modifier = Modifier.fillMaxWidth().offset(y = (-294).dp), contentAlignment = Alignment.TopEnd) {
+        Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
+        Box(Modifier.fillMaxWidth().offset(y = (-294).dp), contentAlignment = Alignment.TopEnd) {
             showAsBody.AnimatedVisibility(
                 visible = { !it },
                 enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
@@ -99,19 +96,19 @@ fun SectionHeader(
                 KodeeSitting(Modifier.requiredSize(516.dp))
             }
         }
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(Modifier.weight(1f))
         showAsBody.AnimatedVisibility(
             enter = slideInVertically(defaultSpec()) { it },
             exit = slideOutVertically(defaultSpec()) { it },
         ) {
-            Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
+            Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         }
     }
     showAsBody.AnimatedVisibility(
         enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
         exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
     ) {
-        Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
+        Box(Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
             DefaultCornerKodee()
         }
     }

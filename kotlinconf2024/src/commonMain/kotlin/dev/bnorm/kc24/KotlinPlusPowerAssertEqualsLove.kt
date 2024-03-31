@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
 import dev.bnorm.kc24.elements.typingSpec
+import dev.bnorm.kc24.sections.Advanced
 import dev.bnorm.kc24.sections.Examples
 import dev.bnorm.kc24.sections.Assertions
 import dev.bnorm.kc24.sections.Future
@@ -47,9 +48,10 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
         Examples()
     }
 
-    // TODO should there be an advanced section?
-    //  - creating our own functions (assertSoftly?) -> function doesn't need to throw
-    //    - explain more how functions are transformed and signature requirements
+    section(title = "Advanced") {
+        SectionHeader(animateToBody = true)
+        Advanced()
+    }
 
     section(title = "Future") {
         SectionHeader(animateToBody = true)

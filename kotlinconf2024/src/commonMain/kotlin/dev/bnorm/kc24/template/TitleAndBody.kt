@@ -16,24 +16,21 @@ fun TitleAndBody(
     kodee: KodeeScope.() -> Unit = {},
     body: @Composable () -> Unit = {},
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .padding(start = SLIDE_PADDING, top = SLIDE_PADDING, bottom = SLIDE_CONTENT_SPACING),
-        ) {
+    Column(Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
             ProvideTextStyle(MaterialTheme.typography.h3) {
                 title()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
-        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+        Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
+        Box(Modifier.fillMaxWidth().weight(1f)) {
             ProvideTextStyle(MaterialTheme.typography.body1) {
                 body()
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
+        Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
     }
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
+    Box(Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
         AnimateKodee { kodee() }
     }
 }

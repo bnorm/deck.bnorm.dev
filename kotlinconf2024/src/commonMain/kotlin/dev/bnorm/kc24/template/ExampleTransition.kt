@@ -1,0 +1,36 @@
+package dev.bnorm.kc24.template
+
+import androidx.compose.animation.core.createChildTransition
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import dev.bnorm.kc24.elements.typingSpec
+import dev.bnorm.librettist.animation.animateList
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideState
+import kotlinx.collections.immutable.ImmutableList
+import kotlin.math.abs
+
+fun ShowBuilder.ExampleTransition(
+    strings: @Composable () -> ImmutableList<AnnotatedString>,
+) {
+    slide(states = 0) {
+        val values = strings()
+        val state = transition.createChildTransition { if (it == SlideState.Exiting) values.lastIndex else 0 }
+        val text by state.animateList(
+            values = values,
+            transitionSpec = { typingSpec(count = abs(targetState - initialState)) },
+        ) { it }
+
+        TitleAndBody {
+            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+                Text(text)
+            }
+        }
+    }
+}
