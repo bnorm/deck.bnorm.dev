@@ -1,15 +1,14 @@
 package dev.bnorm.kc24.sections
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
-import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
+import dev.bnorm.librettist.rememberHighlighted
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
@@ -148,28 +147,25 @@ private fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
 // region <Complex assert Example>
 private val complexAssertExample: AnnotatedString
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            buildKotlinCodeString(
-                // language=kotlin
-                text = """
-                    @Test fun `test members of the fellowship`() {
-                        val members = fellowshipOfTheRing.getCurrentMembers()
-                        assert(members.any { it.name == "Boromir" } &&
-                                members.any { it.name == "Aragorn" } ||
-                                members.any { it.name == "Elrond" })
-                    }
-                """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = {
-                    it.toExampleStyle(codeStyle) ?: when (it) {
-                        "assert" -> codeStyle.staticFunctionCall
-                        else -> null
-                    }
+    get() = rememberHighlighted("complexAssertExample") { highlighting ->
+        buildKotlinCodeString(
+            // language=kotlin
+            text = """
+                @Test fun `test members of the fellowship`() {
+                    val members = fellowshipOfTheRing.getCurrentMembers()
+                    assert(members.any { it.name == "Boromir" } &&
+                            members.any { it.name == "Aragorn" } ||
+                            members.any { it.name == "Elrond" })
                 }
-            )
-        }
+            """.trimIndent(),
+            codeStyle = highlighting,
+            identifierType = {
+                it.toExampleStyle(highlighting) ?: when (it) {
+                    "assert" -> highlighting.staticFunctionCall
+                    else -> null
+                }
+            }
+        )
     }
 // endregion
 
@@ -192,23 +188,20 @@ assert(members.any { it.name == "Boromir" } &&
 // region <assertTrue Example>
 private val assertTrueExample: AnnotatedString
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            buildKotlinCodeString(
-                // language=kotlin
-                text = """
-                    @Test fun `test members of the fellowship`() {
-                        val members = fellowshipOfTheRing.getCurrentMembers()
-                        val aragorn = members.find { it.name == "Aragorn" }
-                        assertTrue(aragorn != null)
-                        assertTrue(aragorn.age < 60)
-                    }
-                """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = { it.toExampleStyle(codeStyle) }
-            )
-        }
+    get() = rememberHighlighted("assertTrueExample") { highlighting ->
+        buildKotlinCodeString(
+            // language=kotlin
+            text = """
+                @Test fun `test members of the fellowship`() {
+                    val members = fellowshipOfTheRing.getCurrentMembers()
+                    val aragorn = members.find { it.name == "Aragorn" }
+                    assertTrue(aragorn != null)
+                    assertTrue(aragorn.age < 60)
+                }
+            """.trimIndent(),
+            codeStyle = highlighting,
+            identifierType = { it.toExampleStyle(highlighting) }
+        )
     }
 // endregion
 
@@ -230,26 +223,23 @@ assertTrue(aragorn.age < 60)
 // region <require Example>
 private val requireExample: AnnotatedString
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            buildKotlinCodeString(
-                // language=kotlin
-                text = """
-                    operator fun get(index: Int): Character {
-                        require(index in members.indices)
-                        return members[index]
-                    }
-                """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = {
-                    it.toExampleStyle(codeStyle) ?: when (it) {
-                        "members" -> codeStyle.property
-                        else -> null
-                    }
+    get() = rememberHighlighted("requireExample") { highlighting ->
+        buildKotlinCodeString(
+            // language=kotlin
+            text = """
+                operator fun get(index: Int): Character {
+                    require(index in members.indices)
+                    return members[index]
                 }
-            )
-        }
+            """.trimIndent(),
+            codeStyle = highlighting,
+            identifierType = {
+                it.toExampleStyle(highlighting) ?: when (it) {
+                    "members" -> highlighting.property
+                    else -> null
+                }
+            }
+        )
     }
 // endregion
 
@@ -278,23 +268,20 @@ require(index in members.indices)
 // region <assertEquals Example>
 private val assertEqualsExample: AnnotatedString
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            buildKotlinCodeString(
-                // language=kotlin
-                text = """
-                    @Test fun `test members of the fellowship`() {
-                        val members = fellowshipOfTheRing.getCurrentMembers()
-                        val aragorn = members.find { it.name == "Aragorn" }
-                        val boromir = members.find { it.name == "Boromir" }
-                        assertEquals(aragorn?.race, boromir?.race)
-                    }
-                """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = { it.toExampleStyle(codeStyle) }
-            )
-        }
+    get() = rememberHighlighted("assertEqualsExample") { highlighting ->
+        buildKotlinCodeString(
+            // language=kotlin
+            text = """
+                @Test fun `test members of the fellowship`() {
+                    val members = fellowshipOfTheRing.getCurrentMembers()
+                    val aragorn = members.find { it.name == "Aragorn" }
+                    val boromir = members.find { it.name == "Boromir" }
+                    assertEquals(aragorn?.race, boromir?.race)
+                }
+            """.trimIndent(),
+            codeStyle = highlighting,
+            identifierType = { it.toExampleStyle(highlighting) }
+        )
     }
 // endregion
 
@@ -320,23 +307,20 @@ expected:<Dúnadan> but was:<null>
 // region <assertEquals+assertNotNull Example>
 private val assertEqualsAndNotNullExample: AnnotatedString
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            buildKotlinCodeString(
-                // language=kotlin
-                text = """
-                    @Test fun `test members of the fellowship`() {
-                        val members = fellowshipOfTheRing.getCurrentMembers()
-                        val aragorn = assertNotNull(members.find { it.name == "Aragorn" })
-                        val boromir = assertNotNull(members.find { it.name == "Boromir" })
-                        assertEquals(aragorn.race, boromir.race)
-                    }
-                """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = { it.toExampleStyle(codeStyle) }
-            )
-        }
+    get() = rememberHighlighted("assertEqualsAndNotNullExample") { highlighting ->
+        buildKotlinCodeString(
+            // language=kotlin
+            text = """
+                @Test fun `test members of the fellowship`() {
+                    val members = fellowshipOfTheRing.getCurrentMembers()
+                    val aragorn = assertNotNull(members.find { it.name == "Aragorn" })
+                    val boromir = assertNotNull(members.find { it.name == "Boromir" })
+                    assertEquals(aragorn.race, boromir.race)
+                }
+            """.trimIndent(),
+            codeStyle = highlighting,
+            identifierType = { it.toExampleStyle(highlighting) }
+        )
     }
 // endregion
 

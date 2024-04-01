@@ -2,7 +2,6 @@ package dev.bnorm.kc24.sections
 
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
@@ -12,8 +11,8 @@ import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
-import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
+import dev.bnorm.librettist.rememberHighlighted
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
@@ -177,9 +176,8 @@ private fun ShowBuilder.FinalExample() {
 
 @Composable
 private fun rememberExampleCodeString(text: String): AnnotatedString {
-    val codeStyle = ShowTheme.code
-    return remember(text) {
-        buildKotlinCodeString(text, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
+    return rememberHighlighted(text) { highlighting ->
+        buildKotlinCodeString(text, highlighting, identifierType = { it.toExampleStyle(highlighting) })
     }
 }
 
@@ -214,13 +212,10 @@ private val secondTest: String = """
 
 private val firstToSecondTest: ImmutableList<AnnotatedString>
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            val first = buildKotlinCodeString(firstTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(first).thenLineEndDiff(second).toList()
-        }
+    get() = rememberHighlighted("firstToSecondTest") { highlighting ->
+        val first = buildKotlinCodeString(firstTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        val second = buildKotlinCodeString(secondTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        startAnimation(first).thenLineEndDiff(second).toList()
     }
 
 private val secondOutput: String = """
@@ -230,13 +225,10 @@ private val secondOutput: String = """
 
 private val secondToThirdTest: ImmutableList<AnnotatedString>
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            val second = buildKotlinCodeString(secondTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(second).thenLineEndDiff(third).toList()
-        }
+    get() = rememberHighlighted("secondToThirdTest") { highlighting ->
+        val second = buildKotlinCodeString(secondTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        val third = buildKotlinCodeString(thirdTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        startAnimation(second).thenLineEndDiff(third).toList()
     }
 
 // language=kotlin
@@ -254,13 +246,10 @@ private val thirdOutput: String = """
 
 private val thirdToForth: ImmutableList<AnnotatedString>
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            val third = buildKotlinCodeString(thirdTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            val forth = buildKotlinCodeString(forthTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(third).thenLineEndDiff(forth).toList()
-        }
+    get() = rememberHighlighted("thirdToForth") { highlighting ->
+        val third = buildKotlinCodeString(thirdTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        val forth = buildKotlinCodeString(forthTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        startAnimation(third).thenLineEndDiff(forth).toList()
     }
 
 // language=kotlin
@@ -279,13 +268,10 @@ private val forthOutput: String = """
 
 private val forthToFifth: ImmutableList<AnnotatedString>
     @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        return remember {
-            val forth = buildKotlinCodeString(forthTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            val fifth = buildKotlinCodeString(finalTest, codeStyle, identifierType = { it.toExampleStyle(codeStyle) })
-            startAnimation(forth).thenLineEndDiff(fifth).toList()
-        }
+    get() = rememberHighlighted("forthToFifth") { highlighting ->
+        val forth = buildKotlinCodeString(forthTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        val fifth = buildKotlinCodeString(finalTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+        startAnimation(forth).thenLineEndDiff(fifth).toList()
     }
 
 // language=kotlin

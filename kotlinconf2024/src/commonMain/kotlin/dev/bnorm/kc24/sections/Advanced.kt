@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -21,9 +20,9 @@ import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
-import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
+import dev.bnorm.librettist.rememberHighlighted
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.toInt
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
@@ -135,28 +134,28 @@ private fun Transition<out Int>.AnimateByLine(
     }
 }
 
-private fun String.toSetupStyle(codeStyle: Highlighting) = when (this) {
-    "assert", "assertSoftly" -> codeStyle.functionDeclaration
-    "R" -> codeStyle.typeParameters
+private fun String.toSetupStyle(highlighting: Highlighting) = when (this) {
+    "assert", "assertSoftly" -> highlighting.functionDeclaration
+    "R" -> highlighting.typeParameters
     else -> null
 }
 
-private fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
+private fun String.toExampleStyle(highlighting: Highlighting): SpanStyle? {
     return when (this) {
-        "fellowshipOfTheRing", "name", "age", "race" -> codeStyle.property
-        "`test members of the fellowship`" -> codeStyle.functionDeclaration
-        "find", "any" -> codeStyle.extensionFunctionCall
-        "assertTrue", "assertEquals", "assertSoftly", "require" -> codeStyle.staticFunctionCall
+        "fellowshipOfTheRing", "name", "age", "race" -> highlighting.property
+        "`test members of the fellowship`" -> highlighting.functionDeclaration
+        "find", "any" -> highlighting.extensionFunctionCall
+        "assertTrue", "assertEquals", "assertSoftly", "require" -> highlighting.staticFunctionCall
         else -> null
     }
 }
 
-private fun String.toGradleKtsStyle(codeStyle: Highlighting): SpanStyle? {
+private fun String.toGradleKtsStyle(highlighting: Highlighting): SpanStyle? {
     return when (this) {
-        "class" -> codeStyle.keyword
-        "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation
-        "functions", "includedSourceSets" -> codeStyle.property
-        "kotlin", "version", "powerAssert" -> codeStyle.extensionFunctionCall
+        "class" -> highlighting.keyword
+        "ExperimentalKotlinGradlePluginApi" -> highlighting.annotation
+        "functions", "includedSourceSets" -> highlighting.property
+        "kotlin", "version", "powerAssert" -> highlighting.extensionFunctionCall
         else -> null
     }
 }
@@ -165,8 +164,7 @@ private fun String.toGradleKtsStyle(codeStyle: Highlighting): SpanStyle? {
 private val softAssertSetup: AnnotatedString
     @Composable
     get() {
-        val codeStyle = ShowTheme.code
-        return remember {
+        return rememberHighlighted("softAssertSetup") { highlighting ->
             buildKotlinCodeString(
                 // language=kotlin
                 text = """
@@ -181,8 +179,8 @@ private val softAssertSetup: AnnotatedString
                         )
                     }
                 """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = { it.toSetupStyle(codeStyle) }
+                codeStyle = highlighting,
+                identifierType = { it.toSetupStyle(highlighting) }
             )
         }
     }
@@ -192,8 +190,7 @@ private val softAssertSetup: AnnotatedString
 private val softAssertSetup2: AnnotatedString
     @Composable
     get() {
-        val codeStyle = ShowTheme.code
-        return remember {
+        return rememberHighlighted("softAssertSetup2") { highlighting ->
             buildKotlinCodeString(
                 // language=kotlin
                 text = """
@@ -219,8 +216,8 @@ private val softAssertSetup2: AnnotatedString
                     }
 
                 """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = { it.toSetupStyle(codeStyle) }
+                codeStyle = highlighting,
+                identifierType = { it.toSetupStyle(highlighting) }
             )
         }
     }
@@ -230,76 +227,70 @@ private val softAssertSetup2: AnnotatedString
 private val softAsserGradleSequence: ImmutableList<AnnotatedString>
     @Composable
     get() {
-        val codeStyle = ShowTheme.code
-        fun build(text: String) = buildGradleKtsCodeString(
-            text = text,
-            codeStyle = codeStyle,
-            identifierType = { it.toGradleKtsStyle(codeStyle) }
+        fun String.toKts(highlighting: Highlighting) = buildGradleKtsCodeString(
+            text = this,
+            codeStyle = highlighting,
+            identifierType = { it.toGradleKtsStyle(highlighting) }
         )
 
-        return remember {
+        // TODO move to GradleText
+        return rememberHighlighted("softAsserGradleSequence") { highlighting ->
             startAnimation(
-                build(
-                    text = """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                                "kotlin.test.assertNotNull",
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent() + "\n",
-                )
+                """
+                    plugins {
+                        kotlin("jvm") version "2.0.0"
+                        kotlin("plugin.power-assert") version "2.0.0"
+                    }
+                    
+                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                    powerAssert {
+                        functions.addAll(
+                            "kotlin.require",
+                            "kotlin.test.assertTrue",
+                            "kotlin.test.assertEquals",
+                            "kotlin.test.assertNotNull",
+                        )
+                        includedSourceSets.addAll("main", "test")
+                    }
+                """.trimIndent().toKts(highlighting) + AnnotatedString("\n")
             ).then(
-                build(
-                    text = """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                                "kotlin.test.assertNotNull",
+                """
+                    plugins {
+                        kotlin("jvm") version "2.0.0"
+                        kotlin("plugin.power-assert") version "2.0.0"
+                    }
+                    
+                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                    powerAssert {
+                        functions.addAll(
+                            "kotlin.require",
+                            "kotlin.test.assertTrue",
+                            "kotlin.test.assertEquals",
+                            "kotlin.test.assertNotNull",
 
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent(),
-                )
+                        )
+                        includedSourceSets.addAll("main", "test")
+                    }
+                """.trimIndent().toKts(highlighting)
             ).thenLineEndDiff(
-                build(
-                    text = """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                                "kotlin.test.assertNotNull",
-                                "example.AssertScope.assert",
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent(),
-                )
+                """
+                    plugins {
+                        kotlin("jvm") version "2.0.0"
+                        kotlin("plugin.power-assert") version "2.0.0"
+                    }
+                    
+                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                    powerAssert {
+                        functions.addAll(
+                            "kotlin.require",
+                            "kotlin.test.assertTrue",
+                            "kotlin.test.assertEquals",
+                            "kotlin.test.assertNotNull",
+                            "example.AssertScope.assert",
+                        )
+                        includedSourceSets.addAll("main", "test")
+                    }
+                """.trimIndent().toKts(highlighting)
             ).toList()
         }
     }
@@ -309,8 +300,7 @@ private val softAsserGradleSequence: ImmutableList<AnnotatedString>
 private val softAssertExample: AnnotatedString
     @Composable
     get() {
-        val codeStyle = ShowTheme.code
-        return remember {
+        return rememberHighlighted("softAssertExample") { highlighting ->
             buildKotlinCodeString(
                 // language=kotlin
                 text = """
@@ -322,8 +312,8 @@ private val softAssertExample: AnnotatedString
                         }
                     }
                 """.trimIndent(),
-                codeStyle = codeStyle,
-                identifierType = { it.toExampleStyle(codeStyle) }
+                codeStyle = highlighting,
+                identifierType = { it.toExampleStyle(highlighting) }
             )
         }
     }
