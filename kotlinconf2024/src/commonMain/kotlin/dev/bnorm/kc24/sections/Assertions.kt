@@ -7,14 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
+import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.librettist.text.thenLines
@@ -169,7 +169,8 @@ private fun ShowBuilder.FinalExample() {
                 }
             }
         ) {
-            Example(rememberExampleCodeString(finalTest), persistentListOf(ktsSequence), fifthOutput)
+            val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
+            Example(rememberExampleCodeString(finalTest), gradleTextSequence, fifthOutput)
         }
     }
 }
@@ -187,14 +188,6 @@ private fun String.toExampleStyle(codeStyle: Highlighting) = when (this) {
     "`test members of the fellowship`" -> codeStyle.functionDeclaration
     "hasSize" -> codeStyle.extensionFunctionCall
     "assertTrue", "assertEquals", "assertThat", "assert" -> codeStyle.staticFunctionCall
-    else -> null
-}
-
-private fun String.toStyle(codeStyle: Highlighting) = when (this) {
-    "class" -> codeStyle.keyword
-    "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation
-    "functions", "excludedSourceSets" -> codeStyle.property
-    "kotlin", "version", "powerAssert" -> codeStyle.extensionFunctionCall
     else -> null
 }
 
@@ -337,44 +330,3 @@ private val fifthOutput: ImmutableList<String> = startAnimation(
                [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
     """.trimIndent(),
 ).toList()
-
-val ktsSequence: ImmutableList<AnnotatedString>
-    @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        fun buildString(text: String) = buildGradleKtsCodeString(
-            text = text,
-            codeStyle = codeStyle,
-            identifierType = { it.toStyle(codeStyle) }
-        )
-
-        return remember {
-            startAnimation(
-                buildString(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                        }
-                    """.trimIndent(),
-                ),
-            ).then(
-                buildString(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                        
-                        }
-                    """.trimIndent(),
-                ),
-            ).thenLineEndDiff(
-                buildString(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                    """.trimIndent(),
-                ),
-            ).toList()
-        }
-    }

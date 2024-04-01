@@ -4,16 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import dev.bnorm.kc24.elements.GradleText
+import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 fun ShowBuilder.Examples() {
@@ -67,7 +66,11 @@ private fun ShowBuilder.AssertTrue() {
         }
     ) {
         TitleAndBody {
-            Example(assertTrueExample, assertTrueGradleSequence, persistentListOf(assertTrueOutput))
+            val gradleTextSequence = persistentListOf(
+                GradleText.AddPlugin.animateTo(GradleText.AddConfig),
+                GradleText.AddConfig.animateTo(GradleText.AddAssertTrue),
+            )
+            Example(assertTrueExample, gradleTextSequence, persistentListOf(assertTrueOutput))
         }
     }
 }
@@ -84,7 +87,11 @@ private fun ShowBuilder.Require() {
         }
     ) {
         TitleAndBody {
-            Example(requireExample, requireGradleSequence, persistentListOf(requireOutput))
+            val gradleTextSequence = persistentListOf(
+                GradleText.AddAssertTrue.animateTo(GradleText.AddRequire),
+                GradleText.AddRequire.animateTo(GradleText.AddSourceSet),
+            )
+            Example(requireExample, gradleTextSequence, persistentListOf(requireOutput))
         }
     }
 }
@@ -100,7 +107,8 @@ private fun ShowBuilder.AssertEquals() {
         }
     ) {
         TitleAndBody {
-            Example(assertEqualsExample, assertEqualsGradleSequence, assertEqualsOutput)
+            val gradleTextSequence = GradleText.AddSourceSet.animateTo(GradleText.AddAssertEquals)
+            Example(assertEqualsExample, gradleTextSequence, assertEqualsOutput)
         }
     }
 }
@@ -116,7 +124,8 @@ private fun ShowBuilder.AssertEqualsAndNotNull() {
         }
     ) {
         TitleAndBody {
-            Example(assertEqualsAndNotNullExample, assertEqualsAndNotNullGradleSequence, assertEqualsAndNotNullOutput)
+            val gradleTextSequence = GradleText.AddAssertEquals.animateTo(GradleText.AddAssertNotNull)
+            Example(assertEqualsAndNotNullExample, gradleTextSequence, assertEqualsAndNotNullOutput)
         }
     }
 }
@@ -132,16 +141,6 @@ private fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
         "`test members of the fellowship`", "get" -> codeStyle.functionDeclaration // TODO "get" not working?
         "find", "any" -> codeStyle.extensionFunctionCall
         "assertTrue", "assertEquals", "assertSoftly", "require" -> codeStyle.staticFunctionCall
-        else -> null
-    }
-}
-
-private fun String.toGradleKtsStyle(codeStyle: Highlighting): SpanStyle? {
-    return when (this) {
-        "class" -> codeStyle.keyword
-        "ExperimentalKotlinGradlePluginApi" -> codeStyle.annotation
-        "functions", "includedSourceSets" -> codeStyle.property
-        "kotlin", "version", "powerAssert" -> codeStyle.extensionFunctionCall
         else -> null
     }
 }
@@ -213,123 +212,6 @@ private val assertTrueExample: AnnotatedString
     }
 // endregion
 
-//region <assertTrue Gradle>
-private val assertTrueGradleSequence: ImmutableList<ImmutableList<AnnotatedString>>
-    @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        fun build(text: String) = buildGradleKtsCodeString(
-            text = text,
-            codeStyle = codeStyle,
-            identifierType = { it.toGradleKtsStyle(codeStyle) }
-        )
-
-        return remember {
-            persistentListOf(
-                startAnimation(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                        """.trimIndent() + "\n\n\n\n\n\n\n",
-                    )
-                ).thenLineEndDiff(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                            }
-                        """.trimIndent() + "\n\n\n",
-                    )
-                ).toList(),
-
-                startAnimation(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                            }
-                        """.trimIndent() + "\n\n\n",
-                    )
-                ).then(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                            
-                            }
-                        """.trimIndent() + "\n\n",
-                    )
-                ).then(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                            
-                            
-                            }
-                        """.trimIndent() + "\n",
-                    )
-                ).then(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                            
-                            
-                            
-                            }
-                        """.trimIndent(),
-                    )
-                ).thenLineEndDiff(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                                functions.addAll(
-                                    "kotlin.test.assertTrue",
-                                )
-                            }
-                        """.trimIndent(),
-                    )
-                ).toList()
-            )
-        }
-    }
-//endregion
-
 // region <assertTrue Output>
 private val assertTrueOutput = """
 java.lang.AssertionError: Assertion failed
@@ -366,130 +248,6 @@ private val requireExample: AnnotatedString
                         else -> null
                     }
                 }
-            )
-        }
-    }
-// endregion
-
-// region <require Gradle>
-private val requireGradleSequence: ImmutableList<ImmutableList<AnnotatedString>>
-    @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        fun build(text: String) = buildGradleKtsCodeString(
-            text = text,
-            codeStyle = codeStyle,
-            identifierType = { it.toGradleKtsStyle(codeStyle) }
-        )
-
-        return remember {
-            persistentListOf(
-                startAnimation(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                                functions.addAll(
-                                    "kotlin.test.assertTrue",
-                                )
-                            }
-                        """.trimIndent() + "\n\n",
-                    )
-                ).then(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                                functions.addAll(
-                                    
-                                    "kotlin.test.assertTrue",   
-                                )
-                            }
-                        """.trimIndent() + "\n",
-                    )
-                ).thenLineEndDiff(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                                functions.addAll(
-                                    "kotlin.require",
-                                    "kotlin.test.assertTrue",
-                                )
-                            }
-                        """.trimIndent() + "\n",
-                    )
-                ).toList(),
-
-                startAnimation(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                                functions.addAll(
-                                    "kotlin.require",
-                                    "kotlin.test.assertTrue",
-                                )
-                            }
-                        """.trimIndent() + "\n",
-                    )
-                ).then(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                                functions.addAll(
-                                    "kotlin.require",
-                                    "kotlin.test.assertTrue",
-                                )
-                                
-                            }
-                        """.trimIndent(),
-                    )
-                ).thenLineEndDiff(
-                    build(
-                        """
-                            plugins {
-                                kotlin("jvm") version "2.0.0"
-                                kotlin("plugin.power-assert") version "2.0.0"
-                            }
-                            
-                            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                            powerAssert {
-                                functions.addAll(
-                                    "kotlin.require",
-                                    "kotlin.test.assertTrue",
-                                )
-                                includedSourceSets.addAll("main", "test")
-                            }
-                        """.trimIndent(),
-                    )
-                ).toList()
             )
         }
     }
@@ -540,79 +298,6 @@ private val assertEqualsExample: AnnotatedString
     }
 // endregion
 
-// region <assertEquals Gradle>
-private val assertEqualsGradleSequence: ImmutableList<AnnotatedString>
-    @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        fun build(text: String) = buildGradleKtsCodeString(
-            text = text,
-            codeStyle = codeStyle,
-            identifierType = { it.toGradleKtsStyle(codeStyle) }
-        )
-
-        return remember {
-            startAnimation(
-                build(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent() + "\n",
-                )
-            ).then(
-                build(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent(),
-                )
-            ).thenLineEndDiff(
-                build(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent(),
-                )
-            ).toList()
-        }
-    }
-// endregion
-
 // TODO !!! THIS IS DOCTORED OUTPUT !!!
 //  - `assertEquals` prints on the same line as the exception name
 //  - "expected:[...]" prints on the same line as "Aragorn"
@@ -651,82 +336,6 @@ private val assertEqualsAndNotNullExample: AnnotatedString
                 codeStyle = codeStyle,
                 identifierType = { it.toExampleStyle(codeStyle) }
             )
-        }
-    }
-// endregion
-
-// region <assertEquals+assertNotNull Gradle>
-private val assertEqualsAndNotNullGradleSequence: ImmutableList<AnnotatedString>
-    @Composable
-    get() {
-        val codeStyle = ShowTheme.code
-        fun build(text: String) = buildGradleKtsCodeString(
-            text = text,
-            codeStyle = codeStyle,
-            identifierType = { it.toGradleKtsStyle(codeStyle) }
-        )
-
-        return remember {
-            startAnimation(
-                build(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent() + "\n",
-                )
-            ).then(
-                build(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                                
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent(),
-                )
-            ).thenLineEndDiff(
-                build(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                                "kotlin.test.assertNotNull",
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent(),
-                )
-            ).toList()
         }
     }
 // endregion

@@ -110,6 +110,21 @@ object Theme {
             ),
         )
 
+    val codeStyle = Highlighting(
+        simple = SpanStyle(Color(0xFFBCBEC4)),
+        number = SpanStyle(Color(0xFF2AACB8)),
+        keyword = SpanStyle(Color(0xFFCF8E6D)),
+        punctuation = SpanStyle(Color(0xFFA1C17E)),
+        annotation = SpanStyle(Color(0xFFBBB529)),
+        comment = SpanStyle(Color(0xFF7A7E85)),
+        string = SpanStyle(Color(0xFF6AAB73)),
+        property = SpanStyle(color = Color(0xFFC77DBB)),
+        functionDeclaration = SpanStyle(color = Color(0xFF56A8F5)),
+        extensionFunctionCall = SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic),
+        staticFunctionCall = SpanStyle(fontStyle = FontStyle.Italic),
+        typeParameters = SpanStyle(color = Color(0xFF16BAAC)),
+    )
+
     val dark: ShowTheme
         @Composable
         get() {
@@ -142,21 +157,7 @@ object Theme {
                     caption = jetBrainsMonoTypography.caption.copy(fontSize = 0.sp),
                     overline = jetBrainsMonoTypography.overline.copy(fontSize = 0.sp)
                 ),
-                code = Highlighting(
-                    simple = SpanStyle(Color(0xFFBCBEC4)),
-                    number = SpanStyle(Color(0xFF2AACB8)),
-                    keyword = SpanStyle(Color(0xFFCF8E6D)),
-                    punctuation = SpanStyle(Color(0xFFA1C17E)),
-                    annotation = SpanStyle(Color(0xFFBBB529)),
-                    comment = SpanStyle(Color(0xFF7A7E85)),
-                    string = SpanStyle(Color(0xFF6AAB73)),
-                    property = SpanStyle(color = Color(0xFFC77DBB)),
-                    functionDeclaration = SpanStyle(color = Color(0xFF56A8F5)),
-                    extensionFunctionCall = SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic),
-                    staticFunctionCall = SpanStyle(fontStyle = FontStyle.Italic),
-                    typeParameters = SpanStyle(color = Color(0xFF16BAAC)),
-                )
-            )
+                code = codeStyle            )
         }
 
     // TODO actually make this a proper theme
