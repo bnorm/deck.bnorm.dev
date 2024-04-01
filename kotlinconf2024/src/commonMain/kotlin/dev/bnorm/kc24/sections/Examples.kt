@@ -4,10 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.kc24.template.Example
-import dev.bnorm.kc24.template.ExampleCarousel
-import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.kc24.template.slideForExample
+import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.ShowTheme
 import dev.bnorm.librettist.animation.startAnimation
@@ -36,6 +33,9 @@ fun ShowBuilder.Examples() {
     Require()
     ExampleCarousel { requireExample to assertEqualsExample }
     AssertEquals()
+    // TODO rewrite all lines at the same time
+    ExampleTransition { startAnimation(assertEqualsExample).thenLineEndDiff(assertEqualsAndNotNullExample).toList() }
+    AssertEqualsAndNotNull()
 }
 
 private fun ShowBuilder.ComplexExpressions() {
@@ -67,7 +67,7 @@ private fun ShowBuilder.AssertTrue() {
         }
     ) {
         TitleAndBody {
-            Example(assertTrueExample, assertTrueGradleSequence, assertTrueOutput)
+            Example(assertTrueExample, assertTrueGradleSequence, persistentListOf(assertTrueOutput))
         }
     }
 }
@@ -84,7 +84,7 @@ private fun ShowBuilder.Require() {
         }
     ) {
         TitleAndBody {
-            Example(requireExample, requireGradleSequence, requireOutput)
+            Example(requireExample, requireGradleSequence, persistentListOf(requireOutput))
         }
     }
 }
@@ -101,6 +101,22 @@ private fun ShowBuilder.AssertEquals() {
     ) {
         TitleAndBody {
             Example(assertEqualsExample, assertEqualsGradleSequence, assertEqualsOutput)
+        }
+    }
+}
+
+private fun ShowBuilder.AssertEqualsAndNotNull() {
+    slideForExample(
+        builder = {
+            openGradle()
+            updateGradle()
+            closeGradle()
+            openOutput()
+            closeOutput()
+        }
+    ) {
+        TitleAndBody {
+            Example(assertEqualsAndNotNullExample, assertEqualsAndNotNullGradleSequence, assertEqualsAndNotNullOutput)
         }
     }
 }
@@ -511,7 +527,7 @@ private val assertEqualsExample: AnnotatedString
                 // language=kotlin
                 text = """
                     @Test fun `test members of the fellowship`() {
-                        val members = fellowshipOfTheRing.getAllMembers()
+                        val members = fellowshipOfTheRing.getCurrentMembers()
                         val aragorn = members.find { it.name == "Aragorn" }
                         val boromir = members.find { it.name == "Boromir" }
                         assertEquals(aragorn?.race, boromir?.race)
@@ -604,13 +620,128 @@ private val assertEqualsGradleSequence: ImmutableList<AnnotatedString>
 //  - should we show a link to a ticket if it doesn't get fixed?
 // region <assertEquals Output>
 private val assertEqualsOutput = """
-java.lang.AssertionError: 
+java.lang.AssertionError:
 assertEquals(aragorn?.race, boromir?.race)
              |        |     |        |
-             |        |     |        Human
-             |        |     Boromir
+             |        |     |        null
+             |        |     null
              |        Dúnadan
-             Aragorn 
-expected:<Dúnadan> but was:<Human>
+             Aragorn
+expected:<Dúnadan> but was:<null>
+	at [...]
+""".trimIndent()
+// endregion
+
+// region <assertEquals+assertNotNull Example>
+private val assertEqualsAndNotNullExample: AnnotatedString
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        return remember {
+            buildKotlinCodeString(
+                // language=kotlin
+                text = """
+                    @Test fun `test members of the fellowship`() {
+                        val members = fellowshipOfTheRing.getCurrentMembers()
+                        val aragorn = assertNotNull(members.find { it.name == "Aragorn" })
+                        val boromir = assertNotNull(members.find { it.name == "Boromir" })
+                        assertEquals(aragorn.race, boromir.race)
+                    }
+                """.trimIndent(),
+                codeStyle = codeStyle,
+                identifierType = { it.toExampleStyle(codeStyle) }
+            )
+        }
+    }
+// endregion
+
+// region <assertEquals+assertNotNull Gradle>
+private val assertEqualsAndNotNullGradleSequence: ImmutableList<AnnotatedString>
+    @Composable
+    get() {
+        val codeStyle = ShowTheme.code
+        fun build(text: String) = buildGradleKtsCodeString(
+            text = text,
+            codeStyle = codeStyle,
+            identifierType = { it.toGradleKtsStyle(codeStyle) }
+        )
+
+        return remember {
+            startAnimation(
+                build(
+                    """
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                            kotlin("plugin.power-assert") version "2.0.0"
+                        }
+                        
+                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                        powerAssert {
+                            functions.addAll(
+                                "kotlin.require",
+                                "kotlin.test.assertTrue",
+                                "kotlin.test.assertEquals",
+                            )
+                            includedSourceSets.addAll("main", "test")
+                        }
+                    """.trimIndent() + "\n",
+                )
+            ).then(
+                build(
+                    """
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                            kotlin("plugin.power-assert") version "2.0.0"
+                        }
+                        
+                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                        powerAssert {
+                            functions.addAll(
+                                "kotlin.require",
+                                "kotlin.test.assertTrue",
+                                "kotlin.test.assertEquals",
+                                
+                            )
+                            includedSourceSets.addAll("main", "test")
+                        }
+                    """.trimIndent(),
+                )
+            ).thenLineEndDiff(
+                build(
+                    """
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                            kotlin("plugin.power-assert") version "2.0.0"
+                        }
+                        
+                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                        powerAssert {
+                            functions.addAll(
+                                "kotlin.require",
+                                "kotlin.test.assertTrue",
+                                "kotlin.test.assertEquals",
+                                "kotlin.test.assertNotNull",
+                            )
+                            includedSourceSets.addAll("main", "test")
+                        }
+                    """.trimIndent(),
+                )
+            ).toList()
+        }
+    }
+// endregion
+
+// TODO !!! THIS IS DOCTORED OUTPUT !!!
+//  - `assertNotNull` prints on the same line as the exception name
+//  - do we need to hardcode a newline before and after the diagram?
+//  - should we show a link to a ticket if it doesn't get fixed?
+// region <assertEquals+assertNotNull Output>
+private val assertEqualsAndNotNullOutput = """
+java.lang.AssertionError:
+assertNotNull(members.find { it.name == "Boromir" })
+              |       |
+              |       null
+              [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
+	at [...]
 """.trimIndent()
 // endregion

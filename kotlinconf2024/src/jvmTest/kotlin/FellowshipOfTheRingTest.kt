@@ -117,6 +117,14 @@ internal class FellowshipOfTheRingTest {
     @Test
     fun `test members of the fellowship10`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
+        val aragorn = assertNotNull(members.find { it.name == "Aragorn" })
+        val boromir = assertNotNull(members.find { it.name == "Boromir" })
+        assertEquals(aragorn.race, boromir.race)
+    }
+
+    @Test
+    fun `test members of the fellowship11`() {
+        val members = fellowshipOfTheRing.getCurrentMembers()
         assertSoftly {
             assert(members.find { it.name == "Frodo" }?.age == 23)
             assert(members.find { it.name == "Aragorn" }?.age == 60)

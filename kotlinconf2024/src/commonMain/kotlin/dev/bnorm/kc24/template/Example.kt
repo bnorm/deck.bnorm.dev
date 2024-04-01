@@ -1,10 +1,12 @@
 package dev.bnorm.kc24.template
 
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,7 +50,7 @@ data class ExampleState(
 }
 
 fun ShowBuilder.slideForExample(builder: ExampleState.Builder.() -> Unit, content: SlideContent<ExampleState>) {
-    val states: List<ExampleState> = buildExampleStates(builder)
+    val states = buildExampleStates(builder)
     val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
     slide(states = states.size) {
         val state = transition.createChildTransition {
@@ -120,99 +122,87 @@ fun buildExampleStates(builder: ExampleState.Builder.() -> Unit): List<ExampleSt
 @JvmName("ExampleGradleSequence")
 fun SlideScope<ExampleState>.Example(
     exampleText: AnnotatedString,
-    gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>,
-    outputText: String? = null,
+    gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>?,
+    outputTextSequence: ImmutableList<String>?,
     conclusions: ImmutableList<Conclusion>? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-            Text(exampleText)
+        Column(modifier = Modifier.fillMaxSize()) {
+            Example(exampleText)
             if (conclusions != null) {
-                transition.createChildTransition { it.conclusionIndex }.ShowConclusions(conclusions)
+                Conclusions(conclusions)
             }
         }
 
-        if (outputText != null) {
-            OutputText(
-                text = outputText,
-                state = transition.createChildTransition { it.showOutput },
-                modifier = Modifier.align(Alignment.BottomStart)
-            )
+        if (outputTextSequence != null) {
+            val outputText by transition.outputTextDiff(outputTextSequence)
+            Output(outputText, Modifier.align(Alignment.BottomStart))
         }
 
-        val gradleText by transition.gradleTextDiff(gradleTextSequence)
-        GradleFile(
-            text = gradleText,
-            visible = transition.createChildTransition { it.showGradle },
-            modifier = Modifier.align(Alignment.TopEnd),
-        )
+        if (gradleTextSequence != null) {
+            val gradleText by transition.gradleTextDiff(gradleTextSequence)
+            Gradle(gradleText, Modifier.align(Alignment.TopEnd))
+        }
     }
 }
 
 @Composable
 fun SlideScope<ExampleState>.Example(
     exampleText: AnnotatedString,
-    gradleTextSequence: ImmutableList<AnnotatedString>? = null,
-    outputTextSequence: ImmutableList<String>,
+    gradleTextSequence: ImmutableList<AnnotatedString>?,
+    outputText: String?,
     conclusions: ImmutableList<Conclusion>? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-            Text(exampleText)
+        Column(modifier = Modifier.fillMaxSize()) {
+            Example(exampleText)
             if (conclusions != null) {
-                transition.createChildTransition { it.conclusionIndex }.ShowConclusions(conclusions)
-            }
-        }
-
-        val outputText by transition.outputTextDiff(outputTextSequence)
-        OutputText(
-            text = outputText,
-            state = transition.createChildTransition { it.showOutput },
-            modifier = Modifier.align(Alignment.BottomStart)
-        )
-
-        if (gradleTextSequence != null) {
-            val gradleText by transition.gradleTextDiff(gradleTextSequence)
-            GradleFile(
-                text = gradleText,
-                visible = transition.createChildTransition { it.showGradle },
-                modifier = Modifier.align(Alignment.TopEnd),
-            )
-        }
-    }
-}
-
-
-@Composable
-fun SlideScope<ExampleState>.Example(
-    exampleText: AnnotatedString,
-    gradleTextSequence: ImmutableList<AnnotatedString>? = null,
-    outputText: String? = null,
-    conclusions: ImmutableList<Conclusion>? = null,
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-            Text(exampleText)
-            if (conclusions != null) {
-                transition.createChildTransition { it.conclusionIndex }.ShowConclusions(conclusions)
+                Conclusions(conclusions)
             }
         }
 
         if (outputText != null) {
-            OutputText(
-                text = outputText,
-                state = transition.createChildTransition { it.showOutput },
-                modifier = Modifier.align(Alignment.BottomStart)
-            )
+            Output(outputText, Modifier.align(Alignment.BottomStart))
         }
 
         if (gradleTextSequence != null) {
             val gradleText by transition.gradleTextDiff(gradleTextSequence)
-            GradleFile(
-                text = gradleText,
-                visible = transition.createChildTransition { it.showGradle },
-                modifier = Modifier.align(Alignment.TopEnd),
-            )
+            Gradle(gradleText, Modifier.align(Alignment.TopEnd))
         }
     }
+}
+
+@Composable
+private fun Example(exampleText: AnnotatedString) {
+    Box(modifier = Modifier.padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
+        Text(exampleText, modifier = Modifier.horizontalScroll(rememberScrollState()))
+    }
+}
+
+@Composable
+private fun SlideScope<ExampleState>.Conclusions(conclusions: ImmutableList<Conclusion>) {
+    Box(modifier = Modifier.padding(horizontal = SLIDE_PADDING)) {
+        transition.createChildTransition { it.conclusionIndex }.ShowConclusions(conclusions)
+    }
+}
+
+@Composable
+private fun SlideScope<ExampleState>.Output(outputText: String, modifier: Modifier) {
+    OutputText(
+        text = outputText,
+        state = transition.createChildTransition { it.showOutput },
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun SlideScope<ExampleState>.Gradle(
+    gradleText: AnnotatedString,
+    modifier: Modifier,
+) {
+    GradleFile(
+        text = gradleText,
+        visible = transition.createChildTransition { it.showGradle },
+        modifier = modifier,
+    )
 }

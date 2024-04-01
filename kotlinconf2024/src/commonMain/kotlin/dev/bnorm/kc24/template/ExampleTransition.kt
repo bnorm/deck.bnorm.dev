@@ -1,9 +1,11 @@
 package dev.bnorm.kc24.template
 
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,8 +30,8 @@ fun ShowBuilder.ExampleTransition(
         ) { it }
 
         TitleAndBody {
-            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Text(text)
+            Box(modifier = Modifier.fillMaxSize().padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
+                Text(text, modifier = Modifier.horizontalScroll(rememberScrollState()))
             }
         }
     }

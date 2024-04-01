@@ -36,6 +36,9 @@ fun ShowBuilder.Advanced() {
     //  - this as a whole separate section doesn't make a lot of sense
     //  - could easily make it an aside in the examples section after the `assertEquals` example
 
+    // TODO pull all gradle sequences into a separate file so they are ordered correctly and easier to update?
+    //  - could it just be one giant sequence then?
+
     FunctionSignature()
     ExampleCarousel(
         start = {
@@ -97,7 +100,7 @@ private fun ShowBuilder.SoftAssertSetup() {
         }
     ) {
         TitleAndBody {
-            Example(softAssertSetup, softAsserGradleSequence)
+            Example(softAssertSetup, softAsserGradleSequence, null)
         }
     }
 }
@@ -249,6 +252,7 @@ private val softAsserGradleSequence: ImmutableList<AnnotatedString>
                                 "kotlin.require",
                                 "kotlin.test.assertTrue",
                                 "kotlin.test.assertEquals",
+                                "kotlin.test.assertNotNull",
                             )
                             includedSourceSets.addAll("main", "test")
                         }
@@ -268,6 +272,7 @@ private val softAsserGradleSequence: ImmutableList<AnnotatedString>
                                 "kotlin.require",
                                 "kotlin.test.assertTrue",
                                 "kotlin.test.assertEquals",
+                                "kotlin.test.assertNotNull",
 
                             )
                             includedSourceSets.addAll("main", "test")
@@ -288,6 +293,7 @@ private val softAsserGradleSequence: ImmutableList<AnnotatedString>
                                 "kotlin.require",
                                 "kotlin.test.assertTrue",
                                 "kotlin.test.assertEquals",
+                                "kotlin.test.assertNotNull",
                                 "example.AssertScope.assert",
                             )
                             includedSourceSets.addAll("main", "test")

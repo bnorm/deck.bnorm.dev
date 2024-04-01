@@ -169,7 +169,7 @@ private fun ShowBuilder.FinalExample() {
                 }
             }
         ) {
-            Example(rememberExampleCodeString(finalTest), ktsSequence, fifthOutput)
+            Example(rememberExampleCodeString(finalTest), persistentListOf(ktsSequence), fifthOutput)
         }
     }
 }

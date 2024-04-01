@@ -40,13 +40,13 @@ fun OutputText(
 ) {
     val outputOffset by state.animateDp(transitionSpec = { defaultSpec() }) {
         when (it) {
-            OutputState.Hidden -> 600.dp
+            OutputState.Hidden -> 700.dp
             OutputState.Visible -> 40.dp
-            OutputState.Minimized -> 320.dp
+            OutputState.Minimized -> 420.dp
         }
     }
 
-    MacTerminal(modifier = modifier.requiredHeight(600.dp).fillMaxWidth().offset(y = outputOffset)) {
+    MacTerminal(modifier = modifier.requiredHeight(700.dp).fillMaxWidth().offset(y = outputOffset)) {
         ProvideTextStyle(MaterialTheme.typography.body2) {
             Text(
                 text = text,
