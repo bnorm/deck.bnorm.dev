@@ -5,14 +5,17 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.animateTo
+import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.rememberHighlighted
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.buildKotlinCodeString
-import dev.bnorm.librettist.text.thenLineEndDiff
+import dev.bnorm.librettist.text.thenDiff
 import kotlinx.collections.immutable.persistentListOf
+import kotlin.math.abs
+import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.Examples() {
     // TODO examples
@@ -31,8 +34,9 @@ fun ShowBuilder.Examples() {
     Require()
     ExampleCarousel { requireExample to assertEqualsExample }
     AssertEquals()
-    // TODO rewrite all lines at the same time
-    ExampleTransition { startAnimation(assertEqualsExample).thenLineEndDiff(assertEqualsAndNotNullExample).toList() }
+    ExampleTransition(transitionSpec = {
+        typingSpec(count = abs(targetState - initialState), charDelay = 30.milliseconds)
+    }) { startAnimation(assertEqualsExample).thenDiff(assertEqualsAndNotNullExample).toList() }
     AssertEqualsAndNotNull()
 
     // TODO summary slide before going into the next example?
@@ -311,7 +315,7 @@ assertEquals(aragorn?.race, boromir?.race)
              |        Dúnadan
              Aragorn
 expected:<Dúnadan> but was:<null>
-	at [...]
+    at [...]
 """.trimIndent()
 // endregion
 
@@ -346,6 +350,6 @@ assertNotNull(members.find { it.name == "Boromir" })
               |       |
               |       null
               [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
-	at [...]
+    at [...]
 """.trimIndent()
 // endregion

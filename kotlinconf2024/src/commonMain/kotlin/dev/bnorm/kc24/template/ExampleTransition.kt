@@ -1,5 +1,7 @@
 package dev.bnorm.kc24.template
 
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -19,6 +21,9 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlin.math.abs
 
 fun ShowBuilder.ExampleTransition(
+    transitionSpec: @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<Int> = {
+        typingSpec(count = abs(targetState - initialState))
+    },
     strings: @Composable () -> ImmutableList<AnnotatedString>,
 ) {
     slide(states = 0) {
@@ -26,7 +31,7 @@ fun ShowBuilder.ExampleTransition(
         val state = transition.createChildTransition { if (it == SlideState.Exiting) values.lastIndex else 0 }
         val text by state.animateList(
             values = values,
-            transitionSpec = { typingSpec(count = abs(targetState - initialState)) },
+            transitionSpec = transitionSpec,
         ) { it }
 
         TitleAndBody {
