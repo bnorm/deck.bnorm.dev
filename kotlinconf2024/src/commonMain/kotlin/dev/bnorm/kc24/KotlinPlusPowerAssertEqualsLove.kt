@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
 import dev.bnorm.kc24.elements.typingSpec
-import dev.bnorm.kc24.sections.Advanced
 import dev.bnorm.kc24.sections.Assertions
 import dev.bnorm.kc24.sections.Examples
 import dev.bnorm.kc24.sections.Future
@@ -45,13 +44,6 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
     section(title = "Why use Power-Assert?") {
         SectionHeader(animateToBody = true)
         Examples()
-    }
-
-    // TODO combine with previous section
-    //  - make function signature a side point somehow?
-    section(title = "Advanced") {
-        SectionHeader(animateToBody = true)
-        Advanced()
     }
 
     section(title = "What's next?") {

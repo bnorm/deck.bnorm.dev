@@ -93,7 +93,6 @@ private fun ShowBuilder.SecondExample() {
 private fun ShowBuilder.ThirdExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
-        Conclusion.Con(text = "Message before difference"),
         Conclusion.Con(text = "Message maintenance burden"),
         // TODO more conclusions?
     )
@@ -120,8 +119,8 @@ private fun ShowBuilder.ForthExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
         Conclusion.Con(text = "Mental load for functions"),
+        Conclusion.Con(text = "Assertions for custom types"),
         Conclusion.Con(text = "Library bike-shedding"),
-        Conclusion.Pro(text = "Custom failure message"),
         // TODO more conclusions?
     )
     slideForExample(

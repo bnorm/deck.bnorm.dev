@@ -34,6 +34,17 @@ fun ShowBuilder.Examples() {
     // TODO rewrite all lines at the same time
     ExampleTransition { startAnimation(assertEqualsExample).thenLineEndDiff(assertEqualsAndNotNullExample).toList() }
     AssertEqualsAndNotNull()
+
+    // TODO summary slide before going into the next example?
+
+    ExampleCarousel { assertEqualsAndNotNullExample to softAssertSetupWithoutMessage }
+    SoftAssertSetupWithoutMessage()
+    ExampleCarousel { softAssertSetupWithoutMessage to softAssertExample }
+    SoftAssertExampleWithWarning()
+    ExampleCarousel(forward = false) { softAssertExample to softAssertSetupWithoutMessage }
+    SoftAssertSetupWithMessage()
+    ExampleCarousel { softAssertSetupWithMessage to softAssertExample }
+    SoftAssertExample()
 }
 
 private fun ShowBuilder.ComplexExpressions() {

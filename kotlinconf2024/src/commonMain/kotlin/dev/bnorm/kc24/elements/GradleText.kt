@@ -11,6 +11,8 @@ import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.flowOf
 
 enum class GradleText {
     Initial {
@@ -165,6 +167,31 @@ enum class GradleText {
             }
     },
 
+    AddAssertSoftly {
+        override val text: AnnotatedString
+            @Composable
+            get() = rememberHighlighted("GradleText::AddAssertSoftly") {
+                """
+                    plugins {
+                        kotlin("jvm") version "2.0.0"
+                        kotlin("plugin.power-assert") version "2.0.0"
+                    }
+                    
+                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                    powerAssert {
+                        functions.addAll(
+                            "kotlin.require",
+                            "kotlin.test.assertTrue",
+                            "kotlin.test.assertEquals",
+                            "kotlin.test.assertNotNull",
+                            "example.AssertScope.assert",
+                        )
+                        includedSourceSets.addAll("main", "test")
+                    }
+                """.trimIndent().toKts(it)
+            }
+    },
+
     ;
 
     @get:Composable
@@ -174,6 +201,8 @@ enum class GradleText {
 @Composable
 fun GradleText.animateTo(other: GradleText): ImmutableList<AnnotatedString> {
     require(this.ordinal < other.ordinal)
+
+    flowOf("").buffer()
 
     val entries = GradleText.entries.subList(this.ordinal, other.ordinal)
     val list = mutableListOf<AnnotatedString>()
@@ -187,7 +216,8 @@ fun GradleText.animateTo(other: GradleText): ImmutableList<AnnotatedString> {
             GradleText.AddRequire -> list.addAll(Transitions.AddRequire_AddSourceSet.subList(0, Transitions.AddRequire_AddSourceSet.lastIndex))
             GradleText.AddSourceSet -> list.addAll(Transitions.AddSourceSet_AddAssertEquals.subList(0, Transitions.AddSourceSet_AddAssertEquals.lastIndex))
             GradleText.AddAssertEquals -> list.addAll(Transitions.AddAssertEquals_AddAssertNotNull.subList(0, Transitions.AddAssertEquals_AddAssertNotNull.lastIndex))
-            GradleText.AddAssertNotNull -> error("!")
+            GradleText.AddAssertNotNull -> list.addAll(Transitions.AddAssertNotNull_AddAssertSoftly.subList(0, Transitions.AddAssertNotNull_AddAssertSoftly.lastIndex))
+            GradleText.AddAssertSoftly -> error("!")
         }
         // @formatter:on
     }
@@ -430,6 +460,39 @@ private object Transitions {
                             includedSourceSets.addAll("main", "test")
                         }
                     """.trimIndent().toKts(it)
+                ).thenLineEndDiff(
+                    end
+                ).toList()
+            }
+        }
+
+    val AddAssertNotNull_AddAssertSoftly: ImmutableList<AnnotatedString>
+        @Composable
+        get() {
+            val start = GradleText.AddAssertNotNull.text
+            val end = GradleText.AddAssertSoftly.text
+            return rememberHighlighted("GradleText::AddAssertNotNull_AddAssertSoftly") { highlighting ->
+                startAnimation(
+                    start + AnnotatedString("\n")
+                ).then(
+                    """
+                        plugins {
+                            kotlin("jvm") version "2.0.0"
+                            kotlin("plugin.power-assert") version "2.0.0"
+                        }
+                        
+                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                        powerAssert {
+                            functions.addAll(
+                                "kotlin.require",
+                                "kotlin.test.assertTrue",
+                                "kotlin.test.assertEquals",
+                                "kotlin.test.assertNotNull",
+                                
+                            )
+                            includedSourceSets.addAll("main", "test")
+                        }
+                    """.trimIndent().toKts(highlighting)
                 ).thenLineEndDiff(
                     end
                 ).toList()

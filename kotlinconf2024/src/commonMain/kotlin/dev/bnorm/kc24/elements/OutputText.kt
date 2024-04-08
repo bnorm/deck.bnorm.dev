@@ -53,9 +53,7 @@ fun OutputText(
                 modifier = Modifier
                     .verticalScroll(scrollState)
                     .padding(32.dp)
-                    .padding(bottom = 40.dp) // Offset the visible padding
-                    // TODO should everything NOT wrap? is this a con for some examples?
-                    .wrapContentSize(Alignment.TopStart, unbounded = true),
+                    .padding(bottom = 40.dp), // Offset the visible padding
             )
         }
     }

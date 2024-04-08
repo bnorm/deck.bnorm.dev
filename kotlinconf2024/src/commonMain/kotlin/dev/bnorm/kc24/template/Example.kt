@@ -1,19 +1,21 @@
 package dev.bnorm.kc24.template
 
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.*
+import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideContent
 import dev.bnorm.librettist.show.SlideScope
@@ -22,6 +24,9 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlin.jvm.JvmName
 
 data class ExampleState(
+    // Example
+    val exampleIndex: Int = 0,
+
     // Gradle
     val showGradle: Boolean = false,
     val gradleIndex: Int = 0,
@@ -33,7 +38,10 @@ data class ExampleState(
     // Conclusions
     val conclusionIndex: Int = 0,
 ) {
+    // TODO can Composables be supplied with each operation so the Example composable is just built automatically?
     interface Builder {
+        fun updateExample()
+
         fun openGradle()
         fun updateGradle()
         fun closeGradle()
@@ -45,7 +53,6 @@ data class ExampleState(
         fun closeOutput()
 
         fun addConclusion()
-
     }
 }
 
@@ -70,6 +77,11 @@ fun buildExampleStates(builder: ExampleState.Builder.() -> Unit): List<ExampleSt
 
         add(last)
         object : ExampleState.Builder {
+            override fun updateExample() {
+                last = last.copy(exampleIndex = last.exampleIndex + 1)
+                add(last)
+            }
+
             override fun openGradle() {
                 require(!last.showGradle)
                 last = last.copy(showGradle = true)
@@ -173,8 +185,38 @@ fun SlideScope<ExampleState>.Example(
 }
 
 @Composable
-private fun Example(exampleText: AnnotatedString) {
-    Box(modifier = Modifier.padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
+fun SlideScope<ExampleState>.Example(
+    exampleTextSequence: ImmutableList<AnnotatedString>,
+    gradleTextSequence: ImmutableList<AnnotatedString>?,
+    outputText: String?,
+    conclusions: ImmutableList<Conclusion>? = null,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            val exampleText by transition.exampleTextDiff(exampleTextSequence)
+            Example(exampleText)
+            if (conclusions != null) {
+                Conclusions(conclusions)
+            }
+        }
+
+        if (outputText != null) {
+            Output(outputText, Modifier.align(Alignment.BottomStart))
+        }
+
+        if (gradleTextSequence != null) {
+            val gradleText by transition.gradleTextDiff(gradleTextSequence)
+            Gradle(gradleText, Modifier.align(Alignment.TopEnd))
+        }
+    }
+}
+
+@Composable
+fun Example(exampleText: AnnotatedString) {
+    LookaheadScope {
+
+    }
+    Box(modifier = Modifier.fillMaxWidth().padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
         Text(exampleText, modifier = Modifier.horizontalScroll(rememberScrollState()))
     }
 }
@@ -204,5 +246,23 @@ private fun SlideScope<ExampleState>.Gradle(
         text = gradleText,
         visible = transition.createChildTransition { it.showGradle },
         modifier = modifier,
+    )
+}
+
+@Composable
+fun Transition<out ExampleState>.exampleTextDiff(
+    values: ImmutableList<AnnotatedString>,
+    transitionSpec: @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<Int> = {
+        typingSpec(count = values.size - 1)
+    },
+    targetIndexByState: @Composable (state: Int) -> Int = {
+        if (it > 0) values.lastIndex else 0
+    },
+): State<AnnotatedString> {
+    val state = createChildTransition { it.exampleIndex }
+    return state.animateList(
+        values = values,
+        transitionSpec = transitionSpec,
+        targetIndexByState = targetIndexByState
     )
 }

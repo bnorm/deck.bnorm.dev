@@ -31,7 +31,7 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
-import dev.bnorm.librettist.show.compareTo
+import dev.bnorm.librettist.show.toInt
 
 fun ShowBuilder.Future() {
     PowerAssertIdeas()
@@ -47,7 +47,7 @@ private fun ShowBuilder.PowerAssertIdeas() {
             ) {
                 // TODO show examples for compressed and diffs?
                 AnimateByLine(
-                    transition = transition,
+                    transition = transition.createChildTransition { it.toInt() },
                     "=> Improved diagrams" to emptySet(),
                     "   => Diagram formatting improvements (KT-66807)" to setOf("KT-66807"),
                     "   => Diffs for strings and collections (KT-66806)" to setOf("KT-66806"),
@@ -71,7 +71,7 @@ private fun ShowBuilder.HowCanYouHelp() {
                 // TODO is this the same as the summary slide?
                 // TODO combine with the summary slide?
                 AnimateByLine(
-                    transition = transition,
+                    transition = transition.createChildTransition { it.toInt() },
                     "=> We're looking for your feedback!" to emptySet(),
                     "   => Try out Power-Assert!" to emptySet(),
                     "   => Report any compilation errors" to emptySet(),
@@ -84,7 +84,7 @@ private fun ShowBuilder.HowCanYouHelp() {
 
 @Composable
 private fun AnimateByLine(
-    transition: Transition<out SlideState<Int>>,
+    transition: Transition<out Int>,
     vararg lines: Pair<String, Set<String>>,
 ) {
     if (lines.isEmpty()) return

@@ -16,23 +16,22 @@ import dev.bnorm.librettist.show.SlideState
 import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.ExampleCarousel(
+    forward: Boolean = true,
     values: @Composable () -> Pair<AnnotatedString, AnnotatedString>,
 ) {
     ExampleCarousel(
+        forward = forward,
         start = {
-            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Text(values().first)
-            }
+            Example(values().first)
         },
         end = {
-            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Text(values().second)
-            }
+            Example(values().second)
         }
     )
 }
 
 fun ShowBuilder.ExampleCarousel(
+    forward: Boolean = true,
     start: @Composable () -> Unit,
     end: @Composable () -> Unit,
 ) {
@@ -40,16 +39,16 @@ fun ShowBuilder.ExampleCarousel(
         TitleAndBody {
             transition.AnimatedVisibility(
                 visible = { it == SlideState.Entering },
-                enter = slideInHorizontally(defaultSpec(750.milliseconds)) { -it },
-                exit = slideOutHorizontally(defaultSpec(750.milliseconds)) { -it },
+                enter = slideInHorizontally(defaultSpec(750.milliseconds)) { if (forward) -it else it },
+                exit = slideOutHorizontally(defaultSpec(750.milliseconds)) { if (forward) -it else it },
             ) {
                 start()
             }
 
             transition.AnimatedVisibility(
                 visible = { it == SlideState.Exiting },
-                enter = slideInHorizontally(defaultSpec(750.milliseconds)) { it },
-                exit = slideOutHorizontally(defaultSpec(750.milliseconds)) { it },
+                enter = slideInHorizontally(defaultSpec(750.milliseconds)) { if (forward) it else -it },
+                exit = slideOutHorizontally(defaultSpec(750.milliseconds)) { if (forward) it else -it },
             ) {
                 end()
             }

@@ -1,94 +1,23 @@
 package dev.bnorm.kc24.sections
 
-import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.kc24.elements.AnimatedVisibility
-import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.kc24.template.*
+import dev.bnorm.kc24.elements.GradleText
+import dev.bnorm.kc24.elements.animateTo
+import dev.bnorm.kc24.template.Example
+import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.kc24.template.slideForExample
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.rememberHighlighted
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.toInt
-import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
 
-fun ShowBuilder.Advanced() {
-    // TODO
-    //  - this as a whole separate section doesn't make a lot of sense
-    //  - could easily make it an aside in the examples section after the `assertEquals` example
-
-    // TODO pull all gradle sequences into a separate file so they are ordered correctly and easier to update?
-    //  - could it just be one giant sequence then?
-
-    FunctionSignature()
-    ExampleCarousel(
-        start = {
-            updateTransition(6).FunctionSignature()
-        },
-        end = {
-            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Text(softAssertSetup)
-            }
-        }
-    )
-    SoftAssertSetup()
-    ExampleCarousel { softAssertSetup to softAssertExample }
-    SoftAssertExample()
-}
-
-private fun ShowBuilder.FunctionSignature() {
-    slide(states = 7) {
-        val state = transition.createChildTransition { it.toInt() }
-        TitleAndBody {
-            state.FunctionSignature()
-        }
-    }
-}
-
-@Composable
-private fun Transition<out Int>.FunctionSignature() {
-    // TODO explain function signature requirements
-    // Start with: assertCustom(value: CustomClass)
-    //
-    // Looks for:
-    // - assertCustom(value: CustomClass, message: String)
-    // - assertCustom(value: CustomClass, message: () -> String)
-    // - assertCustom(message: String)
-    // - assertCustom(message: () -> String)
-
-    Column(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-        AnimateByLine(
-            { Text("When a call is made to the following function:") },
-            { Text("fun assertCustom(value: CustomClass)") },
-
-            { Text("Power-Assert will look for the following functions to call instead:") },
-            { Text("assertCustom(value: CustomClass, message: String)") },
-            { Text("assertCustom(value: CustomClass, message: () -> String)") },
-            { Text("assertCustom(message: String)") },
-            { Text("assertCustom(message: () -> String)") },
-        )
-    }
-}
-
-private fun ShowBuilder.SoftAssertSetup() {
+fun ShowBuilder.SoftAssertSetupWithoutMessage() {
     // TODO show what the implementation looks like?
 
     slideForExample(
@@ -99,12 +28,42 @@ private fun ShowBuilder.SoftAssertSetup() {
         }
     ) {
         TitleAndBody {
-            Example(softAssertSetup, softAsserGradleSequence, null)
+            val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
+            Example(softAssertSetupWithoutMessage, gradleTextSequence, null)
         }
     }
 }
 
-private fun ShowBuilder.SoftAssertExample() {
+fun ShowBuilder.SoftAssertExampleWithWarning() {
+    // TODO better soft-assert example
+    //  - iterate over the members and assert something common?
+
+    // TODO start with output scrolled to the bottom and scroll up to the warning?
+
+    slideForExample(
+        builder = {
+            openOutput()
+        }
+    ) {
+        TitleAndBody {
+            Example(softAssertExample, null, softAssertOutputWarning)
+        }
+    }
+}
+
+fun ShowBuilder.SoftAssertSetupWithMessage() {
+    slideForExample(
+        builder = {
+            updateExample()
+        }
+    ) {
+        TitleAndBody {
+            Example(softAssertSetupSequence, null, null)
+        }
+    }
+}
+
+fun ShowBuilder.SoftAssertExample() {
     // TODO better soft-assert example
 
     slideForExample(
@@ -118,27 +77,17 @@ private fun ShowBuilder.SoftAssertExample() {
     }
 }
 
-@Composable
-private fun Transition<out Int>.AnimateByLine(
-    vararg lines: @Composable () -> Unit,
-) {
-    if (lines.isEmpty()) return
-
-    for ((i, line) in lines.withIndex()) {
-        createChildTransition { it >= i }.AnimatedVisibility(
-            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
-            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
-        ) {
-            line()
-        }
-    }
-}
-
 private fun String.toSetupStyle(highlighting: Highlighting) = when (this) {
     "assert", "assertSoftly" -> highlighting.functionDeclaration
     "R" -> highlighting.typeParameters
     else -> null
 }
+
+private fun String.toSample(highlighting: Highlighting) = buildKotlinCodeString(
+    text = this,
+    codeStyle = highlighting,
+    identifierType = { it.toSetupStyle(highlighting) }
+)
 
 private fun String.toExampleStyle(highlighting: Highlighting): SpanStyle? {
     return when (this) {
@@ -150,44 +99,91 @@ private fun String.toExampleStyle(highlighting: Highlighting): SpanStyle? {
     }
 }
 
-private fun String.toGradleKtsStyle(highlighting: Highlighting): SpanStyle? {
-    return when (this) {
-        "class" -> highlighting.keyword
-        "ExperimentalKotlinGradlePluginApi" -> highlighting.annotation
-        "functions", "includedSourceSets" -> highlighting.property
-        "kotlin", "version", "powerAssert" -> highlighting.extensionFunctionCall
-        else -> null
-    }
-}
-
-// region <assertSoftly Setup>
-private val softAssertSetup: AnnotatedString
+// region assertSoftly Setup without message
+val softAssertSetupWithoutMessage: AnnotatedString
     @Composable
     get() {
-        return rememberHighlighted("softAssertSetup") { highlighting ->
-            buildKotlinCodeString(
-                // language=kotlin
-                text = """
-                    package example                    
-                    
-                    fun <R> assertSoftly(block: AssertScope.() -> R): R
-                    
-                    interface AssertScope {
-                        fun assert(
-                            assertion: Boolean, 
-                            lazyMessage: (() -> String)? = null,
-                        )
-                    }
-                """.trimIndent(),
-                codeStyle = highlighting,
-                identifierType = { it.toSetupStyle(highlighting) }
-            )
+        return rememberHighlighted("softAssertSetupWithoutMessage") { highlighting ->
+            // language=kotlin
+            """
+                package example                    
+                
+                fun <R> assertSoftly(block: AssertScope.() -> R): R
+                
+                interface AssertScope {
+                    fun assert(assertion: Boolean)
+                }
+            """.trimIndent().toSample(highlighting)
         }
     }
 // endregion
 
+// region assertSoftly Setup without message
+val softAssertSetupWithMessage: AnnotatedString
+    @Composable
+    get() {
+        return rememberHighlighted("softAssertSetupWithMessage") { highlighting ->
+            // language=kotlin
+            """
+                package example                    
+                
+                fun <R> assertSoftly(block: AssertScope.() -> R): R
+                
+                interface AssertScope {
+                    fun assert(
+                        assertion: Boolean, 
+                        message: (() -> String)? = null,
+                    )
+                }
+            """.trimIndent().toSample(highlighting)
+        }
+    }
+// endregion
+
+
+private val softAssertSetupSequence: ImmutableList<AnnotatedString>
+    @Composable
+    get() {
+        val start = softAssertSetupWithoutMessage
+        val end = softAssertSetupWithMessage
+        return rememberHighlighted("softAssertSetupSequence") { highlighting ->
+            startAnimation(start)
+                .then(
+                    // language=kotlin
+                    """
+                        package example                    
+                        
+                        fun <R> assertSoftly(block: AssertScope.() -> R): R
+                        
+                        interface AssertScope {
+                            fun assert(
+                                assertion: Boolean, 
+                            )
+                        }
+                    """.trimIndent().toSample(highlighting)
+                )
+                .then(
+                    // language=kotlin
+                    """
+                        package example                    
+                        
+                        fun <R> assertSoftly(block: AssertScope.() -> R): R
+                        
+                        interface AssertScope {
+                            fun assert(
+                                assertion: Boolean, 
+                                
+                            )
+                        }
+                    """.trimIndent().toSample(highlighting)
+                )
+                .thenLineEndDiff(end)
+                .toList()
+        }
+    }
+
 // region <assertSoftly Setup2>
-private val softAssertSetup2: AnnotatedString
+val softAssertSetup2: AnnotatedString
     @Composable
     get() {
         return rememberHighlighted("softAssertSetup2") { highlighting ->
@@ -223,81 +219,8 @@ private val softAssertSetup2: AnnotatedString
     }
 // endregion
 
-// region <assertSoftly Gradle>
-private val softAsserGradleSequence: ImmutableList<AnnotatedString>
-    @Composable
-    get() {
-        fun String.toKts(highlighting: Highlighting) = buildGradleKtsCodeString(
-            text = this,
-            codeStyle = highlighting,
-            identifierType = { it.toGradleKtsStyle(highlighting) }
-        )
-
-        // TODO move to GradleText
-        return rememberHighlighted("softAsserGradleSequence") { highlighting ->
-            startAnimation(
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                            "kotlin.test.assertEquals",
-                            "kotlin.test.assertNotNull",
-                        )
-                        includedSourceSets.addAll("main", "test")
-                    }
-                """.trimIndent().toKts(highlighting) + AnnotatedString("\n")
-            ).then(
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                            "kotlin.test.assertEquals",
-                            "kotlin.test.assertNotNull",
-
-                        )
-                        includedSourceSets.addAll("main", "test")
-                    }
-                """.trimIndent().toKts(highlighting)
-            ).thenLineEndDiff(
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                            "kotlin.test.assertEquals",
-                            "kotlin.test.assertNotNull",
-                            "example.AssertScope.assert",
-                        )
-                        includedSourceSets.addAll("main", "test")
-                    }
-                """.trimIndent().toKts(highlighting)
-            ).toList()
-        }
-    }
-// endregion
-
 // region <assertSoftly Example>
-private val softAssertExample: AnnotatedString
+val softAssertExample: AnnotatedString
     @Composable
     get() {
         return rememberHighlighted("softAssertExample") { highlighting ->
@@ -319,7 +242,26 @@ private val softAssertExample: AnnotatedString
     }
 // endregion
 
-// region <assertSoftly Output>
+// region assertSoftly Output without Power-Assert
+private val softAssertOutputWarning = """
+w: file://[...] Unable to find overload of function example.AssertScope.assert for power-assert transformation callable as:
+ - example.AssertScope.assert(String)
+ - example.AssertScope.assert(() -> String)
+ - example.AssertScope.assert(kotlin.Boolean, String)
+ - example.AssertScope.assert(kotlin.Boolean, () -> String)
+
+Multiple failed assertions
+java.lang.AssertionError: Multiple failed assertions
+    at [...]
+    Suppressed: java.lang.AssertionError
+        at [...]
+    Suppressed: java.lang.AssertionError
+        at [...]
+""".trimIndent()
+// endregion
+
+
+// region assertSoftly Output with Power-Assert
 private val softAssertOutput = """
 Multiple failed assertions
 java.lang.AssertionError: Multiple failed assertions
