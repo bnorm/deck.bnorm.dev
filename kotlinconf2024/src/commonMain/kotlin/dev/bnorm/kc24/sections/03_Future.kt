@@ -30,7 +30,6 @@ import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.toInt
 
 fun ShowBuilder.Future() {

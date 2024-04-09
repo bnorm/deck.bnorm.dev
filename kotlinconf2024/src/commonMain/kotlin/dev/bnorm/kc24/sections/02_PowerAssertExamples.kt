@@ -17,7 +17,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ShowBuilder.Examples() {
+fun ShowBuilder.PowerAssertExamples() {
     // TODO examples
     //  - assertNotNull -> surrounding deep not null checks
     //    - make part of another example?
@@ -59,7 +59,10 @@ private fun ShowBuilder.ComplexExpressions() {
         }
     ) {
         TitleAndBody {
-            Example(complexAssertExample, null, complexAssertOutput)
+            Example(
+                exampleTextSequence = persistentListOf(complexAssertExample),
+                outputTextSequence = persistentListOf(persistentListOf(complexAssertOutput)),
+            )
         }
     }
 }
@@ -84,7 +87,11 @@ private fun ShowBuilder.AssertTrue() {
                 GradleText.AddPlugin.animateTo(GradleText.AddConfig),
                 GradleText.AddConfig.animateTo(GradleText.AddAssertTrue),
             )
-            Example(assertTrueExample, gradleTextSequence, persistentListOf(assertTrueOutput))
+            Example(
+                exampleTextSequence = persistentListOf(assertTrueExample),
+                gradleTextSequence = gradleTextSequence,
+                outputTextSequence = persistentListOf(persistentListOf(assertTrueOutput)),
+            )
         }
     }
 }
@@ -105,7 +112,11 @@ private fun ShowBuilder.Require() {
                 GradleText.AddAssertTrue.animateTo(GradleText.AddRequire),
                 GradleText.AddRequire.animateTo(GradleText.AddSourceSet),
             )
-            Example(requireExample, gradleTextSequence, persistentListOf(requireOutput))
+            Example(
+                exampleTextSequence = persistentListOf(requireExample),
+                gradleTextSequence = gradleTextSequence,
+                outputTextSequence = persistentListOf(persistentListOf(requireOutput)),
+            )
         }
     }
 }
@@ -122,7 +133,11 @@ private fun ShowBuilder.AssertEquals() {
     ) {
         TitleAndBody {
             val gradleTextSequence = GradleText.AddSourceSet.animateTo(GradleText.AddAssertEquals)
-            Example(assertEqualsExample, gradleTextSequence, assertEqualsOutput)
+            Example(
+                exampleTextSequence = persistentListOf(assertEqualsExample),
+                gradleTextSequence = persistentListOf(gradleTextSequence),
+                outputTextSequence = persistentListOf(persistentListOf(assertEqualsOutput)),
+            )
         }
     }
 }
@@ -139,7 +154,11 @@ private fun ShowBuilder.AssertEqualsAndNotNull() {
     ) {
         TitleAndBody {
             val gradleTextSequence = GradleText.AddAssertEquals.animateTo(GradleText.AddAssertNotNull)
-            Example(assertEqualsAndNotNullExample, gradleTextSequence, assertEqualsAndNotNullOutput)
+            Example(
+                exampleTextSequence = persistentListOf(assertEqualsAndNotNullExample),
+                gradleTextSequence = persistentListOf(gradleTextSequence),
+                outputTextSequence = persistentListOf(persistentListOf(assertEqualsAndNotNullOutput)),
+            )
         }
     }
 }

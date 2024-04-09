@@ -16,6 +16,7 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 fun ShowBuilder.SoftAssertSetupWithoutMessage() {
     // TODO show what the implementation looks like?
@@ -29,7 +30,10 @@ fun ShowBuilder.SoftAssertSetupWithoutMessage() {
     ) {
         TitleAndBody {
             val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
-            Example(softAssertSetupWithoutMessage, gradleTextSequence, null)
+            Example(
+                exampleTextSequence = persistentListOf(softAssertSetupWithoutMessage),
+                gradleTextSequence = persistentListOf(gradleTextSequence),
+            )
         }
     }
 }
@@ -46,7 +50,10 @@ fun ShowBuilder.SoftAssertExampleWithWarning() {
         }
     ) {
         TitleAndBody {
-            Example(softAssertExample, null, softAssertOutputWarning)
+            Example(
+                exampleTextSequence = persistentListOf(softAssertExample),
+                outputTextSequence = persistentListOf(persistentListOf(softAssertOutputWarning))
+            )
         }
     }
 }
@@ -58,7 +65,9 @@ fun ShowBuilder.SoftAssertSetupWithMessage() {
         }
     ) {
         TitleAndBody {
-            Example(softAssertSetupSequence, null, null)
+            Example(
+                exampleTextSequence = softAssertSetupSequence,
+            )
         }
     }
 }
@@ -72,7 +81,10 @@ fun ShowBuilder.SoftAssertExample() {
         }
     ) {
         TitleAndBody {
-            Example(softAssertExample, null, softAssertOutput)
+            Example(
+                exampleTextSequence = persistentListOf(softAssertExample),
+                outputTextSequence = persistentListOf(persistentListOf(softAssertOutput)),
+            )
         }
     }
 }

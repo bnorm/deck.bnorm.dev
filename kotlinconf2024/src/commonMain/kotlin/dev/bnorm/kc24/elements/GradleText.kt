@@ -11,227 +11,208 @@ import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.flowOf
 
 enum class GradleText {
     Initial {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::Initial") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddPlugin {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddPlugin") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddConfig {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddConfig") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+                
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                powerAssert {
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddAssertTrue {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddAssertTrue") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.test.assertTrue",
-                        )
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+                
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                powerAssert {
+                    functions.addAll(
+                        "kotlin.test.assertTrue",
+                    )
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddRequire {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddRequire") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                        )
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+                
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                powerAssert {
+                    functions.addAll(
+                        "kotlin.require",
+                        "kotlin.test.assertTrue",
+                    )
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddSourceSet {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddSourceSet") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                        )
-                        includedSourceSets.addAll("main", "test")
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+                
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                powerAssert {
+                    functions.addAll(
+                        "kotlin.require",
+                        "kotlin.test.assertTrue",
+                    )
+                    includedSourceSets.addAll("main", "test")
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddAssertEquals {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddAssertEquals") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                            "kotlin.test.assertEquals",
-                        )
-                        includedSourceSets.addAll("main", "test")
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+                
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                powerAssert {
+                    functions.addAll(
+                        "kotlin.require",
+                        "kotlin.test.assertTrue",
+                        "kotlin.test.assertEquals",
+                    )
+                    includedSourceSets.addAll("main", "test")
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddAssertNotNull {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddAssertNotNull") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                            "kotlin.test.assertEquals",
-                            "kotlin.test.assertNotNull",
-                        )
-                        includedSourceSets.addAll("main", "test")
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+                
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                powerAssert {
+                    functions.addAll(
+                        "kotlin.require",
+                        "kotlin.test.assertTrue",
+                        "kotlin.test.assertEquals",
+                        "kotlin.test.assertNotNull",
+                    )
+                    includedSourceSets.addAll("main", "test")
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     AddAssertSoftly {
-        override val text: AnnotatedString
-            @Composable
-            get() = rememberHighlighted("GradleText::AddAssertSoftly") {
-                """
-                    plugins {
-                        kotlin("jvm") version "2.0.0"
-                        kotlin("plugin.power-assert") version "2.0.0"
-                    }
-                    
-                    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                    powerAssert {
-                        functions.addAll(
-                            "kotlin.require",
-                            "kotlin.test.assertTrue",
-                            "kotlin.test.assertEquals",
-                            "kotlin.test.assertNotNull",
-                            "example.AssertScope.assert",
-                        )
-                        includedSourceSets.addAll("main", "test")
-                    }
-                """.trimIndent().toKts(it)
-            }
+        override fun buildText(highlighting: Highlighting): AnnotatedString {
+            return """
+                plugins {
+                    kotlin("jvm") version "2.0.0"
+                    kotlin("plugin.power-assert") version "2.0.0"
+                }
+                
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                powerAssert {
+                    functions.addAll(
+                        "kotlin.require",
+                        "kotlin.test.assertTrue",
+                        "kotlin.test.assertEquals",
+                        "kotlin.test.assertNotNull",
+                        "example.AssertScope.assert",
+                    )
+                    includedSourceSets.addAll("main", "test")
+                }
+            """.trimIndent().toKts(highlighting)
+        }
     },
 
     ;
 
-    @get:Composable
-    abstract val text: AnnotatedString
+    val text: AnnotatedString
+        @Composable get() = rememberHighlighted("GradleText::$name") { buildText(it) }
+
+    abstract fun buildText(highlighting: Highlighting): AnnotatedString
 }
 
 @Composable
 fun GradleText.animateTo(other: GradleText): ImmutableList<AnnotatedString> {
     require(this.ordinal < other.ordinal)
 
-    flowOf("").buffer()
-
-    val entries = GradleText.entries.subList(this.ordinal, other.ordinal)
-    val list = mutableListOf<AnnotatedString>()
-    for (entry in entries) {
-        // @formatter:off
-        when (entry) {
-            GradleText.Initial -> list.addAll(Transitions.Initial_AddPlugin.subList(0, Transitions.Initial_AddPlugin.lastIndex))
-            GradleText.AddPlugin -> list.addAll(Transitions.AddPlugin_AddConfig.subList(0, Transitions.AddPlugin_AddConfig.lastIndex))
-            GradleText.AddConfig -> list.addAll(Transitions.AddConfig_AddAssertTrue.subList(0, Transitions.AddConfig_AddAssertTrue.lastIndex))
-            GradleText.AddAssertTrue -> list.addAll(Transitions.AddAssertTrue_AddRequire.subList(0, Transitions.AddAssertTrue_AddRequire.lastIndex))
-            GradleText.AddRequire -> list.addAll(Transitions.AddRequire_AddSourceSet.subList(0, Transitions.AddRequire_AddSourceSet.lastIndex))
-            GradleText.AddSourceSet -> list.addAll(Transitions.AddSourceSet_AddAssertEquals.subList(0, Transitions.AddSourceSet_AddAssertEquals.lastIndex))
-            GradleText.AddAssertEquals -> list.addAll(Transitions.AddAssertEquals_AddAssertNotNull.subList(0, Transitions.AddAssertEquals_AddAssertNotNull.lastIndex))
-            GradleText.AddAssertNotNull -> list.addAll(Transitions.AddAssertNotNull_AddAssertSoftly.subList(0, Transitions.AddAssertNotNull_AddAssertSoftly.lastIndex))
-            GradleText.AddAssertSoftly -> error("!")
+    return rememberHighlighted("GradleText.animateTo::${name}_${other.name}") { highlighting ->
+        val entries = GradleText.entries.subList(this.ordinal, other.ordinal)
+        val list = mutableListOf<AnnotatedString>()
+        for (entry in entries) {
+            val sequence = when (entry) {
+                GradleText.Initial -> build_Initial_To_AddPlugin(highlighting)
+                GradleText.AddPlugin -> build_AddPlugin_To_AddConfig(highlighting)
+                GradleText.AddConfig -> build_AddConfig_To_AddAssertTrue(highlighting)
+                GradleText.AddAssertTrue -> build_AddAssertTrue_To_AddRequire(highlighting)
+                GradleText.AddRequire -> build_AddRequire_To_AddSourceSet(highlighting)
+                GradleText.AddSourceSet -> build_AddSourceSet_To_AddAssertEquals(highlighting)
+                GradleText.AddAssertEquals -> build_AddAssertEquals_To_AddAssertNotNull(highlighting)
+                GradleText.AddAssertNotNull -> build_AddAssertNotNull_To_AddAssertSoftly(highlighting)
+                GradleText.AddAssertSoftly -> error("!")
+            }
+            list.addAll(sequence.subList(0, sequence.lastIndex))
         }
-        // @formatter:on
+        list.add(other.buildText(highlighting))
+
+        val maxLines = list.maxOf { it.text.count { it == '\n' } }
+        list.map {
+            val numLines = it.text.count { it == '\n' }
+            if (numLines < maxLines) {
+                it + AnnotatedString("\n".repeat(maxLines - numLines))
+            } else {
+                it
+            }
+        }.toImmutableList()
     }
-    list.add(other.text)
-
-    val maxLines = list.maxOf { it.text.count { it == '\n' } }
-    return list.map {
-        val numLines = it.text.count { it == '\n' }
-        if (numLines < maxLines) {
-            it + AnnotatedString("\n".repeat(maxLines - numLines))
-        } else {
-            it
-        }
-    }.toImmutableList()
 }
 
 private fun String.toStyle(codeStyle: Highlighting): SpanStyle? {
@@ -255,247 +236,213 @@ private fun String.toKts(highlighting: Highlighting): AnnotatedString {
     )
 }
 
-private object Transitions {
-    val Initial_AddPlugin: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.Initial.text
-            val end = GradleText.AddPlugin.text
-            return rememberHighlighted("GradleText::Initial_AddPlugin") {
-                startAnimation(
-                    start
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                        
-                        }
-                    """.trimIndent().toKts(it)
-                ).thenLineEndDiff(
-                    end
-                ).toList()
+private fun build_Initial_To_AddPlugin(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.Initial.buildText(highlighting)
+    val end = GradleText.AddPlugin.buildText(highlighting)
+    return startAnimation(
+        start
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+            
             }
-        }
+        """.trimIndent().toKts(highlighting)
+    ).thenLineEndDiff(
+        end
+    ).toList()
+}
 
-    val AddPlugin_AddConfig: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.AddPlugin.text
-            val end = GradleText.AddConfig.text
-            return rememberHighlighted("GradleText::AddPlugin_AddConfig") {
-                startAnimation(
-                    start + AnnotatedString("\n\n\n\n")
-                ).thenLineEndDiff(
-                    end
-                ).toList()
-            }
-        }
+private fun build_AddPlugin_To_AddConfig(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.AddPlugin.buildText(highlighting)
+    val end = GradleText.AddConfig.buildText(highlighting)
+    return startAnimation(
+        start + AnnotatedString("\n\n\n\n")
+    ).thenLineEndDiff(
+        end
+    ).toList()
+}
 
-    val AddConfig_AddAssertTrue: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.AddConfig.text
-            val end = GradleText.AddAssertTrue.text
-            return rememberHighlighted("GradleText::AddConfig_AddAssertTrue") {
-                startAnimation(
-                    start
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                        
-                        }
-                    """.trimIndent().toKts(it)
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                        
-                        
-                        }
-                    """.trimIndent().toKts(it)
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                        
-                        
-                        
-                        }
-                    """.trimIndent().toKts(it)
-                ).thenLineEndDiff(
-                    end
-                ).toList()
+private fun build_AddConfig_To_AddAssertTrue(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.AddConfig.buildText(highlighting)
+    val end = GradleText.AddAssertTrue.buildText(highlighting)
+    return startAnimation(
+        start
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
             }
-        }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+            
+            }
+        """.trimIndent().toKts(highlighting)
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
+            }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+            
+            
+            }
+        """.trimIndent().toKts(highlighting)
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
+            }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+            
+            
+            
+            }
+        """.trimIndent().toKts(highlighting)
+    ).thenLineEndDiff(
+        end
+    ).toList()
+}
 
-    val AddAssertTrue_AddRequire: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.AddAssertTrue.text
-            val end = GradleText.AddRequire.text
-            return rememberHighlighted("GradleText::AddAssertTrue_AddRequire") {
-                startAnimation(
-                    start
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                
-                                "kotlin.test.assertTrue",   
-                            )
-                        }
-                    """.trimIndent().toKts(it)
-                ).thenLineEndDiff(
-                    end
-                ).toList()
+private fun build_AddAssertTrue_To_AddRequire(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.AddAssertTrue.buildText(highlighting)
+    val end = GradleText.AddRequire.buildText(highlighting)
+    return startAnimation(
+        start
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
             }
-        }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+                functions.addAll(
+                    
+                    "kotlin.test.assertTrue",   
+                )
+            }
+        """.trimIndent().toKts(highlighting)
+    ).thenLineEndDiff(
+        end
+    ).toList()
+}
 
-    val AddRequire_AddSourceSet: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.AddRequire.text
-            val end = GradleText.AddSourceSet.text
-            return rememberHighlighted("GradleText::AddRequire_AddSourceSet") {
-                startAnimation(
-                    start
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                            )
-                            
-                        }
-                    """.trimIndent().toKts(it)
-                ).thenLineEndDiff(
-                    end
-                ).toList()
+private fun build_AddRequire_To_AddSourceSet(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.AddRequire.buildText(highlighting)
+    val end = GradleText.AddSourceSet.buildText(highlighting)
+    return startAnimation(
+        start
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
             }
-        }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+                functions.addAll(
+                    "kotlin.require",
+                    "kotlin.test.assertTrue",
+                )
+                
+            }
+        """.trimIndent().toKts(highlighting)
+    ).thenLineEndDiff(
+        end
+    ).toList()
+}
 
-    val AddSourceSet_AddAssertEquals: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.AddSourceSet.text
-            val end = GradleText.AddAssertEquals.text
-            return rememberHighlighted("GradleText::AddSourceSet_AddAssertEquals") {
-                startAnimation(
-                    start
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent().toKts(it)
-                ).thenLineEndDiff(
-                    end
-                ).toList()
+private fun build_AddSourceSet_To_AddAssertEquals(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.AddSourceSet.buildText(highlighting)
+    val end = GradleText.AddAssertEquals.buildText(highlighting)
+    return startAnimation(
+        start
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
             }
-        }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+                functions.addAll(
+                    "kotlin.require",
+                    "kotlin.test.assertTrue",
+                    
+                )
+                includedSourceSets.addAll("main", "test")
+            }
+        """.trimIndent().toKts(highlighting)
+    ).thenLineEndDiff(
+        end
+    ).toList()
+}
 
-    val AddAssertEquals_AddAssertNotNull: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.AddAssertEquals.text
-            val end = GradleText.AddAssertNotNull.text
-            return rememberHighlighted("GradleText::AddAssertEquals_AddAssertNotNull") {
-                startAnimation(
-                    start
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                                
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent().toKts(it)
-                ).thenLineEndDiff(
-                    end
-                ).toList()
+private fun build_AddAssertEquals_To_AddAssertNotNull(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.AddAssertEquals.buildText(highlighting)
+    val end = GradleText.AddAssertNotNull.buildText(highlighting)
+    return startAnimation(
+        start
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
             }
-        }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+                functions.addAll(
+                    "kotlin.require",
+                    "kotlin.test.assertTrue",
+                    "kotlin.test.assertEquals",
+                    
+                )
+                includedSourceSets.addAll("main", "test")
+            }
+        """.trimIndent().toKts(highlighting)
+    ).thenLineEndDiff(
+        end
+    ).toList()
+}
 
-    val AddAssertNotNull_AddAssertSoftly: ImmutableList<AnnotatedString>
-        @Composable
-        get() {
-            val start = GradleText.AddAssertNotNull.text
-            val end = GradleText.AddAssertSoftly.text
-            return rememberHighlighted("GradleText::AddAssertNotNull_AddAssertSoftly") { highlighting ->
-                startAnimation(
-                    start + AnnotatedString("\n")
-                ).then(
-                    """
-                        plugins {
-                            kotlin("jvm") version "2.0.0"
-                            kotlin("plugin.power-assert") version "2.0.0"
-                        }
-                        
-                        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                        powerAssert {
-                            functions.addAll(
-                                "kotlin.require",
-                                "kotlin.test.assertTrue",
-                                "kotlin.test.assertEquals",
-                                "kotlin.test.assertNotNull",
-                                
-                            )
-                            includedSourceSets.addAll("main", "test")
-                        }
-                    """.trimIndent().toKts(highlighting)
-                ).thenLineEndDiff(
-                    end
-                ).toList()
+private fun build_AddAssertNotNull_To_AddAssertSoftly(highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val start = GradleText.AddAssertNotNull.buildText(highlighting)
+    val end = GradleText.AddAssertSoftly.buildText(highlighting)
+    return startAnimation(
+        start + AnnotatedString("\n")
+    ).then(
+        """
+            plugins {
+                kotlin("jvm") version "2.0.0"
+                kotlin("plugin.power-assert") version "2.0.0"
             }
-        }
+            
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            powerAssert {
+                functions.addAll(
+                    "kotlin.require",
+                    "kotlin.test.assertTrue",
+                    "kotlin.test.assertEquals",
+                    "kotlin.test.assertNotNull",
+                    
+                )
+                includedSourceSets.addAll("main", "test")
+            }
+        """.trimIndent().toKts(highlighting)
+    ).thenLineEndDiff(
+        end
+    ).toList()
 }

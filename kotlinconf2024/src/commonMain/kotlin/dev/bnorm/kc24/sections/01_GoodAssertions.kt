@@ -20,7 +20,7 @@ import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.Assertions() {
+fun ShowBuilder.GoodAssertions() {
     ExampleCarousel { AnnotatedString("") to rememberExampleCodeString(firstTest) }
     FirstExample()
     ExampleTransition { firstToSecondTest }
@@ -60,7 +60,11 @@ private fun ShowBuilder.FirstExample() {
                 }
             }
         ) {
-            Example(rememberExampleCodeString(firstTest), null, firstOutput, conclusions)
+            Example(
+                exampleTextSequence = persistentListOf(rememberExampleCodeString(firstTest)),
+                outputTextSequence = persistentListOf(persistentListOf(firstOutput)),
+                conclusions = conclusions,
+            )
         }
     }
 }
@@ -85,7 +89,11 @@ private fun ShowBuilder.SecondExample() {
                 }
             }
         ) {
-            Example(rememberExampleCodeString(secondTest), null, secondOutput, conclusions)
+            Example(
+                exampleTextSequence = persistentListOf(rememberExampleCodeString(secondTest)),
+                outputTextSequence = persistentListOf(persistentListOf(secondOutput)),
+                conclusions = conclusions,
+            )
         }
     }
 }
@@ -110,7 +118,11 @@ private fun ShowBuilder.ThirdExample() {
                 }
             }
         ) {
-            Example(rememberExampleCodeString(thirdTest), null, thirdOutput, conclusions)
+            Example(
+                exampleTextSequence = persistentListOf(rememberExampleCodeString(thirdTest)),
+                outputTextSequence = persistentListOf(persistentListOf(thirdOutput)),
+                conclusions = conclusions,
+            )
         }
     }
 }
@@ -137,7 +149,11 @@ private fun ShowBuilder.ForthExample() {
                 }
             }
         ) {
-            Example(rememberExampleCodeString(forthTest), null, forthOutput, conclusions)
+            Example(
+                exampleTextSequence = persistentListOf(rememberExampleCodeString(forthTest)),
+                outputTextSequence = persistentListOf(persistentListOf(forthOutput)),
+                conclusions = conclusions,
+            )
         }
     }
 }
@@ -168,7 +184,11 @@ private fun ShowBuilder.FinalExample() {
             }
         ) {
             val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
-            Example(rememberExampleCodeString(finalTest), gradleTextSequence, fifthOutput)
+            Example(
+                exampleTextSequence = persistentListOf(rememberExampleCodeString(finalTest)),
+                gradleTextSequence = gradleTextSequence,
+                outputTextSequence = persistentListOf(fifthOutput),
+            )
         }
     }
 }

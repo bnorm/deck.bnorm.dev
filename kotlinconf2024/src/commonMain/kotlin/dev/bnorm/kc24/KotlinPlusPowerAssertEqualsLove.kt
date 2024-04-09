@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
 import dev.bnorm.kc24.elements.typingSpec
-import dev.bnorm.kc24.sections.Assertions
-import dev.bnorm.kc24.sections.Examples
+import dev.bnorm.kc24.sections.GoodAssertions
+import dev.bnorm.kc24.sections.PowerAssertExamples
 import dev.bnorm.kc24.sections.Future
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.animation.animateList
@@ -38,12 +38,12 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     section(title = "What is a good assert?") {
         SectionHeader(animateToBody = true)
-        Assertions()
+        GoodAssertions()
     }
 
     section(title = "Why use Power-Assert?") {
         SectionHeader(animateToBody = true)
-        Examples()
+        PowerAssertExamples()
     }
 
     section(title = "What's next?") {

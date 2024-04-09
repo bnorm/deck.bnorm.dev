@@ -12,7 +12,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.librettist.animation.animateList
@@ -133,62 +132,9 @@ fun buildExampleStates(builder: ExampleState.Builder.() -> Unit): List<ExampleSt
 @Composable
 @JvmName("ExampleGradleSequence")
 fun SlideScope<ExampleState>.Example(
-    exampleText: AnnotatedString,
-    gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>?,
-    outputTextSequence: ImmutableList<String>?,
-    conclusions: ImmutableList<Conclusion>? = null,
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Example(exampleText)
-            if (conclusions != null) {
-                Conclusions(conclusions)
-            }
-        }
-
-        if (outputTextSequence != null) {
-            val outputText by transition.outputTextDiff(outputTextSequence)
-            Output(outputText, Modifier.align(Alignment.BottomStart))
-        }
-
-        if (gradleTextSequence != null) {
-            val gradleText by transition.gradleTextDiff(gradleTextSequence)
-            Gradle(gradleText, Modifier.align(Alignment.TopEnd))
-        }
-    }
-}
-
-@Composable
-fun SlideScope<ExampleState>.Example(
-    exampleText: AnnotatedString,
-    gradleTextSequence: ImmutableList<AnnotatedString>?,
-    outputText: String?,
-    conclusions: ImmutableList<Conclusion>? = null,
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Example(exampleText)
-            if (conclusions != null) {
-                Conclusions(conclusions)
-            }
-        }
-
-        if (outputText != null) {
-            Output(outputText, Modifier.align(Alignment.BottomStart))
-        }
-
-        if (gradleTextSequence != null) {
-            val gradleText by transition.gradleTextDiff(gradleTextSequence)
-            Gradle(gradleText, Modifier.align(Alignment.TopEnd))
-        }
-    }
-}
-
-@Composable
-fun SlideScope<ExampleState>.Example(
     exampleTextSequence: ImmutableList<AnnotatedString>,
-    gradleTextSequence: ImmutableList<AnnotatedString>?,
-    outputText: String?,
+    gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>? = null,
+    outputTextSequence: ImmutableList<ImmutableList<String>>? = null,
     conclusions: ImmutableList<Conclusion>? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -200,12 +146,13 @@ fun SlideScope<ExampleState>.Example(
             }
         }
 
-        if (outputText != null) {
+        if (outputTextSequence != null) {
+            val outputText by transition.createChildTransition { it.outputIndex }.animateThrough(outputTextSequence)
             Output(outputText, Modifier.align(Alignment.BottomStart))
         }
 
         if (gradleTextSequence != null) {
-            val gradleText by transition.gradleTextDiff(gradleTextSequence)
+            val gradleText by transition.createChildTransition { it.gradleIndex }.animateThrough(gradleTextSequence)
             Gradle(gradleText, Modifier.align(Alignment.TopEnd))
         }
     }
@@ -213,9 +160,6 @@ fun SlideScope<ExampleState>.Example(
 
 @Composable
 fun Example(exampleText: AnnotatedString) {
-    LookaheadScope {
-
-    }
     Box(modifier = Modifier.fillMaxWidth().padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
         Text(exampleText, modifier = Modifier.horizontalScroll(rememberScrollState()))
     }

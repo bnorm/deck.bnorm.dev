@@ -28,6 +28,81 @@ import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
 import kotlin.test.Test
 
+/**
+ * TODO In the future, we may be able to use GraphicsLayer?
+ *
+ * ```
+ * val scope = rememberCoroutineScope()
+ * val graphicsLayer = rememberGraphicsLayer()
+ *
+ * ComposableToCapture(
+ *     modifier = modifier.layout { measurable, constraints ->
+ *         val placeable = measurable.measure(constraints)
+ *         layout(placeable.width, placeable.height) {
+ *             placeable.placeWithLayer(0, 0, graphicsLayer)
+ *         }
+ *     }
+ * )
+ *
+ * Button(
+ *     onClick = {
+ *         scope.launch {
+ *             val bitmap = graphicsLayer.toImageBitmap()
+ *         }
+ *     }
+ * )
+ * ```
+ *
+ * Or maybe we can use this now?
+ *
+ * ```
+ * Column(
+ *     modifier = Modifier
+ *         .padding(padding)
+ *         .fillMaxSize()
+ *         .drawWithCache {
+ *             // Example that shows how to redirect rendering to an Android Picture and then
+ *             // draw the picture into the original destination
+ *             val width = this.size.width.toInt()
+ *             val height = this.size.height.toInt()
+ *
+ *             onDrawWithContent {
+ *                 val pictureCanvas =
+ *                     androidx.compose.ui.graphics.Canvas(
+ *                         picture.beginRecording(
+ *                             width,
+ *                             height
+ *                         )
+ *                     )
+ *                 // requires at least 1.6.0-alpha01+
+ *                 draw(this, this.layoutDirection, pictureCanvas, this.size) {
+ *                     this@onDrawWithContent.drawContent()
+ *                 }
+ *                 picture.endRecording()
+ *
+ *                 drawIntoCanvas { canvas -> canvas.nativeCanvas.drawPicture(picture) }
+ *             }
+ *         }
+ *
+ * ) {
+ *     ScreenContentToCapture()
+ * }
+ *
+ * val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+ *     Bitmap.createBitmap(picture)
+ * } else {
+ *     val bitmap = Bitmap.createBitmap(
+ *         picture.width,
+ *         picture.height,
+ *         Bitmap.Config.ARGB_8888
+ *     )
+ *     val canvas = android.graphics.Canvas(bitmap)
+ *     canvas.drawColor(android.graphics.Color.WHITE)
+ *     canvas.drawPicture(picture)
+ *     bitmap
+ * }
+ * ```
+ */
 @OptIn(ExperimentalTestApi::class)
 class ExportTest {
     private val width = DEFAULT_SLIDE_SIZE.width.value
