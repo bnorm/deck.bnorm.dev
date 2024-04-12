@@ -128,6 +128,9 @@ object Theme {
     val dark: ShowTheme
         @Composable
         get() {
+            // TODO use https://fonts.google.com/specimen/Inter for non-code text?
+            //  - add TextStyle to Highlighting to keep things separate?
+            //  - does this make ShowTheme even more pointless?
             val jetBrainsMonoTypography = Typography(defaultFontFamily = JetBrainsMono)
             return ShowTheme(
                 colors = darkColors(

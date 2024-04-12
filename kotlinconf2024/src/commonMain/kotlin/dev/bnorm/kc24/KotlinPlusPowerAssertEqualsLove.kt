@@ -1,6 +1,7 @@
 package dev.bnorm.kc24
 
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -26,6 +27,8 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.thenLineEndDiff
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 
 fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
     slide { Title() }
@@ -71,13 +74,27 @@ private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) 
 @Composable
 fun Title() {
     TitleSlide {
-        Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.align(Alignment.Center)) {
-                Text("Kotlin + Power-Assert = ")
-                KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
-            }
+        Box(Modifier.fillMaxSize()) {
+            // TODO add some animation?
+            //  - make image slide to the left when exiting?
+            //  - drop title off the bottom
+            //  - how does the next slide appear?
+            Image(
+                painter = painterResource(DrawableResource("opening_background.png")),
+                contentDescription = "",
+                modifier = Modifier.fillMaxSize(),
+            )
 
-            PresenterSocials(Modifier.align(Alignment.BottomCenter))
+            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+                Column(modifier = Modifier.align(Alignment.BottomStart)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Kotlin + Power-Assert = ")
+                        KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
+                    }
+
+                    PresenterSocials()
+                }
+            }
         }
     }
 }
@@ -85,24 +102,36 @@ fun Title() {
 @Composable
 fun Summary() {
     TitleSlide {
-        Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+        Box(Modifier.fillMaxSize()) {
+            // TODO add some animation?
+            //  - make name tag drop down from the top with a bounce
+            //  - make phone slide in from the right
+            //  - make arrow animation path
+            Image(
+                painter = painterResource(DrawableResource("closing_background.png")),
+                contentDescription = "",
+                modifier = Modifier.fillMaxSize(),
+            )
 
-            // TODO can we do something more stylistically interesting with this?
-            Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Thank You!")
-                Spacer(Modifier.requiredHeight(SLIDE_CONTENT_SPACING))
-                ProvideTextStyle(MaterialTheme.typography.body1) {
-                    Column {
-                        // TODO create these links
-                        // TODO make these links clickable
-                        Text("         Docs: kotl.in/power-assert")
-                        Text("        Slack: kotl.in/power-assert-slack")
-                        Text("       Slides: deck.bnorm.dev/kotlinconf2024")
+            Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
+
+                // TODO can we do something more stylistically interesting with this?
+                Column(modifier = Modifier.align(Alignment.CenterStart),) {
+                    Text("Thank You!")
+                    Spacer(Modifier.requiredHeight(SLIDE_CONTENT_SPACING))
+                    ProvideTextStyle(MaterialTheme.typography.body2) {
+                        Column {
+                            // TODO create these links
+                            // TODO make these links clickable
+                            Text("Docs: kotl.in/power-assert")
+                            Text("Slack: kotl.in/power-assert-slack")
+                            Text("Slides: deck.bnorm.dev/kotlinconf2024")
+                        }
                     }
                 }
-            }
 
-            PresenterSocials(Modifier.align(Alignment.BottomCenter))
+                PresenterSocials(Modifier.align(Alignment.BottomCenter))
+            }
         }
     }
 }
