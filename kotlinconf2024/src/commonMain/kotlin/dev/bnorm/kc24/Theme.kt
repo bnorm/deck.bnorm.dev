@@ -18,7 +18,7 @@ import org.jetbrains.compose.resources.FontResource
 
 object Theme {
     @OptIn(ExperimentalResourceApi::class)
-    private val JetBrainsMono
+    val JetBrainsMono
         @Composable
         get() = FontFamily(
             Font(
@@ -110,20 +110,76 @@ object Theme {
             ),
         )
 
-    val codeStyle = Highlighting(
-        simple = SpanStyle(Color(0xFFBCBEC4)),
-        number = SpanStyle(Color(0xFF2AACB8)),
-        keyword = SpanStyle(Color(0xFFCF8E6D)),
-        punctuation = SpanStyle(Color(0xFFA1C17E)),
-        annotation = SpanStyle(Color(0xFFBBB529)),
-        comment = SpanStyle(Color(0xFF7A7E85)),
-        string = SpanStyle(Color(0xFF6AAB73)),
-        property = SpanStyle(color = Color(0xFFC77DBB)),
-        functionDeclaration = SpanStyle(color = Color(0xFF56A8F5)),
-        extensionFunctionCall = SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic),
-        staticFunctionCall = SpanStyle(fontStyle = FontStyle.Italic),
-        typeParameters = SpanStyle(color = Color(0xFF16BAAC)),
-    )
+    @OptIn(ExperimentalResourceApi::class)
+    val Inter
+        @Composable
+        get() = FontFamily(
+            Font(
+                resource = FontResource("font/Inter/Inter-Thin.ttf"),
+                weight = FontWeight.Thin,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-ExtraLight.ttf"),
+                weight = FontWeight.ExtraLight,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-Light.ttf"),
+                weight = FontWeight.Light,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-Regular.ttf"),
+                weight = FontWeight.Normal,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-Medium.ttf"),
+                weight = FontWeight.Medium,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-SemiBold.ttf"),
+                weight = FontWeight.SemiBold,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-Bold.ttf"),
+                weight = FontWeight.Bold,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-ExtraBold.ttf"),
+                weight = FontWeight.ExtraBold,
+                style = FontStyle.Normal
+            ),
+            Font(
+                resource = FontResource("font/Inter/Inter-Black.ttf"),
+                weight = FontWeight.Black,
+                style = FontStyle.Normal
+            ),
+        )
+
+    val codeStyle: Highlighting
+        @Composable
+        get() {
+            val family = JetBrainsMono
+            return Highlighting(
+                simple = SpanStyle(Color(0xFFBCBEC4), fontFamily = family),
+                number = SpanStyle(Color(0xFF2AACB8), fontFamily = family),
+                keyword = SpanStyle(Color(0xFFCF8E6D), fontFamily = family),
+                punctuation = SpanStyle(Color(0xFFA1C17E), fontFamily = family),
+                annotation = SpanStyle(Color(0xFFBBB529), fontFamily = family),
+                comment = SpanStyle(Color(0xFF7A7E85), fontFamily = family),
+                string = SpanStyle(Color(0xFF6AAB73), fontFamily = family),
+                property = SpanStyle(color = Color(0xFFC77DBB), fontFamily = family),
+                functionDeclaration = SpanStyle(color = Color(0xFF56A8F5), fontFamily = family),
+                extensionFunctionCall = SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic, fontFamily = family),
+                staticFunctionCall = SpanStyle(fontStyle = FontStyle.Italic, fontFamily = family),
+                typeParameters = SpanStyle(color = Color(0xFF16BAAC), fontFamily = family),
+            )
+        }
 
     val dark: ShowTheme
         @Composable
@@ -131,7 +187,7 @@ object Theme {
             // TODO use https://fonts.google.com/specimen/Inter for non-code text?
             //  - add TextStyle to Highlighting to keep things separate?
             //  - does this make ShowTheme even more pointless?
-            val jetBrainsMonoTypography = Typography(defaultFontFamily = JetBrainsMono)
+            val jetBrainsMonoTypography = Typography(defaultFontFamily = Inter)
             return ShowTheme(
                 colors = darkColors(
                     // KotlinConf 2024 website colors

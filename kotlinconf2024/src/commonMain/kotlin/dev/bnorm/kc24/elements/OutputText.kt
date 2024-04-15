@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc24.Theme
 import dev.bnorm.kc24.template.ExampleState
 import dev.bnorm.librettist.animation.animateList
 import kotlinx.collections.immutable.ImmutableList
@@ -47,7 +48,7 @@ fun OutputText(
     }
 
     MacTerminal(modifier = modifier.requiredHeight(700.dp).fillMaxWidth().offset(y = outputOffset)) {
-        ProvideTextStyle(MaterialTheme.typography.body2) {
+        ProvideTextStyle(MaterialTheme.typography.body2.copy(fontFamily = Theme.JetBrainsMono)) {
             Text(
                 text = text,
                 modifier = Modifier

@@ -10,6 +10,7 @@ import dev.bnorm.librettist.rememberHighlighted
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 enum class GradleText {
@@ -182,36 +183,60 @@ enum class GradleText {
 
 @Composable
 fun GradleText.animateTo(other: GradleText): ImmutableList<AnnotatedString> {
-    require(this.ordinal < other.ordinal)
-
     return rememberHighlighted("GradleText.animateTo::${name}_${other.name}") { highlighting ->
-        val entries = GradleText.entries.subList(this.ordinal, other.ordinal)
-        val list = mutableListOf<AnnotatedString>()
-        for (entry in entries) {
-            val sequence = when (entry) {
-                GradleText.Initial -> build_Initial_To_AddPlugin(highlighting)
-                GradleText.AddPlugin -> build_AddPlugin_To_AddConfig(highlighting)
-                GradleText.AddConfig -> build_AddConfig_To_AddAssertTrue(highlighting)
-                GradleText.AddAssertTrue -> build_AddAssertTrue_To_AddRequire(highlighting)
-                GradleText.AddRequire -> build_AddRequire_To_AddSourceSet(highlighting)
-                GradleText.AddSourceSet -> build_AddSourceSet_To_AddAssertEquals(highlighting)
-                GradleText.AddAssertEquals -> build_AddAssertEquals_To_AddAssertNotNull(highlighting)
-                GradleText.AddAssertNotNull -> build_AddAssertNotNull_To_AddAssertSoftly(highlighting)
-                GradleText.AddAssertSoftly -> error("!")
-            }
-            list.addAll(sequence.subList(0, sequence.lastIndex))
+        val sequence = when {
+            this == other -> persistentListOf(this.buildText(highlighting))
+            this < other -> animateTo(this, other, highlighting)
+            this > other -> animateTo(other, this, highlighting).reversed()
+            else -> error("!")
         }
-        list.add(other.buildText(highlighting))
+        sequence.toImmutableList()
+    }
+}
 
-        val maxLines = list.maxOf { it.text.count { it == '\n' } }
-        list.map {
-            val numLines = it.text.count { it == '\n' }
-            if (numLines < maxLines) {
-                it + AnnotatedString("\n".repeat(maxLines - numLines))
-            } else {
-                it
-            }
-        }.toImmutableList()
+fun GradleText.animateTo(other: GradleText, highlighting: Highlighting): ImmutableList<AnnotatedString> {
+    val sequence = when {
+        this == other -> persistentListOf(this.buildText(highlighting))
+        this < other -> animateTo(start = this, end = other, highlighting)
+        this > other -> animateTo(start = other, end = this, highlighting).reversed()
+        else -> error("!")
+    }
+    return sequence.toImmutableList()
+}
+
+private fun animateTo(
+    start: GradleText,
+    end: GradleText,
+    highlighting: Highlighting,
+): List<AnnotatedString> {
+    require(start.ordinal < end.ordinal)
+
+    val entries = GradleText.entries.subList(start.ordinal, end.ordinal)
+    val list = mutableListOf<AnnotatedString>()
+    for (entry in entries) {
+        val sequence = when (entry) {
+            GradleText.Initial -> build_Initial_To_AddPlugin(highlighting)
+            GradleText.AddPlugin -> build_AddPlugin_To_AddConfig(highlighting)
+            GradleText.AddConfig -> build_AddConfig_To_AddAssertTrue(highlighting)
+            GradleText.AddAssertTrue -> build_AddAssertTrue_To_AddRequire(highlighting)
+            GradleText.AddRequire -> build_AddRequire_To_AddSourceSet(highlighting)
+            GradleText.AddSourceSet -> build_AddSourceSet_To_AddAssertEquals(highlighting)
+            GradleText.AddAssertEquals -> build_AddAssertEquals_To_AddAssertNotNull(highlighting)
+            GradleText.AddAssertNotNull -> build_AddAssertNotNull_To_AddAssertSoftly(highlighting)
+            GradleText.AddAssertSoftly -> error("!")
+        }
+        list.addAll(sequence.subList(0, sequence.lastIndex))
+    }
+    list.add(end.buildText(highlighting))
+
+    val maxLines = list.maxOf { it.text.count { it == '\n' } }
+    return list.map {
+        val numLines = it.text.count { it == '\n' }
+        if (numLines < maxLines) {
+            it + AnnotatedString("\n".repeat(maxLines - numLines))
+        } else {
+            it
+        }
     }
 }
 
@@ -237,10 +262,8 @@ private fun String.toKts(highlighting: Highlighting): AnnotatedString {
 }
 
 private fun build_Initial_To_AddPlugin(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.Initial.buildText(highlighting)
-    val end = GradleText.AddPlugin.buildText(highlighting)
     return startAnimation(
-        start
+        GradleText.Initial.buildText(highlighting)
     ).then(
         """
             plugins {
@@ -249,25 +272,21 @@ private fun build_Initial_To_AddPlugin(highlighting: Highlighting): ImmutableLis
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
-        end
+        GradleText.AddPlugin.buildText(highlighting)
     ).toList()
 }
 
 private fun build_AddPlugin_To_AddConfig(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.AddPlugin.buildText(highlighting)
-    val end = GradleText.AddConfig.buildText(highlighting)
     return startAnimation(
-        start + AnnotatedString("\n\n\n\n")
+        GradleText.AddPlugin.buildText(highlighting) + AnnotatedString("\n\n\n\n")
     ).thenLineEndDiff(
-        end
+        GradleText.AddConfig.buildText(highlighting)
     ).toList()
 }
 
 private fun build_AddConfig_To_AddAssertTrue(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.AddConfig.buildText(highlighting)
-    val end = GradleText.AddAssertTrue.buildText(highlighting)
     return startAnimation(
-        start
+        GradleText.AddConfig.buildText(highlighting)
     ).then(
         """
             plugins {
@@ -308,15 +327,13 @@ private fun build_AddConfig_To_AddAssertTrue(highlighting: Highlighting): Immuta
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
-        end
+        GradleText.AddAssertTrue.buildText(highlighting)
     ).toList()
 }
 
 private fun build_AddAssertTrue_To_AddRequire(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.AddAssertTrue.buildText(highlighting)
-    val end = GradleText.AddRequire.buildText(highlighting)
     return startAnimation(
-        start
+        GradleText.AddAssertTrue.buildText(highlighting)
     ).then(
         """
             plugins {
@@ -333,15 +350,13 @@ private fun build_AddAssertTrue_To_AddRequire(highlighting: Highlighting): Immut
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
-        end
+        GradleText.AddRequire.buildText(highlighting)
     ).toList()
 }
 
 private fun build_AddRequire_To_AddSourceSet(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.AddRequire.buildText(highlighting)
-    val end = GradleText.AddSourceSet.buildText(highlighting)
     return startAnimation(
-        start
+        GradleText.AddRequire.buildText(highlighting)
     ).then(
         """
             plugins {
@@ -359,15 +374,13 @@ private fun build_AddRequire_To_AddSourceSet(highlighting: Highlighting): Immuta
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
-        end
+        GradleText.AddSourceSet.buildText(highlighting)
     ).toList()
 }
 
 private fun build_AddSourceSet_To_AddAssertEquals(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.AddSourceSet.buildText(highlighting)
-    val end = GradleText.AddAssertEquals.buildText(highlighting)
     return startAnimation(
-        start
+        GradleText.AddSourceSet.buildText(highlighting)
     ).then(
         """
             plugins {
@@ -386,15 +399,13 @@ private fun build_AddSourceSet_To_AddAssertEquals(highlighting: Highlighting): I
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
-        end
+        GradleText.AddAssertEquals.buildText(highlighting)
     ).toList()
 }
 
 private fun build_AddAssertEquals_To_AddAssertNotNull(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.AddAssertEquals.buildText(highlighting)
-    val end = GradleText.AddAssertNotNull.buildText(highlighting)
     return startAnimation(
-        start
+        GradleText.AddAssertEquals.buildText(highlighting)
     ).then(
         """
             plugins {
@@ -414,15 +425,13 @@ private fun build_AddAssertEquals_To_AddAssertNotNull(highlighting: Highlighting
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
-        end
+        GradleText.AddAssertNotNull.buildText(highlighting)
     ).toList()
 }
 
 private fun build_AddAssertNotNull_To_AddAssertSoftly(highlighting: Highlighting): ImmutableList<AnnotatedString> {
-    val start = GradleText.AddAssertNotNull.buildText(highlighting)
-    val end = GradleText.AddAssertSoftly.buildText(highlighting)
     return startAnimation(
-        start + AnnotatedString("\n")
+        GradleText.AddAssertNotNull.buildText(highlighting) + AnnotatedString("\n")
     ).then(
         """
             plugins {
@@ -443,6 +452,6 @@ private fun build_AddAssertNotNull_To_AddAssertSoftly(highlighting: Highlighting
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
-        end
+        GradleText.AddAssertSoftly.buildText(highlighting)
     ).toList()
 }
