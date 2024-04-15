@@ -21,24 +21,31 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 fun ShowBuilder.GoodAssertions() {
-    ExampleCarousel { AnnotatedString("") to rememberExampleCodeString(firstTest) }
-    FirstExample()
+    ExampleCarousel(
+        start = { },
+        end = { Example(rememberExampleCodeString(firstTest)) }
+    )
+    AssertTrueExample()
     ExampleTransition { firstToSecondTest }
-    SecondExample()
+    AssertEqualsExample()
     ExampleTransition { secondToThirdTest }
-    ThirdExample()
+    AssertEqualsMessageExample()
     ExampleTransition { thirdToForth }
-    ForthExample()
+    AssertKExample()
 
     // TODO summarize pros/cons before going to the Power-Assert example?
 
-    ExampleTransition { forthToFifth }
-    FinalExample()
+    // TODO should we push this into the next section?
+    //  - show other assertion library examples...
+    //  - ...then section can be "Why Power-Assert?"
+
+
+//    ExampleTransition { forthToFifth }
 
     // TODO do we need an exit transition before the next section?
 }
 
-private fun ShowBuilder.FirstExample() {
+private fun ShowBuilder.AssertTrueExample() {
     // TODO first example should use `assert` instead?
 
     val conclusions = persistentListOf(
@@ -69,7 +76,7 @@ private fun ShowBuilder.FirstExample() {
     }
 }
 
-private fun ShowBuilder.SecondExample() {
+private fun ShowBuilder.AssertEqualsExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Improved failure message"),
         Conclusion.Con(text = "No intermediate values"),
@@ -98,9 +105,10 @@ private fun ShowBuilder.SecondExample() {
     }
 }
 
-private fun ShowBuilder.ThirdExample() {
+private fun ShowBuilder.AssertEqualsMessageExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
+        Conclusion.Con(text = "Message can be forgotten"),
         Conclusion.Con(text = "Message maintenance burden"),
         // TODO more conclusions?
     )
@@ -114,7 +122,7 @@ private fun ShowBuilder.ThirdExample() {
         TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                    KodeeLost(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
+                    KodeeExcited(modifier = Modifier.requiredSize(200.dp))
                 }
             }
         ) {
@@ -127,7 +135,7 @@ private fun ShowBuilder.ThirdExample() {
     }
 }
 
-private fun ShowBuilder.ForthExample() {
+private fun ShowBuilder.AssertKExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
         Conclusion.Con(text = "Mental load for functions"),
@@ -158,7 +166,7 @@ private fun ShowBuilder.ForthExample() {
     }
 }
 
-private fun ShowBuilder.FinalExample() {
+fun ShowBuilder.PowerAssertExample() {
     slideForExample(
         builder = {
             openOutput()
@@ -185,7 +193,7 @@ private fun ShowBuilder.FinalExample() {
         ) {
             val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
             Example(
-                exampleTextSequence = persistentListOf(rememberExampleCodeString(finalTest)),
+                exampleTextSequence = persistentListOf(finalTest),
                 gradleTextSequence = gradleTextSequence,
                 outputTextSequence = persistentListOf(fifthOutput),
             )
@@ -287,19 +295,29 @@ private val forthOutput: String = """
 
 private val forthToFifth: ImmutableList<AnnotatedString>
     @Composable
-    get() = rememberHighlighted("forthToFifth") { highlighting ->
-        val forth = buildKotlinCodeString(forthTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
-        val fifth = buildKotlinCodeString(finalTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
-        startAnimation(forth).thenLineEndDiff(fifth).toList()
+    get() {
+        val end = finalTest
+        return rememberHighlighted("forthToFifth") { highlighting ->
+            val forth = buildKotlinCodeString(forthTest, highlighting, identifierType = { it.toExampleStyle(highlighting) })
+            startAnimation(forth).thenLineEndDiff(end).toList()
+        }
     }
 
-// language=kotlin
-private val finalTest: String = """
-    @Test fun `test members of the fellowship`() {
-        val members = fellowshipOfTheRing.getCurrentMembers()
-        assert(members.size == 9)
+val finalTest: AnnotatedString
+    @Composable
+    get() = rememberHighlighted("finalTest") { highlighting ->
+        buildKotlinCodeString(
+            // language=kotlin
+            text = """
+                @Test fun `test members of the fellowship`() {
+                    val members = fellowshipOfTheRing.getCurrentMembers()
+                    assert(members.size == 9)
+                }
+            """.trimIndent(),
+            codeStyle = highlighting,
+            identifierType = { it.toExampleStyle(highlighting) }
+        )
     }
-""".trimIndent()
 
 private val fifthOutput: ImmutableList<String> = startAnimation(
     """

@@ -5,7 +5,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.animateTo
-import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.animation.startAnimation
@@ -14,40 +13,62 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenDiff
 import kotlinx.collections.immutable.persistentListOf
-import kotlin.math.abs
-import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.PowerAssertExamples() {
-    // TODO examples
-    //  - assertNotNull -> surrounding deep not null checks
-    //    - make part of another example?
-    //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
-
     // TODO should each example have conclusions?
     // TODO should each example end with a question that leads into the next example?
 
-    ExampleCarousel { AnnotatedString("") to complexAssertExample }
+    ExampleCarousel(
+        start = { },
+        end = { Example(finalTest) }
+    )
+    PowerAssertExample()
+    ExampleCarousel(
+        start = { Example(finalTest) },
+        end = { Example(complexAssertExample) }
+    )
     ComplexExpressions()
-    ExampleCarousel { complexAssertExample to assertTrueExample }
+    ExampleCarousel(
+        start = { Example(complexAssertExample) },
+        end = { Example(assertTrueExample) }
+    )
     AssertTrue()
-    ExampleCarousel { assertTrueExample to requireExample }
+    ExampleCarousel(
+        start = { Example(assertTrueExample) },
+        end = { Example(requireExample) }
+    )
     Require()
-    ExampleCarousel { requireExample to assertEqualsExample }
-    AssertEquals()
-    ExampleTransition(transitionSpec = {
-        typingSpec(count = abs(targetState - initialState), charDelay = 30.milliseconds)
-    }) { startAnimation(assertEqualsExample).thenDiff(assertEqualsAndNotNullExample).toList() }
+    ExampleCarousel(
+        start = { Example(requireExample) },
+        end = { Example(assertEqualsExample) }
+    )
     AssertEqualsAndNotNull()
+
+    // TODO examples
+    //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
 
     // TODO summary slide before going into the next example?
 
-    ExampleCarousel { assertEqualsAndNotNullExample to softAssertSetupWithoutMessage }
+    ExampleCarousel(
+        start = { Example(assertEqualsAndNotNullExample) },
+        end = { Example(softAssertSetupWithoutMessage) }
+    )
     SoftAssertSetupWithoutMessage()
-    ExampleCarousel { softAssertSetupWithoutMessage to softAssertExample }
+    ExampleCarousel(
+        start = { Example(softAssertSetupWithoutMessage) },
+        end = { Example(softAssertExample) }
+    )
     SoftAssertExampleWithWarning()
-    ExampleCarousel(forward = false) { softAssertExample to softAssertSetupWithoutMessage }
+    ExampleCarousel(
+        forward = false,
+        start = { Example(softAssertExample) },
+        end = { Example(softAssertSetupWithoutMessage) }
+    )
     SoftAssertSetupWithMessage()
-    ExampleCarousel { softAssertSetupWithMessage to softAssertExample }
+    ExampleCarousel(
+        start = { Example(softAssertSetupWithMessage) },
+        end = { Example(softAssertExample) }
+    )
     SoftAssertExample()
 }
 
@@ -55,7 +76,6 @@ private fun ShowBuilder.ComplexExpressions() {
     slideForExample(
         builder = {
             openOutput()
-            closeOutput()
         }
     ) {
         TitleAndBody {
@@ -79,7 +99,6 @@ private fun ShowBuilder.AssertTrue() {
             updateGradle()
             closeGradle()
             openOutput()
-            closeOutput()
         }
     ) {
         TitleAndBody {
@@ -104,7 +123,6 @@ private fun ShowBuilder.Require() {
             updateGradle()
             closeGradle()
             openOutput()
-            closeOutput()
         }
     ) {
         TitleAndBody {
@@ -121,27 +139,6 @@ private fun ShowBuilder.Require() {
     }
 }
 
-private fun ShowBuilder.AssertEquals() {
-    slideForExample(
-        builder = {
-            openGradle()
-            updateGradle()
-            closeGradle()
-            openOutput()
-            closeOutput()
-        }
-    ) {
-        TitleAndBody {
-            val gradleTextSequence = GradleText.AddSourceSet.animateTo(GradleText.AddAssertEquals)
-            Example(
-                exampleTextSequence = persistentListOf(assertEqualsExample),
-                gradleTextSequence = persistentListOf(gradleTextSequence),
-                outputTextSequence = persistentListOf(persistentListOf(assertEqualsOutput)),
-            )
-        }
-    }
-}
-
 private fun ShowBuilder.AssertEqualsAndNotNull() {
     slideForExample(
         builder = {
@@ -150,14 +147,28 @@ private fun ShowBuilder.AssertEqualsAndNotNull() {
             closeGradle()
             openOutput()
             closeOutput()
+
+            updateExample()
+
+            openGradle()
+            updateGradle()
+            closeGradle()
+            openOutput()
         }
     ) {
         TitleAndBody {
-            val gradleTextSequence = GradleText.AddAssertEquals.animateTo(GradleText.AddAssertNotNull)
+            val exampleTextSequence =
+                startAnimation(assertEqualsExample).thenDiff(assertEqualsAndNotNullExample).toList()
+            val gradleTextSequence = persistentListOf(
+                GradleText.AddSourceSet.animateTo(GradleText.AddAssertEquals),
+                GradleText.AddAssertEquals.animateTo(GradleText.AddAssertNotNull),
+            )
+            val outputText =
+                if (transition.currentState.exampleIndex > 0) assertEqualsAndNotNullOutput else assertEqualsOutput
             Example(
-                exampleTextSequence = persistentListOf(assertEqualsAndNotNullExample),
-                gradleTextSequence = persistentListOf(gradleTextSequence),
-                outputTextSequence = persistentListOf(persistentListOf(assertEqualsAndNotNullOutput)),
+                exampleTextSequence = exampleTextSequence,
+                gradleTextSequence = gradleTextSequence,
+                outputTextSequence = persistentListOf(persistentListOf(outputText)),
             )
         }
     }

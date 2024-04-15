@@ -21,6 +21,7 @@ import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.show.SlideState
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.jvm.JvmName
+import kotlin.time.Duration.Companion.milliseconds
 
 data class ExampleState(
     // Example
@@ -141,18 +142,21 @@ fun SlideScope<ExampleState>.Example(
         Column(modifier = Modifier.fillMaxSize()) {
             val exampleText by transition.exampleTextDiff(exampleTextSequence)
             Example(exampleText)
+
             if (conclusions != null) {
                 Conclusions(conclusions)
             }
         }
 
         if (outputTextSequence != null) {
-            val outputText by transition.createChildTransition { it.outputIndex }.animateThrough(outputTextSequence)
+            val outputText by transition.createChildTransition { it.outputIndex }
+                .animateThrough(outputTextSequence, transitionSpec = { typingSpec(duration = 1000.milliseconds) })
             Output(outputText, Modifier.align(Alignment.BottomStart))
         }
 
         if (gradleTextSequence != null) {
-            val gradleText by transition.createChildTransition { it.gradleIndex }.animateThrough(gradleTextSequence)
+            val gradleText by transition.createChildTransition { it.gradleIndex }
+                .animateThrough(gradleTextSequence)
             Gradle(gradleText, Modifier.align(Alignment.TopEnd))
         }
     }
@@ -173,7 +177,7 @@ private fun SlideScope<ExampleState>.Conclusions(conclusions: ImmutableList<Conc
 }
 
 @Composable
-private fun SlideScope<ExampleState>.Output(outputText: String, modifier: Modifier) {
+fun SlideScope<ExampleState>.Output(outputText: String, modifier: Modifier) {
     OutputText(
         text = outputText,
         state = transition.createChildTransition { it.showOutput },
@@ -182,7 +186,7 @@ private fun SlideScope<ExampleState>.Output(outputText: String, modifier: Modifi
 }
 
 @Composable
-private fun SlideScope<ExampleState>.Gradle(
+fun SlideScope<ExampleState>.Gradle(
     gradleText: AnnotatedString,
     modifier: Modifier,
 ) {

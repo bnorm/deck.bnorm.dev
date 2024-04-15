@@ -51,6 +51,7 @@ fun <T> typingSpec(
 @Composable
 fun <T> Transition<Int>.animateThrough(
     sequence: ImmutableList<ImmutableList<T>>,
+    transitionSpec: @Composable (Int) -> FiniteAnimationSpec<Int> = { typingSpec(count = it) }
 ): State<T> {
     val values = remember(sequence) { sequence.flatten().toImmutableList() }
     val mapping = remember(sequence) {
@@ -67,7 +68,7 @@ fun <T> Transition<Int>.animateThrough(
     }
 
     val index = animateInt(
-        transitionSpec = { typingSpec(count = abs(mapping.getValue(targetState) - mapping.getValue(initialState))) },
+        transitionSpec = { transitionSpec(abs(mapping.getValue(targetState) - mapping.getValue(initialState))) },
         label = "ListAnimation",
         targetValueByState = { mapping.getValue(it) },
     )

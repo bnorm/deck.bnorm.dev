@@ -1,6 +1,5 @@
 package dev.bnorm.kc24
 
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,25 +7,18 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
-import dev.bnorm.kc24.elements.typingSpec
+import dev.bnorm.kc24.sections.Future
 import dev.bnorm.kc24.sections.GoodAssertions
 import dev.bnorm.kc24.sections.PowerAssertExamples
-import dev.bnorm.kc24.sections.Future
 import dev.bnorm.kc24.template.*
-import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.section
-import dev.bnorm.librettist.text.thenLineEndDiff
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -39,36 +31,22 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     // TODO slide transition between sections?
 
-    section(title = "What is a good assert?") {
+    section(title = "Crafting an Assertion") {
         SectionHeader(animateToBody = true)
         GoodAssertions()
     }
 
-    section(title = "Why use Power-Assert?") {
+    section(title = "Why Power-Assert?") {
         SectionHeader(animateToBody = true)
         PowerAssertExamples()
     }
 
-    section(title = "What's next?") {
+    section(title = "A Look at the Future") {
         SectionHeader(animateToBody = true)
         Future()
     }
 
     slide { Summary() }
-}
-
-private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
-    slide(states = 0) {
-        SectionHeader(showAsBody = updateTransition(false)) {
-            val values = remember(previousTitle, nextTitle) {
-                startAnimation(previousTitle).thenLineEndDiff(nextTitle).toList()
-            }
-            val text by transition.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
-                if (it == SlideState.Exiting) values.lastIndex else 0
-            }
-            Text(text)
-        }
-    }
 }
 
 @Composable
