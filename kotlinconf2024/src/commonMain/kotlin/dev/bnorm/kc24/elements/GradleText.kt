@@ -13,6 +13,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+// TODO switch to `= listOf(...)` instead ` = listOf(...)` in examples
 enum class GradleText {
     Initial {
         override fun buildText(highlighting: Highlighting): AnnotatedString {
@@ -60,7 +61,7 @@ enum class GradleText {
                 
                 @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 powerAssert {
-                    functions.addAll(
+                    functions = listOf(
                         "kotlin.test.assertTrue",
                     )
                 }
@@ -78,7 +79,7 @@ enum class GradleText {
                 
                 @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 powerAssert {
-                    functions.addAll(
+                    functions = listOf(
                         "kotlin.require",
                         "kotlin.test.assertTrue",
                     )
@@ -97,11 +98,11 @@ enum class GradleText {
                 
                 @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 powerAssert {
-                    functions.addAll(
+                    functions = listOf(
                         "kotlin.require",
                         "kotlin.test.assertTrue",
                     )
-                    includedSourceSets.addAll("main", "test")
+                    includedSourceSets = listOf("main", "test")
                 }
             """.trimIndent().toKts(highlighting)
         }
@@ -117,12 +118,12 @@ enum class GradleText {
                 
                 @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 powerAssert {
-                    functions.addAll(
+                    functions = listOf(
                         "kotlin.require",
                         "kotlin.test.assertTrue",
                         "kotlin.test.assertEquals",
                     )
-                    includedSourceSets.addAll("main", "test")
+                    includedSourceSets = listOf("main", "test")
                 }
             """.trimIndent().toKts(highlighting)
         }
@@ -138,13 +139,13 @@ enum class GradleText {
                 
                 @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 powerAssert {
-                    functions.addAll(
+                    functions = listOf(
                         "kotlin.require",
                         "kotlin.test.assertTrue",
                         "kotlin.test.assertEquals",
                         "kotlin.test.assertNotNull",
                     )
-                    includedSourceSets.addAll("main", "test")
+                    includedSourceSets = listOf("main", "test")
                 }
             """.trimIndent().toKts(highlighting)
         }
@@ -160,14 +161,14 @@ enum class GradleText {
                 
                 @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 powerAssert {
-                    functions.addAll(
+                    functions = listOf(
                         "kotlin.require",
                         "kotlin.test.assertTrue",
                         "kotlin.test.assertEquals",
                         "kotlin.test.assertNotNull",
                         "example.AssertScope.assert",
                     )
-                    includedSourceSets.addAll("main", "test")
+                    includedSourceSets = listOf("main", "test")
                 }
             """.trimIndent().toKts(highlighting)
         }
@@ -343,7 +344,7 @@ private fun build_AddAssertTrue_To_AddRequire(highlighting: Highlighting): Immut
             
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             powerAssert {
-                functions.addAll(
+                functions = listOf(
                     
                     "kotlin.test.assertTrue",   
                 )
@@ -366,7 +367,7 @@ private fun build_AddRequire_To_AddSourceSet(highlighting: Highlighting): Immuta
             
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             powerAssert {
-                functions.addAll(
+                functions = listOf(
                     "kotlin.require",
                     "kotlin.test.assertTrue",
                 )
@@ -390,12 +391,12 @@ private fun build_AddSourceSet_To_AddAssertEquals(highlighting: Highlighting): I
             
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             powerAssert {
-                functions.addAll(
+                functions = listOf(
                     "kotlin.require",
                     "kotlin.test.assertTrue",
                     
                 )
-                includedSourceSets.addAll("main", "test")
+                includedSourceSets = listOf("main", "test")
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
@@ -415,13 +416,13 @@ private fun build_AddAssertEquals_To_AddAssertNotNull(highlighting: Highlighting
             
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             powerAssert {
-                functions.addAll(
+                functions = listOf(
                     "kotlin.require",
                     "kotlin.test.assertTrue",
                     "kotlin.test.assertEquals",
                     
                 )
-                includedSourceSets.addAll("main", "test")
+                includedSourceSets = listOf("main", "test")
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(
@@ -441,14 +442,14 @@ private fun build_AddAssertNotNull_To_AddAssertSoftly(highlighting: Highlighting
             
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             powerAssert {
-                functions.addAll(
+                functions = listOf(
                     "kotlin.require",
                     "kotlin.test.assertTrue",
                     "kotlin.test.assertEquals",
                     "kotlin.test.assertNotNull",
                     
                 )
-                includedSourceSets.addAll("main", "test")
+                includedSourceSets = listOf("main", "test")
             }
         """.trimIndent().toKts(highlighting)
     ).thenLineEndDiff(

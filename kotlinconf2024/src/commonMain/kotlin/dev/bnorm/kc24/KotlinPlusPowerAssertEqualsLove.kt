@@ -30,17 +30,11 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
-    slide { Title() }
-
-    // TODO
-    //  - make sure the main point here is emphasized!!!
-    //  - improve the flow between the section
-
-    // TODO slide transition between sections?
-
     val section1 = "Crafting an Assertion"
     val section2 = "Why Power-Assert?"
     val section3 = "A Look at the Future"
+
+    slide { Title() }
 
     section(title = section1) {
         SectionHeader(animateToBody = true)
@@ -70,12 +64,12 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
         SectionHeader(animateFromBody = true)
     }
 
+    // TODO transition from bike-shedding to a new power-assert library seems counter productive
+
     SectionChange(section1, section2)
 
     section(title = section2) {
         SectionHeader(animateToBody = true)
-        // TODO should each example have conclusions?
-        // TODO should each example end with a question that leads into the next example?
         ExampleCarousel(
             start = { },
             end = { Example(SimpleAssertCode) }
@@ -173,6 +167,9 @@ fun Summary() {
             //  - make name tag drop down from the top with a bounce
             //  - make phone slide in from the right
             //  - make arrow animation path
+
+            // TODO add background image as a second state to this slide so the links are the focus
+            //  - move "Thank You" to the bottom and include don't forget to vote
             Image(
                 painter = painterResource(DrawableResource("closing_background.png")),
                 contentDescription = "",
@@ -185,12 +182,12 @@ fun Summary() {
                 Column(modifier = Modifier.align(Alignment.CenterStart),) {
                     Text("Thank You!")
                     Spacer(Modifier.requiredHeight(SLIDE_CONTENT_SPACING))
-                    ProvideTextStyle(MaterialTheme.typography.body2) {
+                    ProvideTextStyle(MaterialTheme.typography.body1) {
                         Column {
                             // TODO create these links
                             // TODO make these links clickable
                             Text("Docs: kotl.in/power-assert")
-                            Text("Slack: kotl.in/power-assert-slack")
+                            Text("KotlinLang Slack: #power-assert") // kotl.in/power-assert-slack
                             Text("Slides: deck.bnorm.dev/kotlinconf2024")
                         }
                     }

@@ -21,6 +21,10 @@ fun ShowBuilder.SoftAssertExample() {
         start = { Example(SoftAssertWithoutMessageSetup) },
         end = { Example(SoftAssertCode) }
     )
+
+    // TODO prefix the failure with a warning that we're going to see it fail
+    //  - make clear that it is a compiler time warning
+
     SoftAssertExampleWithWarning()
     ExampleCarousel(
         forward = false,
