@@ -1,4 +1,4 @@
-package dev.bnorm.kc24.template
+package dev.bnorm.kc24.examples
 
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Transition
@@ -6,6 +6,8 @@ import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -14,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.*
+import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideContent
@@ -165,14 +168,18 @@ fun SlideScope<ExampleState>.Example(
 @Composable
 fun Example(exampleText: AnnotatedString) {
     Box(modifier = Modifier.fillMaxWidth().padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
-        Text(exampleText, modifier = Modifier.horizontalScroll(rememberScrollState()))
+        ProvideTextStyle(MaterialTheme.typography.body2) {
+            Text(exampleText, modifier = Modifier.horizontalScroll(rememberScrollState()))
+        }
     }
 }
 
 @Composable
 private fun SlideScope<ExampleState>.Conclusions(conclusions: ImmutableList<Conclusion>) {
     Box(modifier = Modifier.padding(horizontal = SLIDE_PADDING)) {
-        transition.createChildTransition { it.conclusionIndex }.ShowConclusions(conclusions)
+        ProvideTextStyle(MaterialTheme.typography.h6) {
+            transition.createChildTransition { it.conclusionIndex }.ShowConclusions(conclusions)
+        }
     }
 }
 

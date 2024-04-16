@@ -184,9 +184,6 @@ object Theme {
     val dark: ShowTheme
         @Composable
         get() {
-            // TODO use https://fonts.google.com/specimen/Inter for non-code text?
-            //  - add TextStyle to Highlighting to keep things separate?
-            //  - does this make ShowTheme even more pointless?
             val jetBrainsMonoTypography = Typography(defaultFontFamily = Inter)
             return ShowTheme(
                 colors = darkColors(
@@ -206,17 +203,18 @@ object Theme {
                     h3 = jetBrainsMonoTypography.h3.copy(fontSize = 84.sp, lineHeight = 98.sp),
                     h4 = jetBrainsMonoTypography.h3.copy(fontSize = 72.sp, lineHeight = 84.sp),
                     h5 = jetBrainsMonoTypography.h5.copy(fontSize = 62.sp, lineHeight = 72.sp),
+                    h6 = jetBrainsMonoTypography.h5.copy(fontSize = 56.sp, lineHeight = 62.sp),
                     subtitle1 = jetBrainsMonoTypography.subtitle1.copy(fontSize = 28.sp, lineHeight = 36.sp),
                     body1 = jetBrainsMonoTypography.body1.copy(fontSize = 44.sp, lineHeight = 56.sp),
                     body2 = jetBrainsMonoTypography.body2.copy(fontSize = 36.sp, lineHeight = 46.sp),
 
-                    h6 = jetBrainsMonoTypography.h6.copy(fontSize = 0.sp),
                     subtitle2 = jetBrainsMonoTypography.subtitle2.copy(fontSize = 0.sp),
                     button = jetBrainsMonoTypography.button.copy(fontSize = 0.sp),
                     caption = jetBrainsMonoTypography.caption.copy(fontSize = 0.sp),
                     overline = jetBrainsMonoTypography.overline.copy(fontSize = 0.sp)
                 ),
-                code = codeStyle            )
+                code = codeStyle,
+            )
         }
 
     // TODO actually make this a proper theme

@@ -4,6 +4,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,7 +52,9 @@ fun GradleFile(
                 .padding(SLIDE_PADDING)
                 .padding(bottom = 100.dp)
         ) {
-            Text(text, modifier = Modifier)
+            ProvideTextStyle(MaterialTheme.typography.body2) {
+                Text(text, modifier = Modifier)
+            }
         }
     }
 }

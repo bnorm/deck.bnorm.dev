@@ -1,5 +1,6 @@
 package dev.bnorm.kc24
 
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,18 +8,24 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.SocialGitHub
 import dev.bnorm.kc24.elements.SocialMastodon
+import dev.bnorm.kc24.elements.typingSpec
+import dev.bnorm.kc24.examples.*
 import dev.bnorm.kc24.sections.Future
-import dev.bnorm.kc24.sections.GoodAssertions
-import dev.bnorm.kc24.sections.PowerAssertExamples
 import dev.bnorm.kc24.template.*
+import dev.bnorm.librettist.animation.animateList
+import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.section
+import dev.bnorm.librettist.text.thenLineEndDiff
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -31,22 +38,103 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     // TODO slide transition between sections?
 
-    section(title = "Crafting an Assertion") {
+    val section1 = "Crafting an Assertion"
+    val section2 = "Why Power-Assert?"
+    val section3 = "A Look at the Future"
+
+    section(title = section1) {
         SectionHeader(animateToBody = true)
-        GoodAssertions()
+        ExampleCarousel(
+            start = { },
+            end = { Example(BasicAssertTrueCode) }
+        )
+        BasicAssertTrueExample()
+        ExampleTransition {
+            val start = BasicAssertTrueCode
+            val end = BasicAssertEqualsCode
+            remember { startAnimation(start).thenLineEndDiff(end).toList() }
+        }
+        BasicAssertEqualsExample()
+        ExampleTransition {
+            val start = BasicAssertEqualsCode
+            val end = AssertEqualsMessageCode
+            remember { startAnimation(start).thenLineEndDiff(end).toList() }
+        }
+        AssertEqualsMessageExample()
+        ExampleTransition {
+            val start = AssertEqualsMessageCode
+            val end = AssertKCode
+            remember { startAnimation(start).thenLineEndDiff(end).toList() }
+        }
+        AssertKExample()
+        SectionHeader(animateFromBody = true)
     }
 
-    section(title = "Why Power-Assert?") {
+    SectionChange(section1, section2)
+
+    section(title = section2) {
         SectionHeader(animateToBody = true)
-        PowerAssertExamples()
+        // TODO should each example have conclusions?
+        // TODO should each example end with a question that leads into the next example?
+        ExampleCarousel(
+            start = { },
+            end = { Example(SimpleAssertCode) }
+        )
+        SimpleAssertExample()
+        ExampleCarousel(
+            start = { Example(SimpleAssertCode) },
+            end = { Example(ComplexAssertCode) }
+        )
+        ComplexExpressionsExample()
+        ExampleCarousel(
+            start = { Example(ComplexAssertCode) },
+            end = { Example(AssertTrueSmartcastCode) }
+        )
+        AssertTrueSmartcastExample()
+        ExampleCarousel(
+            start = { Example(AssertTrueSmartcastCode) },
+            end = { Example(RequireCode) }
+        )
+        RequireExample()
+        ExampleCarousel(
+            start = { Example(RequireCode) },
+            end = { Example(AssertEqualsCode) }
+        )
+        AssertEqualsAndNotNullExample()
+        // TODO examples
+        //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
+
+        // TODO summary slide before going into the next example?
+        ExampleCarousel(
+            start = { Example(AssertEqualsAndNotNullCode) },
+            end = { Example(SoftAssertWithoutMessageSetup) }
+        )
+        SoftAssertExample()
+        SectionHeader(animateFromBody = true)
     }
 
-    section(title = "A Look at the Future") {
+    SectionChange(section2, section3)
+
+    section(title = section3) {
         SectionHeader(animateToBody = true)
         Future()
     }
 
     slide { Summary() }
+}
+
+private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
+    slide(states = 0) {
+        SectionHeader(showAsBody = updateTransition(false)) {
+            val values = remember(previousTitle, nextTitle) {
+                startAnimation(previousTitle).thenLineEndDiff(nextTitle).toList()
+            }
+            val text by transition.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
+                if (it == SlideState.Exiting) values.lastIndex else 0
+            }
+            Text(text)
+        }
+    }
 }
 
 @Composable

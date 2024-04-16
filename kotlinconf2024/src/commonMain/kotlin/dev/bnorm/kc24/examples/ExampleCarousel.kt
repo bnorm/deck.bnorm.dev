@@ -1,10 +1,11 @@
-package dev.bnorm.kc24.template
+package dev.bnorm.kc24.examples
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import dev.bnorm.kc24.elements.defaultSpec
+import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import kotlin.time.Duration.Companion.milliseconds
