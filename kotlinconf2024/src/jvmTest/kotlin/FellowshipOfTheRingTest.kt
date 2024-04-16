@@ -30,7 +30,7 @@ data class Character(
 }
 
 data object FellowshipOfTheRing {
-    private val members = listOf(
+    private val members = mutableListOf(
         Character(name = "Frodo", race = Race.Hobbit, age = 50, alive = true),
         Character(name = "Sam", race = Race.Hobbit, age = 38, alive = true),
         Character(name = "Merry", race = Race.Hobbit, age = 36, alive = true),
@@ -45,9 +45,9 @@ data object FellowshipOfTheRing {
     fun getAllMembers(): List<Character> = members
     fun getCurrentMembers(): List<Character> = members.filter { it.alive }
 
-    operator fun get(index: Int): Character {
-        require(index in members.indices)
-        return members[index]
+    fun addToFellowship(character: Character) {
+        require(character.alive)
+        members.add(character)
     }
 }
 
@@ -103,7 +103,9 @@ internal class FellowshipOfTheRingTest {
 
     @Test
     fun `test members of the fellowship8`() {
-        fellowshipOfTheRing[10]
+        fellowshipOfTheRing.addToFellowship(
+            Character(name = "Boromir", race = Race.Human, age = 40, alive = false)
+        )
     }
 
     @Test
@@ -126,8 +128,9 @@ internal class FellowshipOfTheRingTest {
     fun `test members of the fellowship11`() {
         val members = fellowshipOfTheRing.getCurrentMembers()
         assertSoftly {
-            assert(members.find { it.name == "Frodo" }?.age == 23)
-            assert(members.find { it.name == "Aragorn" }?.age == 60)
+            for (member in members) {
+                assert(member.age < 100)
+            }
         }
     }
 }

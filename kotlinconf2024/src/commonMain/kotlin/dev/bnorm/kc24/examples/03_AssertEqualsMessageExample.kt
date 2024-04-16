@@ -13,7 +13,7 @@ import kotlinx.collections.immutable.persistentListOf
 fun ShowBuilder.AssertEqualsMessageExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
-        Conclusion.Con(text = "Message can be forgotten"),
+        Conclusion.Con(text = "Forget to add message"),
         Conclusion.Con(text = "Message maintenance burden"),
     )
     slideForExample(

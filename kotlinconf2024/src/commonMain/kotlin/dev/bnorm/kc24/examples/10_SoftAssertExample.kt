@@ -56,9 +56,6 @@ fun ShowBuilder.SoftAssertSetupWithoutMessage() {
 }
 
 fun ShowBuilder.SoftAssertExampleWithWarning() {
-    // TODO better soft-assert example
-    //  - iterate over the members and assert something common?
-
     slideForExample(
         builder = {
             openOutput()
@@ -88,8 +85,6 @@ fun ShowBuilder.SoftAssertSetupWithMessage() {
 }
 
 fun ShowBuilder.SoftAssertWithMessageExample() {
-    // TODO better soft-assert example
-
     slideForExample(
         builder = {
             openOutput()
@@ -185,8 +180,9 @@ val SoftAssertCode: AnnotatedString
         @Test fun `test members of the fellowship`() {
             val members = fellowshipOfTheRing.getCurrentMembers()
             assertSoftly {
-                assert(members.find { it.name == "Frodo" }?.age == 23)
-                assert(members.find { it.name == "Aragorn" }?.age == 60)
+                for (member in members) {
+                    assert(member.age < 100)
+                }
             }
         }
     """.trimIndent().toExampleCode()
@@ -205,6 +201,8 @@ java.lang.AssertionError: Multiple failed assertions
         at [...]
     Suppressed: java.lang.AssertionError
         at [...]
+    Suppressed: java.lang.AssertionError
+        at [...]
 """.trimIndent()
 
 private val SoftAssertOutput = """
@@ -212,19 +210,24 @@ Multiple failed assertions
 java.lang.AssertionError: Multiple failed assertions
     at [...]
     Suppressed: java.lang.AssertionError: Assertion failed
-assert(members.find { it.name == "Frodo" }?.age == 23)
-       |       |                            |   |
-       |       |                            |   false
-       |       |                            50
-       |       Frodo
-       [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
+assert(member.age < 100)
+       |      |   |
+       |      |   false
+       |      10000
+       Gandalf
         at [...]
     Suppressed: java.lang.AssertionError: Assertion failed
-assert(members.find { it.name == "Aragorn" }?.age == 60)
-       |       |                              |   |
-       |       |                              |   false
-       |       |                              87
-       |       Aragorn
-       [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
+assert(member.age < 100)
+       |      |   |
+       |      |   false
+       |      2931
+       Legolas
+        at [...]
+    Suppressed: java.lang.AssertionError: Assertion failed
+assert(member.age < 100)
+       |      |   |
+       |      |   false
+       |      139
+       Gimli
         at [...]
 """.trimIndent()

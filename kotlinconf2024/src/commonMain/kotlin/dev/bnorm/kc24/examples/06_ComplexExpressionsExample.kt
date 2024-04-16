@@ -30,7 +30,7 @@ val ComplexAssertCode: AnnotatedString
                     members.any { it.name == "Elrond" })
         }
     """.trimIndent().toExampleCode { highlighting, it ->
-        it.toExampleStyle(highlighting) ?: when (it) {
+        when (it) {
             "assert" -> highlighting.staticFunctionCall
             else -> null
         }

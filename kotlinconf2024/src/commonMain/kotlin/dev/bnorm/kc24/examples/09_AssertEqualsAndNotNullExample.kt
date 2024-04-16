@@ -47,8 +47,7 @@ fun ShowBuilder.AssertEqualsAndNotNullExample() {
 
 // TODO is race a good example to use?
 //  - may be a touchy topic to use during a talk.
-//    - does lotr make that not a concern?
-//    - man being the race is a little weird... while not technically correct, should it be human?
+//  - does lotr make that not a concern?
 val AssertEqualsCode: AnnotatedString
     @Composable get() = """
         @Test fun `test members of the fellowship`() {

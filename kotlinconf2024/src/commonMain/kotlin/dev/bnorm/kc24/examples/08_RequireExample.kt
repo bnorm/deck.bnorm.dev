@@ -34,32 +34,27 @@ fun ShowBuilder.RequireExample() {
 
 // TODO
 //  - surround example with a little more context?
-//  - is there a better example than this?
 val RequireCode: AnnotatedString
     @Composable get() = """
-        operator fun get(index: Int): Character {
-            require(index in members.indices)
-            return members[index]
+        fun addToFellowship(character: Character) {
+            require(character.alive)
+            members.add(character)
         }
     """.trimIndent().toExampleCode { highlighting, it ->
-        it.toExampleStyle(highlighting) ?: when (it) {
+        when (it) {
             "members" -> highlighting.property
             else -> null
         }
     }
 
-// TODO !!! THIS IS DOCTORED OUTPUT !!!
-//  - `members` prints out "FellowshipOfTheRing" as well because it is a receiver
-//  - can/should we ignore implicit receivers?
+// TODO
 //  - should "Assertion failed" as the prefix also be removed?
 //  - should we show a link to tickets if these things doesn't get fixed?
 val RequireOutput = """
 java.lang.IllegalArgumentException: Assertion failed
-require(index in members.indices)
-        |     |  |       |
-        |     |  |       0..8
-        |     |  [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli, Boromir]
-        |     false
-        10
+require(character.alive)
+        |         |
+        |         false
+        Boromir
     at [...]
 """.trimIndent()

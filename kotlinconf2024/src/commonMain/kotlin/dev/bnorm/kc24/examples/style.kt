@@ -9,9 +9,8 @@ import dev.bnorm.librettist.text.buildKotlinCodeString
 
 fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
     return when (this) {
-        "fellowshipOfTheRing", "size", "name", "age", "race" -> codeStyle.property
-        "indices" -> codeStyle.property // TODO extension properties
-        "`test members of the fellowship`" -> codeStyle.functionDeclaration // TODO "get" not working?
+        "fellowshipOfTheRing", "size", "name", "age", "race", "alive" -> codeStyle.property
+        "`test members of the fellowship`", "addToFellowship" -> codeStyle.functionDeclaration
         "hasSize", "find", "any" -> codeStyle.extensionFunctionCall
         "assertTrue", "assertEquals", "assertThat", "assertSoftly", "require" -> codeStyle.staticFunctionCall
         else -> null
@@ -20,11 +19,12 @@ fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
 
 @Composable
 fun String.toExampleCode(
-    identifierType: (Highlighting, String) -> SpanStyle? = { highlighting, identifier ->
-        identifier.toExampleStyle(highlighting)
-    },
+    identifierType: (Highlighting, String) -> SpanStyle? = { _, _ -> null },
 ): AnnotatedString {
     return rememberHighlighted(this) { highlighting ->
-        buildKotlinCodeString(this, highlighting, identifierType = { identifierType(highlighting, it) })
+        buildKotlinCodeString(
+            this,
+            highlighting,
+            identifierType = { identifierType(highlighting, it) ?: it.toExampleStyle(highlighting) })
     }
 }

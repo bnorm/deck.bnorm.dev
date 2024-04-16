@@ -9,7 +9,10 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
-import dev.bnorm.kc24.template.*
+import dev.bnorm.kc24.template.KodeeLoving
+import dev.bnorm.kc24.template.KodeeSad
+import dev.bnorm.kc24.template.KodeeSurprised
+import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.thenLines
@@ -58,7 +61,7 @@ val SimpleAssertCode: AnnotatedString
             assert(members.size == 9)
         }
     """.trimIndent().toExampleCode { highlighting, it ->
-        it.toExampleStyle(highlighting) ?: when (it) {
+        when (it) {
             "assert" -> highlighting.staticFunctionCall
             else -> null
         }
