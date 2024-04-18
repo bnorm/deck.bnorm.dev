@@ -23,14 +23,13 @@ fun TitleAndBody(
             }
         }
         Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
-        Box(Modifier.fillMaxWidth().weight(1f)) {
+        Box(Modifier.fillMaxSize()) {
             ProvideTextStyle(MaterialTheme.typography.body1) {
                 body()
             }
         }
-        Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
     }
-    Box(Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
+    Box(Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomEnd) {
         AnimateKodee { kodee() }
     }
 }

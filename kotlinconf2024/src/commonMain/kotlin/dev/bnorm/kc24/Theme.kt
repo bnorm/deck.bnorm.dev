@@ -197,8 +197,9 @@ object Theme {
                     onBackground = Color(0xFFBCBEC4),
                     primary = Color(0xFF7F51FF),
                 ),
+                // 100.sp ~= 128.dp
                 typography = jetBrainsMonoTypography.copy(
-                    h1 = jetBrainsMonoTypography.h1.copy(fontSize = 118.sp, lineHeight = 136.sp),
+                    h1 = jetBrainsMonoTypography.h1.copy(fontSize = 118.sp, lineHeight = 124.sp),
                     h2 = jetBrainsMonoTypography.h2.copy(fontSize = 98.sp, lineHeight = 118.sp),
                     h3 = jetBrainsMonoTypography.h3.copy(fontSize = 84.sp, lineHeight = 98.sp),
                     h4 = jetBrainsMonoTypography.h3.copy(fontSize = 72.sp, lineHeight = 84.sp),

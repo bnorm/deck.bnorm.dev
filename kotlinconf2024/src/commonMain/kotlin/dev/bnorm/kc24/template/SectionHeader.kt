@@ -26,25 +26,6 @@ import dev.bnorm.librettist.show.SlideState
 fun ShowBuilder.SectionHeader(
     animateFromBody: Boolean = false,
     animateToBody: Boolean = false,
-    title: String,
-) {
-    slide {
-        SectionHeader(
-            showAsBody = transition.createChildTransition {
-                when (it) {
-                    SlideState.Entering -> animateFromBody
-                    SlideState.Exiting -> animateToBody
-                    is SlideState.Index -> false
-                }
-            },
-            title = { Text(title) },
-        )
-    }
-}
-
-fun ShowBuilder.SectionHeader(
-    animateFromBody: Boolean = false,
-    animateToBody: Boolean = false,
     title: (@Composable () -> Unit)? = null,
 ) {
     slide {
@@ -96,19 +77,12 @@ fun SectionHeader(
                 KodeeSitting(Modifier.requiredSize(516.dp))
             }
         }
-        Spacer(Modifier.weight(1f))
-        showAsBody.AnimatedVisibility(
-            enter = slideInVertically(defaultSpec()) { it },
-            exit = slideOutVertically(defaultSpec()) { it },
-        ) {
-            Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
-        }
     }
     showAsBody.AnimatedVisibility(
         enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
         exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
     ) {
-        Box(Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
+        Box(Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomEnd) {
             DefaultCornerKodee()
         }
     }

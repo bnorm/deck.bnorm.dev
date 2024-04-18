@@ -2,7 +2,6 @@ package dev.bnorm.kc24
 
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -14,12 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc24.elements.SocialGitHub
-import dev.bnorm.kc24.elements.SocialMastodon
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.examples.*
 import dev.bnorm.kc24.sections.Future
-import dev.bnorm.kc24.template.*
+import dev.bnorm.kc24.template.KodeeLoving
+import dev.bnorm.kc24.template.SLIDE_PADDING
+import dev.bnorm.kc24.template.SectionHeader
+import dev.bnorm.kc24.template.TitleSlide
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.ShowBuilder
@@ -146,13 +146,20 @@ fun Title() {
             )
 
             Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-                Column(modifier = Modifier.align(Alignment.BottomStart)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Kotlin + Power-Assert = ")
-                        KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
+                Column(Modifier.fillMaxWidth().align(Alignment.BottomStart), horizontalAlignment = Alignment.Start) {
+                    ProvideTextStyle(MaterialTheme.typography.h1) {
+                        Text("Kotlin")
+                        Text(" + Power-Assert")
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(" = ")
+                            KodeeLoving(modifier = Modifier.requiredSize(125.dp).graphicsLayer { rotationY = 180f })
+                        }
                     }
-
-                    PresenterSocials()
+                    Spacer(Modifier.size(32.dp))
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        BrianNorman(modifier = Modifier.align(Alignment.BottomStart))
+                        Mastodon(modifier = Modifier.align(Alignment.BottomEnd))
+                    }
                 }
             }
         }
@@ -179,37 +186,58 @@ fun Summary() {
             Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
 
                 // TODO can we do something more stylistically interesting with this?
-                Column(modifier = Modifier.align(Alignment.CenterStart),) {
-                    Text("Thank You!")
-                    Spacer(Modifier.requiredHeight(SLIDE_CONTENT_SPACING))
+                Column {
                     ProvideTextStyle(MaterialTheme.typography.body1) {
-                        Column {
-                            // TODO create these links
-                            // TODO make these links clickable
-                            Text("Docs: kotl.in/power-assert")
-                            Text("KotlinLang Slack: #power-assert") // kotl.in/power-assert-slack
-                            Text("Slides: deck.bnorm.dev/kotlinconf2024")
-                        }
+                        // TODO create these links
+                        // TODO make these links clickable
+                        Text("Docs: kotl.in/power-assert")
+                        Text("KotlinLang Slack: #power-assert") // kotl.in/power-assert-slack
+                        Text("Slides: deck.bnorm.dev/kotlinconf2024")
                     }
                 }
 
-                PresenterSocials(Modifier.align(Alignment.BottomCenter))
+                Text(
+                    text = "Thank you,\nand don’t \nforget to vote!",
+                    style = MaterialTheme.typography.h3,
+                    modifier = Modifier.align(Alignment.BottomStart),
+                )
             }
         }
     }
 }
 
 @Composable
-private fun PresenterSocials(modifier: Modifier = Modifier) {
-    Row(modifier = modifier.fillMaxWidth().requiredHeight(64.dp)) {
-        ProvideTextStyle(MaterialTheme.typography.body2) {
-            Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Text("Brian Norman")
-            }
-            Spacer(modifier = Modifier.requiredWidth(4.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
-            SocialMastodon(username = "bnorm@kotlin.social", modifier = Modifier.weight(1.5f).fillMaxHeight())
-            Spacer(modifier = Modifier.requiredWidth(4.dp).fillMaxHeight().background(MaterialTheme.colors.primary))
-            SocialGitHub(username = "@bnorm", modifier = Modifier.weight(1f).fillMaxHeight())
+private fun BrianNorman(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            painter = painterResource(DrawableResource("social/JetBrains.png")),
+            contentDescription = "",
+            modifier = Modifier.height(64.dp),
+        )
+        Spacer(modifier = Modifier.size(24.dp))
+        Column {
+            Text("Brian Norman", style = MaterialTheme.typography.h5)
+            Text("Kotlin Compiler Developer", style = MaterialTheme.typography.body2)
         }
+    }
+}
+
+@Composable
+private fun Mastodon(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.height(48.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            painter = painterResource(DrawableResource("social/mastodon.png")),
+            contentDescription = "",
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = "bnorm@kotlin.social", style = MaterialTheme.typography.body2)
     }
 }
