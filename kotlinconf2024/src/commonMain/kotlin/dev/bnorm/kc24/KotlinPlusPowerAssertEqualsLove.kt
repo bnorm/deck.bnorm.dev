@@ -1,18 +1,32 @@
 package dev.bnorm.kc24
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.lerp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
+import dev.bnorm.kc24.elements.AnimatedVisibility
+import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.examples.*
 import dev.bnorm.kc24.sections.Future
@@ -22,9 +36,7 @@ import dev.bnorm.kc24.template.SectionHeader
 import dev.bnorm.kc24.template.TitleSlide
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideState
-import dev.bnorm.librettist.show.section
+import dev.bnorm.librettist.show.*
 import dev.bnorm.librettist.text.thenLineEndDiff
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -114,7 +126,7 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
         Future()
     }
 
-    slide { Summary() }
+    slideForBoolean { Summary(transition) }
 }
 
 private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
@@ -167,21 +179,11 @@ fun Title() {
 }
 
 @Composable
-fun Summary() {
+fun Summary(transition: Transition<out SlideState<Boolean>>) {
+    val state = transition.createChildTransition { it.toBoolean() }
     TitleSlide {
         Box(Modifier.fillMaxSize()) {
-            // TODO add some animation?
-            //  - make name tag drop down from the top with a bounce
-            //  - make phone slide in from the right
-            //  - make arrow animation path
-
-            // TODO add background image as a second state to this slide so the links are the focus
-            //  - move "Thank You" to the bottom and include don't forget to vote
-            Image(
-                painter = painterResource(DrawableResource("closing_background.png")),
-                contentDescription = "",
-                modifier = Modifier.fillMaxSize(),
-            )
+            SummaryBackground(state)
 
             Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
 
@@ -196,11 +198,16 @@ fun Summary() {
                     }
                 }
 
-                Text(
-                    text = "Thank you,\nand don’t \nforget to vote!",
-                    style = MaterialTheme.typography.h3,
-                    modifier = Modifier.align(Alignment.BottomStart),
-                )
+                state.AnimatedVisibility(
+                    enter = fadeIn(defaultSpec()),
+                    exit = fadeOut(defaultSpec()),
+                    modifier = Modifier.align(Alignment.BottomStart)
+                ) {
+                    Text(
+                        text = "Thank you,\nand don’t \nforget to vote!",
+                        style = MaterialTheme.typography.h3,
+                    )
+                }
             }
         }
     }
@@ -239,5 +246,75 @@ private fun Mastodon(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(16.dp))
         Text(text = "bnorm@kotlin.social", style = MaterialTheme.typography.body2)
+    }
+}
+
+@Composable
+private fun SummaryBackground(state: Transition<Boolean>) {
+    Box(Modifier.fillMaxSize()) {
+        DrawArc(state)
+        Row(Modifier.align(Alignment.TopEnd)) {
+            state.AnimatedVisibility(
+                enter = slideInVertically(defaultSpec()) { -it },
+                exit = slideOutVertically(defaultSpec()) { -it },
+            ) {
+                Image(
+                    painter = painterResource(DrawableResource("closing_background_badge.png")),
+                    contentDescription = "",
+                    modifier = Modifier.size((869 * 1920 / 3840).dp, (1627 * 1080 / 2160).dp),
+                )
+            }
+            state.AnimatedVisibility(
+                enter = slideInHorizontally(defaultSpec()) { it },
+                exit = slideOutHorizontally(defaultSpec()) { it },
+            ) {
+                Image(
+                    painter = painterResource(DrawableResource("closing_background_phone.png")),
+                    contentDescription = "",
+                    modifier = Modifier.size((993 * 1920 / 3840).dp, (1930 * 1080 / 2160).dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DrawArc(state: Transition<Boolean>) {
+    val path = Animatable(0f)
+    LaunchedEffect(state.targetState && state.currentState) {
+        if (state.targetState && state.currentState) {
+            path.animateTo(1.2f, animationSpec = defaultSpec())
+        }
+    }
+
+    // start
+    // x = 2364 of 3840
+    // y = 1634 of 2160
+    // end
+    // x = 3042 of 3840
+    // y = 1952 of 2160
+    // bottom
+    // x = 2770 of 3840
+    // y = 2048 of 2160
+
+    Canvas(Modifier.fillMaxSize()) {
+        val xEnd = (3044 * 1920 / 3840f).dp.toPx()
+        val yEnd = (1953 * 1080 / 2160f).dp.toPx()
+        val topLeft = Offset((2364 * 1920 / 3840f).dp.toPx(), ((1634 - 415) * 1920 / 3840f).dp.toPx())
+        val size = Size((415).dp.toPx(), (415).dp.toPx())
+
+        if (path.value > 0f) {
+            val angleFraction = path.value.coerceAtMost(1f)
+            val angle = lerp(0f, -129.5f, angleFraction)
+            drawArc(Color.White, 180f, angle, false, topLeft, size, style = Stroke(2.0f))
+
+            if (path.value > 1f) {
+                val arrowFraction = (path.value - 1f).coerceAtLeast(0f) * 5f
+                val left = lerp(Offset(xEnd, yEnd), Offset(xEnd - 25, yEnd - 2), arrowFraction)
+                val right = lerp(Offset(xEnd, yEnd), Offset(xEnd - 2, yEnd + 25), arrowFraction)
+                drawLine(Color.White, Offset(xEnd, yEnd), left, strokeWidth = 2.0f)
+                drawLine(Color.White, Offset(xEnd, yEnd), right, strokeWidth = 2.0f)
+            }
+        }
     }
 }
