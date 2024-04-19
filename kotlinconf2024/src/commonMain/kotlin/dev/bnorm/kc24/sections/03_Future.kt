@@ -1,21 +1,15 @@
 package dev.bnorm.kc24.sections
 
+import androidx.compose.animation.*
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
@@ -24,20 +18,25 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
+import dev.bnorm.kc24.template.AnimateKodee
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideSection
+import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.toInt
 
 fun ShowBuilder.Future() {
     PowerAssertIdeas()
     HowCanYouHelp()
+    Resources()
 }
 
-private fun ShowBuilder.PowerAssertIdeas() {
+fun ShowBuilder.PowerAssertIdeas() {
     slide(states = 7) {
         TitleAndBody {
             Column(
@@ -60,7 +59,7 @@ private fun ShowBuilder.PowerAssertIdeas() {
     }
 }
 
-private fun ShowBuilder.HowCanYouHelp() {
+fun ShowBuilder.HowCanYouHelp() {
     slide(states = 4) {
         TitleAndBody {
             Column(
@@ -76,6 +75,65 @@ private fun ShowBuilder.HowCanYouHelp() {
                     "   => Report any compilation errors" to emptySet(),
                     "   => Report any strange diagrams" to emptySet(),
                 )
+            }
+        }
+    }
+}
+
+fun ShowBuilder.Resources() {
+    slide(states = 3) {
+        val state = transition.createChildTransition { it != SlideState.Exiting }
+
+        Box {
+            state.AnimatedVisibility(
+                enter = fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it },
+                exit = fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it },
+            ) {
+                Column {
+                    Box(Modifier.padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
+                        ProvideTextStyle(MaterialTheme.typography.h3) {
+                            SlideSection.header()
+                        }
+                    }
+                    Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
+                }
+            }
+        }
+
+        Column {
+            // This creates constant spacing for when the header disappears.
+            // Otherwise, there is a moment when the header is no longer shown and
+            Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
+            Text("", style = MaterialTheme.typography.h3)
+            Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
+            Spacer(Modifier.size(4.dp))
+
+            Column(
+                modifier = Modifier.padding(SLIDE_PADDING),
+                verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
+            ) {
+                ProvideTextStyle(MaterialTheme.typography.body1) {
+                    // TODO create these links
+                    // TODO make these links clickable
+                    AnimateByLine(
+                        transition = transition.createChildTransition { it.toInt() },
+                        "Docs: kotl.in/power-assert" to emptySet(),
+                        "Slack: #power-assert (KotlinLang)" to emptySet(),
+                        "Slides: deck.bnorm.dev/kotlinconf2024" to emptySet(),
+                    )
+                }
+            }
+        }
+
+        Box(Modifier.fillMaxSize()) {
+            state.AnimatedVisibility(
+                enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
+                exit = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
+                modifier = Modifier.align(Alignment.BottomEnd),
+            ) {
+                Box(Modifier.padding(8.dp)) {
+                    AnimateKodee {}
+                }
             }
         }
     }

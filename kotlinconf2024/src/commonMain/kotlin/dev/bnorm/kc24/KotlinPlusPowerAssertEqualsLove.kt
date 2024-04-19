@@ -30,10 +30,7 @@ import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.examples.*
 import dev.bnorm.kc24.sections.Future
-import dev.bnorm.kc24.template.KodeeLoving
-import dev.bnorm.kc24.template.SLIDE_PADDING
-import dev.bnorm.kc24.template.SectionHeader
-import dev.bnorm.kc24.template.TitleSlide
+import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.show.*
@@ -126,7 +123,7 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
         Future()
     }
 
-    slideForBoolean { Summary(transition) }
+    slide { Summary(transition) }
 }
 
 private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
@@ -179,21 +176,26 @@ fun Title() {
 }
 
 @Composable
-fun Summary(transition: Transition<out SlideState<Boolean>>) {
-    val state = transition.createChildTransition { it.toBoolean() }
+fun Summary(transition: Transition<out SlideState<*>>) {
+    val state = transition.createChildTransition { it != SlideState.Entering }
     TitleSlide {
         Box(Modifier.fillMaxSize()) {
             SummaryBackground(state)
 
             Box(modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING)) {
-
-                // TODO can we do something more stylistically interesting with this?
                 Column {
+                    Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
+                    Text("", style = MaterialTheme.typography.h3)
+                    Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
+                    Spacer(Modifier.size(4.dp))
+
                     ProvideTextStyle(MaterialTheme.typography.body1) {
                         // TODO create these links
                         // TODO make these links clickable
                         Text("Docs: kotl.in/power-assert")
-                        Text("KotlinLang Slack: #power-assert") // kotl.in/power-assert-slack
+                        Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
+                        Text("Slack: #power-assert (KotlinLang)") // kotl.in/power-assert-slack
+                        Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
                         Text("Slides: deck.bnorm.dev/kotlinconf2024")
                     }
                 }
@@ -261,7 +263,7 @@ private fun SummaryBackground(state: Transition<Boolean>) {
                 Image(
                     painter = painterResource(DrawableResource("closing_background_badge.png")),
                     contentDescription = "",
-                    modifier = Modifier.size((869 * 1920 / 3840).dp, (1627 * 1080 / 2160).dp),
+                    modifier = Modifier.size((869 * 1920 / 3840f).dp, (1627 * 1080 / 2160f).dp),
                 )
             }
             state.AnimatedVisibility(
@@ -271,7 +273,7 @@ private fun SummaryBackground(state: Transition<Boolean>) {
                 Image(
                     painter = painterResource(DrawableResource("closing_background_phone.png")),
                     contentDescription = "",
-                    modifier = Modifier.size((993 * 1920 / 3840).dp, (1930 * 1080 / 2160).dp),
+                    modifier = Modifier.size((993 * 1920 / 3840f).dp, (1930 * 1080 / 2160f).dp),
                 )
             }
         }
@@ -286,16 +288,6 @@ private fun DrawArc(state: Transition<Boolean>) {
             path.animateTo(1.2f, animationSpec = defaultSpec())
         }
     }
-
-    // start
-    // x = 2364 of 3840
-    // y = 1634 of 2160
-    // end
-    // x = 3042 of 3840
-    // y = 1952 of 2160
-    // bottom
-    // x = 2770 of 3840
-    // y = 2048 of 2160
 
     Canvas(Modifier.fillMaxSize()) {
         val xEnd = (3044 * 1920 / 3840f).dp.toPx()

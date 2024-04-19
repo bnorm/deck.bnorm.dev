@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -78,12 +77,16 @@ fun SectionHeader(
             }
         }
     }
-    showAsBody.AnimatedVisibility(
-        enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
-        exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
-    ) {
-        Box(Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomEnd) {
-            DefaultCornerKodee()
+
+    Box(Modifier.fillMaxSize()) {
+        showAsBody.AnimatedVisibility(
+            enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
+            exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
+            modifier = Modifier.align(Alignment.BottomEnd),
+        ) {
+            Box(Modifier.padding(8.dp)) {
+                DefaultCornerKodee()
+            }
         }
     }
 }
