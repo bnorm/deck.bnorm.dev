@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.image.Kodee
-import dev.bnorm.kc24.image.kodee.Petite
 import dev.bnorm.kc24.image.kodee.Sitting
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -67,7 +67,7 @@ fun AnimateKodee(
 
 @Composable
 fun DefaultCornerKodee() {
-    KodeePetite(Modifier.requiredSize(100.dp))
+    KodeePleased(Modifier.requiredSize(100.dp).graphicsLayer { rotationY = 180f })
 }
 
 @Composable
@@ -100,6 +100,11 @@ fun KodeeLost(modifier: Modifier = Modifier) {
     Kodee("kotlin_mascot/emoji/kodee-lost.png", modifier)
 }
 
+@Composable
+fun KodeePleased(modifier: Modifier = Modifier) {
+    Kodee("kotlin_mascot/emoji/kodee-pleased.png", modifier)
+}
+
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun Kodee(path: String, modifier: Modifier) {
@@ -108,11 +113,6 @@ private fun Kodee(path: String, modifier: Modifier) {
         contentDescription = "",
         modifier = modifier,
     )
-}
-
-@Composable
-fun KodeePetite(modifier: Modifier = Modifier) {
-    Kodee(Kodee.Petite, modifier)
 }
 
 @Composable

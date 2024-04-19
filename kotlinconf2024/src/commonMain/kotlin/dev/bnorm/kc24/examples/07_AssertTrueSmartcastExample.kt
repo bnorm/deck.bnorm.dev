@@ -1,9 +1,14 @@
 package dev.bnorm.kc24.examples
 
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
+import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
+import dev.bnorm.kc24.template.KodeeSurprised
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import kotlinx.collections.immutable.persistentListOf
@@ -18,7 +23,13 @@ fun ShowBuilder.AssertTrueSmartcastExample() {
             openOutput()
         }
     ) {
-        TitleAndBody {
+        TitleAndBody(
+            kodee = {
+                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+                }
+            }
+        ) {
             val gradleTextSequence = persistentListOf(
                 GradleText.AddPlugin.animateTo(GradleText.AddConfig),
                 GradleText.AddConfig.animateTo(GradleText.AddAssertTrue),
