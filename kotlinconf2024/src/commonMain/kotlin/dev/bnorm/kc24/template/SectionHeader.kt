@@ -81,7 +81,7 @@ fun SectionHeader(
     Box(Modifier.fillMaxSize()) {
         showAsBody.AnimatedVisibility(
             enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
-            exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
+            exit = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
             modifier = Modifier.align(Alignment.BottomEnd),
         ) {
             Box(Modifier.padding(8.dp)) {

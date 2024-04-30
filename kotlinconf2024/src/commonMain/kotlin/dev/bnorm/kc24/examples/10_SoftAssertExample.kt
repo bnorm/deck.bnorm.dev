@@ -9,115 +9,92 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
+import dev.bnorm.kc24.template.ExampleBuilder
 import dev.bnorm.kc24.template.KodeeSad
 import dev.bnorm.kc24.template.KodeeSurprised
-import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.rememberHighlighted
-import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.SoftAssertExample() {
+fun ExampleBuilder.SoftAssertExample() {
     SoftAssertSetupWithoutMessage()
-    ExampleCarousel(
-        start = { Example(SoftAssertWithoutMessageSetup) },
-        end = { Example(SoftAssertCode) }
-    )
 
     // TODO prefix the failure with a warning that we're going to see it fail
     //  - make clear that it is a compiler time warning
 
     SoftAssertExampleWithWarning()
-    ExampleCarousel(
-        forward = false,
-        start = { Example(SoftAssertCode) },
-        end = { Example(SoftAssertWithoutMessageSetup) }
-    )
     SoftAssertSetupWithMessage()
-    ExampleCarousel(
-        start = { Example(SoftAssertWithMessageSetup) },
-        end = { Example(SoftAssertCode) }
-    )
     SoftAssertWithMessageExample()
 }
 
-fun ShowBuilder.SoftAssertSetupWithoutMessage() {
+fun ExampleBuilder.SoftAssertSetupWithoutMessage() {
     // TODO show what the implementation looks like?
 
-    slideForExample(
+    example(
         builder = {
             openGradle()
             updateGradle()
             closeGradle()
         }
     ) {
-        TitleAndBody {
-            val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
-            Example(
-                exampleTextSequence = persistentListOf(SoftAssertWithoutMessageSetup),
-                gradleTextSequence = persistentListOf(gradleTextSequence),
-            )
-        }
+        val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
+        Example(
+            exampleTextSequence = persistentListOf(SoftAssertWithoutMessageSetup),
+            gradleTextSequence = persistentListOf(gradleTextSequence),
+        )
     }
 }
 
-fun ShowBuilder.SoftAssertExampleWithWarning() {
-    slideForExample(
+fun ExampleBuilder.SoftAssertExampleWithWarning() {
+    example(
         builder = {
             openOutput()
+        },
+        kodee = { transition ->
+            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                KodeeSad(modifier = Modifier.requiredSize(150.dp))
+            }
         }
     ) {
-        TitleAndBody(
-            kodee = {
-                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                    KodeeSad(modifier = Modifier.requiredSize(150.dp))
-                }
-            }
-        ) {
-            Example(
-                exampleTextSequence = persistentListOf(SoftAssertCode),
-                outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutputWarning))
-            )
-        }
+        Example(
+            exampleTextSequence = persistentListOf(SoftAssertCode),
+            outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutputWarning))
+        )
     }
 }
 
-fun ShowBuilder.SoftAssertSetupWithMessage() {
-    slideForExample(
+fun ExampleBuilder.SoftAssertSetupWithMessage() {
+    example(
         builder = {
             updateExample()
-        }
+        },
+        forward = false
     ) {
-        TitleAndBody {
-            Example(
-                exampleTextSequence = SoftAssertSetupSequence,
-            )
-        }
+        Example(
+            exampleTextSequence = SoftAssertSetupSequence,
+        )
     }
 }
 
-fun ShowBuilder.SoftAssertWithMessageExample() {
-    slideForExample(
+fun ExampleBuilder.SoftAssertWithMessageExample() {
+    example(
         builder = {
             openOutput()
+        },
+        kodee = { transition ->
+            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+            }
         }
     ) {
-        TitleAndBody(
-            kodee = {
-                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-                }
-            }
-        ) {
-            Example(
-                exampleTextSequence = persistentListOf(SoftAssertCode),
-                outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutput)),
-            )
-        }
+        Example(
+            exampleTextSequence = persistentListOf(SoftAssertCode),
+            outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutput)),
+        )
     }
 }
 

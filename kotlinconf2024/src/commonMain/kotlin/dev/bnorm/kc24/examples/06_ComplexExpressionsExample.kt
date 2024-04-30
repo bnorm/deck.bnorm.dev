@@ -6,29 +6,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
+import dev.bnorm.kc24.template.ExampleBuilder
 import dev.bnorm.kc24.template.KodeeSurprised
-import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.ShowBuilder
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.ComplexExpressionsExample() {
-    slideForExample(
+fun ExampleBuilder.ComplexExpressionsExample() {
+    example(
         builder = {
             openOutput()
+        },
+        kodee = { transition ->
+            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+            }
         }
     ) {
-        TitleAndBody(
-            kodee = {
-                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-                }
-            }
-        ) {
-            Example(
-                exampleTextSequence = persistentListOf(ComplexAssertCode),
-                outputTextSequence = persistentListOf(persistentListOf(ComplexAssertOutput)),
-            )
-        }
+        Example(
+            exampleTextSequence = persistentListOf(ComplexAssertCode),
+            outputTextSequence = persistentListOf(persistentListOf(ComplexAssertOutput)),
+        )
     }
 }
 

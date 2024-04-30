@@ -9,48 +9,41 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
-import dev.bnorm.kc24.template.KodeeLoving
-import dev.bnorm.kc24.template.KodeeSad
-import dev.bnorm.kc24.template.KodeeSurprised
-import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.thenLines
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.SimpleAssertExample() {
-    slideForExample(
+fun ExampleBuilder.SimpleAssertExample() {
+    example(
         builder = {
             openOutput()
             openGradle()
             updateGradle()
             closeGradle()
             updateOutput()
-        }
-    ) {
-        TitleAndBody(
-            kodee = {
-                transition.both(condition = { it.outputIndex >= 1 }) {
-                    KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
-                }
-
-                transition.either(condition = { it.gradleIndex >= 1 }) {
-                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-                }
-
-                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                    KodeeSad(modifier = Modifier.requiredSize(150.dp))
-                }
+        },
+        kodee = { transition ->
+            transition.both(condition = { it.outputIndex >= 1 && it.showOutput == OutputState.Visible }) {
+                KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
             }
-        ) {
-            val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
-            Example(
-                exampleTextSequence = persistentListOf(SimpleAssertCode),
-                gradleTextSequence = gradleTextSequence,
-                outputTextSequence = persistentListOf(SimpleAssertOutput),
-            )
-        }
+
+            transition.either(condition = { it.gradleIndex >= 1 && it.outputIndex < 1 }) {
+                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+            }
+
+            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                KodeeSad(modifier = Modifier.requiredSize(150.dp))
+            }
+        },
+    ) {
+        val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
+        Example(
+            exampleTextSequence = persistentListOf(SimpleAssertCode),
+            gradleTextSequence = gradleTextSequence,
+            outputTextSequence = persistentListOf(SimpleAssertOutput),
+        )
     }
 }
 

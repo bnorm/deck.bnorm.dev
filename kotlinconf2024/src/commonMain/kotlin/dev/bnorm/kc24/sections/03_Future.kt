@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTextApi::class)
+
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
@@ -13,11 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
@@ -46,13 +45,13 @@ fun ShowBuilder.PowerAssertIdeas() {
                 // TODO show examples for compressed and diffs?
                 AnimateByLine(
                     transition = transition.createChildTransition { it.toInt() },
-                    "=> Improved diagrams" to emptySet(),
-                    "   => Diagram formatting improvements (KT-66807)" to setOf("KT-66807"),
-                    "   => Diffs for strings and collections (KT-66806)" to setOf("KT-66806"),
-                    "=> Better integration" to emptySet(),
-                    "   => Out-of-box support for kotlin.test (KT-63622)" to setOf("KT-63622"),
-                    "   => Support for other assertion libraries (KT-66808)" to setOf("KT-66808"),
-                    "=> Integration into the language" to emptySet(), // TODO add (create?) a ticket
+                    "• Improved diagrams" to emptySet(),
+                    "   • Diagram formatting improvements (KT-66807)" to setOf("KT-66807"),
+                    "   • Diffs for strings and collections (KT-66806)" to setOf("KT-66806"),
+                    "• Better integration" to emptySet(),
+                    "   • Out-of-box support for kotlin.test (KT-63622)" to setOf("KT-63622"),
+                    "   • Support for other assertion libraries (KT-66808)" to setOf("KT-66808"),
+                    "• Integration into the language" to emptySet(), // TODO add (create?) a ticket
                 )
             }
         }
@@ -70,10 +69,10 @@ fun ShowBuilder.HowCanYouHelp() {
                 // TODO combine with the summary slide?
                 AnimateByLine(
                     transition = transition.createChildTransition { it.toInt() },
-                    "=> We're looking for your feedback!" to emptySet(),
-                    "   => Try out Power-Assert!" to emptySet(),
-                    "   => Report any compilation errors" to emptySet(),
-                    "   => Report any strange diagrams" to emptySet(),
+                    "• We're looking for your feedback!" to emptySet(),
+                    "   • Try out Power-Assert!" to emptySet(),
+                    "   • Report any compilation errors" to emptySet(),
+                    "   • Report any strange diagrams" to emptySet(),
                 )
             }
         }
@@ -168,8 +167,8 @@ private fun AnimateByLine(
                     text = lineWithLinks,
                     style = textStyle,
                     onClick = { offset ->
-                        lineWithLinks.getStringAnnotations("URL", offset, offset).firstOrNull()?.let {
-                            uriHandler.openUri(it.item)
+                        lineWithLinks.getUrlAnnotations(offset, offset).firstOrNull()?.let {
+                            uriHandler.openUri(it.item.url)
                         }
                     }
                 )
@@ -191,7 +190,7 @@ private fun buildStringWithTicketLink(
             val start = line.indexOf(ticket)
             if (start >= 0) {
                 val end = start + ticket.length
-                addStringAnnotation("URL", "https://youtrack.jetbrains.com/issue/$ticket", start, end)
+                addUrlAnnotation(UrlAnnotation("https://youtrack.jetbrains.com/issue/$ticket"), start, end)
                 addStyle(SpanStyle(textDecoration = TextDecoration.Underline), start, end)
             }
         }

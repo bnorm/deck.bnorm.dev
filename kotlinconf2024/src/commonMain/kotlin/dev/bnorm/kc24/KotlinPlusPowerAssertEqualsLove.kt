@@ -33,7 +33,9 @@ import dev.bnorm.kc24.sections.Future
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.*
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideState
+import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.thenLineEndDiff
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -79,40 +81,18 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     section(title = section2) {
         SectionHeader(animateToBody = true)
-        ExampleCarousel(
-            start = { },
-            end = { Example(SimpleAssertCode) }
-        )
-        SimpleAssertExample()
-        ExampleCarousel(
-            start = { Example(SimpleAssertCode) },
-            end = { Example(ComplexAssertCode) }
-        )
-        ComplexExpressionsExample()
-        ExampleCarousel(
-            start = { Example(ComplexAssertCode) },
-            end = { Example(AssertTrueSmartcastCode) }
-        )
-        AssertTrueSmartcastExample()
-        ExampleCarousel(
-            start = { Example(AssertTrueSmartcastCode) },
-            end = { Example(RequireCode) }
-        )
-        RequireExample()
-        ExampleCarousel(
-            start = { Example(RequireCode) },
-            end = { Example(AssertEqualsCode) }
-        )
-        AssertEqualsAndNotNullExample()
-        // TODO examples
-        //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
+        examples {
+            SimpleAssertExample()
+            ComplexExpressionsExample()
+            AssertTrueSmartcastExample()
+            RequireExample()
+            AssertEqualsAndNotNullExample()
+            // TODO examples
+            //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
 
-        // TODO summary slide before going into the next example?
-        ExampleCarousel(
-            start = { Example(AssertEqualsAndNotNullCode) },
-            end = { Example(SoftAssertWithoutMessageSetup) }
-        )
-        SoftAssertExample()
+            // TODO summary slide before going into the next example?
+            SoftAssertExample()
+        }
         SectionHeader(animateFromBody = true)
     }
 
@@ -205,10 +185,14 @@ fun Summary(transition: Transition<out SlideState<*>>) {
                     exit = fadeOut(defaultSpec()),
                     modifier = Modifier.align(Alignment.BottomStart)
                 ) {
-                    Text(
-                        text = "Thank you,\nand don’t \nforget to vote!",
-                        style = MaterialTheme.typography.h3,
-                    )
+                    Column {
+                        Mastodon()
+                        Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
+                        Text(
+                            text = "Thank you,\nand don’t \nforget to vote!",
+                            style = MaterialTheme.typography.h3,
+                        )
+                    }
                 }
             }
         }

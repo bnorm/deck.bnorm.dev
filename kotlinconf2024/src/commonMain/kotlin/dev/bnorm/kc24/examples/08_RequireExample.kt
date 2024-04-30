@@ -8,38 +8,34 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
+import dev.bnorm.kc24.template.ExampleBuilder
 import dev.bnorm.kc24.template.KodeeSurprised
-import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.ShowBuilder
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.RequireExample() {
-    slideForExample(
+fun ExampleBuilder.RequireExample() {
+    example(
         builder = {
             openGradle()
             updateGradle()
             updateGradle()
             closeGradle()
             openOutput()
+        },
+        kodee = { transition ->
+            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+            }
         }
     ) {
-        TitleAndBody(
-            kodee = {
-                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-                }
-            }
-        ) {
-            val gradleTextSequence = persistentListOf(
-                GradleText.AddAssertTrue.animateTo(GradleText.AddRequire),
-                GradleText.AddRequire.animateTo(GradleText.AddSourceSet),
-            )
-            Example(
-                exampleTextSequence = persistentListOf(RequireCode),
-                gradleTextSequence = gradleTextSequence,
-                outputTextSequence = persistentListOf(persistentListOf(RequireOutput)),
-            )
-        }
+        val gradleTextSequence = persistentListOf(
+            GradleText.AddAssertTrue.animateTo(GradleText.AddRequire),
+            GradleText.AddRequire.animateTo(GradleText.AddSourceSet),
+        )
+        Example(
+            exampleTextSequence = persistentListOf(RequireCode),
+            gradleTextSequence = gradleTextSequence,
+            outputTextSequence = persistentListOf(persistentListOf(RequireOutput)),
+        )
     }
 }
 

@@ -18,10 +18,7 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideContent
-import dev.bnorm.librettist.show.SlideScope
-import dev.bnorm.librettist.show.SlideState
+import dev.bnorm.librettist.show.*
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.jvm.JvmName
 import kotlin.time.Duration.Companion.milliseconds
@@ -63,14 +60,13 @@ fun ShowBuilder.slideForExample(builder: ExampleState.Builder.() -> Unit, conten
     val states = buildExampleStates(builder)
     val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
     slide(states = states.size) {
-        val state = transition.createChildTransition {
+        createChildScope {
             when (it) {
                 SlideState.Entering -> states.first()
                 SlideState.Exiting -> exit
                 is SlideState.Index -> states[it.value]
             }
-        }
-        SlideScope(state).content()
+        }.content()
     }
 }
 

@@ -8,15 +8,14 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
+import dev.bnorm.kc24.template.ExampleBuilder
 import dev.bnorm.kc24.template.KodeeSurprised
-import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.text.thenDiff
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.AssertEqualsAndNotNullExample() {
-    slideForExample(
+fun ExampleBuilder.AssertEqualsAndNotNullExample() {
+    example(
         builder = {
             openGradle()
             updateGradle()
@@ -30,29 +29,26 @@ fun ShowBuilder.AssertEqualsAndNotNullExample() {
             updateGradle()
             closeGradle()
             openOutput()
+        },
+        kodee = { transition ->
+            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+            }
         }
     ) {
-        TitleAndBody(
-            kodee = {
-                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-                }
-            }
-        ) {
-            val exampleTextSequence =
-                startAnimation(AssertEqualsCode).thenDiff(AssertEqualsAndNotNullCode).toList()
-            val gradleTextSequence = persistentListOf(
-                GradleText.AddSourceSet.animateTo(GradleText.AddAssertEquals),
-                GradleText.AddAssertEquals.animateTo(GradleText.AddAssertNotNull),
-            )
-            val outputText =
-                if (transition.currentState.exampleIndex > 0) assertEqualsAndNotNullOutput else AssertEqualsOutput
-            Example(
-                exampleTextSequence = exampleTextSequence,
-                gradleTextSequence = gradleTextSequence,
-                outputTextSequence = persistentListOf(persistentListOf(outputText)),
-            )
-        }
+        val exampleTextSequence =
+            startAnimation(AssertEqualsCode).thenDiff(AssertEqualsAndNotNullCode).toList()
+        val gradleTextSequence = persistentListOf(
+            GradleText.AddSourceSet.animateTo(GradleText.AddAssertEquals),
+            GradleText.AddAssertEquals.animateTo(GradleText.AddAssertNotNull),
+        )
+        val outputText =
+            if (transition.currentState.exampleIndex > 0) assertEqualsAndNotNullOutput else AssertEqualsOutput
+        Example(
+            exampleTextSequence = exampleTextSequence,
+            gradleTextSequence = gradleTextSequence,
+            outputTextSequence = persistentListOf(persistentListOf(outputText)),
+        )
     }
 }
 

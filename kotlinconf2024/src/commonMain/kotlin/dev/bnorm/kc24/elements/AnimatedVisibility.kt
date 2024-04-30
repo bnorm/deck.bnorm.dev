@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun Transition<out Boolean>.AnimatedVisibility(
     modifier: Modifier = Modifier,
-    enter: EnterTransition = fadeIn() + expandIn(),
-    exit: ExitTransition = shrinkOut() + fadeOut(),
+    enter: EnterTransition = fadeIn(defaultSpec()) + expandIn(defaultSpec()),
+    exit: ExitTransition = shrinkOut(defaultSpec()) + fadeOut(defaultSpec()),
     content: @Composable AnimatedVisibilityScope.() -> Unit,
 ) = AnimatedVisibility({ it }, modifier, enter, exit, content)
