@@ -1,9 +1,11 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.compose")
+    kotlin("plugin.power-assert")
     id("org.jetbrains.compose")
-    id("com.bnorm.power.kotlin-power-assert")
 }
 
 group = "dev.bnorm.kc24"
@@ -22,17 +24,20 @@ kotlin {
         }
     }
 
-    compilerOptions {
-        optIn.addAll(
-            "androidx.compose.animation.core.ExperimentalTransitionApi",
-            "androidx.compose.animation.ExperimentalAnimationApi",
-            "org.jetbrains.compose.resources.ExperimentalResourceApi",
-        )
-    }
-
     sourceSets {
+        all {
+            languageSettings {
+                optIn("androidx.compose.animation.core.ExperimentalTransitionApi")
+                optIn("androidx.compose.animation.ExperimentalAnimationApi")
+                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
+            }
+        }
+
         commonMain {
             dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
                 implementation(compose.components.resources)
 
                 implementation("dev.bnorm.librettist:librettist-core")
@@ -55,6 +60,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+}
+
 compose.experimental {
     web.application {}
 }
@@ -64,18 +73,14 @@ tasks.register<Sync>("site") {
     into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
 }
 
-configure<com.bnorm.power.PowerAssertGradleExtension> {
-    functions += listOf(
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
+powerAssert {
+    functions = listOf(
         "kotlin.require",
         "kotlin.test.assertTrue",
         "kotlin.test.assertNotNull",
         "kotlin.test.assertEquals",
         "dev.bnorm.assert.AssertScope.assert",
         "dev.bnorm.assert.assert",
-    )
-    excludedSourceSets += listOf(
-        "commonMain",
-        "jvmMain",
-        "jsWasmMain",
     )
 }

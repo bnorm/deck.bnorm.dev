@@ -15,8 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.bnorm.kc24.kotlinconf2024.generated.resources.ICON_GRADLE_ALT_MONO_REV
+import dev.bnorm.kc24.kotlinconf2024.generated.resources.Res
 import dev.bnorm.kc24.template.SLIDE_PADDING
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -38,7 +39,7 @@ fun GradleFile(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     // TODO use icon from IntelliJ
                     Image(
-                        painter = painterResource(DrawableResource("gradle/ICON-GRADLE-ALT_MONO-REV.png")),
+                        painter = painterResource(Res.drawable.ICON_GRADLE_ALT_MONO_REV),
                         contentDescription = "",
                         modifier = Modifier.size(36.dp),
                     )

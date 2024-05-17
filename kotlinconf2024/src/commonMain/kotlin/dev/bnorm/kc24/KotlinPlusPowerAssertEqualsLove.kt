@@ -29,6 +29,7 @@ import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.examples.*
+import dev.bnorm.kc24.kotlinconf2024.generated.resources.*
 import dev.bnorm.kc24.sections.Future
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.animation.animateList
@@ -37,7 +38,6 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.thenLineEndDiff
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
@@ -129,7 +129,7 @@ fun Title() {
             //  - drop title off the bottom
             //  - how does the next slide appear?
             Image(
-                painter = painterResource(DrawableResource("opening_background.png")),
+                painter = painterResource(Res.drawable.opening_background),
                 contentDescription = "",
                 modifier = Modifier.fillMaxSize(),
             )
@@ -207,7 +207,7 @@ private fun BrianNorman(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(DrawableResource("social/JetBrains.png")),
+            painter = painterResource(Res.drawable.JetBrains),
             contentDescription = "",
             modifier = Modifier.height(64.dp),
         )
@@ -227,7 +227,7 @@ private fun Mastodon(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(DrawableResource("social/mastodon.png")),
+            painter = painterResource(Res.drawable.mastodon),
             contentDescription = "",
         )
         Spacer(modifier = Modifier.size(16.dp))
@@ -245,7 +245,7 @@ private fun SummaryBackground(state: Transition<Boolean>) {
                 exit = slideOutVertically(defaultSpec()) { -it },
             ) {
                 Image(
-                    painter = painterResource(DrawableResource("closing_background_badge.png")),
+                    painter = painterResource(Res.drawable.closing_background_badge),
                     contentDescription = "",
                     modifier = Modifier.size((869 * 1920 / 3840f).dp, (1627 * 1080 / 2160f).dp),
                 )
@@ -255,7 +255,7 @@ private fun SummaryBackground(state: Transition<Boolean>) {
                 exit = slideOutHorizontally(defaultSpec()) { it },
             ) {
                 Image(
-                    painter = painterResource(DrawableResource("closing_background_phone.png")),
+                    painter = painterResource(Res.drawable.closing_background_phone),
                     contentDescription = "",
                     modifier = Modifier.size((993 * 1920 / 3840f).dp, (1930 * 1080 / 2160f).dp),
                 )

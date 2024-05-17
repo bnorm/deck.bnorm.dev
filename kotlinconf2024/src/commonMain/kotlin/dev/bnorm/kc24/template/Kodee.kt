@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.image.Kodee
 import dev.bnorm.kc24.image.kodee.Sitting
+import dev.bnorm.kc24.kotlinconf2024.generated.resources.*
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 interface KodeeScope {
@@ -72,44 +72,43 @@ fun DefaultCornerKodee() {
 
 @Composable
 fun KodeeExcited(modifier: Modifier = Modifier) {
-    Kodee("kotlin_mascot/emoji/kodee-excited.png", modifier)
+    Kodee(Res.drawable.kodee_excited, modifier)
 }
 
 @Composable
 fun KodeeLoving(modifier: Modifier = Modifier) {
-    Kodee("kotlin_mascot/emoji/kodee-loving.png", modifier)
+    Kodee(Res.drawable.kodee_loving, modifier)
 }
 
 @Composable
 fun KodeeSad(modifier: Modifier = Modifier) {
-    Kodee("kotlin_mascot/emoji/kodee-sad.png", modifier)
+    Kodee(Res.drawable.kodee_sad, modifier)
 }
 
 @Composable
 fun KodeeSurprised(modifier: Modifier = Modifier) {
-    Kodee("kotlin_mascot/emoji/kodee-surprised.png", modifier)
+    Kodee(Res.drawable.kodee_surprised, modifier)
 }
 
 @Composable
 fun KodeeBrokenHearted(modifier: Modifier = Modifier) {
-    Kodee("kotlin_mascot/emoji/kodee-broken-hearted.png", modifier)
+    Kodee(Res.drawable.kodee_broken_hearted, modifier)
 }
 
 @Composable
 fun KodeeLost(modifier: Modifier = Modifier) {
-    Kodee("kotlin_mascot/emoji/kodee-lost.png", modifier)
+    Kodee(Res.drawable.kodee_lost, modifier)
 }
 
 @Composable
 fun KodeePleased(modifier: Modifier = Modifier) {
-    Kodee("kotlin_mascot/emoji/kodee-pleased.png", modifier)
+    Kodee(Res.drawable.kodee_pleased, modifier)
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun Kodee(path: String, modifier: Modifier) {
+private fun Kodee(drawableResource: DrawableResource, modifier: Modifier) {
     Image(
-        painter = painterResource(DrawableResource(path)),
+        painter = painterResource(drawableResource),
         contentDescription = "",
         modifier = modifier,
     )

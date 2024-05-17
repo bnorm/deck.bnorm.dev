@@ -5,9 +5,10 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("multiplatform") version "1.9.23"
-        id("org.jetbrains.compose") version "1.6.1"
-        id("com.bnorm.power.kotlin-power-assert") version "0.13.0"
+        kotlin("multiplatform") version "2.0.0-RC3"
+        kotlin("plugin.compose") version "2.0.0-RC3"
+        kotlin("plugin.power-assert") version "2.0.0-RC3"
+        id("org.jetbrains.compose") version "1.6.10-rc03"
     }
 
     dependencyResolutionManagement {

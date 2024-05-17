@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.TextDecoration
@@ -28,6 +27,7 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.toInt
+import kotlin.jvm.JvmName
 
 fun ShowBuilder.Future() {
     PowerAssertIdeas()
@@ -36,7 +36,17 @@ fun ShowBuilder.Future() {
 }
 
 fun ShowBuilder.PowerAssertIdeas() {
-    slide(states = 7) {
+    val lines = listOf(
+        "• Improved diagrams" to emptySet(),
+        "   • Diagram formatting improvements (KT-66807)" to setOf("KT-66807"),
+        "   • Diffs for strings and collections (KT-66806)" to setOf("KT-66806"),
+        "• Better integration" to emptySet(),
+        "   • Out-of-box support for kotlin.test (KT-63622)" to setOf("KT-63622"),
+        "   • Support for other assertion libraries (KT-66808)" to setOf("KT-66808"),
+        "• Integration into the language" to emptySet(), // TODO add (create?) a ticket
+    )
+
+    slide(states = lines.size) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -45,13 +55,7 @@ fun ShowBuilder.PowerAssertIdeas() {
                 // TODO show examples for compressed and diffs?
                 AnimateByLine(
                     transition = transition.createChildTransition { it.toInt() },
-                    "• Improved diagrams" to emptySet(),
-                    "   • Diagram formatting improvements (KT-66807)" to setOf("KT-66807"),
-                    "   • Diffs for strings and collections (KT-66806)" to setOf("KT-66806"),
-                    "• Better integration" to emptySet(),
-                    "   • Out-of-box support for kotlin.test (KT-63622)" to setOf("KT-63622"),
-                    "   • Support for other assertion libraries (KT-66808)" to setOf("KT-66808"),
-                    "• Integration into the language" to emptySet(), // TODO add (create?) a ticket
+                    lines = lines
                 )
             }
         }
@@ -59,7 +63,14 @@ fun ShowBuilder.PowerAssertIdeas() {
 }
 
 fun ShowBuilder.HowCanYouHelp() {
-    slide(states = 4) {
+    val lines = listOf(
+        "• We're looking for your feedback!",
+        "   • Try out Power-Assert!",
+        "   • Report any compilation errors",
+        "   • Report any strange diagrams",
+    )
+
+    slide(states = lines.size) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -69,10 +80,7 @@ fun ShowBuilder.HowCanYouHelp() {
                 // TODO combine with the summary slide?
                 AnimateByLine(
                     transition = transition.createChildTransition { it.toInt() },
-                    "• We're looking for your feedback!" to emptySet(),
-                    "   • Try out Power-Assert!" to emptySet(),
-                    "   • Report any compilation errors" to emptySet(),
-                    "   • Report any strange diagrams" to emptySet(),
+                    lines = lines
                 )
             }
         }
@@ -80,7 +88,13 @@ fun ShowBuilder.HowCanYouHelp() {
 }
 
 fun ShowBuilder.Resources() {
-    slide(states = 3) {
+    val lines = listOf(
+        "Docs: kotl.in/power-assert",
+        "Slack: #power-assert (KotlinLang)",
+        "Slides: deck.bnorm.dev/kotlinconf2024",
+    )
+
+    slide(states = lines.size) {
         val state = transition.createChildTransition { it != SlideState.Exiting }
 
         Box {
@@ -116,9 +130,7 @@ fun ShowBuilder.Resources() {
                     // TODO make these links clickable
                     AnimateByLine(
                         transition = transition.createChildTransition { it.toInt() },
-                        "Docs: kotl.in/power-assert" to emptySet(),
-                        "Slack: #power-assert (KotlinLang)" to emptySet(),
-                        "Slides: deck.bnorm.dev/kotlinconf2024" to emptySet(),
+                        lines = lines
                     )
                 }
             }
@@ -141,7 +153,16 @@ fun ShowBuilder.Resources() {
 @Composable
 private fun AnimateByLine(
     transition: Transition<out Int>,
-    vararg lines: Pair<String, Set<String>>,
+    lines: List<String>,
+) {
+    AnimateByLine(transition, lines.map { it to emptySet() })
+}
+
+@Composable
+@JvmName("AnimateByLineWithLinks")
+private fun AnimateByLine(
+    transition: Transition<out Int>,
+    lines: List<Pair<String, Set<String>>>,
 ) {
     if (lines.isEmpty()) return
 
@@ -157,15 +178,15 @@ private fun AnimateByLine(
                 // TODO these are needed because clickable text doesn't default to them?!
                 val contentColor = LocalContentColor.current
                 val textStyle = LocalTextStyle.current
-                val lineWithLinks = remember(line, tickets, contentColor) {
-                    buildStringWithTicketLink(line, tickets, contentColor)
+                val lineWithLinks = remember(line, tickets) {
+                    buildStringWithTicketLink(line, tickets)
                 }
 
                 // TODO not clickable in overview?
                 val uriHandler = LocalUriHandler.current
                 ClickableText(
                     text = lineWithLinks,
-                    style = textStyle,
+                    style = textStyle.copy(color = contentColor),
                     onClick = { offset ->
                         lineWithLinks.getUrlAnnotations(offset, offset).firstOrNull()?.let {
                             uriHandler.openUri(it.item.url)
@@ -180,12 +201,9 @@ private fun AnimateByLine(
 private fun buildStringWithTicketLink(
     line: String,
     tickets: Set<String>,
-    contentColor: Color,
 ): AnnotatedString {
     return buildAnnotatedString {
-        withStyle(SpanStyle(color = contentColor)) {
-            append(line)
-        }
+        append(line)
         for (ticket in tickets) {
             val start = line.indexOf(ticket)
             if (start >= 0) {
