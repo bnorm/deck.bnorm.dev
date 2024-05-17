@@ -69,7 +69,7 @@ compose.experimental {
 }
 
 tasks.register<Sync>("site") {
-    from(tasks.named("wasmJsBrowserProductionWebpack"))
+    from(tasks.named("wasmJsBrowserDistribution"))
     into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
 }
 
