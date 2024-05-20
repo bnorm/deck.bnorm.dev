@@ -6,7 +6,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
-import dev.bnorm.kc24.template.ExampleBuilder
 import dev.bnorm.kc24.template.KodeeSurprised
 import kotlinx.collections.immutable.persistentListOf
 

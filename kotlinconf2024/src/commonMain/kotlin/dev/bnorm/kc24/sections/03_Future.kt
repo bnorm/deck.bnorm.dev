@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTextApi::class)
-
 package dev.bnorm.kc24.sections
 
 import androidx.compose.animation.*
@@ -7,17 +5,18 @@ import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.AnimatedVisibility
+import dev.bnorm.kc24.elements.TextWithLink
+import dev.bnorm.kc24.elements.appendLink
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.AnimateKodee
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
@@ -27,7 +26,6 @@ import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
 import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.toInt
-import kotlin.jvm.JvmName
 
 fun ShowBuilder.Future() {
     PowerAssertIdeas()
@@ -37,13 +35,13 @@ fun ShowBuilder.Future() {
 
 fun ShowBuilder.PowerAssertIdeas() {
     val lines = listOf(
-        "• Improved diagrams" to emptySet(),
-        "   • Diagram formatting improvements (KT-66807)" to setOf("KT-66807"),
-        "   • Diffs for strings and collections (KT-66806)" to setOf("KT-66806"),
-        "• Better integration" to emptySet(),
-        "   • Out-of-box support for kotlin.test (KT-63622)" to setOf("KT-63622"),
-        "   • Support for other assertion libraries (KT-66808)" to setOf("KT-66808"),
-        "• Integration into the language" to emptySet(), // TODO add (create?) a ticket
+        AnnotatedString("• Improved diagrams"),
+        buildStringWithTicketLink("   • Diagram formatting improvements", "KT-66807"),
+        buildStringWithTicketLink("   • Diffs for strings and collections", "KT-66806"),
+        AnnotatedString("• Better integration"),
+        buildStringWithTicketLink("   • Out-of-box support for kotlin.test", "KT-63622"),
+        buildStringWithTicketLink("   • Support for other assertion libraries", "KT-66808"),
+        AnnotatedString("• Integration into the language"), // TODO add (create?) a ticket
     )
 
     slide(states = lines.size) {
@@ -64,10 +62,12 @@ fun ShowBuilder.PowerAssertIdeas() {
 
 fun ShowBuilder.HowCanYouHelp() {
     val lines = listOf(
-        "• We're looking for your feedback!",
-        "   • Try out Power-Assert!",
-        "   • Report any compilation errors",
-        "   • Report any strange diagrams",
+        AnnotatedString("• We're looking for your feedback!"),
+        buildAnnotatedString {
+            append("   • Try out Power-Assert! Docs: ")
+            appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
+        },
+        AnnotatedString("   • Report any compilation errors or strange diagrams"),
     )
 
     slide(states = lines.size) {
@@ -76,8 +76,6 @@ fun ShowBuilder.HowCanYouHelp() {
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
-                // TODO is this the same as the summary slide?
-                // TODO combine with the summary slide?
                 AnimateByLine(
                     transition = transition.createChildTransition { it.toInt() },
                     lines = lines
@@ -89,12 +87,18 @@ fun ShowBuilder.HowCanYouHelp() {
 
 fun ShowBuilder.Resources() {
     val lines = listOf(
-        "Docs: kotl.in/power-assert",
-        "Slack: #power-assert (KotlinLang)",
-        "Slides: deck.bnorm.dev/kotlinconf2024",
+        buildAnnotatedString {
+            append("Slack: ")
+            appendLink("#power-assert", "https://kotlinlang.slack.com/archives/C06V6SFE71D")
+            append(" (KotlinLang)")
+        },
+        buildAnnotatedString {
+            append("Slides: ")
+            appendLink("deck.bnorm.dev/kotlinconf2024", "https://deck.bnorm.dev/kotlinconf2024")
+        },
     )
 
-    slide(states = lines.size) {
+    slide(states = lines.size + 1) {
         val state = transition.createChildTransition { it != SlideState.Exiting }
 
         Box {
@@ -126,10 +130,43 @@ fun ShowBuilder.Resources() {
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.body1) {
-                    // TODO create these links
-                    // TODO make these links clickable
+                    Column {
+                        val entering = transition.createChildTransition { it == SlideState.Entering }
+                        entering.AnimatedVisibility(
+                            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+                            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
+                        ) {
+                            Text(
+                                "• We're looking for your feedback!",
+                                modifier = Modifier.padding(bottom = SLIDE_CONTENT_SPACING)
+                            )
+                        }
+                        Row {
+                            entering.AnimatedVisibility(
+                                enter = fadeIn(defaultSpec()) + expandHorizontally(defaultSpec()),
+                                exit = fadeOut(defaultSpec()) + shrinkHorizontally(defaultSpec()),
+                            ) {
+                                Text("   • Try out Power-Assert! ")
+                            }
+
+                            TextWithLink(buildAnnotatedString {
+                                append("Docs: ")
+                                appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
+                            })
+                        }
+                        entering.AnimatedVisibility(
+                            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+                            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
+                        ) {
+                            Text(
+                                "   • Report any compilation errors or strange diagrams",
+                                modifier = Modifier.padding(top = SLIDE_CONTENT_SPACING)
+                            )
+                        }
+                    }
+
                     AnimateByLine(
-                        transition = transition.createChildTransition { it.toInt() },
+                        transition = transition.createChildTransition { it.toInt(entering = 0) - 1 },
                         lines = lines
                     )
                 }
@@ -153,64 +190,28 @@ fun ShowBuilder.Resources() {
 @Composable
 private fun AnimateByLine(
     transition: Transition<out Int>,
-    lines: List<String>,
-) {
-    AnimateByLine(transition, lines.map { it to emptySet() })
-}
-
-@Composable
-@JvmName("AnimateByLineWithLinks")
-private fun AnimateByLine(
-    transition: Transition<out Int>,
-    lines: List<Pair<String, Set<String>>>,
+    lines: List<AnnotatedString>,
 ) {
     if (lines.isEmpty()) return
 
-    for ((i, pair) in lines.withIndex()) {
-        val (line, tickets) = pair
+    for ((i, line) in lines.withIndex()) {
         transition.createChildTransition { it >= i }.AnimatedVisibility(
             enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
             exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
         ) {
-            if (tickets.isEmpty()) {
-                Text(line)
-            } else {
-                // TODO these are needed because clickable text doesn't default to them?!
-                val contentColor = LocalContentColor.current
-                val textStyle = LocalTextStyle.current
-                val lineWithLinks = remember(line, tickets) {
-                    buildStringWithTicketLink(line, tickets)
-                }
-
-                // TODO not clickable in overview?
-                val uriHandler = LocalUriHandler.current
-                ClickableText(
-                    text = lineWithLinks,
-                    style = textStyle.copy(color = contentColor),
-                    onClick = { offset ->
-                        lineWithLinks.getUrlAnnotations(offset, offset).firstOrNull()?.let {
-                            uriHandler.openUri(it.item.url)
-                        }
-                    }
-                )
-            }
+            TextWithLink(line)
         }
     }
 }
 
 private fun buildStringWithTicketLink(
     line: String,
-    tickets: Set<String>,
+    ticket: String,
 ): AnnotatedString {
     return buildAnnotatedString {
         append(line)
-        for (ticket in tickets) {
-            val start = line.indexOf(ticket)
-            if (start >= 0) {
-                val end = start + ticket.length
-                addUrlAnnotation(UrlAnnotation("https://youtrack.jetbrains.com/issue/$ticket"), start, end)
-                addStyle(SpanStyle(textDecoration = TextDecoration.Underline), start, end)
-            }
-        }
+        append(" (")
+        appendLink(ticket, "https://youtrack.jetbrains.com/issue/$ticket")
+        append(")")
     }
 }

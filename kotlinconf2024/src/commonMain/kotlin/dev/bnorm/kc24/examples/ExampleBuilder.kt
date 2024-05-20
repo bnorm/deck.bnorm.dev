@@ -1,10 +1,9 @@
-package dev.bnorm.kc24.template
+package dev.bnorm.kc24.examples
 
 import androidx.compose.animation.core.Transition
 import dev.bnorm.kc24.elements.OutputState
-import dev.bnorm.kc24.examples.ExampleCarousel
-import dev.bnorm.kc24.examples.ExampleState
-import dev.bnorm.kc24.examples.buildExampleStates
+import dev.bnorm.kc24.template.KodeeScope
+import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.*
 
 @ShowBuilderDsl
@@ -24,37 +23,41 @@ fun ShowBuilder.examples(
 ) {
     val upstream = this
 
-    var previousContent: SlideContent<ExampleState>? = null
-    var previousExit: ExampleState? = null
     object : ExampleBuilder {
+        private var previousContent: SlideContent<ExampleState>? = null
+        private var previousExit: ExampleState? = null
+
         override fun example(
             builder: ExampleState.Builder.() -> Unit,
             forward: Boolean,
             kodee: KodeeScope.(Transition<out ExampleState>) -> Unit,
             content: SlideContent<ExampleState>,
         ) {
+            val states = buildExampleStates(builder)
+            val enter = states.first()
+            val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
+
             val pContent = previousContent
             val pExit = previousExit
+            previousContent = content
+            previousExit = exit
+
             upstream.ExampleCarousel(
                 forward = forward,
                 start = {
                     if (pContent != null && pExit != null) {
-                        val scope = SlideScope(pExit)
-                        scope.pContent()
+                        SlideScope(pExit).pContent()
                     }
                 },
                 end = {
-                    val scope = SlideScope(ExampleState(exampleIndex = 0))
-                    scope.content()
+                    SlideScope(enter).content()
                 }
             )
 
-            val states = buildExampleStates(builder)
-            val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
             upstream.slide(states = states.size) {
                 val scope = createChildScope {
                     when (it) {
-                        SlideState.Entering -> states.first()
+                        SlideState.Entering -> enter
                         SlideState.Exiting -> exit
                         is SlideState.Index -> states[it.value]
                     }
@@ -65,9 +68,6 @@ fun ShowBuilder.examples(
                     scope.content()
                 }
             }
-
-            previousContent = content
-            previousExit = exit
         }
     }.block()
 }

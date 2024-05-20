@@ -13,7 +13,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
-// TODO switch to `= listOf(...)` instead ` = listOf(...)` in examples
 enum class GradleText {
     Initial {
         override fun buildText(highlighting: Highlighting): AnnotatedString {

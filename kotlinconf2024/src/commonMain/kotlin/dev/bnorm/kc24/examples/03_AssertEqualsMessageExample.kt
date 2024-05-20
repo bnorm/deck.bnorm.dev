@@ -6,7 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
-import dev.bnorm.kc24.template.*
+import dev.bnorm.kc24.template.KodeeExcited
+import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import kotlinx.collections.immutable.persistentListOf
 
@@ -14,7 +15,7 @@ fun ShowBuilder.AssertEqualsMessageExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
         Conclusion.Con(text = "Forget to add message"),
-        Conclusion.Con(text = "Message maintenance burden"),
+        Conclusion.Con(text = "Maintenance burden"),
     )
     slideForExample(
         builder = {

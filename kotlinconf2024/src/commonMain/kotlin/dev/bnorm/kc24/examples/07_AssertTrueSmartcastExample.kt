@@ -8,7 +8,6 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
-import dev.bnorm.kc24.template.ExampleBuilder
 import dev.bnorm.kc24.template.KodeeSurprised
 import kotlinx.collections.immutable.persistentListOf
 

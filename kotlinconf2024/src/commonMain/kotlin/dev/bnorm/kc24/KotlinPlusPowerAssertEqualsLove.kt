@@ -23,11 +23,10 @@ import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import dev.bnorm.kc24.elements.AnimatedVisibility
-import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.kc24.elements.typingSpec
+import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.examples.*
 import dev.bnorm.kc24.kotlinconf2024.generated.resources.*
 import dev.bnorm.kc24.sections.Future
@@ -170,13 +169,21 @@ fun Summary(transition: Transition<out SlideState<*>>) {
                     Spacer(Modifier.size(4.dp))
 
                     ProvideTextStyle(MaterialTheme.typography.body1) {
-                        // TODO create these links
-                        // TODO make these links clickable
-                        Text("Docs: kotl.in/power-assert")
+                        TextWithLink(buildAnnotatedString {
+                            append("Docs: ")
+                            appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
+                        })
                         Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
-                        Text("Slack: #power-assert (KotlinLang)") // kotl.in/power-assert-slack
+                        TextWithLink(buildAnnotatedString {
+                            append("Slack: ")
+                            appendLink("#power-assert", "https://kotlinlang.slack.com/archives/C06V6SFE71D")
+                            append(" (KotlinLang)")
+                        })
                         Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
-                        Text("Slides: deck.bnorm.dev/kotlinconf2024")
+                        TextWithLink(buildAnnotatedString {
+                            append("Slides: ")
+                            appendLink("deck.bnorm.dev/kotlinconf2024", "https://deck.bnorm.dev/kotlinconf2024")
+                        })
                     }
                 }
 
@@ -189,7 +196,7 @@ fun Summary(transition: Transition<out SlideState<*>>) {
                         Mastodon()
                         Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
                         Text(
-                            text = "Thank you,\nand don’t \nforget to vote!",
+                            text = "Thank you,\nand don’t\nforget to vote!",
                             style = MaterialTheme.typography.h3,
                         )
                     }
