@@ -12,8 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.TextWithLink
 import dev.bnorm.kc24.elements.appendLink
@@ -25,6 +28,7 @@ import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
 import dev.bnorm.librettist.show.SlideState
+import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.show.toInt
 
 fun ShowBuilder.Future() {
@@ -57,6 +61,10 @@ fun ShowBuilder.PowerAssertIdeas() {
                 )
             }
         }
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 13:00")
+        }
     }
 }
 
@@ -82,6 +90,10 @@ fun ShowBuilder.HowCanYouHelp() {
                 )
             }
         }
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 14:00")
+        }
     }
 }
 
@@ -95,6 +107,9 @@ fun ShowBuilder.Resources() {
         buildAnnotatedString {
             append("Slides: ")
             appendLink("deck.bnorm.dev/kotlinconf2024", "https://deck.bnorm.dev/kotlinconf2024")
+            withStyle(SpanStyle(fontSize = 30.sp)) {
+                append("\n                 (Powered by Compose Multiplatform!)")
+            }
         },
     )
 
@@ -183,6 +198,10 @@ fun ShowBuilder.Resources() {
                     AnimateKodee {}
                 }
             }
+        }
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 14:00")
         }
     }
 }

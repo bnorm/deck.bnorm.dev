@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.examples
 
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -10,6 +11,7 @@ import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.KodeeSurprised
 import dev.bnorm.librettist.animation.startAnimation
+import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.text.thenDiff
 import kotlinx.collections.immutable.persistentListOf
 
@@ -48,6 +50,10 @@ fun ExampleBuilder.AssertEqualsAndNotNullExample() {
             gradleTextSequence = gradleTextSequence,
             outputTextSequence = persistentListOf(persistentListOf(outputText)),
         )
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 10:00")
+        }
     }
 }
 

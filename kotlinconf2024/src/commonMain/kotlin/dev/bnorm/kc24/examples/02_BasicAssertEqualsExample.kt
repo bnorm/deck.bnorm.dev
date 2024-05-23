@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.examples
 
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -9,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlinx.collections.immutable.persistentListOf
 
 fun ShowBuilder.BasicAssertEqualsExample() {
@@ -35,6 +37,10 @@ fun ShowBuilder.BasicAssertEqualsExample() {
                 outputTextSequence = persistentListOf(persistentListOf(BasicAssertEqualsOutput)),
                 conclusions = conclusions,
             )
+        }
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 2:00")
         }
     }
 }

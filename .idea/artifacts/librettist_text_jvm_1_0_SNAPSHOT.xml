@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="librettist-text-jvm-1.0-SNAPSHOT">
     <output-path>$PROJECT_DIR$/librettist/librettist-text/build/libs</output-path>
-    <root id="archive" name="librettist-text-jvm-1.0-SNAPSHOT.jar">
-      <element id="module-output" name="librettist.librettist-text.jvmMain" />
-    </root>
+    <root id="archive" name="librettist-text-jvm-1.0-SNAPSHOT.jar" />
   </artifact>
 </component>

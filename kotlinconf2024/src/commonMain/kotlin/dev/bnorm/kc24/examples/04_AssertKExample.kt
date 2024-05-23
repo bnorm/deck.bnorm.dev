@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.examples
 
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -8,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.template.*
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlinx.collections.immutable.persistentListOf
 
 fun ShowBuilder.AssertKExample() {
@@ -36,6 +38,10 @@ fun ShowBuilder.AssertKExample() {
                 outputTextSequence = persistentListOf(persistentListOf(AssertKOutput)),
                 conclusions = conclusions,
             )
+        }
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 4:00")
         }
     }
 }

@@ -1,6 +1,7 @@
 package dev.bnorm.kc24.examples
 
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import dev.bnorm.kc24.template.KodeeSurprised
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.rememberHighlighted
+import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
@@ -63,6 +65,10 @@ fun ExampleBuilder.SoftAssertExampleWithWarning() {
             exampleTextSequence = persistentListOf(SoftAssertCode),
             outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutputWarning))
         )
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 12:00")
+        }
     }
 }
 

@@ -1,12 +1,14 @@
 package dev.bnorm.kc24.examples
 
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.template.KodeeSurprised
+import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlinx.collections.immutable.persistentListOf
 
 fun ExampleBuilder.ComplexExpressionsExample() {
@@ -24,6 +26,10 @@ fun ExampleBuilder.ComplexExpressionsExample() {
             exampleTextSequence = persistentListOf(ComplexAssertCode),
             outputTextSequence = persistentListOf(persistentListOf(ComplexAssertOutput)),
         )
+
+        ShowAssistTab("Notes") {
+            Text("Finish by 6:00")
+        }
     }
 }
 
