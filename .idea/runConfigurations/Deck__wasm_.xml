@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="KotlinConf2024 [wasm]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Deck [wasm]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/kotlinconf2024" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/deck.bnorm.dev" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="--continuous" />
       <option name="taskDescriptions">

@@ -1,6 +1,8 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="kotlinconf2024-wasm-js-1.0-SNAPSHOT">
     <output-path>$PROJECT_DIR$/kotlinconf2024/build/libs</output-path>
-    <root id="archive" name="kotlinconf2024-wasm-js-1.0-SNAPSHOT.jar" />
+    <root id="archive" name="kotlinconf2024-wasm-js-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="deck.bnorm.dev.kotlinconf2024.wasmJsMain" />
+    </root>
   </artifact>
 </component>

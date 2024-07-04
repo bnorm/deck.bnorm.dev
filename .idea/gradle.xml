@@ -21,6 +21,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/deck.bnorm.dev" />
             <option value="$PROJECT_DIR$/kotlinconf2024" />
             <option value="$PROJECT_DIR$/librettist" />
             <option value="$PROJECT_DIR$/librettist/librettist-core" />

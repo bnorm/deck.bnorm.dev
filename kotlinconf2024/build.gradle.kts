@@ -19,7 +19,7 @@ kotlin {
         binaries.executable()
         browser {
             commonWebpackConfig {
-                outputFileName = "show.js"
+                outputFileName = "kotlinconf2024.js"
             }
         }
     }
@@ -38,15 +38,15 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                implementation(compose.components.resources)
+                api(compose.components.resources)
 
-                implementation("dev.bnorm.librettist:librettist-core")
-                implementation("dev.bnorm.librettist:librettist-text")
+                api("dev.bnorm.librettist:librettist-core")
+                api("dev.bnorm.librettist:librettist-text")
             }
         }
         jvmMain {
             dependencies {
-                implementation(compose.desktop.currentOs)
+                api(compose.desktop.currentOs)
             }
         }
         jvmTest {

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="deck.bnorm.dev-wasm-js-1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/deck.bnorm.dev/build/libs</output-path>
+    <root id="archive" name="deck.bnorm.dev-wasm-js-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="deck.bnorm.dev.deck.bnorm.dev.wasmJsMain" />
+    </root>
+  </artifact>
+</component>
