@@ -29,8 +29,9 @@ kotlin {
     }
 }
 
-compose.experimental {
-    web.application {}
+compose {
+    web {
+    }
 }
 
 tasks.register<Sync>("site") {
