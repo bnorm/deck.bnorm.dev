@@ -1,8 +1,12 @@
 package dev.bnorm.kc24.examples
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -56,10 +60,27 @@ data class ExampleState(
     }
 }
 
-fun ShowBuilder.slideForExample(builder: ExampleState.Builder.() -> Unit, content: SlideContent<ExampleState>) {
+val EnterForward: (AdvanceDirection) -> EnterTransition = { direction ->
+    slideInHorizontally(defaultSpec(750.milliseconds)) {
+        if (direction == AdvanceDirection.Forward) it else -it
+    }
+}
+
+val ExitForward: (AdvanceDirection) -> ExitTransition = { direction ->
+    slideOutHorizontally(defaultSpec(750.milliseconds)) {
+        if (direction == AdvanceDirection.Forward) -it else it
+    }
+}
+
+fun ShowBuilder.slideForExample(
+    builder: ExampleState.Builder.() -> Unit,
+    enterTransition: (AdvanceDirection) -> EnterTransition = { EnterTransition.None },
+    exitTransition: (AdvanceDirection) -> ExitTransition = { ExitTransition.None },
+    content: SlideContent<ExampleState>,
+) {
     val states = buildExampleStates(builder)
     val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
-    slide(states = states.size) {
+    slide(states = states.size, enterTransition, exitTransition) {
         createChildScope {
             when (it) {
                 SlideState.Entering -> states.first()

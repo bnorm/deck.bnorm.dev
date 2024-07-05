@@ -48,10 +48,6 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     section(title = section1) {
         SectionHeader(animateToBody = true)
-        ExampleCarousel(
-            start = { },
-            end = { Example(BasicAssertTrueCode) }
-        )
         BasicAssertTrueExample()
         ExampleTransition {
             val start = BasicAssertTrueCode
@@ -80,18 +76,16 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
 
     section(title = section2) {
         SectionHeader(animateToBody = true)
-        examples {
-            SimpleAssertExample()
-            ComplexExpressionsExample()
-            AssertTrueSmartcastExample()
-            RequireExample()
-            AssertEqualsAndNotNullExample()
-            // TODO examples
-            //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
+        SimpleAssertExample()
+        ComplexExpressionsExample()
+        AssertTrueSmartcastExample()
+        RequireExample()
+        AssertEqualsAndNotNullExample()
+        // TODO examples
+        //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
 
-            // TODO summary slide before going into the next example?
-            SoftAssertExample()
-        }
+        // TODO summary slide before going into the next example?
+        SoftAssertExample()
         SectionHeader(animateFromBody = true)
     }
 

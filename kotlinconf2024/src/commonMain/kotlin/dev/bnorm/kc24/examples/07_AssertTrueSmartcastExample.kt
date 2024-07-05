@@ -10,11 +10,13 @@ import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.KodeeSurprised
+import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlinx.collections.immutable.persistentListOf
 
-fun ExampleBuilder.AssertTrueSmartcastExample() {
-    example(
+fun ShowBuilder.AssertTrueSmartcastExample() {
+    slideForExample(
         builder = {
             openGradle()
             updateGradle()
@@ -22,24 +24,29 @@ fun ExampleBuilder.AssertTrueSmartcastExample() {
             closeGradle()
             openOutput()
         },
-        kodee = { transition ->
-            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-            }
-        }
+        enterTransition = EnterForward,
+        exitTransition = ExitForward,
     ) {
-        val gradleTextSequence = persistentListOf(
-            GradleText.AddPlugin.animateTo(GradleText.AddConfig),
-            GradleText.AddConfig.animateTo(GradleText.AddAssertTrue),
-        )
-        Example(
-            exampleTextSequence = persistentListOf(AssertTrueSmartcastCode),
-            gradleTextSequence = gradleTextSequence,
-            outputTextSequence = persistentListOf(persistentListOf(AssertTrueSmartcastOutput)),
-        )
+        TitleAndBody(
+            kodee = {
+                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+                }
+            }
+        ) {
+            val gradleTextSequence = persistentListOf(
+                GradleText.AddPlugin.animateTo(GradleText.AddConfig),
+                GradleText.AddConfig.animateTo(GradleText.AddAssertTrue),
+            )
+            Example(
+                exampleTextSequence = persistentListOf(AssertTrueSmartcastCode),
+                gradleTextSequence = gradleTextSequence,
+                outputTextSequence = persistentListOf(persistentListOf(AssertTrueSmartcastOutput)),
+            )
 
-        ShowAssistTab("Notes") {
-            Text("Finish by 7:00")
+            ShowAssistTab("Notes") {
+                Text("Finish by 7:00")
+            }
         }
     }
 }

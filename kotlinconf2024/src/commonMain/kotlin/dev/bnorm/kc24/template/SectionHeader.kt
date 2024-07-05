@@ -4,10 +4,8 @@ package dev.bnorm.kc24.template
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.show.SlideSection
 import dev.bnorm.librettist.show.SlideState
 
@@ -42,7 +41,7 @@ fun ShowBuilder.SectionHeader(
 }
 
 @Composable
-fun SectionHeader(
+fun SlideScope<*>.SectionHeader(
     showAsBody: Transition<Boolean>,
     title: @Composable () -> Unit = SlideSection.header,
 ) {
@@ -60,12 +59,9 @@ fun SectionHeader(
 
     Column(Modifier.fillMaxSize()) {
         Spacer(Modifier.requiredHeight(spacing))
-        Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
-            ProvideTextStyle(textStyle) {
-                title()
-            }
+        SharedHeader(textStyle) {
+            title()
         }
-        Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         Box(Modifier.fillMaxWidth().offset(y = (-294).dp), contentAlignment = Alignment.TopEnd) {
             showAsBody.AnimatedVisibility(
                 visible = { !it },
@@ -78,15 +74,12 @@ fun SectionHeader(
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    SharedKodee {
         showAsBody.AnimatedVisibility(
             enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
             exit = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
-            modifier = Modifier.align(Alignment.BottomEnd),
         ) {
-            Box(Modifier.padding(8.dp)) {
-                DefaultCornerKodee()
-            }
+            DefaultCornerKodee()
         }
     }
 }

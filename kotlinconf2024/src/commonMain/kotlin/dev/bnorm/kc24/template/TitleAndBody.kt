@@ -5,31 +5,49 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import dev.bnorm.librettist.show.SlideScope
 import dev.bnorm.librettist.show.SlideSection
 
 @Composable
-fun TitleAndBody(
+fun SlideScope<*>.TitleAndBody(
     title: @Composable () -> Unit = SlideSection.header,
     kodee: KodeeScope.() -> Unit = {},
     body: @Composable () -> Unit = {},
 ) {
+
     Column(Modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
-            ProvideTextStyle(MaterialTheme.typography.h3) {
-                title()
-            }
+        SharedHeader(MaterialTheme.typography.h3) {
+            title()
         }
-        Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         Box(Modifier.fillMaxSize()) {
             ProvideTextStyle(MaterialTheme.typography.body1) {
                 body()
             }
         }
     }
-    Box(Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomEnd) {
+    SharedKodee {
         AnimateKodee { kodee() }
+    }
+}
+
+@Composable
+fun SlideScope<*>.SharedHeader(textStyle: TextStyle, title: @Composable () -> Unit) {
+    with(sharedTransitionScope) {
+        Column(
+            modifier = Modifier.sharedElement(
+                rememberSharedContentState(key = "title"),
+                animatedVisibilityScope = animatedContentScope,
+            )
+        ) {
+            Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
+                ProvideTextStyle(textStyle) {
+                    title()
+                }
+            }
+            Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
+        }
     }
 }

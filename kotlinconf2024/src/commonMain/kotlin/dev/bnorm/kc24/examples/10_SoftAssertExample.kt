@@ -1,5 +1,7 @@
 package dev.bnorm.kc24.examples
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -10,18 +12,22 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
+import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.KodeeSad
 import dev.bnorm.kc24.template.KodeeSurprised
+import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
 import dev.bnorm.librettist.rememberHighlighted
+import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlin.time.Duration.Companion.milliseconds
 
-fun ExampleBuilder.SoftAssertExample() {
+fun ShowBuilder.SoftAssertExample() {
     SoftAssertSetupWithoutMessage()
 
     // TODO prefix the failure with a warning that we're going to see it fail
@@ -32,74 +38,91 @@ fun ExampleBuilder.SoftAssertExample() {
     SoftAssertWithMessageExample()
 }
 
-fun ExampleBuilder.SoftAssertSetupWithoutMessage() {
+fun ShowBuilder.SoftAssertSetupWithoutMessage() {
     // TODO show what the implementation looks like?
 
-    example(
+    slideForExample(
         builder = {
             openGradle()
             updateGradle()
             closeGradle()
-        }
+        },
+        enterTransition = EnterForward,
+        exitTransition = ExitForward,
     ) {
-        val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
-        Example(
-            exampleTextSequence = persistentListOf(SoftAssertWithoutMessageSetup),
-            gradleTextSequence = persistentListOf(gradleTextSequence),
-        )
+        TitleAndBody {
+            val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
+            Example(
+                exampleTextSequence = persistentListOf(SoftAssertWithoutMessageSetup),
+                gradleTextSequence = persistentListOf(gradleTextSequence),
+            )
+        }
     }
 }
 
-fun ExampleBuilder.SoftAssertExampleWithWarning() {
-    example(
+fun ShowBuilder.SoftAssertExampleWithWarning() {
+    slideForExample(
         builder = {
             openOutput()
         },
-        kodee = { transition ->
-            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                KodeeSad(modifier = Modifier.requiredSize(150.dp))
-            }
-        }
+        enterTransition = { slideInHorizontally(defaultSpec(750.milliseconds)) { it } },
+        exitTransition = { slideOutHorizontally(defaultSpec(750.milliseconds)) { it } },
     ) {
-        Example(
-            exampleTextSequence = persistentListOf(SoftAssertCode),
-            outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutputWarning))
-        )
+        TitleAndBody(
+            kodee = {
+                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                    KodeeSad(modifier = Modifier.requiredSize(150.dp))
+                }
+            }
+        ) {
+            Example(
+                exampleTextSequence = persistentListOf(SoftAssertCode),
+                outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutputWarning))
+            )
 
-        ShowAssistTab("Notes") {
-            Text("Finish by 12:00")
+            ShowAssistTab("Notes") {
+                Text("Finish by 12:00")
+            }
         }
     }
 }
 
-fun ExampleBuilder.SoftAssertSetupWithMessage() {
-    example(
+fun ShowBuilder.SoftAssertSetupWithMessage() {
+    slideForExample(
         builder = {
             updateExample()
         },
-        forward = false
+        enterTransition = { slideInHorizontally(defaultSpec(750.milliseconds)) { -it } },
+        exitTransition = { slideOutHorizontally(defaultSpec(750.milliseconds)) { -it } },
     ) {
-        Example(
-            exampleTextSequence = SoftAssertSetupSequence,
-        )
+        TitleAndBody {
+            Example(
+                exampleTextSequence = SoftAssertSetupSequence,
+            )
+        }
     }
 }
 
-fun ExampleBuilder.SoftAssertWithMessageExample() {
-    example(
+fun ShowBuilder.SoftAssertWithMessageExample() {
+    slideForExample(
         builder = {
             openOutput()
         },
-        kodee = { transition ->
-            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-            }
-        }
+        enterTransition = EnterForward,
+        exitTransition = ExitForward,
     ) {
-        Example(
-            exampleTextSequence = persistentListOf(SoftAssertCode),
-            outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutput)),
-        )
+        TitleAndBody(
+            kodee = {
+                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+                }
+            }
+        ) {
+            Example(
+                exampleTextSequence = persistentListOf(SoftAssertCode),
+                outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutput)),
+            )
+        }
     }
 }
 

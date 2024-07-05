@@ -1,5 +1,5 @@
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.rememberTransition
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -113,7 +113,7 @@ class ExportTest {
         val doc = PDDocument()
 
         val slides = buildSlides(ShowBuilder::KotlinPlusPowerAssertEqualsLove)
-        for ((page, index) in slides.indices.withIndex()) {
+        for ((page, index) in slides.toIndexes().withIndex()) {
             setSlide(slides, index)
             createPage(captureToImage(), page, doc)
         }
@@ -125,7 +125,6 @@ class ExportTest {
     private fun DesktopComposeUiTest.setSlide(slides: List<Slide>, index: Slide.Index) {
         setContent {
             val content = slides[index.index].content
-            val scope = SlideScope(rememberTransition(MutableTransitionState(SlideState.Index(index.state))))
 
             ShowTheme(Theme.dark) {
                 ScaledBox(
@@ -134,7 +133,16 @@ class ExportTest {
                 ) {
                     Surface(modifier = Modifier.fillMaxSize()) {
                         key(index) {
-                            scope.content()
+                            SharedTransitionLayout {
+                                AnimatedContent(Unit) {
+                                    val scope = SlideScope(
+                                        SlideState.Index(index.state),
+                                        this@AnimatedContent,
+                                        this@SharedTransitionLayout,
+                                    )
+                                    scope.content()
+                                }
+                            }
                         }
                     }
                 }

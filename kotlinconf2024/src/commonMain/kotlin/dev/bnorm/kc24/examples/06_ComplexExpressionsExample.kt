@@ -8,27 +8,34 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.template.KodeeSurprised
+import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlinx.collections.immutable.persistentListOf
 
-fun ExampleBuilder.ComplexExpressionsExample() {
-    example(
+fun ShowBuilder.ComplexExpressionsExample() {
+    slideForExample(
         builder = {
             openOutput()
         },
-        kodee = { transition ->
-            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-            }
-        }
+        enterTransition = EnterForward,
+        exitTransition = ExitForward,
     ) {
-        Example(
-            exampleTextSequence = persistentListOf(ComplexAssertCode),
-            outputTextSequence = persistentListOf(persistentListOf(ComplexAssertOutput)),
-        )
+        TitleAndBody(
+            kodee = {
+                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+                }
+            }
+        ) {
+            Example(
+                exampleTextSequence = persistentListOf(ComplexAssertCode),
+                outputTextSequence = persistentListOf(persistentListOf(ComplexAssertOutput)),
+            )
 
-        ShowAssistTab("Notes") {
-            Text("Finish by 6:00")
+            ShowAssistTab("Notes") {
+                Text("Finish by 6:00")
+            }
         }
     }
 }

@@ -7,9 +7,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -17,8 +21,24 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.image.Kodee
 import dev.bnorm.kc24.image.kodee.Sitting
 import dev.bnorm.kc24.kotlinconf2024.generated.resources.*
+import dev.bnorm.librettist.show.SlideScope
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+
+@Composable
+fun SlideScope<*>.SharedKodee(content: @Composable () -> Unit) {
+    with(sharedTransitionScope) {
+        Box(
+            Modifier.sharedElement(
+                rememberSharedContentState(key = "kodee"),
+                animatedVisibilityScope = animatedContentScope,
+            ).fillMaxSize().padding(8.dp),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            content()
+        }
+    }
+}
 
 interface KodeeScope {
     fun show(condition: () -> Boolean, content: @Composable () -> Unit)
@@ -34,7 +54,8 @@ interface KodeeScope {
 
 @Composable
 fun AnimateKodee(
-    builder: KodeeScope.() -> Unit
+    modifier: Modifier = Modifier,
+    builder: KodeeScope.() -> Unit,
 ) {
     fun <T> spec(): FiniteAnimationSpec<T> = tween()
 
@@ -59,10 +80,15 @@ fun AnimateKodee(
         }
     }
 
-    AnimatedVisibility(
-        visible = !somethingVisible,
-        enter = fadeIn(spec()), exit = fadeOut(spec()),
-    ) { DefaultCornerKodee() }
+    Box(modifier) {
+        AnimatedVisibility(
+            visible = !somethingVisible,
+            enter = fadeIn(spec()),
+            exit = fadeOut(spec()),
+        ) {
+            DefaultCornerKodee()
+        }
+    }
 }
 
 @Composable

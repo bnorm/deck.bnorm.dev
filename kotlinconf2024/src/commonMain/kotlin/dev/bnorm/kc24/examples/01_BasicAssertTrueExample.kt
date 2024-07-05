@@ -1,5 +1,9 @@
 package dev.bnorm.kc24.examples
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -7,10 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.elements.OutputState
-import dev.bnorm.kc24.template.*
+import dev.bnorm.kc24.elements.defaultSpec
+import dev.bnorm.kc24.template.KodeeBrokenHearted
+import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.show.AdvanceDirection
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlinx.collections.immutable.persistentListOf
+import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.BasicAssertTrueExample() {
     val conclusions = persistentListOf(
@@ -22,7 +30,19 @@ fun ShowBuilder.BasicAssertTrueExample() {
             openOutput()
             minimizeOutput()
             repeat(conclusions.size) { addConclusion() }
-        }
+        },
+        enterTransition = { direction ->
+            when (direction) {
+                AdvanceDirection.Forward -> slideInHorizontally(defaultSpec(750.milliseconds)) { it }
+                AdvanceDirection.Backward -> EnterTransition.None
+            }
+        },
+        exitTransition = { direction ->
+            when (direction) {
+                AdvanceDirection.Forward -> ExitTransition.None
+                AdvanceDirection.Backward -> slideOutHorizontally(defaultSpec(750.milliseconds)) { it }
+            }
+        },
     ) {
         TitleAndBody(
             kodee = {

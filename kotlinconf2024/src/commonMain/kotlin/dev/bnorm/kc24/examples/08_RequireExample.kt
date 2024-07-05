@@ -10,11 +10,13 @@ import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.KodeeSurprised
+import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import kotlinx.collections.immutable.persistentListOf
 
-fun ExampleBuilder.RequireExample() {
-    example(
+fun ShowBuilder.RequireExample() {
+    slideForExample(
         builder = {
             openGradle()
             updateGradle()
@@ -22,24 +24,29 @@ fun ExampleBuilder.RequireExample() {
             closeGradle()
             openOutput()
         },
-        kodee = { transition ->
-            transition.both(condition = { it.showOutput != OutputState.Hidden }) {
-                KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
-            }
-        }
+        enterTransition = EnterForward,
+        exitTransition = ExitForward,
     ) {
-        val gradleTextSequence = persistentListOf(
-            GradleText.AddAssertTrue.animateTo(GradleText.AddRequire),
-            GradleText.AddRequire.animateTo(GradleText.AddSourceSet),
-        )
-        Example(
-            exampleTextSequence = persistentListOf(RequireCode),
-            gradleTextSequence = gradleTextSequence,
-            outputTextSequence = persistentListOf(persistentListOf(RequireOutput)),
-        )
+        TitleAndBody(
+            kodee = {
+                transition.both(condition = { it.showOutput != OutputState.Hidden }) {
+                    KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
+                }
+            }
+        ) {
+            val gradleTextSequence = persistentListOf(
+                GradleText.AddAssertTrue.animateTo(GradleText.AddRequire),
+                GradleText.AddRequire.animateTo(GradleText.AddSourceSet),
+            )
+            Example(
+                exampleTextSequence = persistentListOf(RequireCode),
+                gradleTextSequence = gradleTextSequence,
+                outputTextSequence = persistentListOf(persistentListOf(RequireOutput)),
+            )
 
-        ShowAssistTab("Notes") {
-            Text("Finish by 8:00")
+            ShowAssistTab("Notes") {
+                Text("Finish by 8:00")
+            }
         }
     }
 }
