@@ -18,7 +18,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.kc24.elements.AnimatedVisibility
-import dev.bnorm.kc24.elements.TextWithLink
 import dev.bnorm.kc24.elements.appendLink
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.AnimateKodee
@@ -164,7 +163,7 @@ fun ShowBuilder.Resources() {
                                 Text("   • Try out Power-Assert! ")
                             }
 
-                            TextWithLink(buildAnnotatedString {
+                            Text(text = buildAnnotatedString {
                                 append("Docs: ")
                                 appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
                             })
@@ -218,7 +217,7 @@ private fun AnimateByLine(
             enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
             exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
         ) {
-            TextWithLink(line)
+            Text(line)
         }
     }
 }

@@ -163,18 +163,18 @@ fun Summary(transition: Transition<out SlideState<*>>) {
                     Spacer(Modifier.size(4.dp))
 
                     ProvideTextStyle(MaterialTheme.typography.body1) {
-                        TextWithLink(buildAnnotatedString {
+                        Text(buildAnnotatedString {
                             append("Docs: ")
                             appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
                         })
                         Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
-                        TextWithLink(buildAnnotatedString {
+                        Text(buildAnnotatedString {
                             append("Slack: ")
                             appendLink("#power-assert", "https://kotlinlang.slack.com/archives/C06V6SFE71D")
                             append(" (KotlinLang)")
                         })
                         Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
-                        TextWithLink(buildAnnotatedString {
+                        Text(buildAnnotatedString {
                             append("Slides: ")
                             appendLink("deck.bnorm.dev/kotlinconf2024", "https://deck.bnorm.dev/kotlinconf2024")
                         })
