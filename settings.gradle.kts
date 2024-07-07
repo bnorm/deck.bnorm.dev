@@ -3,13 +3,17 @@
 pluginManagement {
     repositories {
         mavenCentral()
+        google()
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     }
 
     plugins {
-        kotlin("multiplatform") version "2.0.0"
-        kotlin("plugin.compose") version "2.0.0"
-        kotlin("plugin.power-assert") version "2.0.0"
+        val kotlinVersion = "2.0.10-RC-510"
+
+        kotlin("multiplatform") version kotlinVersion
+        kotlin("plugin.compose") version kotlinVersion
+        kotlin("plugin.power-assert") version kotlinVersion
         id("org.jetbrains.compose") version "1.7.0-alpha01"
     }
 
@@ -17,6 +21,7 @@ pluginManagement {
         repositories {
             mavenCentral()
             google()
+            maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
         }
     }
 }
