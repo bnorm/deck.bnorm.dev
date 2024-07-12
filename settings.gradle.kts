@@ -5,11 +5,10 @@ pluginManagement {
         mavenCentral()
         google()
         gradlePluginPortal()
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     }
 
     plugins {
-        val kotlinVersion = "2.0.10-RC-510"
+        val kotlinVersion = "2.0.20-Beta2"
 
         kotlin("multiplatform") version kotlinVersion
         kotlin("plugin.compose") version kotlinVersion
@@ -21,7 +20,6 @@ pluginManagement {
         repositories {
             mavenCentral()
             google()
-            maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
         }
     }
 }
