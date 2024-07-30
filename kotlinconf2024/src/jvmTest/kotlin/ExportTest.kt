@@ -102,6 +102,19 @@ import kotlin.test.Test
  *     bitmap
  * }
  * ```
+ *
+ * TODO or use SingleLayerComposeScene?
+ * ```
+ *     val scene = SingleLayerComposeScene()
+ *     scene.setContent(content)
+ *     val bmp = ImageBitmap(size.width, size.height)
+ *     val canvas = Canvas(bmp)
+ *     scene.render(canvas, 0L)
+ *     val result = ImageIO.write(bmp.toAwtImage(), "png", File("C:\\Users\\your-user\\Desktop\\test.jpg"))
+ *     scene.close()
+ * ```
+ *
+ * TODO or use ImageComposeScene?
  */
 @OptIn(ExperimentalTestApi::class)
 class ExportTest {

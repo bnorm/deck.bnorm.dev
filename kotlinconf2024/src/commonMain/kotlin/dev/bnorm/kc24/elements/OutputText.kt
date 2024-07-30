@@ -51,7 +51,7 @@ fun OutputText(
             Text(
                 text = text,
                 modifier = Modifier
-                    .verticalScroll(scrollState)
+                    .verticalScroll(scrollState, enabled = false)
                     .padding(32.dp)
                     .padding(bottom = 40.dp), // Offset the visible padding
             )
