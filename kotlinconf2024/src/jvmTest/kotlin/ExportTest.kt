@@ -1,10 +1,6 @@
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
@@ -16,9 +12,12 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.KotlinPlusPowerAssertEqualsLove
 import dev.bnorm.kc24.Theme
 import dev.bnorm.librettist.DEFAULT_SLIDE_SIZE
-import dev.bnorm.librettist.ScaledBox
 import dev.bnorm.librettist.ShowTheme
-import dev.bnorm.librettist.show.*
+import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.librettist.show.Slide
+import dev.bnorm.librettist.show.buildSlides
+import dev.bnorm.librettist.show.toIndexes
+import dev.bnorm.librettist.slide.SlidePreview
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
@@ -137,28 +136,13 @@ class ExportTest {
 
     private fun DesktopComposeUiTest.setSlide(slides: List<Slide>, index: Slide.Index) {
         setContent {
-            val content = slides[index.index].content
-
             ShowTheme(Theme.dark) {
-                ScaledBox(
-                    targetSize = DpSize(width.dp, height.dp),
+                SlidePreview(
+                    slide = slides[index.index],
+                    state = index.state,
+                    slideSize = DpSize(width.dp, height.dp),
                     modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)
-                ) {
-                    Surface(modifier = Modifier.fillMaxSize()) {
-                        key(index) {
-                            SharedTransitionLayout {
-                                AnimatedContent(Unit) {
-                                    val scope = SlideScope(
-                                        SlideState.Index(index.state),
-                                        this@AnimatedContent,
-                                        this@SharedTransitionLayout,
-                                    )
-                                    scope.content()
-                                }
-                            }
-                        }
-                    }
-                }
+                )
             }
         }
     }

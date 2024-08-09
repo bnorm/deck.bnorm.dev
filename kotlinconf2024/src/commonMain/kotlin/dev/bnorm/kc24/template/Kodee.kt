@@ -25,12 +25,14 @@ import dev.bnorm.librettist.show.SlideScope
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
+private object SharedKodeeKey
+
 @Composable
 fun SlideScope<*>.SharedKodee(content: @Composable () -> Unit) {
     with(sharedTransitionScope) {
         Box(
             Modifier.sharedElement(
-                rememberSharedContentState(key = "kodee"),
+                rememberSharedContentState(key = SharedKodeeKey),
                 animatedVisibilityScope = animatedContentScope,
             ).fillMaxSize().padding(8.dp),
             contentAlignment = Alignment.BottomEnd

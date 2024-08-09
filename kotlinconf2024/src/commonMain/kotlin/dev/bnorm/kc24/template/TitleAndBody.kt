@@ -33,12 +33,14 @@ fun SlideScope<*>.TitleAndBody(
     }
 }
 
+private object SharedHeaderKey
+
 @Composable
 fun SlideScope<*>.SharedHeader(textStyle: TextStyle, title: @Composable () -> Unit) {
     with(sharedTransitionScope) {
         Column(
             modifier = Modifier.sharedElement(
-                rememberSharedContentState(key = "title"),
+                rememberSharedContentState(key = SharedHeaderKey),
                 animatedVisibilityScope = animatedContentScope,
             )
         ) {
