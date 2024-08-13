@@ -57,7 +57,7 @@ interface KodeeScope {
 @Composable
 fun AnimateKodee(
     modifier: Modifier = Modifier,
-    builder: KodeeScope.() -> Unit,
+    builder: KodeeScope.() -> Unit = {},
 ) {
     fun <T> spec(): FiniteAnimationSpec<T> = tween()
 

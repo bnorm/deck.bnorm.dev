@@ -26,9 +26,9 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.show.ShowBuilder
 import dev.bnorm.librettist.show.SlideSection
-import dev.bnorm.librettist.show.SlideState
 import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.show.toInt
+import kotlin.time.Duration.Companion.milliseconds
 
 fun ShowBuilder.Future() {
     PowerAssertIdeas()
@@ -68,25 +68,58 @@ fun ShowBuilder.PowerAssertIdeas() {
 }
 
 fun ShowBuilder.HowCanYouHelp() {
-    val lines = listOf(
-        AnnotatedString("• We're looking for your feedback!"),
-        buildAnnotatedString {
-            append("   • Try out Power-Assert! Docs: ")
-            appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
-        },
-        AnnotatedString("   • Report any compilation errors or strange diagrams"),
-    )
-
-    slide(states = lines.size) {
+    slide(states = 3) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
-                AnimateByLine(
-                    transition = transition.createChildTransition { it.toInt() },
-                    lines = lines
-                )
+                transition.createChildTransition { it.toInt() >= 0 }.AnimatedVisibility(
+                    enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+                    exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
+                    modifier = Modifier.animateSlideExit(
+                        backward = fadeIn(defaultSpec(delay = 300.milliseconds)), forward = fadeOut(defaultSpec()),
+                    ),
+                ) {
+                    Text("• We're looking for your feedback!")
+                }
+                transition.createChildTransition { it.toInt() >= 1 }.AnimatedVisibility(
+                    enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+                    exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
+                ) {
+                    Row {
+                        Text(
+                            "   • Try out Power-Assert! ",
+                            modifier = Modifier.animateSlideExit(
+                                backward = fadeIn(defaultSpec(delay = 300.milliseconds)),
+                                forward = fadeOut(defaultSpec()),
+                            ),
+                        )
+
+                        with(sharedTransitionScope) {
+                            Text(
+                                text = buildAnnotatedString {
+                                    append("Docs: ")
+                                    appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
+                                },
+                                modifier = Modifier.sharedBounds(
+                                    rememberSharedContentState("docs-link"),
+                                    animatedVisibilityScope = animatedContentScope,
+                                    boundsTransform = { _, _ -> defaultSpec() },
+                                ),
+                            )
+                        }
+                    }
+                }
+                transition.createChildTransition { it.toInt() >= 2 }.AnimatedVisibility(
+                    enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
+                    exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
+                    modifier = Modifier.animateSlideExit(
+                        backward = fadeIn(defaultSpec(delay = 300.milliseconds)), forward = fadeOut(defaultSpec()),
+                    ),
+                ) {
+                    Text("   • Report any compilation errors or strange diagrams")
+                }
             }
         }
 
@@ -113,22 +146,18 @@ fun ShowBuilder.Resources() {
     )
 
     slide(states = lines.size + 1) {
-        val state = transition.createChildTransition { it != SlideState.Exiting }
-
-        Box {
-            state.AnimatedVisibility(
-                enter = fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it },
-                exit = fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it },
-            ) {
-                Column {
-                    Box(Modifier.padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
-                        ProvideTextStyle(MaterialTheme.typography.h3) {
-                            SlideSection.header()
-                        }
-                    }
-                    Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
+        Column(
+            modifier = Modifier.animateSlideExit(
+                backward = fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it },
+                forward = fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it },
+            )
+        ) {
+            Box(Modifier.padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
+                ProvideTextStyle(MaterialTheme.typography.h3) {
+                    SlideSection.header()
                 }
             }
+            Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         }
 
         Column {
@@ -144,39 +173,18 @@ fun ShowBuilder.Resources() {
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.body1) {
-                    Column {
-                        val entering = transition.createChildTransition { it == SlideState.Entering }
-                        entering.AnimatedVisibility(
-                            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
-                            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
-                        ) {
-                            Text(
-                                "• We're looking for your feedback!",
-                                modifier = Modifier.padding(bottom = SLIDE_CONTENT_SPACING)
-                            )
-                        }
-                        Row {
-                            entering.AnimatedVisibility(
-                                enter = fadeIn(defaultSpec()) + expandHorizontally(defaultSpec()),
-                                exit = fadeOut(defaultSpec()) + shrinkHorizontally(defaultSpec()),
-                            ) {
-                                Text("   • Try out Power-Assert! ")
-                            }
-
-                            Text(text = buildAnnotatedString {
+                    with(sharedTransitionScope) {
+                        Text(
+                            text = buildAnnotatedString {
                                 append("Docs: ")
                                 appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
-                            })
-                        }
-                        entering.AnimatedVisibility(
-                            enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
-                            exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
-                        ) {
-                            Text(
-                                "   • Report any compilation errors or strange diagrams",
-                                modifier = Modifier.padding(top = SLIDE_CONTENT_SPACING)
-                            )
-                        }
+                            },
+                            modifier = Modifier.sharedBounds(
+                                rememberSharedContentState("docs-link"),
+                                animatedVisibilityScope = animatedContentScope,
+                                boundsTransform = { _, _ -> defaultSpec(delay = 300.milliseconds) },
+                            ),
+                        )
                     }
 
                     AnimateByLine(
@@ -188,15 +196,12 @@ fun ShowBuilder.Resources() {
         }
 
         Box(Modifier.fillMaxSize()) {
-            state.AnimatedVisibility(
-                enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
-                exit = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
-                modifier = Modifier.align(Alignment.BottomEnd),
-            ) {
-                Box(Modifier.padding(8.dp)) {
-                    AnimateKodee {}
-                }
-            }
+            AnimateKodee(
+                modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp).animateSlideExit(
+                    backward = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
+                    forward = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
+                )
+            )
         }
 
         ShowAssistTab("Notes") {
