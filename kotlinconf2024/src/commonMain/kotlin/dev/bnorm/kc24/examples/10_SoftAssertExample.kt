@@ -9,25 +9,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.KodeeSad
+import dev.bnorm.deck.shared.KodeeSurprised
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.kc24.template.KodeeSad
-import dev.bnorm.kc24.template.KodeeSurprised
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
-import dev.bnorm.librettist.rememberHighlighted
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.notes.NotesTab
+import dev.bnorm.storyboard.text.highlight.rememberHighlighted
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ShowBuilder.SoftAssertExample() {
+fun StoryboardBuilder.SoftAssertExample() {
     SoftAssertSetupWithoutMessage()
 
     // TODO prefix the failure with a warning that we're going to see it fail
@@ -38,7 +38,7 @@ fun ShowBuilder.SoftAssertExample() {
     SoftAssertWithMessageExample()
 }
 
-fun ShowBuilder.SoftAssertSetupWithoutMessage() {
+fun StoryboardBuilder.SoftAssertSetupWithoutMessage() {
     // TODO show what the implementation looks like?
 
     slideForExample(
@@ -50,7 +50,7 @@ fun ShowBuilder.SoftAssertSetupWithoutMessage() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        TitleAndBody {
+        slideScope.TitleAndBody {
             val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
             Example(
                 exampleTextSequence = persistentListOf(SoftAssertWithoutMessageSetup),
@@ -60,7 +60,7 @@ fun ShowBuilder.SoftAssertSetupWithoutMessage() {
     }
 }
 
-fun ShowBuilder.SoftAssertExampleWithWarning() {
+fun StoryboardBuilder.SoftAssertExampleWithWarning() {
     slideForExample(
         builder = {
             openOutput()
@@ -68,7 +68,7 @@ fun ShowBuilder.SoftAssertExampleWithWarning() {
         enterTransition = { slideInHorizontally(defaultSpec(750.milliseconds)) { it } },
         exitTransition = { slideOutHorizontally(defaultSpec(750.milliseconds)) { it } },
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeSad(modifier = Modifier.requiredSize(150.dp))
@@ -80,14 +80,14 @@ fun ShowBuilder.SoftAssertExampleWithWarning() {
                 outputTextSequence = persistentListOf(persistentListOf(SoftAssertOutputWarning))
             )
 
-            ShowAssistTab("Notes") {
+            NotesTab("Notes") {
                 Text("Finish by 12:00")
             }
         }
     }
 }
 
-fun ShowBuilder.SoftAssertSetupWithMessage() {
+fun StoryboardBuilder.SoftAssertSetupWithMessage() {
     slideForExample(
         builder = {
             updateExample()
@@ -95,7 +95,7 @@ fun ShowBuilder.SoftAssertSetupWithMessage() {
         enterTransition = { slideInHorizontally(defaultSpec(750.milliseconds)) { -it } },
         exitTransition = { slideOutHorizontally(defaultSpec(750.milliseconds)) { -it } },
     ) {
-        TitleAndBody {
+        slideScope.TitleAndBody {
             Example(
                 exampleTextSequence = SoftAssertSetupSequence,
             )
@@ -103,7 +103,7 @@ fun ShowBuilder.SoftAssertSetupWithMessage() {
     }
 }
 
-fun ShowBuilder.SoftAssertWithMessageExample() {
+fun StoryboardBuilder.SoftAssertWithMessageExample() {
     slideForExample(
         builder = {
             openOutput()
@@ -111,7 +111,7 @@ fun ShowBuilder.SoftAssertWithMessageExample() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeSurprised(modifier = Modifier.requiredSize(150.dp))

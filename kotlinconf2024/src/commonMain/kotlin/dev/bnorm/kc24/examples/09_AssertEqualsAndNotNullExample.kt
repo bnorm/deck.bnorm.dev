@@ -6,18 +6,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.KodeeSurprised
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
-import dev.bnorm.kc24.template.KodeeSurprised
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.text.thenDiff
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.AssertEqualsAndNotNullExample() {
+fun StoryboardBuilder.AssertEqualsAndNotNullExample() {
     slideForExample(
         builder = {
             openGradle()
@@ -36,7 +36,7 @@ fun ShowBuilder.AssertEqualsAndNotNullExample() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeSurprised(modifier = Modifier.requiredSize(150.dp))
@@ -57,7 +57,7 @@ fun ShowBuilder.AssertEqualsAndNotNullExample() {
                 outputTextSequence = persistentListOf(persistentListOf(outputText)),
             )
 
-            ShowAssistTab("Notes") {
+            NotesTab("Notes") {
                 Text("Finish by 10:00")
             }
         }

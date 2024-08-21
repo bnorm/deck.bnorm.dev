@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-group = "dev.bnorm.kc24"
+group = "dev.bnorm.deck"
 version = "1.0-SNAPSHOT"
 
 kotlin {
@@ -36,13 +36,16 @@ kotlin {
 
         commonMain {
             dependencies {
+                implementation(project(":shared"))
+
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
                 api(compose.components.resources)
 
-                api("dev.bnorm.librettist:librettist-core")
-                api("dev.bnorm.librettist:librettist-text")
+                api("dev.bnorm.storyboard:storyboard-core")
+                api("dev.bnorm.storyboard:storyboard-easel")
+                api("dev.bnorm.storyboard:storyboard-text")
             }
         }
         jvmMain {
@@ -63,11 +66,6 @@ kotlin {
 
 compose.resources {
     publicResClass = true
-}
-
-compose {
-    web {
-    }
 }
 
 tasks.register<Sync>("site") {

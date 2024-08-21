@@ -14,28 +14,32 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.bnorm.deck.shared.DefaultCornerKodee
+import dev.bnorm.deck.shared.KodeeSitting
+import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideScope
-import dev.bnorm.librettist.show.SlideSection
-import dev.bnorm.librettist.show.SlideState
+import dev.bnorm.storyboard.core.SlideScope
+import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.easel.SlideSection
 
-fun ShowBuilder.SectionHeader(
+fun StoryboardBuilder.SectionHeader(
     animateFromBody: Boolean = false,
     animateToBody: Boolean = false,
     title: (@Composable () -> Unit)? = null,
 ) {
-    slide {
+    slide(stateCount = 1) {
         SectionHeader(
             showAsBody = transition.createChildTransition {
                 when (it) {
-                    SlideState.Entering -> animateFromBody
-                    SlideState.Exiting -> animateToBody
-                    is SlideState.Index -> false
+                    SlideState.Start -> animateFromBody
+                    SlideState.End -> animateToBody
+                    is SlideState.Value -> false
                 }
             },
-            title = title ?: SlideSection.header,
+            title = title ?: SlideSection.title,
         )
     }
 }
@@ -43,7 +47,7 @@ fun ShowBuilder.SectionHeader(
 @Composable
 fun SlideScope<*>.SectionHeader(
     showAsBody: Transition<Boolean>,
-    title: @Composable () -> Unit = SlideSection.header,
+    title: @Composable () -> Unit = SlideSection.title,
 ) {
     val spacing by showAsBody.animateDp(transitionSpec = { defaultSpec() }) {
         when (it) {

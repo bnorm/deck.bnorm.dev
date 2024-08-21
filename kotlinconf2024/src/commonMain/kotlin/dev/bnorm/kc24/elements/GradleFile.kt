@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.bnorm.kc24.kotlinconf2024.generated.resources.Res
-import dev.bnorm.kc24.kotlinconf2024.generated.resources.kotlinGradleScript_dark
+import dev.bnorm.deck.shared.generated.resources.Res
+import dev.bnorm.deck.shared.generated.resources.kotlinGradleScript_dark
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import org.jetbrains.compose.resources.painterResource
 

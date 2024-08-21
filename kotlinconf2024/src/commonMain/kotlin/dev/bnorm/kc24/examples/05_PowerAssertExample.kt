@@ -7,21 +7,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.KodeeLoving
+import dev.bnorm.deck.shared.KodeeSad
+import dev.bnorm.deck.shared.KodeeSurprised
 import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
-import dev.bnorm.kc24.template.KodeeLoving
-import dev.bnorm.kc24.template.KodeeSad
-import dev.bnorm.kc24.template.KodeeSurprised
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.assist.ShowAssistTab
 import dev.bnorm.librettist.text.thenLines
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.SimpleAssertExample() {
+fun StoryboardBuilder.SimpleAssertExample() {
     slideForExample(
         builder = {
             openOutput()
@@ -33,7 +33,7 @@ fun ShowBuilder.SimpleAssertExample() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.outputIndex >= 1 && it.showOutput == OutputState.Visible }) {
                     KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
@@ -48,16 +48,16 @@ fun ShowBuilder.SimpleAssertExample() {
                 }
             },
         ) {
-        val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
-        Example(
-            exampleTextSequence = persistentListOf(SimpleAssertCode),
-            gradleTextSequence = gradleTextSequence,
-            outputTextSequence = persistentListOf(SimpleAssertOutput),
-        )
+            val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
+            Example(
+                exampleTextSequence = persistentListOf(SimpleAssertCode),
+                gradleTextSequence = gradleTextSequence,
+                outputTextSequence = persistentListOf(SimpleAssertOutput),
+            )
 
-        ShowAssistTab("Notes") {
-            Text("Finish by 5:00")
-        }
+            NotesTab("Notes") {
+                Text("Finish by 5:00")
+            }
         }
     }
 }

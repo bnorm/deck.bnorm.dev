@@ -7,11 +7,12 @@
         <compositeConfiguration>
           <compositeBuild compositeDefinitionSource="SCRIPT">
             <builds>
-              <build path="$PROJECT_DIR$/librettist" name="librettist">
+              <build path="$PROJECT_DIR$/librettist" name="storyboard">
                 <projects>
                   <project path="$PROJECT_DIR$/librettist" />
-                  <project path="$PROJECT_DIR$/librettist/librettist-core" />
-                  <project path="$PROJECT_DIR$/librettist/librettist-text" />
+                  <project path="$PROJECT_DIR$/librettist/storyboard-core" />
+                  <project path="$PROJECT_DIR$/librettist/storyboard-easel" />
+                  <project path="$PROJECT_DIR$/librettist/storyboard-text" />
                 </projects>
               </build>
             </builds>
@@ -23,9 +24,12 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/deck.bnorm.dev" />
             <option value="$PROJECT_DIR$/kotlinconf2024" />
+            <option value="$PROJECT_DIR$/kotlinconf2025" />
             <option value="$PROJECT_DIR$/librettist" />
-            <option value="$PROJECT_DIR$/librettist/librettist-core" />
-            <option value="$PROJECT_DIR$/librettist/librettist-text" />
+            <option value="$PROJECT_DIR$/librettist/storyboard-core" />
+            <option value="$PROJECT_DIR$/librettist/storyboard-easel" />
+            <option value="$PROJECT_DIR$/librettist/storyboard-text" />
+            <option value="$PROJECT_DIR$/shared" />
           </set>
         </option>
       </GradleProjectSettings>

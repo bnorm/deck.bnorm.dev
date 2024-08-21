@@ -3,12 +3,12 @@ package dev.bnorm.kc24.elements
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.librettist.Highlighting
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
-import dev.bnorm.librettist.rememberHighlighted
 import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
+import dev.bnorm.storyboard.text.highlight.Highlighting
+import dev.bnorm.storyboard.text.highlight.rememberHighlighted
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

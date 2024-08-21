@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="storyboard-text-jvm">
+    <output-path>$PROJECT_DIR$/librettist/storyboard-text/build/libs</output-path>
+    <root id="archive" name="storyboard-text-jvm.jar">
+      <element id="module-output" name="dev.bnorm.storyboard.storyboard.storyboard-text.jvmMain" />
+    </root>
+  </artifact>
+</component>

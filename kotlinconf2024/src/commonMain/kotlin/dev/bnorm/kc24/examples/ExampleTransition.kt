@@ -9,20 +9,21 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideState
+import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.core.slideForTransition
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.math.abs
 
-fun ShowBuilder.ExampleTransition(
+fun StoryboardBuilder.ExampleTransition(
     transitionSpec: @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<Int> = {
         typingSpec(count = abs(targetState - initialState))
     },
     strings: @Composable () -> ImmutableList<AnnotatedString>,
 ) {
-    slide(states = 0) {
+    slideForTransition {
         val values = strings()
-        val state = transition.createChildTransition { if (it == SlideState.Exiting) values.lastIndex else 0 }
+        val state = transition.createChildTransition { if (it == SlideState.End) values.lastIndex else 0 }
         val text by state.animateList(values = values, transitionSpec = transitionSpec) { it }
 
         TitleAndBody {

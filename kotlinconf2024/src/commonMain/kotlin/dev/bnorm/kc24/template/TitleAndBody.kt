@@ -8,12 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.librettist.show.SlideScope
-import dev.bnorm.librettist.show.SlideSection
+import dev.bnorm.deck.shared.AnimateKodee
+import dev.bnorm.deck.shared.KodeeScope
+import dev.bnorm.deck.shared.SharedKodee
+import dev.bnorm.storyboard.core.SlideScope
+import dev.bnorm.storyboard.easel.SlideSection
 
 @Composable
 fun SlideScope<*>.TitleAndBody(
-    title: @Composable () -> Unit = SlideSection.header,
+    title: @Composable () -> Unit = SlideSection.title,
     kodee: KodeeScope.() -> Unit = {},
     body: @Composable () -> Unit = {},
 ) {
@@ -41,7 +44,7 @@ fun SlideScope<*>.SharedHeader(textStyle: TextStyle, title: @Composable () -> Un
         Column(
             modifier = Modifier.sharedElement(
                 rememberSharedContentState(key = SharedHeaderKey),
-                animatedVisibilityScope = animatedContentScope,
+                animatedVisibilityScope = animatedVisibilityScope,
             )
         ) {
             Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {

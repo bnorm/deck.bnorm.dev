@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -26,11 +26,6 @@ kotlin {
                 api(project(":kotlinconf2024"))
             }
         }
-    }
-}
-
-compose {
-    web {
     }
 }
 

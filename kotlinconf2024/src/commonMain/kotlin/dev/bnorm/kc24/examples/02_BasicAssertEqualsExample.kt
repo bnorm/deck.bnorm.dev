@@ -7,13 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.KodeeLost
 import dev.bnorm.kc24.elements.OutputState
-import dev.bnorm.kc24.template.*
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.assist.ShowAssistTab
+import dev.bnorm.kc24.template.TitleAndBody
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.BasicAssertEqualsExample() {
+fun StoryboardBuilder.BasicAssertEqualsExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Improved failure message"),
         Conclusion.Con(text = "No intermediate values"),
@@ -25,7 +26,7 @@ fun ShowBuilder.BasicAssertEqualsExample() {
             repeat(conclusions.size) { addConclusion() }
         }
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeLost(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })
@@ -33,13 +34,13 @@ fun ShowBuilder.BasicAssertEqualsExample() {
             }
         ) {
             Example(
-                exampleTextSequence = persistentListOf(BasicAssertEqualsCode),
-                outputTextSequence = persistentListOf(persistentListOf(BasicAssertEqualsOutput)),
+                exampleText = BasicAssertEqualsCode,
+                outputText = BasicAssertEqualsOutput,
                 conclusions = conclusions,
             )
         }
 
-        ShowAssistTab("Notes") {
+        NotesTab("Notes") {
             Text("Finish by 2:00")
         }
     }

@@ -17,26 +17,28 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.appendLink
 import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.kc24.template.AnimateKodee
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideSection
-import dev.bnorm.librettist.show.assist.ShowAssistTab
-import dev.bnorm.librettist.show.toInt
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.toInt
+import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.easel.notes.NotesTab
+import dev.bnorm.storyboard.easel.onSlideExit
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ShowBuilder.Future() {
+fun StoryboardBuilder.Future() {
     PowerAssertIdeas()
     HowCanYouHelp()
     Resources()
 }
 
-fun ShowBuilder.PowerAssertIdeas() {
+fun StoryboardBuilder.PowerAssertIdeas() {
     val lines = listOf(
         AnnotatedString("• Improved diagrams"),
         buildStringWithTicketLink("   • Diagram formatting improvements", "KT-66807"),
@@ -47,7 +49,7 @@ fun ShowBuilder.PowerAssertIdeas() {
         AnnotatedString("• Integration into the language"), // TODO add (create?) a ticket
     )
 
-    slide(states = lines.size) {
+    slide(stateCount = lines.size) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -61,14 +63,14 @@ fun ShowBuilder.PowerAssertIdeas() {
             }
         }
 
-        ShowAssistTab("Notes") {
+        NotesTab("Notes") {
             Text("Finish by 13:00")
         }
     }
 }
 
-fun ShowBuilder.HowCanYouHelp() {
-    slide(states = 3) {
+fun StoryboardBuilder.HowCanYouHelp() {
+    slide(stateCount = 3) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -77,9 +79,12 @@ fun ShowBuilder.HowCanYouHelp() {
                 transition.createChildTransition { it.toInt() >= 0 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
-                    modifier = Modifier.animateSlideExit(
-                        backward = fadeIn(defaultSpec(delay = 300.milliseconds)), forward = fadeOut(defaultSpec()),
-                    ),
+                    modifier = with(animatedVisibilityScope) {
+                        Modifier.animateEnterExit(
+                            enter = onSlideExit { fadeIn(defaultSpec(delay = 300.milliseconds)) },
+                            exit = onSlideExit { fadeOut(defaultSpec()) },
+                        )
+                    },
                 ) {
                     Text("• We're looking for your feedback!")
                 }
@@ -90,10 +95,12 @@ fun ShowBuilder.HowCanYouHelp() {
                     Row {
                         Text(
                             "   • Try out Power-Assert! ",
-                            modifier = Modifier.animateSlideExit(
-                                backward = fadeIn(defaultSpec(delay = 300.milliseconds)),
-                                forward = fadeOut(defaultSpec()),
-                            ),
+                            modifier = with(animatedVisibilityScope) {
+                                Modifier.animateEnterExit(
+                                    enter = onSlideExit { fadeIn(defaultSpec(delay = 300.milliseconds)) },
+                                    exit = onSlideExit { fadeOut(defaultSpec()) },
+                                )
+                            },
                         )
 
                         with(sharedTransitionScope) {
@@ -104,7 +111,7 @@ fun ShowBuilder.HowCanYouHelp() {
                                 },
                                 modifier = Modifier.sharedBounds(
                                     rememberSharedContentState("docs-link"),
-                                    animatedVisibilityScope = animatedContentScope,
+                                    animatedVisibilityScope = animatedVisibilityScope,
                                     boundsTransform = { _, _ -> defaultSpec() },
                                 ),
                             )
@@ -114,22 +121,26 @@ fun ShowBuilder.HowCanYouHelp() {
                 transition.createChildTransition { it.toInt() >= 2 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
-                    modifier = Modifier.animateSlideExit(
-                        backward = fadeIn(defaultSpec(delay = 300.milliseconds)), forward = fadeOut(defaultSpec()),
-                    ),
+                    modifier = with(animatedVisibilityScope) {
+                        Modifier.animateEnterExit(
+                            enter = onSlideExit { fadeIn(defaultSpec(delay = 300.milliseconds)) },
+                            exit = onSlideExit { fadeOut(defaultSpec()) },
+
+                            )
+                    },
                 ) {
                     Text("   • Report any compilation errors or strange diagrams")
                 }
             }
         }
 
-        ShowAssistTab("Notes") {
+        NotesTab("Notes") {
             Text("Finish by 14:00")
         }
     }
 }
 
-fun ShowBuilder.Resources() {
+fun StoryboardBuilder.Resources() {
     val lines = listOf(
         buildAnnotatedString {
             append("Slack: ")
@@ -145,16 +156,18 @@ fun ShowBuilder.Resources() {
         },
     )
 
-    slide(states = lines.size + 1) {
+    slide(stateCount = lines.size + 1) {
         Column(
-            modifier = Modifier.animateSlideExit(
-                backward = fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it },
-                forward = fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it },
-            )
+            modifier = with(animatedVisibilityScope) {
+                Modifier.animateEnterExit(
+                    enter = onSlideExit { fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it } },
+                    exit = onSlideExit { fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it } },
+                )
+            }
         ) {
             Box(Modifier.padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
                 ProvideTextStyle(MaterialTheme.typography.h3) {
-                    SlideSection.header()
+                    SlideSection.title()
                 }
             }
             Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
@@ -181,14 +194,14 @@ fun ShowBuilder.Resources() {
                             },
                             modifier = Modifier.sharedBounds(
                                 rememberSharedContentState("docs-link"),
-                                animatedVisibilityScope = animatedContentScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = { _, _ -> defaultSpec(delay = 300.milliseconds) },
                             ),
                         )
                     }
 
                     AnimateByLine(
-                        transition = transition.createChildTransition { it.toInt(entering = 0) - 1 },
+                        transition = transition.createChildTransition { it.toInt(start = 0) - 1 },
                         lines = lines
                     )
                 }
@@ -197,14 +210,16 @@ fun ShowBuilder.Resources() {
 
         Box(Modifier.fillMaxSize()) {
             AnimateKodee(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp).animateSlideExit(
-                    backward = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
-                    forward = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
-                )
+                modifier = with(animatedVisibilityScope) {
+                    Modifier.align(Alignment.BottomEnd).padding(8.dp).animateEnterExit(
+                        enter = onSlideExit { fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it } },
+                        exit = onSlideExit { fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it } },
+                    )
+                }
             )
         }
 
-        ShowAssistTab("Notes") {
+        NotesTab("Notes") {
             Text("Finish by 14:00")
         }
     }

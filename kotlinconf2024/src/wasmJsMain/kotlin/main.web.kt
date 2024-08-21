@@ -1,20 +1,19 @@
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
 import dev.bnorm.kc24.KotlinPlusPowerAssertEqualsLove
-import dev.bnorm.kc24.Theme
-import dev.bnorm.librettist.EmbeddedSlideShow
-import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.storyboard.easel.EmbeddedStoryboard
 import kotlinx.browser.window
 import org.w3c.dom.url.URLSearchParams
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     val params = URLSearchParams(window.location.search.toJsString())
+    val storyboard = KotlinPlusPowerAssertEqualsLove
+
+    val frame = storyboard.frames.getOrNull(params.get("slide")?.toIntOrNull() ?: 0)
+    if (frame != null) storyboard.jumpTo(frame)
+
     CanvasBasedWindow(canvasElementId = "ComposeTarget") {
-        EmbeddedSlideShow(
-            theme = Theme.dark,
-            startSlide = params.get("slide")?.toIntOrNull() ?: 0,
-            builder = ShowBuilder::KotlinPlusPowerAssertEqualsLove
-        )
+        EmbeddedStoryboard(storyboard)
     }
 }

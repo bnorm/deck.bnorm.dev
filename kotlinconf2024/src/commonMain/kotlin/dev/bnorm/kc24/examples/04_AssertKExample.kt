@@ -10,17 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.KodeeExcited
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.kc24.template.KodeeExcited
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.AdvanceDirection
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.assist.ShowAssistTab
+import dev.bnorm.storyboard.core.AdvanceDirection
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ShowBuilder.AssertKExample() {
+fun StoryboardBuilder.AssertKExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
         Conclusion.Con(text = "Mental load for functions"),
@@ -46,7 +46,7 @@ fun ShowBuilder.AssertKExample() {
             }
         },
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeExcited(modifier = Modifier.requiredSize(200.dp))
@@ -54,13 +54,13 @@ fun ShowBuilder.AssertKExample() {
             }
         ) {
             Example(
-                exampleTextSequence = persistentListOf(AssertKCode),
-                outputTextSequence = persistentListOf(persistentListOf(AssertKOutput)),
+                exampleText = AssertKCode,
+                outputText = AssertKOutput,
                 conclusions = conclusions,
             )
         }
 
-        ShowAssistTab("Notes") {
+        NotesTab("Notes") {
             Text("Finish by 4:00")
         }
     }

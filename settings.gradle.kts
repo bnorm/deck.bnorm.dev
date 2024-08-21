@@ -5,6 +5,7 @@ pluginManagement {
         mavenCentral()
         google()
         gradlePluginPortal()
+        maven { setUrl("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
     }
 
     plugins {
@@ -13,13 +14,14 @@ pluginManagement {
         kotlin("multiplatform") version kotlinVersion
         kotlin("plugin.compose") version kotlinVersion
         kotlin("plugin.power-assert") version kotlinVersion
-        id("org.jetbrains.compose") version "1.7.0-alpha01"
+        id("org.jetbrains.compose") version "1.7.0-dev1756"
     }
 
     dependencyResolutionManagement {
         repositories {
             mavenCentral()
             google()
+            maven { setUrl("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
         }
     }
 }
@@ -30,3 +32,5 @@ includeBuild("librettist")
 
 include(":deck.bnorm.dev")
 include(":kotlinconf2024")
+include(":kotlinconf2025")
+include(":shared")

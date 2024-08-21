@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.kc24.Theme
 
 enum class OutputState {
@@ -42,7 +43,7 @@ fun OutputText(
 
     MacTerminal(modifier = modifier.requiredHeight(700.dp).fillMaxWidth().offset(y = outputOffset)) {
         val style = MaterialTheme.typography.body2.copy(
-            fontFamily = Theme.JetBrainsMono,
+            fontFamily = JetBrainsMono,
             fontSize = 32.sp,
             lineHeight = 38.sp,
         )

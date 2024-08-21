@@ -6,14 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.KodeeExcited
 import dev.bnorm.kc24.elements.OutputState
-import dev.bnorm.kc24.template.KodeeExcited
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.assist.ShowAssistTab
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
 
-fun ShowBuilder.AssertEqualsMessageExample() {
+fun StoryboardBuilder.AssertEqualsMessageExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Complete failure message"),
         Conclusion.Con(text = "Forget to add message"),
@@ -26,7 +26,7 @@ fun ShowBuilder.AssertEqualsMessageExample() {
             repeat(conclusions.size) { addConclusion() }
         }
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeExcited(modifier = Modifier.requiredSize(200.dp))
@@ -34,13 +34,13 @@ fun ShowBuilder.AssertEqualsMessageExample() {
             }
         ) {
             Example(
-                exampleTextSequence = persistentListOf(AssertEqualsMessageCode),
-                outputTextSequence = persistentListOf(persistentListOf(AssertEqualsMessageOutput)),
+                exampleText = AssertEqualsMessageCode,
+                outputText = AssertEqualsMessageOutput,
                 conclusions = conclusions,
             )
         }
 
-        ShowAssistTab("Notes") {
+        NotesTab("Notes") {
             Text("Finish by 3:00")
         }
     }

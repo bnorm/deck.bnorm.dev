@@ -6,9 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc24.KotlinPlusPowerAssertEqualsLove
-import dev.bnorm.kc24.Theme
-import dev.bnorm.librettist.EmbeddedSlideShow
-import dev.bnorm.librettist.show.ShowBuilder
+import dev.bnorm.storyboard.easel.EmbeddedStoryboard
 
 @Composable
 fun Deck() {
@@ -17,10 +15,7 @@ fun Deck() {
             Column {
                 Text("Slide Show")
                 Box(Modifier.requiredSize(width = 560.dp, height = 315.dp)) {
-                    EmbeddedSlideShow(
-                        theme = Theme.dark,
-                        builder = ShowBuilder::KotlinPlusPowerAssertEqualsLove
-                    )
+                    EmbeddedStoryboard(KotlinPlusPowerAssertEqualsLove)
                 }
             }
 

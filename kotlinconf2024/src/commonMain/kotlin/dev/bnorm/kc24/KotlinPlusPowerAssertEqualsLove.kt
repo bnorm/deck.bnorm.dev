@@ -26,20 +26,42 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import dev.bnorm.deck.kotlinconf2024.generated.resources.Res
+import dev.bnorm.deck.kotlinconf2024.generated.resources.closing_background_badge
+import dev.bnorm.deck.kotlinconf2024.generated.resources.closing_background_phone
+import dev.bnorm.deck.kotlinconf2024.generated.resources.opening_background
+import dev.bnorm.deck.shared.KodeeLoving
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.examples.*
-import dev.bnorm.kc24.kotlinconf2024.generated.resources.*
 import dev.bnorm.kc24.sections.Future
-import dev.bnorm.kc24.template.*
+import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
+import dev.bnorm.kc24.template.SLIDE_PADDING
+import dev.bnorm.kc24.template.SectionHeader
+import dev.bnorm.kc24.template.TitleSlide
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.SlideState
-import dev.bnorm.librettist.show.section
 import dev.bnorm.librettist.text.thenLineEndDiff
+import dev.bnorm.storyboard.core.*
+import dev.bnorm.storyboard.easel.section
+import dev.bnorm.storyboard.text.highlight.Highlighting
 import org.jetbrains.compose.resources.painterResource
 
-fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
+val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
+    Storyboard.build(
+        size = Storyboard.DEFAULT_SIZE * 2,
+        decorator = { content ->
+            Highlighting(Theme.codeStyle) {
+                MaterialTheme(colors = Theme.dark, typography = Theme.typography) {
+                    content()
+                }
+            }
+        },
+    ) {
+        KotlinPlusPowerAssertEqualsLove()
+    }
+}
+
+private fun StoryboardBuilder.KotlinPlusPowerAssertEqualsLove() {
     val section1 = "Crafting an Assertion"
     val section2 = "Why Power-Assert?"
     val section3 = "A Look at the Future"
@@ -99,14 +121,14 @@ fun ShowBuilder.KotlinPlusPowerAssertEqualsLove() {
     slide { Summary(transition) }
 }
 
-private fun ShowBuilder.SectionChange(previousTitle: String, nextTitle: String) {
-    slide(states = 0) {
+private fun StoryboardBuilder.SectionChange(previousTitle: String, nextTitle: String) {
+    slideForTransition {
         SectionHeader(showAsBody = updateTransition(false)) {
             val values = remember(previousTitle, nextTitle) {
                 startAnimation(previousTitle).thenLineEndDiff(nextTitle).toList()
             }
             val text by transition.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
-                if (it == SlideState.Exiting) values.lastIndex else 0
+                if (it == SlideState.End) values.lastIndex else 0
             }
             Text(text)
         }
@@ -139,8 +161,15 @@ fun Title() {
                     }
                     Spacer(Modifier.size(32.dp))
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        BrianNorman(modifier = Modifier.align(Alignment.BottomStart))
-                        Mastodon(modifier = Modifier.align(Alignment.BottomEnd))
+                        JetBrainsEmployee(
+                            name = "Brian Norman",
+                            title = "Kotlin Compiler Developer",
+                            modifier = Modifier.align(Alignment.BottomStart),
+                        )
+                        Mastodon(
+                            username = "bnorm@kotlin.social",
+                            modifier = Modifier.align(Alignment.BottomEnd),
+                        )
                     }
                 }
             }
@@ -150,7 +179,7 @@ fun Title() {
 
 @Composable
 fun Summary(transition: Transition<out SlideState<*>>) {
-    val state = transition.createChildTransition { it != SlideState.Entering }
+    val state = transition.createChildTransition { it != SlideState.Start }
     TitleSlide {
         Box(Modifier.fillMaxSize()) {
             SummaryBackground(state)
@@ -187,7 +216,7 @@ fun Summary(transition: Transition<out SlideState<*>>) {
                     modifier = Modifier.align(Alignment.BottomStart)
                 ) {
                     Column {
-                        Mastodon()
+                        Mastodon(username = "bnorm@kotlin.social")
                         Spacer(Modifier.size(SLIDE_CONTENT_SPACING))
                         Text(
                             text = "Thank you,\nand don’t\nforget to vote!",
@@ -197,42 +226,6 @@ fun Summary(transition: Transition<out SlideState<*>>) {
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun BrianNorman(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Image(
-            painter = painterResource(Res.drawable.JetBrains),
-            contentDescription = "",
-            modifier = Modifier.height(64.dp),
-        )
-        Spacer(modifier = Modifier.size(24.dp))
-        Column {
-            Text("Brian Norman", style = MaterialTheme.typography.h5)
-            Text("Kotlin Compiler Developer", style = MaterialTheme.typography.body2)
-        }
-    }
-}
-
-@Composable
-private fun Mastodon(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.height(48.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Image(
-            painter = painterResource(Res.drawable.mastodon),
-            contentDescription = "",
-        )
-        Spacer(modifier = Modifier.size(16.dp))
-        Text(text = "bnorm@kotlin.social", style = MaterialTheme.typography.body2)
     }
 }
 

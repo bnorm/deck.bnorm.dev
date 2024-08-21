@@ -10,17 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.KodeeBrokenHearted
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.kc24.template.KodeeBrokenHearted
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.show.AdvanceDirection
-import dev.bnorm.librettist.show.ShowBuilder
-import dev.bnorm.librettist.show.assist.ShowAssistTab
+import dev.bnorm.storyboard.core.AdvanceDirection
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ShowBuilder.BasicAssertTrueExample() {
+fun StoryboardBuilder.BasicAssertTrueExample() {
     val conclusions = persistentListOf(
         Conclusion.Pro(text = "Clear assertion condition"),
         Conclusion.Con(text = "Useless failure message"),
@@ -44,7 +44,7 @@ fun ShowBuilder.BasicAssertTrueExample() {
             }
         },
     ) {
-        TitleAndBody(
+        slideScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeBrokenHearted(modifier = Modifier.requiredSize(200.dp))
@@ -52,13 +52,13 @@ fun ShowBuilder.BasicAssertTrueExample() {
             }
         ) {
             Example(
-                exampleTextSequence = persistentListOf(BasicAssertTrueCode),
-                outputTextSequence = persistentListOf(persistentListOf(BasicAssertTrueOutput)),
+                exampleText = BasicAssertTrueCode,
+                outputText = BasicAssertTrueOutput,
                 conclusions = conclusions,
             )
         }
 
-        ShowAssistTab("Notes") {
+        NotesTab("Notes") {
             Text("Finish by 1:00")
         }
     }

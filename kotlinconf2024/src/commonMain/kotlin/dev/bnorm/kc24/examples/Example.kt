@@ -16,13 +16,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.librettist.show.*
+import dev.bnorm.storyboard.core.*
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.jvm.JvmName
 import kotlin.time.Duration.Companion.milliseconds
@@ -72,22 +73,32 @@ val ExitForward: (AdvanceDirection) -> ExitTransition = { direction ->
     }
 }
 
-fun ShowBuilder.slideForExample(
+fun StoryboardBuilder.slideForExample(
     builder: ExampleState.Builder.() -> Unit,
     enterTransition: (AdvanceDirection) -> EnterTransition = { EnterTransition.None },
     exitTransition: (AdvanceDirection) -> ExitTransition = { ExitTransition.None },
-    content: SlideContent<ExampleState>,
+    content: @Composable ExampleScope.() -> Unit,
 ) {
     val states = buildExampleStates(builder)
     val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
-    slide(states = states.size, enterTransition, exitTransition) {
-        createChildScope {
+    slide(stateCount = states.size, enterTransition, exitTransition) {
+        val slideScope = this@slide
+        val exampleState = transition.createChildTransition {
             when (it) {
-                SlideState.Entering -> states.first()
-                SlideState.Exiting -> exit
-                is SlideState.Index -> states[it.value]
+                SlideState.Start -> states.first()
+                SlideState.End -> exit
+                is SlideState.Value -> states[it.value]
             }
-        }.content()
+        }
+
+        val scope = remember(slideScope, exampleState) {
+            object : ExampleScope {
+                override val slideScope: SlideScope<*> get() = slideScope
+                override val transition: Transition<out ExampleState> get() = exampleState
+            }
+        }
+
+        scope.content()
     }
 }
 
@@ -151,8 +162,32 @@ fun buildExampleStates(builder: ExampleState.Builder.() -> Unit): List<ExampleSt
 }
 
 @Composable
+fun ExampleScope.Example(
+    exampleText: AnnotatedString,
+    gradleText: AnnotatedString? = null,
+    outputText: String,
+    conclusions: ImmutableList<Conclusion>? = null,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Example(exampleText)
+
+            if (conclusions != null) {
+                Conclusions(conclusions)
+            }
+        }
+
+        Output(outputText, Modifier.align(Alignment.BottomStart))
+
+        if (gradleText != null) {
+            Gradle(gradleText, Modifier.align(Alignment.TopEnd))
+        }
+    }
+}
+
+@Composable
 @JvmName("ExampleGradleSequence")
-fun SlideScope<ExampleState>.Example(
+fun ExampleScope.Example(
     exampleTextSequence: ImmutableList<AnnotatedString>,
     gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>? = null,
     outputTextSequence: ImmutableList<ImmutableList<String>>? = null,
@@ -160,8 +195,12 @@ fun SlideScope<ExampleState>.Example(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            val exampleText by transition.exampleTextDiff(exampleTextSequence)
-            Example(exampleText)
+            if (exampleTextSequence.size == 1) {
+                Example(exampleTextSequence[0])
+            } else {
+                val exampleText by transition.exampleTextDiff(exampleTextSequence)
+                Example(exampleText)
+            }
 
             if (conclusions != null) {
                 Conclusions(conclusions)
@@ -192,7 +231,7 @@ fun Example(exampleText: AnnotatedString) {
 }
 
 @Composable
-private fun SlideScope<ExampleState>.Conclusions(conclusions: ImmutableList<Conclusion>) {
+private fun ExampleScope.Conclusions(conclusions: ImmutableList<Conclusion>) {
     Box(modifier = Modifier.padding(horizontal = SLIDE_PADDING)) {
         ProvideTextStyle(MaterialTheme.typography.h6) {
             transition.createChildTransition { it.conclusionIndex }.ShowConclusions(conclusions)
@@ -201,7 +240,7 @@ private fun SlideScope<ExampleState>.Conclusions(conclusions: ImmutableList<Conc
 }
 
 @Composable
-fun SlideScope<ExampleState>.Output(outputText: String, modifier: Modifier) {
+fun ExampleScope.Output(outputText: String, modifier: Modifier) {
     OutputText(
         text = outputText,
         state = transition.createChildTransition { it.showOutput },
@@ -210,7 +249,7 @@ fun SlideScope<ExampleState>.Output(outputText: String, modifier: Modifier) {
 }
 
 @Composable
-fun SlideScope<ExampleState>.Gradle(
+fun ExampleScope.Gradle(
     gradleText: AnnotatedString,
     modifier: Modifier,
 ) {
