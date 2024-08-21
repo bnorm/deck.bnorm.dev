@@ -28,7 +28,7 @@ pluginManagement {
 
 rootProject.name = "deck.bnorm.dev"
 
-includeBuild("librettist")
+includeBuild("storyboard")
 
 include(":deck.bnorm.dev")
 include(":kotlinconf2024")
