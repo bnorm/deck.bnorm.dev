@@ -58,7 +58,6 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(compose.desktop.uiTestJUnit4)
                 implementation("com.willowtreeapps.assertk:assertk:0.28.0")
-                implementation("org.apache.pdfbox:pdfbox:3.0.1")
             }
         }
     }
