@@ -30,6 +30,6 @@ kotlin {
 }
 
 tasks.register<Sync>("site") {
-    from(tasks.named("wasmJsBrowserProductionWebpack"))
-    into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
+    from(tasks.named("wasmJsBrowserDistribution"))
+    into(rootProject.layout.buildDirectory.dir("_site"))
 }

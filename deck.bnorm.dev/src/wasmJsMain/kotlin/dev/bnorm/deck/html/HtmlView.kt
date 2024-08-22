@@ -17,9 +17,11 @@ import kotlinx.browser.document
 import kotlinx.dom.createElement
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import kotlin.contracts.ExperimentalContracts
 
 private val NoOpUpdate: Element.() -> Unit = {}
 
+@OptIn(ExperimentalContracts::class)
 @Composable
 fun <T : Element> HtmlView(
     factory: Document.() -> T,
