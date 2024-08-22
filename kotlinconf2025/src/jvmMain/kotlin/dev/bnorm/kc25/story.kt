@@ -21,16 +21,13 @@ import dev.bnorm.storyboard.easel.DesktopStoryboard
 import dev.bnorm.storyboard.easel.EmbeddedStoryboard
 import dev.bnorm.storyboard.easel.SlideEnter
 import dev.bnorm.storyboard.easel.SlideExit
+import dev.bnorm.storyboard.easel.notes.NotesTab
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.ui.FixedSize
-import kotlinx.coroutines.delay
 
 fun main() {
-    DesktopStoryboard(
-        title = "Sample Storyboard",
-        storyboard = createStoryboard(mutableStateOf(DARK_COLORS)),
-    )
+    DesktopStoryboard(storyboard = createStoryboard(mutableStateOf(DARK_COLORS)))
 }
 
 val HIGHLIGHTING: Highlighting
@@ -86,9 +83,12 @@ private fun createStoryboard(colors: State<Colors>): Storyboard {
         }
     }
 
-    movableContentOf { }
     lateinit var storyboard: Storyboard
-    storyboard = Storyboard.build(size = Storyboard.DEFAULT_SIZE, decorator = theme) {
+    storyboard = Storyboard.build(
+        name = "Sample Storyboard",
+        size = Storyboard.DEFAULT_SIZE,
+        decorator = theme,
+    ) {
         slide(
             @Composable {
                 """
@@ -121,7 +121,7 @@ private fun createStoryboard(colors: State<Colors>): Storyboard {
             val state = transition.currentState.toValue(states.first(), states.last())()
 
             Column {
-                Button(onClick = { storyboard.jumpTo(Storyboard.Frame(2, 0)) }) {
+                Button(onClick = { storyboard.jumpTo(Storyboard.Frame(3, 0)) }) {
                     Text("Skip!")
                 }
                 MagicText(state, modifier = Modifier.fillMaxWidth())
@@ -199,9 +199,42 @@ private fun createStoryboard(colors: State<Colors>): Storyboard {
                 }
             }
         }
+
+        slide(
+            Unit,
+            enterTransition = SlideEnter, exitTransition = SlideExit,
+        ) {
+            NotesTab("GitHub") {
+                TextField(
+                    value = githubInfo.repositoryPath,
+                    onValueChange = { githubInfo.repositoryPath = it },
+                    isError = githubInfo.isError,
+                    trailingIcon = {
+                        if (githubInfo.loading) CircularProgressIndicator()
+                    }
+                )
+            }
+
+            Column {
+                when (val repository = githubInfo.repository) {
+                    null -> Row {
+                        Text("Loading...")
+                        CircularProgressIndicator()
+                    }
+
+                    else -> {
+                        Text("Name: ${repository.name}")
+                        Text("Forks: ${repository.forks_count}")
+                        Text("Stars: ${repository.stargazers_count}")
+                        Text("Watchers: ${repository.subscribers_count}")
+                    }
+                }
+            }
+        }
     }
     return storyboard
 }
+
 
 @Composable
 private fun SampleStoryboard(storyboard: Storyboard) {

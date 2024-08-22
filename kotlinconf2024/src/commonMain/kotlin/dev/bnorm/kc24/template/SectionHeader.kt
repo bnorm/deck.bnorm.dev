@@ -83,7 +83,7 @@ fun SlideScope<*>.SectionHeader(
             enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
             exit = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
         ) {
-            DefaultCornerKodee()
+            DefaultCornerKodee(Modifier.size(100.dp))
         }
     }
 }

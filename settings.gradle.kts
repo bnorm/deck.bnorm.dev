@@ -9,12 +9,13 @@ pluginManagement {
     }
 
     plugins {
-        val kotlinVersion = "2.0.20-Beta2"
+        val kotlinVersion = "2.0.20"
 
         kotlin("multiplatform") version kotlinVersion
+        kotlin("plugin.serialization") version kotlinVersion
         kotlin("plugin.compose") version kotlinVersion
         kotlin("plugin.power-assert") version kotlinVersion
-        id("org.jetbrains.compose") version "1.7.0-dev1756"
+        id("org.jetbrains.compose") version "1.7.0-alpha03"
     }
 
     dependencyResolutionManagement {

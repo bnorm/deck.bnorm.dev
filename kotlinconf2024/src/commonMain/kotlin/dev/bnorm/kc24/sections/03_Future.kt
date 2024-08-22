@@ -18,6 +18,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.AnimateKodee
+import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.appendLink
 import dev.bnorm.kc24.elements.defaultSpec
@@ -46,7 +47,7 @@ fun StoryboardBuilder.PowerAssertIdeas() {
         AnnotatedString("• Better integration"),
         buildStringWithTicketLink("   • Out-of-box support for kotlin.test", "KT-63622"),
         buildStringWithTicketLink("   • Support for other assertion libraries", "KT-66808"),
-        AnnotatedString("• Integration into the language"), // TODO add (create?) a ticket
+        AnnotatedString("• Integration into the language"),
     )
 
     slide(stateCount = lines.size) {
@@ -55,7 +56,6 @@ fun StoryboardBuilder.PowerAssertIdeas() {
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
-                // TODO show examples for compressed and diffs?
                 AnimateByLine(
                     transition = transition.createChildTransition { it.toInt() },
                     lines = lines
@@ -216,7 +216,9 @@ fun StoryboardBuilder.Resources() {
                         exit = onSlideExit { fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it } },
                     )
                 }
-            )
+            ) {
+                default { DefaultCornerKodee(Modifier.size(100.dp)) }
+            }
         }
 
         NotesTab("Notes") {

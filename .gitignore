@@ -19,3 +19,6 @@ out/
 
 ### Mac OS ###
 .DS_Store
+
+# Storyboard saved state files
+.storyboard/

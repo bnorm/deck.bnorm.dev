@@ -48,6 +48,7 @@ import org.jetbrains.compose.resources.painterResource
 
 val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
     Storyboard.build(
+        name = "Kotlin + Power-Assert = Love",
         size = Storyboard.DEFAULT_SIZE * 2,
         decorator = { content ->
             Highlighting(Theme.codeStyle) {
@@ -57,68 +58,58 @@ val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
             }
         },
     ) {
-        KotlinPlusPowerAssertEqualsLove()
-    }
-}
+        val section1 = "Crafting an Assertion"
+        val section2 = "Why Power-Assert?"
+        val section3 = "A Look at the Future"
 
-private fun StoryboardBuilder.KotlinPlusPowerAssertEqualsLove() {
-    val section1 = "Crafting an Assertion"
-    val section2 = "Why Power-Assert?"
-    val section3 = "A Look at the Future"
+        slide { Title() }
 
-    slide { Title() }
-
-    section(title = section1) {
-        SectionHeader(animateToBody = true)
-        BasicAssertTrueExample()
-        ExampleTransition {
-            val start = BasicAssertTrueCode
-            val end = BasicAssertEqualsCode
-            remember { startAnimation(start).thenLineEndDiff(end).toList() }
+        section(title = section1) {
+            SectionHeader(animateToBody = true)
+            BasicAssertTrueExample()
+            ExampleTransition {
+                val start = BasicAssertTrueCode
+                val end = BasicAssertEqualsCode
+                remember { startAnimation(start).thenLineEndDiff(end).toList() }
+            }
+            BasicAssertEqualsExample()
+            ExampleTransition {
+                val start = BasicAssertEqualsCode
+                val end = AssertEqualsMessageCode
+                remember { startAnimation(start).thenLineEndDiff(end).toList() }
+            }
+            AssertEqualsMessageExample()
+            ExampleTransition {
+                val start = AssertEqualsMessageCode
+                val end = AssertKCode
+                remember { startAnimation(start).thenLineEndDiff(end).toList() }
+            }
+            AssertKExample()
+            SectionHeader(animateFromBody = true)
         }
-        BasicAssertEqualsExample()
-        ExampleTransition {
-            val start = BasicAssertEqualsCode
-            val end = AssertEqualsMessageCode
-            remember { startAnimation(start).thenLineEndDiff(end).toList() }
+
+        SectionChange(section1, section2)
+
+        section(title = section2) {
+            SectionHeader(animateToBody = true)
+            SimpleAssertExample()
+            ComplexExpressionsExample()
+            AssertTrueSmartcastExample()
+            RequireExample()
+            AssertEqualsAndNotNullExample()
+            SoftAssertExample()
+            SectionHeader(animateFromBody = true)
         }
-        AssertEqualsMessageExample()
-        ExampleTransition {
-            val start = AssertEqualsMessageCode
-            val end = AssertKCode
-            remember { startAnimation(start).thenLineEndDiff(end).toList() }
+
+        SectionChange(section2, section3)
+
+        section(title = section3) {
+            SectionHeader(animateToBody = true)
+            Future()
         }
-        AssertKExample()
-        SectionHeader(animateFromBody = true)
+
+        slide { Summary(transition) }
     }
-
-    // TODO transition from bike-shedding to a new power-assert library seems counter productive
-
-    SectionChange(section1, section2)
-
-    section(title = section2) {
-        SectionHeader(animateToBody = true)
-        SimpleAssertExample()
-        ComplexExpressionsExample()
-        AssertTrueSmartcastExample()
-        RequireExample()
-        AssertEqualsAndNotNullExample()
-        // TODO examples
-        //  - at this point we could compare assertTrue/assertEquals/assertNotNull as the primary toolbox
-
-        // TODO summary slide before going into the next example?
-        SoftAssertExample()
-        SectionHeader(animateFromBody = true)
-    }
-
-    SectionChange(section2, section3)
-
-    section(title = section3) {
-        SectionHeader(animateToBody = true)
-        Future()
-    }
-
-    slide { Summary(transition) }
 }
 
 private fun StoryboardBuilder.SectionChange(previousTitle: String, nextTitle: String) {
@@ -139,10 +130,6 @@ private fun StoryboardBuilder.SectionChange(previousTitle: String, nextTitle: St
 fun Title() {
     TitleSlide {
         Box(Modifier.fillMaxSize()) {
-            // TODO add some animation?
-            //  - make image slide to the left when exiting?
-            //  - drop title off the bottom
-            //  - how does the next slide appear?
             Image(
                 painter = painterResource(Res.drawable.opening_background),
                 contentDescription = "",

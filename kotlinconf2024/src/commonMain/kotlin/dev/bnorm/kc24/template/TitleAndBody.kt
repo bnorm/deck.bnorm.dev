@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.AnimateKodee
+import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeScope
 import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.storyboard.core.SlideScope
@@ -32,7 +33,10 @@ fun SlideScope<*>.TitleAndBody(
         }
     }
     SharedKodee {
-        AnimateKodee { kodee() }
+        AnimateKodee {
+            default { DefaultCornerKodee(Modifier.size(100.dp)) }
+            kodee()
+        }
     }
 }
 
