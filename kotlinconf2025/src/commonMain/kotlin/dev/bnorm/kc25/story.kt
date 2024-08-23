@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.*
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.storyboard.core.*
-import dev.bnorm.storyboard.easel.DesktopStoryboard
 import dev.bnorm.storyboard.easel.EmbeddedStoryboard
 import dev.bnorm.storyboard.easel.SlideEnter
 import dev.bnorm.storyboard.easel.SlideExit
@@ -25,10 +24,6 @@ import dev.bnorm.storyboard.easel.notes.NotesTab
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.ui.FixedSize
-
-fun main() {
-    DesktopStoryboard(storyboard = createStoryboard(mutableStateOf(DARK_COLORS)))
-}
 
 val HIGHLIGHTING: Highlighting
     @Composable get() {
@@ -71,7 +66,7 @@ val LIGHT_COLORS = lightColors(
     secondary = Color(0xFFFDB60D),
 )
 
-private fun createStoryboard(colors: State<Colors>): Storyboard {
+fun createStoryboard(colors: State<Colors>): Storyboard {
     val theme = SlideDecorator { content ->
         Highlighting(HIGHLIGHTING) {
             MaterialTheme(

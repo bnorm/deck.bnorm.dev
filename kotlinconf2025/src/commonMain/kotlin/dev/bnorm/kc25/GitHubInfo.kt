@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
@@ -19,7 +18,7 @@ val githubInfo = GitHubInfo()
 
 class GitHubInfo {
     private val scope = CoroutineScope(Job() + Dispatchers.Default)
-    private val httpClient: HttpClient = HttpClient(OkHttp) {
+    private val httpClient: HttpClient = HttpClient {
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = true
