@@ -1,5 +1,4 @@
 # deck.bnorm.dev
 
-Experiment with writing a slide show using Compose Multiplatform.
-
-![Alt Text](docs/assets/sample.gif)
+Repository for all of my talks.
+Recordings and slides host at [deck.bnorm.dev](https://deck.bnorm.dev).
