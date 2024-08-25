@@ -23,7 +23,13 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":kotlinconf2024"))
+                implementation(project(":shared"))
+                implementation(project(":kotlinconf2024"))
+            }
+        }
+        wasmJsMain {
+            dependencies {
+                implementation(npm("youtube-player", "5.6.0"))
             }
         }
     }
