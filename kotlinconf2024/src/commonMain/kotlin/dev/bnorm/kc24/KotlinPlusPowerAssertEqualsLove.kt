@@ -108,7 +108,7 @@ val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
             Future()
         }
 
-        slide { Summary(transition) }
+        slide { Summary(state) }
     }
 }
 
@@ -118,7 +118,7 @@ private fun StoryboardBuilder.SectionChange(previousTitle: String, nextTitle: St
             val values = remember(previousTitle, nextTitle) {
                 startAnimation(previousTitle).thenLineEndDiff(nextTitle).toList()
             }
-            val text by transition.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
+            val text by state.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
                 if (it == SlideState.End) values.lastIndex else 0
             }
             Text(text)

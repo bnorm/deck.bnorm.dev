@@ -44,19 +44,17 @@ private object SharedHeaderKey
 
 @Composable
 fun SlideScope<*>.SharedHeader(textStyle: TextStyle, title: @Composable () -> Unit) {
-    with(sharedTransitionScope) {
-        Column(
-            modifier = Modifier.sharedElement(
-                rememberSharedContentState(key = SharedHeaderKey),
-                animatedVisibilityScope = animatedVisibilityScope,
-            )
-        ) {
-            Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
-                ProvideTextStyle(textStyle) {
-                    title()
-                }
+    Column(
+        modifier = Modifier.sharedElement(
+            rememberSharedContentState(key = SharedHeaderKey),
+            animatedVisibilityScope = this,
+        )
+    ) {
+        Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
+            ProvideTextStyle(textStyle) {
+                title()
             }
-            Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
         }
+        Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
     }
 }

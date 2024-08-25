@@ -23,7 +23,7 @@ fun StoryboardBuilder.ExampleTransition(
 ) {
     slideForTransition {
         val values = strings()
-        val state = transition.createChildTransition { if (it == SlideState.End) values.lastIndex else 0 }
+        val state = state.createChildTransition { if (it == SlideState.End) values.lastIndex else 0 }
         val text by state.animateList(values = values, transitionSpec = transitionSpec) { it }
 
         TitleAndBody {

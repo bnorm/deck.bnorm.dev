@@ -76,11 +76,6 @@ compose.resources {
     publicResClass = true
 }
 
-compose {
-    web {
-    }
-}
-
 tasks.register<Sync>("site") {
     from(tasks.named("wasmJsBrowserDistribution"))
     into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))

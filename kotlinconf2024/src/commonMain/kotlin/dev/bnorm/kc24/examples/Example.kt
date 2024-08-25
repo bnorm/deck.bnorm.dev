@@ -83,7 +83,7 @@ fun StoryboardBuilder.slideForExample(
     val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
     slide(stateCount = states.size, enterTransition, exitTransition) {
         val slideScope = this@slide
-        val exampleState = transition.createChildTransition {
+        val exampleState = state.createChildTransition {
             when (it) {
                 SlideState.Start -> states.first()
                 SlideState.End -> exit

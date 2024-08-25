@@ -29,8 +29,9 @@ import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.slide
 import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.easel.enter
+import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.notes.NotesTab
-import dev.bnorm.storyboard.easel.onSlideExit
 import kotlin.time.Duration.Companion.milliseconds
 
 fun StoryboardBuilder.Future() {
@@ -57,7 +58,7 @@ fun StoryboardBuilder.PowerAssertIdeas() {
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
                 AnimateByLine(
-                    transition = transition.createChildTransition { it.toInt() },
+                    transition = state.createChildTransition { it.toInt() },
                     lines = lines
                 )
             }
@@ -76,58 +77,49 @@ fun StoryboardBuilder.HowCanYouHelp() {
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
-                transition.createChildTransition { it.toInt() >= 0 }.AnimatedVisibility(
+                state.createChildTransition { it.toInt() >= 0 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
-                    modifier = with(animatedVisibilityScope) {
-                        Modifier.animateEnterExit(
-                            enter = onSlideExit { fadeIn(defaultSpec(delay = 300.milliseconds)) },
-                            exit = onSlideExit { fadeOut(defaultSpec()) },
-                        )
-                    },
+                    modifier = Modifier.animateEnterExit(
+                        enter = enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
+                        exit = exit(end = { fadeOut(defaultSpec()) }),
+                    ),
                 ) {
                     Text("• We're looking for your feedback!")
                 }
-                transition.createChildTransition { it.toInt() >= 1 }.AnimatedVisibility(
+                state.createChildTransition { it.toInt() >= 1 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
                 ) {
                     Row {
                         Text(
                             "   • Try out Power-Assert! ",
-                            modifier = with(animatedVisibilityScope) {
-                                Modifier.animateEnterExit(
-                                    enter = onSlideExit { fadeIn(defaultSpec(delay = 300.milliseconds)) },
-                                    exit = onSlideExit { fadeOut(defaultSpec()) },
-                                )
-                            },
+                            modifier = Modifier.animateEnterExit(
+                                enter = enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
+                                exit = exit(end = { fadeOut(defaultSpec()) }),
+                            ),
                         )
 
-                        with(sharedTransitionScope) {
-                            Text(
-                                text = buildAnnotatedString {
-                                    append("Docs: ")
-                                    appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
-                                },
-                                modifier = Modifier.sharedBounds(
-                                    rememberSharedContentState("docs-link"),
-                                    animatedVisibilityScope = animatedVisibilityScope,
-                                    boundsTransform = { _, _ -> defaultSpec() },
-                                ),
-                            )
-                        }
+                        Text(
+                            text = buildAnnotatedString {
+                                append("Docs: ")
+                                appendLink("kotl.in/power-assert", "https://kotl.in/power-assert")
+                            },
+                            modifier = Modifier.sharedBounds(
+                                rememberSharedContentState("docs-link"),
+                                animatedVisibilityScope = this@slide,
+                                boundsTransform = { _, _ -> defaultSpec() },
+                            ),
+                        )
                     }
                 }
-                transition.createChildTransition { it.toInt() >= 2 }.AnimatedVisibility(
+                state.createChildTransition { it.toInt() >= 2 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
-                    modifier = with(animatedVisibilityScope) {
-                        Modifier.animateEnterExit(
-                            enter = onSlideExit { fadeIn(defaultSpec(delay = 300.milliseconds)) },
-                            exit = onSlideExit { fadeOut(defaultSpec()) },
-
-                            )
-                    },
+                    modifier = Modifier.animateEnterExit(
+                        enter = enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
+                        exit = exit(end = { fadeOut(defaultSpec()) }),
+                    ),
                 ) {
                     Text("   • Report any compilation errors or strange diagrams")
                 }
@@ -158,12 +150,10 @@ fun StoryboardBuilder.Resources() {
 
     slide(stateCount = lines.size + 1) {
         Column(
-            modifier = with(animatedVisibilityScope) {
-                Modifier.animateEnterExit(
-                    enter = onSlideExit { fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it } },
-                    exit = onSlideExit { fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it } },
-                )
-            }
+            modifier = Modifier.animateEnterExit(
+                enter = enter(end = { fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it } }),
+                exit = exit(end = { fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it } }),
+            )
         ) {
             Box(Modifier.padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
                 ProvideTextStyle(MaterialTheme.typography.h3) {
@@ -186,7 +176,6 @@ fun StoryboardBuilder.Resources() {
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.body1) {
-                    with(sharedTransitionScope) {
                         Text(
                             text = buildAnnotatedString {
                                 append("Docs: ")
@@ -194,14 +183,13 @@ fun StoryboardBuilder.Resources() {
                             },
                             modifier = Modifier.sharedBounds(
                                 rememberSharedContentState("docs-link"),
-                                animatedVisibilityScope = animatedVisibilityScope,
+                                animatedVisibilityScope = this@slide,
                                 boundsTransform = { _, _ -> defaultSpec(delay = 300.milliseconds) },
                             ),
                         )
-                    }
 
                     AnimateByLine(
-                        transition = transition.createChildTransition { it.toInt(start = 0) - 1 },
+                        transition = state.createChildTransition { it.toInt(start = 0) - 1 },
                         lines = lines
                     )
                 }
@@ -210,12 +198,10 @@ fun StoryboardBuilder.Resources() {
 
         Box(Modifier.fillMaxSize()) {
             AnimateKodee(
-                modifier = with(animatedVisibilityScope) {
-                    Modifier.align(Alignment.BottomEnd).padding(8.dp).animateEnterExit(
-                        enter = onSlideExit { fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it } },
-                        exit = onSlideExit { fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it } },
-                    )
-                }
+                modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp).animateEnterExit(
+                    enter = enter(end = { fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it } }),
+                    exit = exit(end = { fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it } }),
+                )
             ) {
                 default { DefaultCornerKodee(Modifier.size(100.dp)) }
             }

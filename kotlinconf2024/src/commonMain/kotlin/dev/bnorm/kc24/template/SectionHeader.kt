@@ -32,7 +32,7 @@ fun StoryboardBuilder.SectionHeader(
 ) {
     slide(stateCount = 1) {
         SectionHeader(
-            showAsBody = transition.createChildTransition {
+            showAsBody = state.createChildTransition {
                 when (it) {
                     SlideState.Start -> animateFromBody
                     SlideState.End -> animateToBody

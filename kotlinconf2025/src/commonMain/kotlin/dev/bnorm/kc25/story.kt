@@ -18,9 +18,9 @@ import dev.bnorm.deck.shared.*
 import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.storyboard.core.*
 import dev.bnorm.storyboard.easel.EmbeddedStoryboard
-import dev.bnorm.storyboard.easel.SlideEnter
-import dev.bnorm.storyboard.easel.SlideExit
 import dev.bnorm.storyboard.easel.notes.NotesTab
+import dev.bnorm.storyboard.easel.template.SlideRtlEnter
+import dev.bnorm.storyboard.easel.template.SlideRtlExit
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.ui.FixedSize
@@ -111,9 +111,9 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
                     }
                 """.trimIndent().toCode()
             },
-            enterTransition = SlideEnter, exitTransition = SlideExit,
+            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
         ) {
-            val state = transition.currentState.toValue(states.first(), states.last())()
+            val state = state.currentState.toState()()
 
             Column {
                 Button(onClick = { storyboard.jumpTo(Storyboard.Frame(3, 0)) }) {
@@ -134,9 +134,9 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
 
         slide(
             false,
-            enterTransition = SlideEnter, exitTransition = SlideExit,
+            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
         ) {
-            val color by transition.animateColor {
+            val color by state.animateColor {
                 when (it.toBoolean()) {
                     false -> MaterialTheme.colors.primary
                     true -> MaterialTheme.colors.secondary
@@ -157,9 +157,9 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
 
         slide(
             0.0, 1.0, 2.0,
-            enterTransition = SlideEnter, exitTransition = SlideExit,
+            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
         ) {
-            val state = transition.currentState.toValue(0.0, 2.0)
+            val state = state.currentState.toState()
             val embeddedColors = remember { mutableStateOf(DARK_COLORS) }
             val embeddedStoryboard = remember { createStoryboard(embeddedColors) }
             embeddedColors.value = when (state > 1) {
@@ -197,7 +197,7 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
 
         slide(
             Unit,
-            enterTransition = SlideEnter, exitTransition = SlideExit,
+            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
         ) {
             NotesTab("GitHub") {
                 TextField(

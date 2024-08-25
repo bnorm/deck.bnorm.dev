@@ -28,15 +28,14 @@ private object SharedKodeeKey
 
 @Composable
 fun SlideScope<*>.SharedKodee(content: @Composable () -> Unit) {
-    val sharedElement = with(sharedTransitionScope) {
-        Modifier.sharedElement(
-            rememberSharedContentState(key = SharedKodeeKey),
-            animatedVisibilityScope = animatedVisibilityScope,
-        )
-    }
     Box(
         contentAlignment = Alignment.BottomEnd,
-        modifier = sharedElement.fillMaxSize().padding(8.dp),
+        modifier = Modifier
+            .sharedElement(
+                rememberSharedContentState(SharedKodeeKey),
+                animatedVisibilityScope = this,
+            )
+            .fillMaxSize().padding(8.dp),
     ) {
         content()
     }
