@@ -2,10 +2,10 @@
 
 pluginManagement {
     repositories {
+        maven("https://packages.jetbrains.team/maven/p/firework/dev")
         mavenCentral()
         google()
         gradlePluginPortal()
-        maven { setUrl("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
     }
 
     plugins {
@@ -16,13 +16,14 @@ pluginManagement {
         kotlin("plugin.compose") version kotlinVersion
         kotlin("plugin.power-assert") version kotlinVersion
         id("org.jetbrains.compose") version "1.7.1"
+        id("org.jetbrains.compose-hot-reload") version "1.0.0-dev.28.4"
     }
 
     dependencyResolutionManagement {
         repositories {
+            maven("https://packages.jetbrains.team/maven/p/firework/dev")
             mavenCentral()
             google()
-            maven { setUrl("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
         }
     }
 }
