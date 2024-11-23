@@ -25,6 +25,13 @@ import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.ui.FixedSize
+import org.jetbrains.compose.reload.DevelopmentEntryPoint
+
+val DEV = SlideDecorator { content ->
+    DevelopmentEntryPoint {
+        content()
+    }
+}
 
 val HIGHLIGHTING: Highlighting
     @Composable get() {
@@ -83,7 +90,7 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
     storyboard = Storyboard.build(
         name = "Sample Storyboard",
         size = Storyboard.DEFAULT_SIZE,
-        decorator = theme,
+        decorator = DEV + theme,
     ) {
         slide(
             @Composable {
