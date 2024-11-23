@@ -29,8 +29,10 @@ fun StoryboardBuilder.ComplexExpressionsExample() {
             }
         ) {
             Example(
-                exampleTextSequence = persistentListOf(ComplexAssertCode),
+                exampleText = ComplexAssertCode,
+                gradleTextSequence = null,
                 outputTextSequence = persistentListOf(persistentListOf(ComplexAssertOutput)),
+                conclusions = null,
             )
 
             NotesTab("Notes") {

@@ -39,9 +39,10 @@ fun StoryboardBuilder.RequireExample() {
                 GradleText.AddRequire.animateTo(GradleText.AddSourceSet),
             )
             Example(
-                exampleTextSequence = persistentListOf(RequireCode),
+                exampleText = RequireCode,
                 gradleTextSequence = gradleTextSequence,
                 outputTextSequence = persistentListOf(persistentListOf(RequireOutput)),
+                conclusions = null,
             )
 
             NotesTab("Notes") {

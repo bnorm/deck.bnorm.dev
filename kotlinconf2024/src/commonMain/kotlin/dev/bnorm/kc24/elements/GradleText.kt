@@ -5,9 +5,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.animation.then
-import dev.bnorm.librettist.text.buildGradleKtsCodeString
 import dev.bnorm.librettist.text.thenLineEndDiff
 import dev.bnorm.storyboard.text.highlight.Highlighting
+import dev.bnorm.storyboard.text.highlight.Language
+import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.highlight.rememberHighlighted
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -254,10 +255,10 @@ private fun String.toKts(highlighting: Highlighting): AnnotatedString {
     // TODO pulling from ShowTheme means this would need to be @Composable
     //  - text has to get rebuilt for every new composable...
     //  - ...or does it? can we build at the top and pass down somehow?
-    return buildGradleKtsCodeString(
-        text = this,
-        codeStyle = highlighting,
-        identifierType = { it.toStyle(highlighting) }
+    return highlight(
+        highlighting = highlighting,
+        language = Language.Kotlin,
+        identifierStyle = { it.toStyle(highlighting) },
     )
 }
 

@@ -1,5 +1,6 @@
 package dev.bnorm.kc24.examples
 
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,8 +12,6 @@ import dev.bnorm.kc24.elements.GradleText
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.librettist.animation.startAnimation
-import dev.bnorm.librettist.text.thenDiff
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
@@ -43,8 +42,13 @@ fun StoryboardBuilder.AssertEqualsAndNotNullExample() {
                 }
             }
         ) {
-            val exampleTextSequence =
-                startAnimation(AssertEqualsCode).thenDiff(AssertEqualsAndNotNullCode).toList()
+            val exampleText = transition.createChildTransition {
+                when (it.exampleIndex) {
+                    0 -> AssertEqualsCode
+                    1 -> AssertEqualsAndNotNullCode
+                    else -> error("!")
+                }
+            }
             val gradleTextSequence = persistentListOf(
                 GradleText.AddSourceSet.animateTo(GradleText.AddAssertEquals),
                 GradleText.AddAssertEquals.animateTo(GradleText.AddAssertNotNull),
@@ -52,9 +56,10 @@ fun StoryboardBuilder.AssertEqualsAndNotNullExample() {
             val outputText =
                 if (transition.currentState.exampleIndex > 0) assertEqualsAndNotNullOutput else AssertEqualsOutput
             Example(
-                exampleTextSequence = exampleTextSequence,
+                exampleText = exampleText,
                 gradleTextSequence = gradleTextSequence,
                 outputTextSequence = persistentListOf(persistentListOf(outputText)),
+                conclusions = null,
             )
 
             NotesTab("Notes") {
@@ -64,24 +69,16 @@ fun StoryboardBuilder.AssertEqualsAndNotNullExample() {
     }
 }
 
-// TODO is race a good example to use?
-//  - may be a touchy topic to use during a talk.
-//  - does lotr make that not a concern?
-val AssertEqualsCode: AnnotatedString
-    @Composable get() = """
-        @Test fun `test members of the fellowship`() {
-            val members = fellowshipOfTheRing.getCurrentMembers()
-            val aragorn = members.find { it.name == "Aragorn" }
-            val boromir = members.find { it.name == "Boromir" }
-            assertEquals(aragorn?.race, boromir?.race)
-        }
-    """.trimIndent().toExampleCode()
+val AssertEqualsCode: List<AnnotatedString>
+    @Composable get() = buildExampleCode(
+        "@Test fun `test members of the fellowship`() {\n",
+        "    val members = fellowshipOfTheRing.getCurrentMembers()\n",
+        "    val aragorn = ", "members.find { it.name == \"Aragorn\" }", "\n",
+        "    val boromir = ", "members.find { it.name == \"Boromir\" }", "\n",
+        "    assertEquals(aragorn", "?", ".race, boromir", "?", ".race)\n",
+        "}\n",
+    )
 
-// TODO !!! THIS IS DOCTORED OUTPUT !!!
-//  - `assertEquals` prints on the same line as the exception name
-//  - "expected:[...]" prints on the same line as "Aragorn"
-//  - do we need to hardcode a newline before and after the diagram?
-//  - should we show a link to a ticket if it doesn't get fixed?
 val AssertEqualsOutput = """
 java.lang.AssertionError:
 assertEquals(aragorn?.race, boromir?.race)
@@ -94,20 +91,16 @@ expected:<Dúnadan> but was:<null>
     at [...]
 """.trimIndent()
 
-val AssertEqualsAndNotNullCode: AnnotatedString
-    @Composable get() = """
-        @Test fun `test members of the fellowship`() {
-            val members = fellowshipOfTheRing.getCurrentMembers()
-            val aragorn = assertNotNull(members.find { it.name == "Aragorn" })
-            val boromir = assertNotNull(members.find { it.name == "Boromir" })
-            assertEquals(aragorn.race, boromir.race)
-        }
-    """.trimIndent().toExampleCode()
+val AssertEqualsAndNotNullCode: List<AnnotatedString>
+    @Composable get() = buildExampleCode(
+        "@Test fun `test members of the fellowship`() {\n",
+        "    val members = fellowshipOfTheRing.getCurrentMembers()\n",
+        "    val aragorn = ", "assertNotNull(", "members.find { it.name == \"Aragorn\" }", ")", "\n",
+        "    val boromir = ", "assertNotNull(", "members.find { it.name == \"Boromir\" }", ")", "\n",
+        "    assertEquals(aragorn", ".race, boromir", ".race)\n",
+        "}\n",
+    )
 
-// TODO !!! THIS IS DOCTORED OUTPUT !!!
-//  - `assertNotNull` prints on the same line as the exception name
-//  - do we need to hardcode a newline before and after the diagram?
-//  - should we show a link to a ticket if it doesn't get fixed?
 val assertEqualsAndNotNullOutput = """
 java.lang.AssertionError:
 assertNotNull(members.find { it.name == "Boromir" })
@@ -116,3 +109,19 @@ assertNotNull(members.find { it.name == "Boromir" })
               [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli]
     at [...]
 """.trimIndent()
+
+@Composable
+private fun buildExampleCode(
+    vararg text: String,
+): List<AnnotatedString> {
+    val merged = text.joinToString("")
+    val highlighted = merged.toExampleCode()
+    val split = buildList {
+        var index = 0
+        for (element in text) {
+            this.add(highlighted.subSequence(index, index + element.length))
+            index += element.length
+        }
+    }
+    return split
+}

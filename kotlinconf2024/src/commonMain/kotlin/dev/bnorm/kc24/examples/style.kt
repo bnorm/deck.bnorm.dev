@@ -3,8 +3,9 @@ package dev.bnorm.kc24.examples
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.storyboard.text.highlight.Highlighting
+import dev.bnorm.storyboard.text.highlight.Language
+import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.highlight.rememberHighlighted
 
 fun String.toExampleStyle(codeStyle: Highlighting): SpanStyle? {
@@ -22,9 +23,10 @@ fun String.toExampleCode(
     identifierType: (Highlighting, String) -> SpanStyle? = { _, _ -> null },
 ): AnnotatedString {
     return rememberHighlighted(this) { highlighting ->
-        buildKotlinCodeString(
-            this,
-            highlighting,
-            identifierType = { identifierType(highlighting, it) ?: it.toExampleStyle(highlighting) })
+        highlight(
+            highlighting = highlighting,
+            language = Language.Kotlin,
+            identifierStyle = { identifierType(highlighting, it) ?: it.toExampleStyle(highlighting) },
+        )
     }
 }

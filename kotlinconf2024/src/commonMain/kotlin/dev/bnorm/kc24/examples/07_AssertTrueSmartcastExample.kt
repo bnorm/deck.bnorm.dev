@@ -39,9 +39,10 @@ fun StoryboardBuilder.AssertTrueSmartcastExample() {
                 GradleText.AddConfig.animateTo(GradleText.AddAssertTrue),
             )
             Example(
-                exampleTextSequence = persistentListOf(AssertTrueSmartcastCode),
+                exampleText = AssertTrueSmartcastCode,
                 gradleTextSequence = gradleTextSequence,
                 outputTextSequence = persistentListOf(persistentListOf(AssertTrueSmartcastOutput)),
+                conclusions = null,
             )
 
             NotesTab("Notes") {

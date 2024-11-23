@@ -24,6 +24,7 @@ import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.storyboard.core.*
+import dev.bnorm.storyboard.text.magic.MagicText
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.jvm.JvmName
 import kotlin.time.Duration.Companion.milliseconds
@@ -163,10 +164,10 @@ fun buildExampleStates(builder: ExampleState.Builder.() -> Unit): List<ExampleSt
 
 @Composable
 fun ExampleScope.Example(
-    exampleText: AnnotatedString,
-    gradleText: AnnotatedString? = null,
-    outputText: String,
-    conclusions: ImmutableList<Conclusion>? = null,
+    exampleText: Transition<List<AnnotatedString>>,
+    gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>?,
+    outputTextSequence: ImmutableList<ImmutableList<String>>?,
+    conclusions: ImmutableList<Conclusion>?,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -177,7 +178,39 @@ fun ExampleScope.Example(
             }
         }
 
-        Output(outputText, Modifier.align(Alignment.BottomStart))
+        if (outputTextSequence != null) {
+            val outputText by transition.createChildTransition { it.outputIndex }
+                .animateThrough(outputTextSequence, transitionSpec = { typingSpec(duration = 1000.milliseconds) })
+            Output(outputText, Modifier.align(Alignment.BottomStart))
+        }
+
+        if (gradleTextSequence != null) {
+            val gradleText by transition.createChildTransition { it.gradleIndex }
+                .animateThrough(gradleTextSequence)
+            Gradle(gradleText, Modifier.align(Alignment.TopEnd))
+        }
+    }
+}
+
+@Composable
+fun ExampleScope.Example(
+    exampleText: AnnotatedString,
+    gradleText: AnnotatedString?,
+    outputText: String?,
+    conclusions: ImmutableList<Conclusion>?,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Example(exampleText)
+
+            if (conclusions != null) {
+                Conclusions(conclusions)
+            }
+        }
+
+        if (outputText != null) {
+            Output(outputText, Modifier.align(Alignment.BottomStart))
+        }
 
         if (gradleText != null) {
             Gradle(gradleText, Modifier.align(Alignment.TopEnd))
@@ -188,19 +221,14 @@ fun ExampleScope.Example(
 @Composable
 @JvmName("ExampleGradleSequence")
 fun ExampleScope.Example(
-    exampleTextSequence: ImmutableList<AnnotatedString>,
-    gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>? = null,
-    outputTextSequence: ImmutableList<ImmutableList<String>>? = null,
-    conclusions: ImmutableList<Conclusion>? = null,
+    exampleText: AnnotatedString,
+    gradleTextSequence: ImmutableList<ImmutableList<AnnotatedString>>?,
+    outputTextSequence: ImmutableList<ImmutableList<String>>?,
+    conclusions: ImmutableList<Conclusion>?,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            if (exampleTextSequence.size == 1) {
-                Example(exampleTextSequence[0])
-            } else {
-                val exampleText by transition.exampleTextDiff(exampleTextSequence)
-                Example(exampleText)
-            }
+            Example(exampleText)
 
             if (conclusions != null) {
                 Conclusions(conclusions)
@@ -226,6 +254,15 @@ fun Example(exampleText: AnnotatedString) {
     Box(modifier = Modifier.fillMaxWidth().padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
         ProvideTextStyle(MaterialTheme.typography.body2) {
             Text(exampleText, modifier = Modifier.horizontalScroll(rememberScrollState()))
+        }
+    }
+}
+
+@Composable
+private fun Example(exampleText: Transition<List<AnnotatedString>>) {
+    Box(modifier = Modifier.fillMaxWidth().padding(start = SLIDE_PADDING, top = SLIDE_PADDING)) {
+        ProvideTextStyle(MaterialTheme.typography.body2) {
+            MagicText(exampleText, modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()))
         }
     }
 }

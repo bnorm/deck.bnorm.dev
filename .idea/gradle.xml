@@ -12,6 +12,7 @@
                   <project path="$PROJECT_DIR$/storyboard" />
                   <project path="$PROJECT_DIR$/storyboard/examples" />
                   <project path="$PROJECT_DIR$/storyboard/examples/basic" />
+                  <project path="$PROJECT_DIR$/storyboard/examples/shared" />
                   <project path="$PROJECT_DIR$/storyboard/storyboard-core" />
                   <project path="$PROJECT_DIR$/storyboard/storyboard-easel" />
                   <project path="$PROJECT_DIR$/storyboard/storyboard-text" />
@@ -31,6 +32,7 @@
             <option value="$PROJECT_DIR$/storyboard" />
             <option value="$PROJECT_DIR$/storyboard/examples" />
             <option value="$PROJECT_DIR$/storyboard/examples/basic" />
+            <option value="$PROJECT_DIR$/storyboard/examples/shared" />
             <option value="$PROJECT_DIR$/storyboard/storyboard-core" />
             <option value="$PROJECT_DIR$/storyboard/storyboard-easel" />
             <option value="$PROJECT_DIR$/storyboard/storyboard-text" />

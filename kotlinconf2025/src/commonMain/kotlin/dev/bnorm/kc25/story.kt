@@ -15,13 +15,14 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.*
-import dev.bnorm.librettist.text.buildKotlinCodeString
 import dev.bnorm.storyboard.core.*
 import dev.bnorm.storyboard.easel.EmbeddedStoryboard
 import dev.bnorm.storyboard.easel.notes.NotesTab
-import dev.bnorm.storyboard.easel.template.SlideRtlEnter
-import dev.bnorm.storyboard.easel.template.SlideRtlExit
+import dev.bnorm.storyboard.easel.template.SlideEnter
+import dev.bnorm.storyboard.easel.template.SlideExit
 import dev.bnorm.storyboard.text.highlight.Highlighting
+import dev.bnorm.storyboard.text.highlight.Language
+import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.ui.FixedSize
 
@@ -111,7 +112,8 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
                     }
                 """.trimIndent().toCode()
             },
-            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
+            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
         ) {
             val state = state.currentState.toState()()
 
@@ -134,7 +136,8 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
 
         slide(
             false,
-            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
+            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
         ) {
             val color by state.animateColor {
                 when (it.toBoolean()) {
@@ -157,7 +160,8 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
 
         slide(
             0.0, 1.0, 2.0,
-            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
+            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
         ) {
             val state = state.currentState.toState()
             val embeddedColors = remember { mutableStateOf(DARK_COLORS) }
@@ -197,7 +201,8 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
 
         slide(
             Unit,
-            enterTransition = SlideRtlEnter, exitTransition = SlideRtlExit,
+            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
         ) {
             NotesTab("GitHub") {
                 TextField(
@@ -291,10 +296,11 @@ fun String.toCode(
 ): AnnotatedString {
     val highlighting = Highlighting.current
     return rememberSaveable(highlighting, this) {
-        buildKotlinCodeString(
-            this,
-            highlighting,
-            identifierType = { identifierType(highlighting, it) ?: it.toStyle(highlighting) })
+        highlight(
+            highlighting = highlighting,
+            language = Language.Kotlin,
+            identifierStyle = { identifierType(highlighting, it) ?: it.toStyle(highlighting) },
+        )
     }
 }
 

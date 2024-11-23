@@ -55,6 +55,7 @@ fun StoryboardBuilder.AssertKExample() {
         ) {
             Example(
                 exampleText = AssertKCode,
+                gradleText = null,
                 outputText = AssertKOutput,
                 conclusions = conclusions,
             )

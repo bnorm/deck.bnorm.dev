@@ -35,6 +35,7 @@ fun StoryboardBuilder.AssertEqualsMessageExample() {
         ) {
             Example(
                 exampleText = AssertEqualsMessageCode,
+                gradleText = null,
                 outputText = AssertEqualsMessageOutput,
                 conclusions = conclusions,
             )

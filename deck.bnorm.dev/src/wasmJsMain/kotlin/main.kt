@@ -11,7 +11,7 @@ import dev.bnorm.deck.Talks
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    CanvasBasedWindow(canvasElementId = "ComposeTarget") {
+    CanvasBasedWindow {
         MaterialTheme(colors = darkColors()) {
             Surface(Modifier.fillMaxSize()) {
                 Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()) {

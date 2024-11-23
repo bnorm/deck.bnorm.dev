@@ -53,6 +53,7 @@ fun StoryboardBuilder.BasicAssertTrueExample() {
         ) {
             Example(
                 exampleText = BasicAssertTrueCode,
+                gradleText = null,
                 outputText = BasicAssertTrueOutput,
                 conclusions = conclusions,
             )

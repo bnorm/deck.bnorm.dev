@@ -50,9 +50,10 @@ fun StoryboardBuilder.SimpleAssertExample() {
         ) {
             val gradleTextSequence = persistentListOf(GradleText.Initial.animateTo(GradleText.AddPlugin))
             Example(
-                exampleTextSequence = persistentListOf(SimpleAssertCode),
+                exampleText = SimpleAssertCode,
                 gradleTextSequence = gradleTextSequence,
                 outputTextSequence = persistentListOf(SimpleAssertOutput),
+                conclusions = null,
             )
 
             NotesTab("Notes") {
