@@ -1,7 +1,14 @@
 package dev.bnorm.kc24
 
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
+import androidx.compose.ui.window.application
 import dev.bnorm.storyboard.easel.DesktopStoryboard
 
 fun main() {
-    DesktopStoryboard(KotlinPlusPowerAssertEqualsLove)
+    application {
+        MaterialTheme(colors = darkColors()) {
+            DesktopStoryboard(KotlinPlusPowerAssertEqualsLove)
+        }
+    }
 }
