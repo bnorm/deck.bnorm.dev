@@ -88,7 +88,7 @@ fun createStoryboard(colors: State<Colors>): Storyboard {
 
     lateinit var storyboard: Storyboard
     storyboard = Storyboard.build(
-        name = "Sample Storyboard",
+        title = "Sample Storyboard",
         size = Storyboard.DEFAULT_SIZE,
         decorator = DEV + theme,
     ) {

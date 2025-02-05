@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.generated.resources.*
 import dev.bnorm.deck.shared.image.Kodee
-import dev.bnorm.deck.shared.image.kodee.Sitting
+import dev.bnorm.deck.shared.image.kodee.*
 import dev.bnorm.storyboard.core.SlideScope
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -99,6 +99,11 @@ fun DefaultCornerKodee(modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun KodeeElectrified(modifier: Modifier = Modifier) {
+    Kodee(Res.drawable.kodee_electrified, modifier)
+}
+
+@Composable
 fun KodeeExcited(modifier: Modifier = Modifier) {
     Kodee(Res.drawable.kodee_excited, modifier)
 }
@@ -143,8 +148,74 @@ private fun Kodee(drawableResource: DrawableResource, modifier: Modifier) {
 }
 
 @Composable
+fun KodeeGreeting(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Greeting, modifier)
+}
+
+
+@Composable
+fun KodeeInLove(modifier: Modifier = Modifier) {
+    Kodee(Kodee.InLove, modifier)
+}
+
+
+@Composable
+fun KodeeJumping(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Jumping, modifier)
+}
+
+
+@Composable
+fun KodeeJumpingCopy(modifier: Modifier = Modifier) {
+    Kodee(Kodee.JumpingCopy, modifier)
+}
+
+
+@Composable
+fun KodeeNaughty(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Naughty, modifier)
+}
+
+
+@Composable
+fun KodeePetite(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Petite, modifier)
+}
+
+
+@Composable
+fun KodeeRegular(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Regular, modifier)
+}
+
+
+@Composable
+fun KodeeSharing(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Sharing, modifier)
+}
+
+
+@Composable
 fun KodeeSitting(modifier: Modifier = Modifier) {
     Kodee(Kodee.Sitting, modifier)
+}
+
+
+@Composable
+fun KodeeSmall(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Small, modifier)
+}
+
+
+@Composable
+fun KodeeWaving(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Waving, modifier)
+}
+
+
+@Composable
+fun KodeeWinter(modifier: Modifier = Modifier) {
+    Kodee(Kodee.Winter, modifier)
 }
 
 @Composable

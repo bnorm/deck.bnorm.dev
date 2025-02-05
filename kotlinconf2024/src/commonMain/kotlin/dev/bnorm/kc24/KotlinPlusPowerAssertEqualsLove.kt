@@ -48,7 +48,7 @@ import org.jetbrains.compose.resources.painterResource
 
 val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
     Storyboard.build(
-        name = "Kotlin + Power-Assert = Love",
+        title = "Kotlin + Power-Assert = Love",
         size = Storyboard.DEFAULT_SIZE * 2,
         decorator = { content ->
             Highlighting(Theme.codeStyle) {
