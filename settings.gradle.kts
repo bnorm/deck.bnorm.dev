@@ -15,7 +15,7 @@ pluginManagement {
         kotlin("plugin.serialization") version kotlinVersion
         kotlin("plugin.compose") version kotlinVersion
         kotlin("plugin.power-assert") version kotlinVersion
-        id("org.jetbrains.compose") version "1.7.3"
+        id("org.jetbrains.compose") version "1.8.0-alpha02"
         id("org.jetbrains.compose-hot-reload") version "1.0.0-dev.34.1"
     }
 
@@ -35,4 +35,5 @@ includeBuild("storyboard")
 include(":deck.bnorm.dev")
 include(":kotlinconf2024")
 include(":kotlinconf2025")
+include(":KotlinTalks:PowerAssertEvolved")
 include(":shared")

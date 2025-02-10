@@ -62,7 +62,7 @@ fun AnimateKodee(
 ) {
     fun <T> spec(): FiniteAnimationSpec<T> = tween()
 
-    val icons = remember(builder) {
+    val conditions = remember(builder) {
         var default = @Composable { DefaultCornerKodee() }
         buildList {
             object : KodeeScope {
@@ -80,10 +80,13 @@ fun AnimateKodee(
         }
     }
 
+    val icons = conditions.groupBy(keySelector = { it.second }, valueTransform = { it.first })
+        .mapValues { (_, conditions) -> { conditions.any { it.invoke() } } }
+
     // TODO Use AnimatedContent?
 
     var somethingVisible = false
-    for ((condition, content) in icons) {
+    for ((content, condition) in icons) {
         val itemVisible = !somethingVisible && condition()
         somethingVisible = somethingVisible || itemVisible
 
