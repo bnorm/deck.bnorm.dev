@@ -1,5 +1,16 @@
 package dev.bnorm.evolved
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.socials.Bluesky
+import dev.bnorm.deck.shared.socials.JetBrainsEmployee
+import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.evolved.sections.evolution.Evolution
 import dev.bnorm.evolved.sections.future.Future
 import dev.bnorm.evolved.sections.history.History
@@ -8,6 +19,7 @@ import dev.bnorm.evolved.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.SlideDecorator
 import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.plus
+import dev.bnorm.storyboard.core.slide
 import org.jetbrains.compose.reload.DevelopmentEntryPoint
 
 private val DEV = SlideDecorator { content ->
@@ -30,10 +42,48 @@ fun createStoryboard() = Storyboard.build(
     size = Storyboard.DEFAULT_SIZE,
     decorator = DEV + THEME_DECORATOR,
 ) {
-    // TODO title slide?
+    slide {
+        Title {
+            Text("Power-Assert:")
+            Text("Evolved!")
+        }
+    }
     History()
     Today()
     Evolution()
     Future()
-    // TODO closing slide?
+    slide {
+        Title {
+            Text("Thank you!")
+        }
+    }
+}
+
+@Composable
+fun Title(content: @Composable () -> Unit = {}) {
+    Box(modifier = Modifier.fillMaxSize().padding(32.dp)) {
+        Column(
+            Modifier.fillMaxWidth().align(Alignment.BottomStart),
+            horizontalAlignment = Alignment.Start
+        ) {
+            ProvideTextStyle(MaterialTheme.typography.h1) {
+                content()
+            }
+            Spacer(Modifier.size(32.dp))
+            Box(modifier = Modifier.fillMaxWidth()) {
+                JetBrainsEmployee(
+                    name = "Brian Norman",
+                    title = "Kotlin Compiler Developer",
+                    modifier = Modifier.align(Alignment.BottomStart),
+                )
+                Column(
+                    Modifier.align(Alignment.BottomEnd),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Bluesky(username = "bnorm.dev")
+                    Mastodon(username = "bnorm@kotlin.social")
+                }
+            }
+        }
+    }
 }
