@@ -41,7 +41,6 @@ fun StoryboardBuilder.ExplainCallExample() {
                                 }
                             }))
                             Box(Modifier.weight(1f))
-                            // TODO terminal pop-up like in KotlinConf 2024
                             state.AnimatedVisibility(
                                 visible = { it.toState() == 3 },
                                 enter = slideInVertically(initialOffsetY = { it }),
@@ -132,4 +131,5 @@ powerAssert("Hello".length == "World".substring(1, 4).length)
 Expected :5
 Actual   :3
 <Click to see difference>
+
 """.trimIndent()

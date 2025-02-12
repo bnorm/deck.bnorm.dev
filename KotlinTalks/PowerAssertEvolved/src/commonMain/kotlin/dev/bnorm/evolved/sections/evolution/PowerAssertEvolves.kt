@@ -1,11 +1,8 @@
 package dev.bnorm.evolved.sections.evolution
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -23,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.slide
-import dev.bnorm.storyboard.core.*
+import dev.bnorm.storyboard.core.toInt
 
 fun StoryboardBuilder.PowerAssertEvolves() {
     // TODO https://youtu.be/bBMg3NCtXOQ?si=2gl1Qx6bAzHmxJaI&t=91
@@ -44,30 +41,68 @@ fun StoryboardBuilder.PowerAssertEvolves() {
 
 @Composable
 private fun LowerArea(transition: Transition<Int>) {
-    Column(
+    Box(
         Modifier
-            .fillMaxWidth()
             .padding(bottom = 32.dp)
-            // TODO better border, make it thicker on the sides? background + padding?
-            .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(16.dp))
-            .padding(16.dp)
+            .background(Color.White, RoundedCornerShape(16.dp))
+            .padding(vertical = 4.dp, horizontal = 16.dp)
     ) {
-        ProvideTextStyle(MaterialTheme.typography.h5.copy(fontFamily = FontFamily.Monospace)) {
-            val first1 by transition.animateTyping("What?", onValue = 1)
-            val first2 by transition.animateTyping("POWER-ASSERT is evolving!", onValue = 2)
+        Column(
+            Modifier
+                .background(MaterialTheme.colors.surface, shape = RoundedCornerShape(16.dp))
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            ProvideTextStyle(MaterialTheme.typography.h5.copy(fontFamily = FontFamily.Monospace)) {
+                val first1 by transition.animateTyping("What?", onValue = 1)
+                val first2 by transition.animateTyping("POWER-ASSERT is evolving!", onValue = 2)
 
-            val second2 = " Your POWER-ASSERT"
-            val second3 = "evolved into EXPLAIN CALL!"
-            val second1 by transition.animateTyping("Congratulations!", onValue = 4)
-            val second by transition.animateTyping(second2 + second3, onValue = 5)
+                val second2 = " Your POWER-ASSERT"
+                val second3 = "evolved into EXPLAIN CALL!"
+                val second1 by transition.animateTyping("Congratulations!", onValue = 4)
+                val second by transition.animateTyping(second2 + second3, onValue = 5)
 
-            if (second1.isEmpty()) {
-                Text(first1)
-                Text(first2)
-            } else {
-                Text(second1 + second.substring(0, second.length.coerceIn(0, second2.length)))
-                Text(second3.substring(0, (second.length - second2.length).coerceIn(0, second3.length)))
+                if (second1.isEmpty()) {
+                    Text(first1)
+                    Spacer(Modifier.height(8.dp))
+                    Text(first2)
+                } else {
+                    Text(second1 + second.substring(0, second.length.coerceIn(0, second2.length)))
+                    Spacer(Modifier.height(8.dp))
+                    Text(second3.substring(0, (second.length - second2.length).coerceIn(0, second3.length)))
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun PowerAssertEvolve(
+    transition: Transition<Int>,
+    modifier: Modifier = Modifier,
+) {
+    val scale by transition.animateFloat(
+        transitionSpec = {
+            if (initialState == 2 && targetState == 3) {
+                evolveSpec
+            } else {
+                snap()
+            }
+        },
+    ) { it -> if (it.toInt() >= 3) 1.0f else 0.0f }
+
+    ProvideTextStyle(MaterialTheme.typography.h1.copy(fontFamily = FontFamily.Monospace)) {
+        Box(modifier, contentAlignment = Alignment.Center) {
+            Text(
+                "POWER-ASSERT",
+                fontFamily = FontFamily.Monospace,
+                modifier = Modifier.scale(1.0f - scale)
+            )
+            Text(
+                "EXPLAIN CALL",
+                fontFamily = FontFamily.Monospace,
+                modifier = Modifier.scale(scale)
+            )
         }
     }
 }
@@ -90,39 +125,6 @@ private fun <T : Comparable<T>> Transition<T>.animateTyping(
     }
 
     return derivedStateOf { text.substring(0, length) }
-}
-
-@OptIn(ExperimentalAnimationSpecApi::class)
-@Composable
-private fun PowerAssertEvolve(
-    transition: Transition<Int>,
-    modifier: Modifier = Modifier,
-) {
-    // TODO there seems to be a bug in Compose where creating a child transition causes it to always use spring()
-    val scale by transition.animateFloat(
-        transitionSpec = {
-            if (initialState == 2 && targetState == 3) {
-                evolveSpec
-            } else {
-                snap()
-            }
-        },
-    ) { it -> if (it.toInt() >= 3) 1.0f else 0.0f }
-
-    ProvideTextStyle(MaterialTheme.typography.h1) {
-        Box(modifier, contentAlignment = Alignment.Center) {
-            Text(
-                "POWER-ASSERT",
-                fontFamily = FontFamily.Monospace,
-                modifier = Modifier.scale(1.0f - scale)
-            )
-            Text(
-                "EXPLAIN CALL",
-                fontFamily = FontFamily.Monospace,
-                modifier = Modifier.scale(scale)
-            )
-        }
-    }
 }
 
 @OptIn(ExperimentalAnimationSpecApi::class)

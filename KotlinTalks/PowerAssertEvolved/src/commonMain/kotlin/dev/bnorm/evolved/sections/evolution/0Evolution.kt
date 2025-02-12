@@ -4,17 +4,12 @@ import dev.bnorm.evolved.template.SectionAndTitle
 import dev.bnorm.storyboard.core.StoryboardBuilder
 
 fun StoryboardBuilder.Evolution() {
-    /*
-     * 1. new annotations
-     * 2. new data structures
-     * 3. improvements to diagram
-     */
-
     SectionAndTitle("Evolving Power-Assert") {
         PowerAssertEvolves()
         NewApi()
         FunctionTransformation()
         CallTransformation()
         ExplainCallExample()
+        // TODO something about toDefaultMessage to show diagram improvements for all diagrams
     }
 }
