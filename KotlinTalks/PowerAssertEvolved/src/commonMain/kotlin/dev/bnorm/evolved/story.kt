@@ -71,16 +71,21 @@ fun Title(content: @Composable () -> Unit = {}) {
             }
             Spacer(Modifier.size(32.dp))
             Box(modifier = Modifier.fillMaxWidth()) {
-                JetBrainsEmployee(
-                    name = "Brian Norman",
-                    title = "Kotlin Compiler Developer",
-                    modifier = Modifier.align(Alignment.BottomStart),
-                )
                 Column(
-                    Modifier.align(Alignment.BottomEnd),
-                    horizontalAlignment = Alignment.End
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.align(Alignment.CenterStart),
                 ) {
-                    Bluesky(username = "bnorm.dev")
+                    JetBrainsEmployee(
+                        name = "Brian Norman",
+                        title = "Kotlin Compiler Developer",
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                ) {
+                    Bluesky(username = "@bnorm.dev")
+                    Spacer(Modifier.size(4.dp))
                     Mastodon(username = "bnorm@kotlin.social")
                 }
             }

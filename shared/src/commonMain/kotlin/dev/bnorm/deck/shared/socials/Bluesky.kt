@@ -1,7 +1,9 @@
 package dev.bnorm.deck.shared.socials
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -9,22 +11,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.generated.resources.Res
-import dev.bnorm.deck.shared.generated.resources.bluesky_media_kit_logo_svgs
+import dev.bnorm.deck.shared.generated.resources.bluesky_logo
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun Bluesky(username: String, modifier: Modifier = Modifier) {
-    // TODO clip the logo so we can control padding better
-    Row(
-        modifier = modifier.height(32.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
-            painter = painterResource(Res.drawable.bluesky_media_kit_logo_svgs),
+            painter = painterResource(Res.drawable.bluesky_logo),
             contentDescription = "",
+            modifier = modifier.size(24.dp),
         )
-        Spacer(modifier = Modifier.size(4.dp))
+        Spacer(modifier = Modifier.size(8.dp))
         Text(text = username, style = MaterialTheme.typography.body2)
     }
 }

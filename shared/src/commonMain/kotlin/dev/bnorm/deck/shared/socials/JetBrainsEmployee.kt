@@ -26,7 +26,7 @@ fun JetBrainsEmployee(
         Image(
             painter = painterResource(Res.drawable.JetBrains),
             contentDescription = "",
-            modifier = Modifier.height(32.dp),
+            modifier = Modifier.size(32.dp),
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column {
