@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 
+fun <T> T.twice(): Pair<T, T> = this to this
+
 @Composable
 fun Transition<Int>.MagicCode(
     transitions: List<Pair<String, String>>,

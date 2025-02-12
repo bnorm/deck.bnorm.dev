@@ -31,6 +31,9 @@ data class Node(
         children.add(Child(node, offset, link))
     }
 }
+
+val EXPRESSION_TREE_ROOT = buildTree()
+
 fun buildTree(): Node {
     val root = Node(
         reveal = 1,

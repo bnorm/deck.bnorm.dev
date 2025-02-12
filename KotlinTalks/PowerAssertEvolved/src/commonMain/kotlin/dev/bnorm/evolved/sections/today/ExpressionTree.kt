@@ -85,7 +85,7 @@ private fun TreeNodes(
 ) {
     val textMeasurer = rememberTextMeasurer()
     val links = mutableListOf<Node.Link>()
-    val root = remember { buildTree() }
+    val root = EXPRESSION_TREE_ROOT
 
     @Composable
     fun Node(position: DpOffset, node: Node) {
