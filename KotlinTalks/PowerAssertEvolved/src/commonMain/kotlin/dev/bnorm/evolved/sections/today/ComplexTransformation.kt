@@ -4,6 +4,7 @@ import dev.bnorm.storyboard.core.StoryboardBuilder
 
 fun StoryboardBuilder.ComplexTransformation() {
     CodeTransitionSlide(COMPLEX_TRANSITIONS)
+    // TODO rewrite code with a when
 }
 
 private val COMPLEX_TRANSITIONS = listOf(
@@ -204,5 +205,40 @@ private val COMPLEX_TRANSITIONS = listOf(
                 "${'"'}".trimIndent()
             }
         }
+    """.trimIndent(),
+
+    """
+        <i>val tmp1 = </i><m>str</m=1>
+        <i>val tmp2 = tmp1</i><m>.length</m=2>
+        <i>val tmp3 = tmp2</i><m> >= 1</m=3>
+        <i>if (tmp3) {</i>
+        <i>    val tmp4 = </i><m>str</m=4>
+        <i>    val tmp5 = tmp4</i><m>[0]</m=5>
+        <i>    val tmp6 = tmp5</i><m> == 'x'</m=6>
+        <i>    </i><m>require(</m=0>tmp6</i><m>)</m=7> {</i>
+        <i>        "${'"'}"</i>
+        <i>            require(str.length >= 1 && str[0] == 'x')</i>
+        <i>                    |   |      |       |  |   |</i>
+        <i>                    |   |      |       |  |   ${'$'}tmp6</i>
+        <i>                    |   |      |       |  ${'$'}tmp5</i>
+        <i>                    |   |      |       ${'$'}tmp4</i>
+        <i>                    |   |      ${'$'}tmp3</i>
+        <i>                    |   ${'$'}tmp2</i>
+        <i>                    ${'$'}tmp1</i>
+        <i>        "${'"'}".trimIndent()</i>
+        <i>    }</i>
+        <i>} else {</i>
+        <i>    require(false) {</i>
+        <i>        "${'"'}"</i>
+        <i>            require(str.length >= 1 && str[0] == 'x')</i>
+        <i>                    |   |      |</i>
+        <i>                    |   |      ${'$'}tmp3</i>
+        <i>                    |   ${'$'}tmp2</i>
+        <i>                    ${'$'}tmp1</i>
+        <i>        "${'"'}".trimIndent()</i>
+        <i>    }</i>
+        <i>}</i>
+    """.trimIndent() to """
+        <m>require(</m=0><m>str</m=1><m>.length</m=2><m> >= 1</m=3><i> && </i><m>str</m=4><m>[0]</m=5><m> == 'x'</m=6><m>)</m=7>
     """.trimIndent(),
 )

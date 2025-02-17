@@ -26,6 +26,9 @@ import kotlin.math.PI
 import kotlin.math.atan2
 
 fun StoryboardBuilder.TransformTree() {
+    // TODO switch to using the when-expression style example
+    // TODO needs lots of work to be clear what is happening
+
     val root = EXPRESSION_TREE_ROOT
     val nodes = root.flattenNodes()
 
@@ -43,10 +46,7 @@ fun StoryboardBuilder.TransformTree() {
                         transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
                     ) {
                         Box(Modifier.fillMaxSize().padding(bottom = 32.dp)) {
-                            TreeNodes(
-                                root,
-                                Modifier.fillMaxSize()
-                            )
+                            TreeNodes(root, Modifier.fillMaxSize())
 
                             val node = nodes.getOrNull(it)
                             if (node != null) {
@@ -217,7 +217,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-        <i>    val tmp3 = tmp3 >= 1</i>
+        <i>    val tmp3 = tmp2 >= 1</i>
         }
     """.trimIndent(),
 
@@ -225,13 +225,13 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
         }
     """.trimIndent() to """
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
         <i>    if (tmp3) {</i>
         <i>    } else {</i>
         <i>    }</i>
@@ -242,7 +242,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
             } else {
             }
@@ -251,7 +251,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
         <i>        val tmp4 = str</i>
             } else {
@@ -263,7 +263,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
             } else {
@@ -275,7 +275,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
             } else {
@@ -285,7 +285,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
         <i>        val tmp5 = tmp4[0]</i>
@@ -298,7 +298,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]
@@ -311,7 +311,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]
@@ -322,7 +322,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]
@@ -336,7 +336,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]
@@ -348,7 +348,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]
@@ -363,7 +363,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]
@@ -376,7 +376,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]
@@ -392,7 +392,7 @@ val TRANSFORM_TRANSFORMATIONS = listOf(
         run {
             val tmp1 = str
             val tmp2 = tmp1.length
-            val tmp3 = tmp3 >= 1
+            val tmp3 = tmp2 >= 1
             if (tmp3) {
                 val tmp4 = str
                 val tmp5 = tmp4[0]

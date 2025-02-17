@@ -28,6 +28,7 @@ import kotlin.math.PI
 import kotlin.math.atan2
 
 fun StoryboardBuilder.ExpressionTree() {
+    // TODO switch to using the when-expression style example
     val sample = """
         require(str.length >= 1 && str[0] == 'x')
     """.trimIndent()

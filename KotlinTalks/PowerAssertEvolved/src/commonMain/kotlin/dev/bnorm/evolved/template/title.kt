@@ -110,7 +110,7 @@ private fun SlideScope<Int>.TitleWithKodee(
             showAsHeader.AnimatedVisibility(
                 visible = { !it },
                 enter = fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it },
-                exit = slideOutHorizontally(defaultSpec()) { it } + fadeOut(defaultSpec()),
+                exit = fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it },
                 modifier = Modifier.offset(y = 111.dp)
             ) {
                 KodeeSitting(Modifier.requiredSize(258.dp))
@@ -123,7 +123,7 @@ private fun SlideScope<Int>.TitleWithKodee(
 private fun Transition<Boolean>.animateTextStyle(
     whenFalse: TextStyle,
     whenTrue: TextStyle,
-    transitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Float> = { spring() },
+    transitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Float>,
 ): TextStyle {
     val fontSize by animateFloat(transitionSpec) {
         when (it) {

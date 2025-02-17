@@ -16,7 +16,7 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
+import dev.bnorm.evolved.sections.intro.BULLET_1
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.storyboard.core.SlideScope
@@ -30,6 +30,8 @@ val moveDuration = DefaultDurationMillis
 val fadeDuration = moveDuration / 2
 
 fun StoryboardBuilder.NewApi() {
+    // TODO don't show the details of each class until after the examples?
+
     OverviewSlide(introduction = true)
 
     DetailSlide(
@@ -165,9 +167,9 @@ private fun StoryboardBuilder.OverviewSlide(introduction: Boolean, final: Boolea
                 }
                 ProvideTextStyle(MaterialTheme.typography.h5) {
                     RevealEach(state.createChildTransition { it.toState() - 1 }) {
-                        item { Row { Text(" • New annotation: "); SharedExplainCall() } }
-                        item { Row { Text(AnnotatedString(" • New class: ")); SharedCallExplanation() } }
-                        item { Row { Text(AnnotatedString(" • New base class: ")); SharedExpression() } }
+                        item { Row { Text("$BULLET_1 New annotation: "); SharedExplainCall() } }
+                        item { Row { Text("$BULLET_1 New class: "); SharedCallExplanation() } }
+                        item { Row { Text("$BULLET_1 New base class: "); SharedExpression() } }
                     }
                 }
             }
@@ -184,9 +186,9 @@ private fun StoryboardBuilder.OverviewSlide(introduction: Boolean, final: Boolea
                     Text("What's new?")
                 }
                 ProvideTextStyle(MaterialTheme.typography.h5) {
-                    Row { Text(" • New annotation: "); SharedExplainCall() }
-                    Row { Text(AnnotatedString(" • New class: ")); SharedCallExplanation() }
-                    Row { Text(AnnotatedString(" • New base class: ")); SharedExpression() }
+                    Row { Text("$BULLET_1 New annotation: "); SharedExplainCall() }
+                    Row { Text("$BULLET_1 New class: "); SharedCallExplanation() }
+                    Row { Text("$BULLET_1 New base class: "); SharedExpression() }
                 }
             }
         }
@@ -202,9 +204,9 @@ private fun StoryboardBuilder.OverviewSlide(introduction: Boolean, final: Boolea
                     Text("What's new?")
                 }
                 ProvideTextStyle(MaterialTheme.typography.h5) {
-                    Row { Text(" • New annotation: "); SharedExplainCall() }
-                    Row { Text(AnnotatedString(" • New class: ")); SharedCallExplanation() }
-                    Row { Text(AnnotatedString(" • New base class: ")); SharedExpression() }
+                    Row { Text("$BULLET_1 New annotation: "); SharedExplainCall() }
+                    Row { Text("$BULLET_1 New class: "); SharedCallExplanation() }
+                    Row { Text("$BULLET_1 New base class: "); SharedExpression() }
                 }
             }
         }

@@ -15,6 +15,7 @@ import dev.bnorm.evolved.sections.evolution.Evolution
 import dev.bnorm.evolved.sections.future.Future
 import dev.bnorm.evolved.sections.history.History
 import dev.bnorm.evolved.sections.today.Today
+import dev.bnorm.evolved.sections.intro.Intro
 import dev.bnorm.evolved.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.SlideDecorator
 import dev.bnorm.storyboard.core.Storyboard
@@ -48,6 +49,7 @@ fun createStoryboard() = Storyboard.build(
             Text("Evolved!")
         }
     }
+    Intro()
     History()
     Today()
     Evolution()
