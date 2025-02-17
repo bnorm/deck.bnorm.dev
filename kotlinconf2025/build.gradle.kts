@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.serialization")
     kotlin("plugin.compose")
     id("org.jetbrains.compose")
-    id("org.jetbrains.compose-hot-reload")
+    id("org.jetbrains.compose.hot-reload")
 }
 
 group = "dev.bnorm.deck"
@@ -71,10 +71,6 @@ kotlin {
             }
         }
     }
-}
-
-compose.resources {
-    publicResClass = true
 }
 
 tasks.register<Sync>("site") {

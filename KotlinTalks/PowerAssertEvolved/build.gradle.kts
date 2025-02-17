@@ -1,13 +1,11 @@
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     kotlin("plugin.compose")
-    kotlin("plugin.power-assert")
     id("org.jetbrains.compose")
-    id("org.jetbrains.compose-hot-reload")
+    id("org.jetbrains.compose.hot-reload")
 }
 
 group = "dev.bnorm.deck"
@@ -58,20 +56,7 @@ kotlin {
     }
 }
 
-compose.resources {
-    publicResClass = true
-}
-
 tasks.register<Sync>("site") {
     from(tasks.named("wasmJsBrowserDistribution"))
     into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
-}
-
-composeCompiler {
-    featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
-}
-
-powerAssert {
-    includedSourceSets = listOf("commonMain", "jvmMain")
-    functions = listOf("kotlin.require")
 }

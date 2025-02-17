@@ -63,10 +63,6 @@ kotlin {
     }
 }
 
-compose.resources {
-    publicResClass = true
-}
-
 tasks.register<Sync>("site") {
     from(tasks.named("wasmJsBrowserDistribution"))
     into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))

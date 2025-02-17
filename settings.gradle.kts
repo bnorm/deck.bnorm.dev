@@ -16,7 +16,7 @@ pluginManagement {
         kotlin("plugin.compose") version kotlinVersion
         kotlin("plugin.power-assert") version kotlinVersion
         id("org.jetbrains.compose") version "1.8.0-alpha02"
-        id("org.jetbrains.compose-hot-reload") version "1.0.0-dev.34.1"
+        id("org.jetbrains.compose.hot-reload") version "1.0.0-dev-48"
     }
 
     dependencyResolutionManagement {
