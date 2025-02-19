@@ -39,7 +39,6 @@ fun buildTree(): Node {
         reveal = 1,
         content = {
             Text("When")
-            Text("str.length >= 1 && str[0] == 'x'".toCode(), fontSize = 4.sp, lineHeight = 4.sp)
         }
     )
 

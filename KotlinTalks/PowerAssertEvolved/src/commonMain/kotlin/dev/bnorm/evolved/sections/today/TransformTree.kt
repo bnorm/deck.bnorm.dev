@@ -26,7 +26,6 @@ import kotlin.math.PI
 import kotlin.math.atan2
 
 fun StoryboardBuilder.TransformTree() {
-    // TODO switch to using the when-expression style example
     // TODO needs lots of work to be clear what is happening
 
     val root = EXPRESSION_TREE_ROOT
@@ -176,231 +175,174 @@ private fun SurroundingBox(
 
 val TRANSFORM_TRANSFORMATIONS = listOf(
     """
+    """.trimIndent().twice(),
+
+    """
     """.trimIndent() to """
-        <i>run {</i>
+        <i>val tmp1 = str</i>
+    """.trimIndent(),
+
+    """
+        val tmp1 = str
+    """.trimIndent() to """
+        val tmp1 = str
+        <i>val tmp2 = tmp1.length</i>
+    """.trimIndent(),
+
+    """
+        val tmp1 = str
+        val tmp2 = tmp1.length
+    """.trimIndent().twice(),
+
+    """
+        val tmp1 = str
+        val tmp2 = tmp1.length
+    """.trimIndent() to """
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        <i>val tmp3 = tmp2 >= 1</i>
+        <i>if (tmp3) {</i>
         <i>}</i>
     """.trimIndent(),
 
     """
-        run {
-        }
-    """.trimIndent() to """
-        run {
-        <i>    val tmp1 = str</i>
-        }
-    """.trimIndent(),
-
-    """
-        run {
-            val tmp1 = str
-        }
-    """.trimIndent() to """
-        run {
-            val tmp1 = str
-        <i>    val tmp2 = tmp1.length</i>
-        }
-    """.trimIndent(),
-
-    """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
         }
     """.trimIndent().twice(),
 
     """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
         }
     """.trimIndent() to """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-        <i>    val tmp3 = tmp2 >= 1</i>
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+        <i>    val tmp4 = str</i>
         }
     """.trimIndent(),
 
     """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-        }
-    """.trimIndent() to """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-        <i>    if (tmp3) {</i>
-        <i>    } else {</i>
-        <i>    }</i>
-        }
-    """.trimIndent(),
-
-    """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-            } else {
-            }
-        }
-    """.trimIndent() to """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-        <i>        val tmp4 = str</i>
-            } else {
-            }
-        }
-    """.trimIndent(),
-
-    """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
         }
     """.trimIndent().twice(),
 
     """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
         }
     """.trimIndent() to """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-        <i>        val tmp5 = tmp4[0]</i>
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+        <i>    val tmp5 = tmp4[0]</i>
         }
     """.trimIndent(),
 
     """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
         }
     """.trimIndent().twice(),
 
     """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
         }
     """.trimIndent() to """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-        <i>        val tmp6 = tmp5 == 'x'</i>
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
+        <i>    val tmp6 = tmp5 == 'x'</i>
+        <i>    assert(tmp6)</i>
         }
     """.trimIndent(),
 
     """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-                val tmp6 = tmp5 == 'x'
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
+            val tmp6 = tmp5 == 'x'
+            assert(tmp6)
+        }<i></i>
+    """.trimIndent() to """
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
+            val tmp6 = tmp5 == 'x'
+            assert(tmp6)
+        }<i> else {</i>
+        <i>}</i>
+    """.trimIndent(),
+
+    """
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
+            val tmp6 = tmp5 == 'x'
+            assert(tmp6)
+        } else {
         }
     """.trimIndent() to """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-                val tmp6 = tmp5 == 'x'
-        <i>        require(tmp6)</i>
-            } else {
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
+            val tmp6 = tmp5 == 'x'
+            assert(tmp6)
+        } else {
+        <i>    assert(false)</i>
         }
     """.trimIndent(),
 
     """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-                val tmp6 = tmp5 == 'x'
-                require(tmp6)
-            } else {
-            }
-        }
-    """.trimIndent() to """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-                val tmp6 = tmp5 == 'x'
-                require(tmp6)
-            } else {
-        <i>        require(false)</i>
-            }
-        }
-    """.trimIndent(),
-
-    """
-        run {
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            if (tmp3) {
-                val tmp4 = str
-                val tmp5 = tmp4[0]
-                val tmp6 = tmp5 == 'x'
-                require(tmp6)
-            } else {
-                require(false)
-            }
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        val tmp3 = tmp2 >= 1
+        if (tmp3) {
+            val tmp4 = str
+            val tmp5 = tmp4[0]
+            val tmp6 = tmp5 == 'x'
+            assert(tmp6)
+        } else {
+            assert(false)
         }
     """.trimIndent().twice(),
 )

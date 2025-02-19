@@ -2,6 +2,7 @@ package dev.bnorm.evolved.sections.evolution
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -13,9 +14,11 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
@@ -23,18 +26,39 @@ import dev.bnorm.storyboard.core.slide
 import dev.bnorm.storyboard.core.toInt
 
 fun StoryboardBuilder.PowerAssertEvolves() {
-    // TODO https://youtu.be/bBMg3NCtXOQ?si=2gl1Qx6bAzHmxJaI&t=91
-    slide(stateCount = 6) {
+    slide(stateCount = 7) {
         val transition = state.createChildTransition { it.toInt() }
         HeaderAndBody {
-            PowerAssertEvolve(
-                transition = transition,
-                modifier = Modifier.weight(1f).fillMaxWidth()
-            )
+            Box {
+                Column {
+                    PowerAssertEvolve(
+                        transition = transition,
+                        modifier = Modifier.weight(1f).fillMaxWidth()
+                    )
 
-            LowerArea(
-                transition = transition,
-            )
+                    LowerArea(
+                        transition = transition,
+                    )
+                }
+
+                if (currentState >= 6) {
+                    ProvideTextStyle(
+                        MaterialTheme.typography.h1.copy(
+                            color = Color.Red,
+                            fontWeight = FontWeight.Black
+                        )
+                    ) {
+                        Text(
+                            "Oops!",
+                            modifier = Modifier.align(Alignment.Center)
+                                .offset(x = (-32).dp, y = (-64).dp)
+                                .rotate(-25f)
+                                .border(16.dp, Color.Red, RoundedCornerShape(32.dp))
+                                .padding(32.dp)
+                        )
+                    }
+                }
+            }
         }
     }
 }

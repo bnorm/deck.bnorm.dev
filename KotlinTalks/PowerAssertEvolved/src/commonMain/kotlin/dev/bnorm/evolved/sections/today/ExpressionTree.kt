@@ -19,7 +19,10 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.round
+import androidx.compose.ui.unit.sp
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
@@ -28,31 +31,33 @@ import kotlin.math.PI
 import kotlin.math.atan2
 
 fun StoryboardBuilder.ExpressionTree() {
-    // TODO switch to using the when-expression style example
     val sample = """
-        require(str.length >= 1 && str[0] == 'x')
+        assert(when {
+            str.length >= 1 -> str[0] == 'x'
+            else -> false
+        })
     """.trimIndent()
 
     fun getSnippet(i: Int): IntRange? {
         val snippet = when (i) {
-            in 1..2 -> "str.length >= 1 && str[0] == 'x'"
+            1 -> "when"
+            2 -> "str.length >= 1"
             3 -> "str"
             4 -> "str.length"
             5 -> "1"
             6 -> "str.length >= 1"
-            7 -> "&&"
+            7 -> "str[0] == 'x'"
             8 -> "str"
             9 -> "0"
             10 -> "str[0]"
             11 -> "'x'"
             12 -> "str[0] == 'x'"
-            in 13..14 -> "&&"
+            13 -> "else"
+            14 -> "false"
             else -> return null
         }
-        val index = sample
-            .indexOf(snippet, startIndex = if (i == 8) 11 else 0)
-            .takeIf { it >= 0 } ?: return null
-
+        val index = sample.indexOf(snippet, startIndex = if (i == 8) 20 else 0)
+        if (index < 0) return null
         return index..(index + snippet.length)
     }
 

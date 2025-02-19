@@ -1,5 +1,8 @@
 package dev.bnorm.deck.shared.mac
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,10 +11,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.JetBrainsMono
+import dev.bnorm.storyboard.core.SlideScope
+import dev.bnorm.storyboard.core.SlideState
 
 @Composable
 fun MacTerminal(
@@ -32,6 +38,24 @@ fun MacTerminal(
                     .verticalScroll(scrollState, enabled = false)
                     .padding(16.dp)
             ) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+fun <T> SlideScope<T>.MacTerminalPopup(
+    visible: (SlideState<T>) -> Boolean,
+    content: @Composable () -> Unit,
+) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+        state.AnimatedVisibility(
+            visible = visible,
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOutVertically(targetOffsetY = { it }),
+        ) {
+            MacTerminal(modifier = Modifier.fillMaxWidth().offset(y = 16.dp)) {
                 content()
             }
         }

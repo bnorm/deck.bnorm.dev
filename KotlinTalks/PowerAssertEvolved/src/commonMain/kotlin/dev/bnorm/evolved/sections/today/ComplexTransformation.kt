@@ -3,51 +3,50 @@ package dev.bnorm.evolved.sections.today
 import dev.bnorm.storyboard.core.StoryboardBuilder
 
 fun StoryboardBuilder.ComplexTransformation() {
-    CodeTransitionSlide(COMPLEX_TRANSITIONS)
-    // TODO rewrite code with a when
+    CodeTransitionSlide(TRUNCATED_COMPLEX_TRANSITIONS)
 }
 
 private val COMPLEX_TRANSITIONS = listOf(
     """
-        require(<m>str</m=1>.length >= 1 && str[0] == 'x')
+        assert(<m>str</m=1>.length >= 1 && str[0] == 'x')
     """.trimIndent() to """
         <i>val tmp1 = </i><m>str</m=1>
-        require(<i>tmp1</i>.length >= 1 && str[0] == 'x')
+        assert(<i>tmp1</i>.length >= 1 && str[0] == 'x')
     """.trimIndent(),
 
     """
         val tmp1 = str
-        require(<m>tmp1.length</m=2> >= 1 && str[0] == 'x')
+        assert(<m>tmp1.length</m=2> >= 1 && str[0] == 'x')
     """.trimIndent() to """
         val tmp1 = str
         <i>val tmp2 = </i><m>tmp1.length</m=2>
-        require(<i>tmp2</i> >= 1 && str[0] == 'x')
+        assert(<i>tmp2</i> >= 1 && str[0] == 'x')
     """.trimIndent(),
 
     """
         val tmp1 = str
         val tmp2 = tmp1.length
-        require(<m>tmp2 >= 1</m=3> && str[0] == 'x')
+        assert(<m>tmp2 >= 1</m=3> && str[0] == 'x')
     """.trimIndent() to """
         val tmp1 = str
         val tmp2 = tmp1.length
         <i>val tmp3 = </i><m>tmp2 >= 1</m=3>
-        require(<i>tmp3</i> && str[0] == 'x')
+        assert(<i>tmp3</i> && str[0] == 'x')
     """.trimIndent(),
 
     """
         val tmp1 = str
         val tmp2 = tmp1.length
         val tmp3 = tmp2 >= 1
-        require(<m>tmp3</m=4><i> && </i>str[0] == 'x')
+        assert(<m>tmp3</m=4><i> && </i>str[0] == 'x')
     """.trimIndent() to """
         val tmp1 = str
         val tmp2 = tmp1.length
         val tmp3 = tmp2 >= 1
         <i>if (</i><m>tmp3</m=4><i>) {</i>
-        <i>    </i>require(<i></i>str[0] == 'x')
+        <i>    </i>assert(<i></i>str[0] == 'x')
         <i>} else {</i>
-        <i>    require(false)</i>
+        <i>    assert(false)</i>
         <i>}</i>
     """.trimIndent(),
 
@@ -56,9 +55,9 @@ private val COMPLEX_TRANSITIONS = listOf(
         val tmp2 = tmp1.length
         val tmp3 = tmp2 >= 1
         if (tmp3) {
-            require(<m>str</m=5>[0] == 'x')
+            assert(<m>str</m=5>[0] == 'x')
         } else {
-            require(false)
+            assert(false)
         }
     """.trimIndent() to """
         val tmp1 = str
@@ -66,9 +65,9 @@ private val COMPLEX_TRANSITIONS = listOf(
         val tmp3 = tmp2 >= 1
         if (tmp3) {
         <i>    val tmp4 = </i><m>str</m=5>
-            require(<i>tmp4</i>[0] == 'x')
+            assert(<i>tmp4</i>[0] == 'x')
         } else {
-            require(false)
+            assert(false)
         }
     """.trimIndent(),
 
@@ -78,9 +77,9 @@ private val COMPLEX_TRANSITIONS = listOf(
         val tmp3 = tmp2 >= 1
         if (tmp3) {
             val tmp4 = str
-            require(<m>tmp4[0]</m=6> == 'x')
+            assert(<m>tmp4[0]</m=6> == 'x')
         } else {
-            require(false)
+            assert(false)
         }
     """.trimIndent() to """
         val tmp1 = str
@@ -89,9 +88,9 @@ private val COMPLEX_TRANSITIONS = listOf(
         if (tmp3) {
             val tmp4 = str
         <i>    val tmp5 = </i><m>tmp4[0]</m=6>
-            require(<i>tmp5</i> == 'x')
+            assert(<i>tmp5</i> == 'x')
         } else {
-            require(false)
+            assert(false)
         }
     """.trimIndent(),
 
@@ -102,9 +101,9 @@ private val COMPLEX_TRANSITIONS = listOf(
         if (tmp3) {
             val tmp4 = str
             val tmp5 = tmp4[0]
-            require(<m>tmp5 == 'x'</m=7>)
+            assert(<m>tmp5 == 'x'</m=7>)
         } else {
-            require(false)
+            assert(false)
         }
     """.trimIndent() to """
         val tmp1 = str
@@ -114,9 +113,9 @@ private val COMPLEX_TRANSITIONS = listOf(
             val tmp4 = str
             val tmp5 = tmp4[0]
         <i>    val tmp6 = </i><m>tmp5 == 'x'</m=7>
-            require(<i>tmp6</i>)
+            assert(<i>tmp6</i>)
         } else {
-            require(false)
+            assert(false)
         }
     """.trimIndent(),
 
@@ -128,9 +127,9 @@ private val COMPLEX_TRANSITIONS = listOf(
             val tmp4 = str
             val tmp5 = tmp4[0]
             val tmp6 = tmp5 == 'x'
-            require(tmp6)
+            assert(tmp6)
         } else {
-            require(false)
+            assert(false)
         }
     """.trimIndent() to """
         val tmp1 = str
@@ -140,15 +139,15 @@ private val COMPLEX_TRANSITIONS = listOf(
             val tmp4 = str
             val tmp5 = tmp4[0]
             val tmp6 = tmp5 == 'x'
-            require(tmp6)
+            assert(tmp6)
         } else {
-            require(false)<i> {</i>
+            assert(false)<i> {</i>
         <i>        "${'"'}"</i>
-        <i>            require(str.length >= 1 && str[0] == 'x')</i>
-        <i>                    |   |      |</i>
-        <i>                    |   |      ${'$'}tmp3</i>
-        <i>                    |   ${'$'}tmp2</i>
-        <i>                    ${'$'}tmp1</i>
+        <i>            assert(str.length >= 1 && str[0] == 'x')</i>
+        <i>                   |   |      |</i>
+        <i>                   |   |      ${'$'}tmp3</i>
+        <i>                   |   ${'$'}tmp2</i>
+        <i>                   ${'$'}tmp1</i>
         <i>        "${'"'}".trimIndent()</i>
         <i>    }</i>
         }
@@ -162,15 +161,15 @@ private val COMPLEX_TRANSITIONS = listOf(
             val tmp4 = str
             val tmp5 = tmp4[0]
             val tmp6 = tmp5 == 'x'
-            require(tmp6)
+            assert(tmp6)
         } else {
-            require(false) {
+            assert(false) {
                 "${'"'}"
-                    require(str.length >= 1 && str[0] == 'x')
-                            |   |      |
-                            |   |      ${'$'}tmp3
-                            |   ${'$'}tmp2
-                            ${'$'}tmp1
+                    assert(str.length >= 1 && str[0] == 'x')
+                           |   |      |
+                           |   |      ${'$'}tmp3
+                           |   ${'$'}tmp2
+                           ${'$'}tmp1
                 "${'"'}".trimIndent()
             }
         }
@@ -182,26 +181,26 @@ private val COMPLEX_TRANSITIONS = listOf(
             val tmp4 = str
             val tmp5 = tmp4[0]
             val tmp6 = tmp5 == 'x'
-            require(tmp6)<i> {</i>
+            assert(tmp6)<i> {</i>
         <i>        "${'"'}"</i>
-        <i>            require(str.length >= 1 && str[0] == 'x')</i>
-        <i>                    |   |      |       |  |   |</i>
-        <i>                    |   |      |       |  |   ${'$'}tmp6</i>
-        <i>                    |   |      |       |  ${'$'}tmp5</i>
-        <i>                    |   |      |       ${'$'}tmp4</i>
-        <i>                    |   |      ${'$'}tmp3</i>
-        <i>                    |   ${'$'}tmp2</i>
-        <i>                    ${'$'}tmp1</i>
+        <i>            assert(str.length >= 1 && str[0] == 'x')</i>
+        <i>                   |   |      |       |  |   |</i>
+        <i>                   |   |      |       |  |   ${'$'}tmp6</i>
+        <i>                   |   |      |       |  ${'$'}tmp5</i>
+        <i>                   |   |      |       ${'$'}tmp4</i>
+        <i>                   |   |      ${'$'}tmp3</i>
+        <i>                   |   ${'$'}tmp2</i>
+        <i>                   ${'$'}tmp1</i>
         <i>        "${'"'}".trimIndent()</i>
         <i>    }</i>
         } else {
-            require(false) {
+            assert(false) {
                 "${'"'}"
-                    require(str.length >= 1 && str[0] == 'x')
-                            |   |      |
-                            |   |      ${'$'}tmp3
-                            |   ${'$'}tmp2
-                            ${'$'}tmp1
+                    assert(str.length >= 1 && str[0] == 'x')
+                           |   |      |
+                           |   |      ${'$'}tmp3
+                           |   ${'$'}tmp2
+                           ${'$'}tmp1
                 "${'"'}".trimIndent()
             }
         }
@@ -215,30 +214,67 @@ private val COMPLEX_TRANSITIONS = listOf(
         <i>    val tmp4 = </i><m>str</m=4>
         <i>    val tmp5 = tmp4</i><m>[0]</m=5>
         <i>    val tmp6 = tmp5</i><m> == 'x'</m=6>
-        <i>    </i><m>require(</m=0>tmp6</i><m>)</m=7> {</i>
+        <i>    </i><m>assert(</m=0>tmp6</i><m>)</m=7> {</i>
         <i>        "${'"'}"</i>
-        <i>            require(str.length >= 1 && str[0] == 'x')</i>
-        <i>                    |   |      |       |  |   |</i>
-        <i>                    |   |      |       |  |   ${'$'}tmp6</i>
-        <i>                    |   |      |       |  ${'$'}tmp5</i>
-        <i>                    |   |      |       ${'$'}tmp4</i>
-        <i>                    |   |      ${'$'}tmp3</i>
-        <i>                    |   ${'$'}tmp2</i>
-        <i>                    ${'$'}tmp1</i>
+        <i>            assert(str.length >= 1 && str[0] == 'x')</i>
+        <i>                   |   |      |       |  |   |</i>
+        <i>                   |   |      |       |  |   ${'$'}tmp6</i>
+        <i>                   |   |      |       |  ${'$'}tmp5</i>
+        <i>                   |   |      |       ${'$'}tmp4</i>
+        <i>                   |   |      ${'$'}tmp3</i>
+        <i>                   |   ${'$'}tmp2</i>
+        <i>                   ${'$'}tmp1</i>
         <i>        "${'"'}".trimIndent()</i>
         <i>    }</i>
         <i>} else {</i>
-        <i>    require(false) {</i>
+        <i>    assert(false) {</i>
         <i>        "${'"'}"</i>
-        <i>            require(str.length >= 1 && str[0] == 'x')</i>
-        <i>                    |   |      |</i>
-        <i>                    |   |      ${'$'}tmp3</i>
-        <i>                    |   ${'$'}tmp2</i>
-        <i>                    ${'$'}tmp1</i>
+        <i>            assert(str.length >= 1 && str[0] == 'x')</i>
+        <i>                   |   |      |</i>
+        <i>                   |   |      ${'$'}tmp3</i>
+        <i>                   |   ${'$'}tmp2</i>
+        <i>                   ${'$'}tmp1</i>
         <i>        "${'"'}".trimIndent()</i>
         <i>    }</i>
         <i>}</i>
     """.trimIndent() to """
-        <m>require(</m=0><m>str</m=1><m>.length</m=2><m> >= 1</m=3><i> && </i><m>str</m=4><m>[0]</m=5><m> == 'x'</m=6><m>)</m=7>
+        <m>assert(</m=0><m>str</m=1><m>.length</m=2><m> >= 1</m=3><i> && </i><m>str</m=4><m>[0]</m=5><m> == 'x'</m=6><m>)</m=7>
+    """.trimIndent(),
+)
+
+private val TRUNCATED_COMPLEX_TRANSITIONS = listOf(
+    """
+        assert(<m>str</m=1>.length >= 1 && str[0] == 'x')
+    """.trimIndent() to """
+        <i>val tmp1 = </i><m>str</m=1>
+        assert(<i>tmp1</i>.length >= 1 && str[0] == 'x')
+    """.trimIndent(),
+
+    """
+        val tmp1 = str
+        assert(<m>tmp1.length</m=2> >= 1 && str[0] == 'x')
+    """.trimIndent() to """
+        val tmp1 = str
+        <i>val tmp2 = </i><m>tmp1.length</m=2>
+        assert(<i>tmp2</i> >= 1 && str[0] == 'x')
+    """.trimIndent(),
+
+    // TODO tmp3
+
+    """
+        <i>val tmp1 = </i><m>str</m=1>
+        <i>val tmp2 = tmp1</i><m>.length</m=2>
+        assert(<i>tmp2</i> >= 1 && str[0] == 'x')
+    """.trimIndent() to """
+        assert(<m>str</m=1><m>.length</m=2> >= 1 && str[0] == 'x')
+    """.trimIndent(),
+
+    """
+        assert(<m>str.length >= 1</m=1><i> && </i><m>str[0] == 'x'</m=2>)
+    """.trimIndent() to """
+        assert(<i>when {</i>
+        <i>    </i><m>str.length >= 1</m=1><i> -> </i><m>str[0] == 'x'</m=2>
+        <i>    else -> false</i>
+        <i>}</i>)
     """.trimIndent(),
 )

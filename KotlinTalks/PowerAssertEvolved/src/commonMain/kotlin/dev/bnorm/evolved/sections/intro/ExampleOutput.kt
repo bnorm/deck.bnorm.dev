@@ -24,52 +24,57 @@ import dev.bnorm.storyboard.easel.template.SlideExit
 
 fun StoryboardBuilder.ExampleOutput() {
     data class State(
+        val sample: Sample,
         val showExample: Boolean = false,
         val showOutput: Boolean = false,
         val showPowerAssertOutput: Boolean = false,
     )
 
-    slide(
-        initial = State(),
-        block = {
-            next { it.copy(showExample = true) }
-            next { it.copy(showOutput = true) }
-            next { it.copy(showPowerAssertOutput = true) }
-        },
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
-    ) {
-        fun SlideState<State>.toState(): State = when (this) {
-            SlideState.Start -> states.first()
-            SlideState.End -> states.last().copy(showOutput = false)
-            is SlideState.Value -> value
-        }
+    // TODO should we have an explicit slide with Gradle configuration?
 
-        CornerKodee {
-            Column(Modifier.fillMaxSize()) {
-                Header()
-                Body(Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp).fillMaxWidth()) {
-                    state.AnimatedVisibility(
-                        visible = { it.toState().showExample },
-                        enter = EnterTransition.None,
-                        exit = ExitTransition.None,
-                    ) {
-                        Text(SAMPLE)
+    for (sample in Sample.entries) {
+        slide(
+            initial = State(sample),
+            block = {
+                next { it.copy(showExample = true) }
+                next { it.copy(showOutput = true) }
+                next { it.copy(showPowerAssertOutput = true) }
+            },
+            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        ) {
+            fun SlideState<State>.toState(): State = when (this) {
+                SlideState.Start -> states.first()
+                SlideState.End -> states.last().copy(showOutput = false)
+                is SlideState.Value -> value
+            }
+
+            CornerKodee {
+                Column(Modifier.fillMaxSize()) {
+                    Header()
+                    Body(Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp).fillMaxWidth()) {
+                        state.AnimatedVisibility(
+                            visible = { it.toState().showExample },
+                            enter = EnterTransition.None,
+                            exit = ExitTransition.None,
+                        ) {
+                            Text(currentState.sample.code)
+                        }
                     }
-                }
-                Box(Modifier.weight(1f))
-                state.AnimatedVisibility(
-                    modifier = Modifier.offset(y = 10.dp),
-                    visible = { it.toState().showOutput },
-                    enter = slideInVertically(initialOffsetY = { it }),
-                    exit = slideOutVertically(targetOffsetY = { it }),
-                ) {
-                    ProvideTextStyle(MaterialTheme.typography.body2) {
-                        MacTerminal(modifier = Modifier.fillMaxWidth()) {
-                            if (!currentState.showPowerAssertOutput) {
-                                Text(EXAMPLE_OUTPUT)
-                            } else {
-                                Text(EXAMPLE_POWER_ASSERT_OUTPUT)
+                    Box(Modifier.weight(1f))
+                    state.AnimatedVisibility(
+                        modifier = Modifier.offset(y = 10.dp),
+                        visible = { it.toState().showOutput },
+                        enter = slideInVertically(initialOffsetY = { it }),
+                        exit = slideOutVertically(targetOffsetY = { it }),
+                    ) {
+                        ProvideTextStyle(MaterialTheme.typography.body2) {
+                            MacTerminal(modifier = Modifier.fillMaxWidth()) {
+                                if (!currentState.showPowerAssertOutput) {
+                                    Text(currentState.sample.output)
+                                } else {
+                                    Text(currentState.sample.powerOutput)
+                                }
                             }
                         }
                     }
@@ -79,30 +84,68 @@ fun StoryboardBuilder.ExampleOutput() {
     }
 }
 
-private val SAMPLE_CODE = """
-@Test fun test() {
-    assert("Hello".length == "World".substring(1, 4).length)
+enum class Sample {
+    ASSERT {
+        private val text = """
+            @Test fun test() {
+                assert("Hello".length == "World".substring(1, 4).length)
+            }
+        """.trimIndent()
+
+        @get:Composable
+        override val code: AnnotatedString
+            get() = text.toCode { highlighting, identifier ->
+                when (identifier) {
+                    "test" -> highlighting.functionDeclaration
+                    else -> null
+                }
+            }
+
+        override val output = """
+            Assertion failed.
+        """.trimIndent().padLines(10)
+
+        override val powerOutput = """
+            assert("Hello".length == "World".substring(1, 4).length)
+                           |      |          |               |
+                           |      |          |               3
+                           |      |          orl
+                           |      false
+                           5
+        """.trimIndent().padLines(10)
+    },
+
+    REQUIRE {
+        private val text = """
+            require("Hello".length == "World".substring(1, 4).length)
+        """.trimIndent()
+
+        @get:Composable
+        override val code: AnnotatedString
+            get() = text.toCode { highlighting, identifier ->
+                when (identifier) {
+                    else -> null
+                }
+            }
+
+        override val output = """
+            Failed requirement.
+        """.trimIndent().padLines(10)
+
+        override val powerOutput = """
+            require("Hello".length == "World".substring(1, 4).length)
+                            |      |          |               |
+                            |      |          |               3
+                            |      |          orl
+                            |      false
+                            5
+        """.trimIndent().padLines(10)
+    },
+
+    ;
+
+    @get:Composable
+    abstract val code: AnnotatedString
+    abstract val output: String
+    abstract val powerOutput: String
 }
-""".trimIndent()
-
-@get:Composable
-private val SAMPLE: AnnotatedString
-    get() = SAMPLE_CODE.toCode { highlighting, identifier ->
-        when (identifier) {
-            "test" -> highlighting.functionDeclaration
-            else -> null
-        }
-    }
-
-private val EXAMPLE_OUTPUT = """
-Assertion failed.
-""".trimIndent().padLines(10)
-
-private val EXAMPLE_POWER_ASSERT_OUTPUT = """
-assert("Hello".length == "World".substring(1, 4).length)
-               |      |          |               |
-               |      |          |               3
-               |      |          orl
-               |      false
-               5
-""".trimIndent().padLines(10)

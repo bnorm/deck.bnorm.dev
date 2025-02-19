@@ -4,9 +4,11 @@ import dev.bnorm.evolved.template.SectionAndTitle
 import dev.bnorm.storyboard.core.StoryboardBuilder
 
 fun StoryboardBuilder.Evolution() {
-    SectionAndTitle("Evolving Power-Assert") {
+    SectionAndTitle("What's Next?") {
+        Goals()
         PowerAssertEvolves()
-        NewApi()
+        Oops()
+        ApiIntroduction()
         FunctionTransformation()
         CallTransformation()
         ExplainCallExample()

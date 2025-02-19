@@ -1,6 +1,7 @@
 package dev.bnorm.evolved.sections.evolution
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -18,8 +19,11 @@ import dev.bnorm.storyboard.core.slide
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
 
+private val moveDuration = DefaultDurationMillis
+private val fadeDuration = moveDuration / 2
+
 fun StoryboardBuilder.FunctionTransformation() {
-    slide(stateCount = 6) {
+    slide(stateCount = 5) {
         HeaderAndBody {
             ProvideTextStyle(MaterialTheme.typography.h4) {
                 Text("How does it work?")
@@ -33,8 +37,7 @@ fun StoryboardBuilder.FunctionTransformation() {
                     transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }
                 ) {
                     when (it.toState()) {
-                        0 -> Box(Modifier.fillMaxSize())
-                        1 -> {
+                        0 -> {
                             Box(Modifier.fillMaxSize()) {
                                 OriginalFunction(this@AnimatedContent)
                                 SyntheticFunction(this@AnimatedContent)
@@ -66,7 +69,7 @@ private fun SlideScope<Int>.OriginalFunction(scope: AnimatedVisibilityScope) {
             },
         )
     ) {
-        state.createChildTransition { it.toState() - 3 }
+        state.createChildTransition { it.toState() - 2 }
             .MagicCode(ORIGINAL_FUN_TRANSFORMATIONS)
     }
 }
@@ -82,7 +85,7 @@ private fun SlideScope<Int>.SyntheticFunction(scope: AnimatedVisibilityScope) {
             },
         )
     ) {
-        state.createChildTransition { it.toState() - 1 }
+        state.createChildTransition { it.toState() }
             .MagicCode(SYNTHETIC_FUN_TRANSFORMATIONS)
     }
 }
@@ -91,7 +94,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """
         @ExplainCall fun powerAssert(condition: Boolean) {
             if (!condition) {
-                val explanation = ExplainCall.explanation
+                val explanation: CallExplanation? = ExplainCall.explanation
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -99,7 +102,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """.trimIndent() to """
         @ExplainCall fun powerAssert(condition: Boolean) {
             if (!condition) {
-                val explanation = ExplainCall.explanation
+                val explanation: CallExplanation? = ExplainCall.explanation
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -109,7 +112,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """
         <i>@ExplainCall </i>fun powerAssert<i></i>(condition: Boolean<i></i>) {
             if (!condition) {
-                val explanation = ExplainCall.explanation
+                val explanation: CallExplanation? = ExplainCall.explanation
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -117,7 +120,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """.trimIndent() to """
         <i></i>fun powerAssert<i>_Explained</i>(condition: Boolean<i>, _explanation: CallExplanation</i>) {
             if (!condition) {
-                val explanation = ExplainCall.explanation
+                val explanation: CallExplanation? = ExplainCall.explanation
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -127,7 +130,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """
         fun powerAssert_Explained(condition: Boolean, _explanation: CallExplanation) {
             if (!condition) {
-                val explanation = <i>ExplainCall.explanation</i>
+                val explanation: CallExplanation? = <i>ExplainCall.explanation</i>
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -135,7 +138,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """.trimIndent() to """
         fun powerAssert_Explained(condition: Boolean, _explanation: CallExplanation) {
             if (!condition) {
-                val explanation = <i>_explanation</i>
+                val explanation: CallExplanation? = <i>_explanation</i>
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -145,7 +148,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """
         fun powerAssert_Explained(condition: Boolean, _explanation: CallExplanation) {
             if (!condition) {
-                val explanation = _explanation
+                val explanation: CallExplanation? = _explanation
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -153,7 +156,7 @@ private val SYNTHETIC_FUN_TRANSFORMATIONS = listOf(
     """.trimIndent() to """
         fun powerAssert_Explained(condition: Boolean, _explanation: CallExplanation) {
             if (!condition) {
-                val explanation = _explanation
+                val explanation: CallExplanation? = _explanation
                     ?: throw AssertionError("Assertion failed")
                 // ...
             }
@@ -166,7 +169,7 @@ private val ORIGINAL_FUN_TRANSFORMATIONS = buildList {
         """
             @ExplainCall fun powerAssert(condition: Boolean) {
                 if (!condition) {
-                    val explanation = ExplainCall.explanation
+                    val explanation: CallExplanation? = ExplainCall.explanation
                         ?: throw AssertionError("Assertion failed")
                     // ...
                 }
@@ -174,7 +177,7 @@ private val ORIGINAL_FUN_TRANSFORMATIONS = buildList {
         """.trimIndent() to """
             @ExplainCall fun powerAssert(condition: Boolean) {
                 if (!condition) {
-                    val explanation = ExplainCall.explanation
+                    val explanation: CallExplanation? = ExplainCall.explanation
                         ?: throw AssertionError("Assertion failed")
                     // ...
                 }
@@ -186,7 +189,7 @@ private val ORIGINAL_FUN_TRANSFORMATIONS = buildList {
         """
             @ExplainCall fun powerAssert(condition: Boolean) {
                 if (!condition) {
-                    val explanation = <i>ExplainCall.explanation</i>
+                    val explanation: CallExplanation? = <i>ExplainCall.explanation</i>
                         ?: throw AssertionError("Assertion failed")
                     // ...
                 }
@@ -194,7 +197,7 @@ private val ORIGINAL_FUN_TRANSFORMATIONS = buildList {
         """.trimIndent() to """
             @ExplainCall fun powerAssert(condition: Boolean) {
                 if (!condition) {
-                    val explanation = <i>null</i>
+                    val explanation: CallExplanation? = <i>null</i>
                         ?: throw AssertionError("Assertion failed")
                     // ...
                 }
