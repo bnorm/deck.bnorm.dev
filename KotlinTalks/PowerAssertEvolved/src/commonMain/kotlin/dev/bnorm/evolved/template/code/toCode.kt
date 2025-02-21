@@ -73,6 +73,7 @@ fun String.toStyle(codeStyle: Highlighting): SpanStyle? {
 
         "trimIndent",
         "map",
+        "substring",
         "toDefaultMessage",
             -> codeStyle.extensionFunctionCall
 

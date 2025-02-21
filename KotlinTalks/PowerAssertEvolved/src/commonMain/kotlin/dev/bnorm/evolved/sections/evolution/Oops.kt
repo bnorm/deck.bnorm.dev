@@ -24,10 +24,13 @@ import dev.bnorm.storyboard.easel.template.SlideExit
 
 fun StoryboardBuilder.Oops() {
     slide(
-        stateCount = 9,
+        stateCount = 6,
     ) {
         HeaderAndBody {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ProvideTextStyle(MaterialTheme.typography.h4) {
+                    Text("What happened?")
+                }
                 ProvideTextStyle(MaterialTheme.typography.h5) {
                     val reveal = state.createChildTransition { it.toState() - 1 }
                     RevealEach(reveal) {

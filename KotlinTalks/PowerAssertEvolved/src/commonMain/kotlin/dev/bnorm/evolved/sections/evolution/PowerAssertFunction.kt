@@ -1,10 +1,10 @@
 package dev.bnorm.evolved.sections.evolution
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -13,7 +13,6 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.shared.mac.MacTerminal
 import dev.bnorm.evolved.template.Body
 import dev.bnorm.evolved.template.CornerKodee
 import dev.bnorm.evolved.template.Header
@@ -21,51 +20,24 @@ import dev.bnorm.evolved.template.code.KotlinFile
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.easel.template.SlideEnter
+import dev.bnorm.storyboard.easel.template.SlideExit
 
-fun StoryboardBuilder.ExplainCallExample() {
-    // TODO add side panels with full API of CallExplanation and Expression
-    // TODO surrounding box for them as well?
-
-    // TODO split into 2 separate slides with animation?
-    slide(stateCount = 20) {
+fun StoryboardBuilder.PowerAssertFunction() {
+    slide(
+        stateCount = 7,
+        enterTransition = SlideEnter(Alignment.CenterEnd),
+        exitTransition = SlideExit(Alignment.CenterEnd),
+    ) {
         CornerKodee {
-            Column(Modifier.fillMaxSize()) {
+            Column(Modifier.Companion.fillMaxSize()) {
                 Header()
-                Box(Modifier.fillMaxSize()) {
-                    Body(Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp).fillMaxSize()) {
-                        ProvideTextStyle(MaterialTheme.typography.h4) {
-                            Text("How do we use it?")
-                        }
+                Box(Modifier.Companion.fillMaxSize()) {
+                    Body(Modifier.Companion.padding(top = 32.dp, start = 32.dp, end = 32.dp).fillMaxSize()) {
                         ProvideTextStyle(MaterialTheme.typography.body2) {
-                            when (currentState) {
-                                in 1..11 -> {
-                                    Box(Modifier.fillMaxSize()) {
-                                        Column(Modifier.verticalScroll(rememberScrollState()).fillMaxSize()) {
-                                            Text(EXAMPLE_POWER_ASSERT_FUN.toCode())
-                                        }
-                                    }
-                                }
-
-                                in 12..14 -> {
-                                    Column(Modifier.fillMaxSize()) {
-                                        Text(EXAMPLE_POWER_ASSERT_USE.toCode(identifierType = { highlighting, identifier ->
-                                            when (identifier) {
-                                                "test" -> highlighting.functionDeclaration
-                                                "powerAssert" -> highlighting.staticFunctionCall
-                                                else -> null
-                                            }
-                                        }))
-                                        Box(Modifier.weight(1f))
-                                        state.AnimatedVisibility(
-                                            visible = { it.toState() == 13 },
-                                            enter = slideInVertically(initialOffsetY = { it }),
-                                            exit = slideOutVertically(targetOffsetY = { it }),
-                                        ) {
-                                            MacTerminal(modifier = Modifier.fillMaxWidth()) {
-                                                Text(EXAMPLE_POWER_ASSERT_OUTPUT)
-                                            }
-                                        }
-                                    }
+                            Box(Modifier.Companion.fillMaxSize()) {
+                                Column(Modifier.Companion.verticalScroll(rememberScrollState()).fillMaxSize()) {
+                                    Text(EXAMPLE_POWER_ASSERT_FUN.toCode())
                                 }
                             }
                         }
@@ -74,18 +46,23 @@ fun StoryboardBuilder.ExplainCallExample() {
                     KotlinFile(
                         text = CallExplanationCode.toCode(),
                         title = "CallExplanation",
-                        visible = state.createChildTransition { it.toState() == 2 },
-                        modifier = Modifier.align(Alignment.TopEnd),
+                        visible = state.createChildTransition { it.toState() == 1 },
+                        modifier = Modifier.Companion.align(Alignment.Companion.TopEnd),
                     )
 
                     KotlinFile(
                         text = ExpressionCode.toCode(),
                         title = "Expression",
-                        visible = state.createChildTransition { it.toState() == 4 },
-                        modifier = Modifier.align(Alignment.TopEnd),
+                        visible = state.createChildTransition { it.toState() == 3 },
+                        modifier = Modifier.Companion.align(Alignment.Companion.TopEnd),
                     )
 
-                    // TODO have an example of toDefaultMessage?
+                    KotlinFile(
+                        text = ToDefaultMessageCode.toCode(),
+                        title = "toDefaultMessage",
+                        visible = state.createChildTransition { it.toState() == 5 },
+                        modifier = Modifier.Companion.align(Alignment.Companion.TopEnd),
+                    )
                 }
             }
         }
@@ -148,24 +125,6 @@ class EqualityError(
 
 """.trimIndent()
 
-val EXAMPLE_POWER_ASSERT_USE = """
-@Test fun test() {
-    powerAssert("Hello".length == "World".substring(1, 4).length)
-}
-""".trimIndent()
-
-val EXAMPLE_POWER_ASSERT_OUTPUT = """
-Assertion failed:
-powerAssert("Hello".length == "World".substring(1, 4).length)
-                    |      |          |               |
-                    5      false      orl             3
-
-Expected :5
-Actual   :3
-<Click to see difference>
-
-""".trimIndent()
-
 val CallExplanationCode = """
 class CallExplanation(
     val offset: Int,
@@ -175,7 +134,7 @@ class CallExplanation(
     val extensionReceiver: Receiver?,
     val valueArguments: Map<String, ValueArgument>,
 ) {
-    abstract class Argument() {
+    abstract class Argument internal constructor() {
         abstract val startOffset: Int
         abstract val endOffset: Int
         abstract val expressions: List<Expression>
@@ -213,7 +172,7 @@ class CallExplanation(
 """.trimIndent()
 
 val ExpressionCode = """
-abstract class Expression {
+abstract class Expression internal constructor() {
     abstract val startOffset: Int
     abstract val endOffset: Int
     abstract val displayOffset: Int
@@ -235,4 +194,38 @@ class EqualityExpression(
     val lhs: Any?,
     val rhs: Any?,
 ) : Expression()
+""".trimIndent()
+
+val ToDefaultMessageCode = """
+public fun CallExplanation.toDefaultMessage(
+    render: Expression.() -> String? = Expression::render,
+): String = buildString {
+    // ...
+}
+
+public fun Expression.render(): String {
+    if (this is EqualityExpression && value == false) {
+        return "Expected <${'$'}{lhs.render()}>, actual <${'$'}{rhs.render()}>."
+    }
+
+    return value.render()
+}
+
+@OptIn(ExperimentalUnsignedTypes::class)
+private fun Any?.render(): String {
+    return when (val value = this) {
+        is Array<*> -> value.contentDeepToString()
+        is ByteArray -> value.contentToString()
+        is ShortArray -> value.contentToString()
+        is IntArray -> value.contentToString()
+        is LongArray -> value.contentToString()
+        is BooleanArray -> value.contentToString()
+        is CharArray -> value.contentToString()
+        is UByteArray -> value.contentToString()
+        is UShortArray -> value.contentToString()
+        is UIntArray -> value.contentToString()
+        is ULongArray -> value.contentToString()
+        else -> value.toString()
+    }
+}
 """.trimIndent()

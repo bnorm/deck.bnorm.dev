@@ -1,4 +1,4 @@
-package dev.bnorm.evolved.sections.history
+package dev.bnorm.evolved.sections.intro
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize

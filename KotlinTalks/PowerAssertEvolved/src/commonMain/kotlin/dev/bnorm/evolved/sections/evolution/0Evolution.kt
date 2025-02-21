@@ -10,8 +10,7 @@ fun StoryboardBuilder.Evolution() {
         Oops()
         ApiIntroduction()
         FunctionTransformation()
-        CallTransformation()
-        ExplainCallExample()
-        // TODO something about toDefaultMessage to show diagram improvements for all diagrams
+        PowerAssertFunction()
+        PowerAssertCall()
     }
 }

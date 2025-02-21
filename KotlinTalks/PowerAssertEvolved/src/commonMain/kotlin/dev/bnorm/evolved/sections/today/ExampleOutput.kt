@@ -1,4 +1,4 @@
-package dev.bnorm.evolved.sections.intro
+package dev.bnorm.evolved.sections.today
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -6,7 +6,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
@@ -19,8 +18,6 @@ import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.evolved.template.slide
 import dev.bnorm.storyboard.core.SlideState
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
 
 fun StoryboardBuilder.ExampleOutput() {
     data class State(
@@ -30,9 +27,7 @@ fun StoryboardBuilder.ExampleOutput() {
         val showPowerAssertOutput: Boolean = false,
     )
 
-    // TODO should we have an explicit slide with Gradle configuration?
-
-    for (sample in Sample.entries) {
+    for (sample in listOf(Sample.ASSERT)) {
         slide(
             initial = State(sample),
             block = {
@@ -40,8 +35,6 @@ fun StoryboardBuilder.ExampleOutput() {
                 next { it.copy(showOutput = true) }
                 next { it.copy(showPowerAssertOutput = true) }
             },
-            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
         ) {
             fun SlideState<State>.toState(): State = when (this) {
                 SlideState.Start -> states.first()
@@ -87,9 +80,7 @@ fun StoryboardBuilder.ExampleOutput() {
 enum class Sample {
     ASSERT {
         private val text = """
-            @Test fun test() {
-                assert("Hello".length == "World".substring(1, 4).length)
-            }
+            assert("Hello".length == "World".substring(1, 4).length)
         """.trimIndent()
 
         @get:Composable

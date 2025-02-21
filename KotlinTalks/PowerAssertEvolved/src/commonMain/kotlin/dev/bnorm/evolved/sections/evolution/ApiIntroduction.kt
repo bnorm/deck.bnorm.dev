@@ -2,12 +2,13 @@ package dev.bnorm.evolved.sections.evolution
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
@@ -44,33 +45,28 @@ fun StoryboardBuilder.ApiIntroduction() {
 
     slide(stateCount = 5) {
         HeaderAndBody {
-            ProvideTextStyle(MaterialTheme.typography.h4) {
-                Text("What's new?")
-            }
             if (currentState >= 1) {
-                ProvideTextStyle(MaterialTheme.typography.body2) {
-                    Box(Modifier.Companion.fillMaxSize()) {
-                        var textLayoutResult: TextLayoutResult? by remember { mutableStateOf(null) }
-                        Text(
-                            text = code.toCode(),
-                            onTextLayout = { textLayoutResult = it },
-                        )
+                Box(Modifier.Companion.fillMaxSize()) {
+                    var textLayoutResult: TextLayoutResult? by remember { mutableStateOf(null) }
+                    Text(
+                        text = code.toCode(),
+                        onTextLayout = { textLayoutResult = it },
+                    )
 
-                        SharedTransitionLayout {
-                            state.AnimatedContent(
-                                transitionSpec = { EnterTransition.Companion.None togetherWith ExitTransition.Companion.None },
-                            ) {
-                                Box(Modifier.Companion.fillMaxSize())
+                    SharedTransitionLayout {
+                        state.AnimatedContent(
+                            transitionSpec = { EnterTransition.Companion.None togetherWith ExitTransition.Companion.None },
+                        ) {
+                            Box(Modifier.Companion.fillMaxSize())
 
-                                textLayoutResult?.let { result ->
-                                    SurroundingBox(
-                                        result,
-                                        it.toState(),
-                                        this@SharedTransitionLayout,
-                                        this@AnimatedContent,
-                                    ) {
-                                        getSnippetRange(it)
-                                    }
+                            textLayoutResult?.let { result ->
+                                SurroundingBox(
+                                    result,
+                                    it.toState(),
+                                    this@SharedTransitionLayout,
+                                    this@AnimatedContent,
+                                ) {
+                                    getSnippetRange(it)
                                 }
                             }
                         }

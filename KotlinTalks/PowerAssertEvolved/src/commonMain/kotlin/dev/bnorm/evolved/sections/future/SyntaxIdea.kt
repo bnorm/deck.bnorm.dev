@@ -1,58 +1,84 @@
 package dev.bnorm.evolved.sections.future
 
-import androidx.compose.animation.*
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.shared.mac.MacTerminal
+import dev.bnorm.deck.shared.mac.MacTerminalPopup
+import dev.bnorm.evolved.sections.intro.BULLET_1
+import dev.bnorm.evolved.sections.intro.BULLET_3
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
+import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
+import dev.bnorm.storyboard.core.SlideScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.slide
 import dev.bnorm.storyboard.core.toInt
+import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.easel.template.SlideEnter
 import dev.bnorm.storyboard.easel.template.SlideExit
 
 fun StoryboardBuilder.SyntaxIdea() {
-    // TODO slides which talk about why we need a call-site syntax
-    // TODO do we want to talk about any other syntax ideas?
+    val topicKey = Any()
+
+    @Composable
+    fun SlideScope<*>.Topic() {
+        ProvideTextStyle(MaterialTheme.typography.h4) {
+            Text(
+                text = "Language syntax?",
+                modifier = Modifier.sharedElement(
+                    rememberSharedContentState(topicKey),
+                    animatedVisibilityScope = this
+                )
+            )
+        }
+    }
 
     slide(
-        stateCount = 4,
+        stateCount = 8,
         enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
         exitTransition = SlideExit(alignment = Alignment.CenterEnd),
     ) {
         HeaderAndBody {
-            ProvideTextStyle(MaterialTheme.typography.h4) {
-                Text("Language syntax?")
-            }
-            Column(Modifier.fillMaxSize()) {
-                state.AnimatedVisibility(
-                    visible = { it.toState() >= 1 },
-                    enter = EnterTransition.None,
-                    exit = ExitTransition.None,
-                ) {
-                    Box(Modifier.padding(32.dp)) {
-                        state.createChildTransition { it.toState() }
-                            .MagicCode(MACRO_USE_TRANSITIONS)
+            Topic()
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ProvideTextStyle(MaterialTheme.typography.h5) {
+                    val reveal = state.createChildTransition { it.toState() - 1 }
+                    RevealEach(reveal) {
+                        item { Text("$BULLET_1 Power-Assert as a compiler-plugin means...") }
+                        item { Text("    $BULLET_3 Users are required to opt-in to transformation.") }
+                        item { Text("    $BULLET_3 Users get to control which source sets are transformed.") }
+                        item { Text("$BULLET_1 A proper language feature means...") }
+                        item { Text("    $BULLET_3 We could properly support existing functions (require, check, etc.).") }
+                        item { Text("    $BULLET_3 Without opt-in, a dependency update could leak call-site information.") }
+                        item { Text("    $BULLET_3 We must maintain an opt-in, somewhere.") }
                     }
                 }
-                Box(Modifier.weight(1f))
-                state.AnimatedVisibility(
-                    visible = { it.toInt() == 3 },
-                    enter = slideInVertically(initialOffsetY = { it }),
-                    exit = slideOutVertically(targetOffsetY = { it }),
-                ) {
-                    ProvideTextStyle(MaterialTheme.typography.body2) {
-                        MacTerminal(modifier = Modifier.fillMaxWidth().offset(y = 16.dp)) {
-                            Text(MACRO_OUTPUT)
-                        }
+            }
+        }
+    }
+
+    slide(
+        stateCount = 3,
+        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+    ) {
+        HeaderAndBody {
+            Topic()
+            Box(Modifier.fillMaxSize()) {
+                Box(Modifier.padding(horizontal = 32.dp)) {
+                    state.createChildTransition { it.toState() }
+                        .MagicCode(MACRO_USE_TRANSITIONS)
+                }
+                ProvideTextStyle(MaterialTheme.typography.body2) {
+                    MacTerminalPopup(visible = { it.toInt() == 2 }) {
+                        Text(MACRO_OUTPUT)
                     }
                 }
             }
@@ -61,10 +87,6 @@ fun StoryboardBuilder.SyntaxIdea() {
 }
 
 val MACRO_USE_TRANSITIONS = listOf(
-    """
-        require("Hello".length == "World".substring(1, 4).length)
-    """.trimIndent().twice(),
-
     """
         require<i></i>("Hello".length == "World".substring(1, 4).length)
     """.trimIndent() to """
@@ -81,7 +103,4 @@ Failed requirement.
 require!("Hello".length == "World".substring(1, 4).length)
                  |      |          |               |
                  5      false      orl             3
-
-
-
-""".trimIndent()
+""".trimIndent().padLines(10)

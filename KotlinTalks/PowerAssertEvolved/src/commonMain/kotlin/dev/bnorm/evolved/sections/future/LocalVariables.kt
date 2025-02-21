@@ -34,7 +34,16 @@ fun StoryboardBuilder.LocalVariables() {
             Box(Modifier.fillMaxSize()) {
                 Box(Modifier.padding(horizontal = 32.dp)) {
                     state.createChildTransition { it.toState() }
-                        .MagicCode(LOCAL_VARIABLE_TRANSFORMATIONS)
+                        .MagicCode(
+                            LOCAL_VARIABLE_TRANSFORMATIONS,
+                            identifierType = { highlighting, identifier ->
+                                when (identifier) {
+                                    "test" -> highlighting.functionDeclaration
+                                    "powerAssert" -> highlighting.staticFunctionCall
+                                    else -> null
+                                }
+                            }
+                        )
                 }
                 ProvideTextStyle(MaterialTheme.typography.body2) {
                     MacTerminalPopup(visible = { it.toInt() in 3..4 }) {
@@ -61,9 +70,8 @@ fun StoryboardBuilder.LocalVariables() {
                                     powerAssert(expected == actual)
                                                 |        |  |
                                                 |        |  "World".substring(1, 4).length
-                                                |        |          |               |
-                                                |        false      orl             3
-                                                "Hello".length
+                                                |        false      |               |
+                                                "Hello".length      orl             3
                                                         |
                                                         5
                                 """.trimIndent().padLines(12)

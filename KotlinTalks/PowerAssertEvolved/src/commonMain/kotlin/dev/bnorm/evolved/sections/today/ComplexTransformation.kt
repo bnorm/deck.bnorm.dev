@@ -259,14 +259,24 @@ private val TRUNCATED_COMPLEX_TRANSITIONS = listOf(
         assert(<i>tmp2</i> >= 1 && str[0] == 'x')
     """.trimIndent(),
 
-    // TODO tmp3
+    """
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        assert(<m>tmp2 >= 1</m=3> && str[0] == 'x')
+    """.trimIndent() to """
+        val tmp1 = str
+        val tmp2 = tmp1.length
+        <i>val tmp3 = </i><m>tmp2 >= 1</m=3>
+        assert(<i>tmp3</i> && str[0] == 'x')
+    """.trimIndent(),
 
     """
         <i>val tmp1 = </i><m>str</m=1>
         <i>val tmp2 = tmp1</i><m>.length</m=2>
-        assert(<i>tmp2</i> >= 1 && str[0] == 'x')
+        <i>val tmp3 = tmp2</i><m> >= 1</m=3>
+        assert(<i>tmp3</i> && str[0] == 'x')
     """.trimIndent() to """
-        assert(<m>str</m=1><m>.length</m=2> >= 1 && str[0] == 'x')
+        assert(<m>str</m=1><m>.length</m=2><m> >= 1</m=3> && str[0] == 'x')
     """.trimIndent(),
 
     """

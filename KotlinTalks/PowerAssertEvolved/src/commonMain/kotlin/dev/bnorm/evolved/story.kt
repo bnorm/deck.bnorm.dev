@@ -13,7 +13,6 @@ import dev.bnorm.deck.shared.socials.JetBrainsEmployee
 import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.evolved.sections.evolution.Evolution
 import dev.bnorm.evolved.sections.future.Future
-import dev.bnorm.evolved.sections.history.History
 import dev.bnorm.evolved.sections.today.Today
 import dev.bnorm.evolved.sections.intro.Intro
 import dev.bnorm.evolved.template.THEME_DECORATOR
@@ -43,6 +42,8 @@ fun createStoryboard() = Storyboard.build(
     size = Storyboard.DEFAULT_SIZE,
     decorator = DEV + THEME_DECORATOR,
 ) {
+    // TODO go through and add kodee reactions?
+
     slide {
         Title {
             Text("Power-Assert:")
@@ -50,7 +51,6 @@ fun createStoryboard() = Storyboard.build(
         }
     }
     Intro()
-    History()
     Today()
     Evolution()
     Future()

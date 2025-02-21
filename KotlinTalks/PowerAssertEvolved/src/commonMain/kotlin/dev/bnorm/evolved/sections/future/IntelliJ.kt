@@ -29,7 +29,16 @@ fun StoryboardBuilder.IntelliJ() {
             }
             Box(Modifier.padding(horizontal = 32.dp)) {
                 state.createChildTransition { it.toState() }
-                    .MagicCode(INTELLIJ_TRANSFORMATIONS)
+                    .MagicCode(
+                        INTELLIJ_TRANSFORMATIONS,
+                        identifierType = { highlighting, identifier ->
+                            when (identifier) {
+                                "test" -> highlighting.functionDeclaration
+                                "powerAssert" -> highlighting.staticFunctionCall
+                                else -> null
+                            }
+                        }
+                    )
             }
         }
     }

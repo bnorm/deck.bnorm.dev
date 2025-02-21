@@ -170,10 +170,10 @@ private val WHEN_TRANSITIONS = listOf(
             else -> assert(false)<i> {</i>
         <i>        "${'"'}"</i>
         <i>            assert(str.length >= 1 && str[0] == 'x')</i>
-        <i>                    |   |      |</i>
-        <i>                    |   |      ${'$'}tmp3</i>
-        <i>                    |   ${'$'}tmp2</i>
-        <i>                    ${'$'}tmp1</i>
+        <i>                   |   |      |</i>
+        <i>                   |   |      ${'$'}tmp3</i>
+        <i>                   |   ${'$'}tmp2</i>
+        <i>                   ${'$'}tmp1</i>
         <i>        "${'"'}".trimIndent()</i>
         <i>    }</i>
         }
@@ -193,10 +193,10 @@ private val WHEN_TRANSITIONS = listOf(
             else -> assert(false) {
                 "${'"'}"
                     assert(str.length >= 1 && str[0] == 'x')
-                            |   |      |
-                            |   |      ${'$'}tmp3
-                            |   ${'$'}tmp2
-                            ${'$'}tmp1
+                           |   |      |
+                           |   |      ${'$'}tmp3
+                           |   ${'$'}tmp2
+                           ${'$'}tmp1
                 "${'"'}".trimIndent()
             }
         }
@@ -212,23 +212,23 @@ private val WHEN_TRANSITIONS = listOf(
                 assert(tmp6)<i> {</i>
         <i>            "${'"'}"</i>
         <i>                assert(str.length >= 1 && str[0] == 'x')</i>
-        <i>                        |   |      |       |  |   |</i>
-        <i>                        |   |      |       |  |   ${'$'}tmp6</i>
-        <i>                        |   |      |       |  ${'$'}tmp5</i>
-        <i>                        |   |      |       ${'$'}tmp4</i>
-        <i>                        |   |      ${'$'}tmp3</i>
-        <i>                        |   ${'$'}tmp2</i>
-        <i>                        ${'$'}tmp1</i>
+        <i>                       |   |      |       |  |   |</i>
+        <i>                       |   |      |       |  |   ${'$'}tmp6</i>
+        <i>                       |   |      |       |  ${'$'}tmp5</i>
+        <i>                       |   |      |       ${'$'}tmp4</i>
+        <i>                       |   |      ${'$'}tmp3</i>
+        <i>                       |   ${'$'}tmp2</i>
+        <i>                       ${'$'}tmp1</i>
         <i>            "${'"'}".trimIndent()</i>
         <i>        }</i>
             }
             else -> assert(false) {
                 "${'"'}"
                     assert(str.length >= 1 && str[0] == 'x')
-                            |   |      |
-                            |   |      ${'$'}tmp3
-                            |   ${'$'}tmp2
-                            ${'$'}tmp1
+                           |   |      |
+                           |   |      ${'$'}tmp3
+                           |   ${'$'}tmp2
+                           ${'$'}tmp1
                 "${'"'}".trimIndent()
             }
         }
@@ -246,23 +246,23 @@ private val WHEN_TRANSITIONS = listOf(
         <i>        </i><m>assert(</m=0><i>tmp6</i><m>)</m=7><i> {</i>
         <i>            "${'"'}"</i>
         <i>                assert(str.length >= 1 && str[0] == 'x')</i>
-        <i>                        |   |      |       |  |   |</i>
-        <i>                        |   |      |       |  |   ${'$'}tmp6</i>
-        <i>                        |   |      |       |  ${'$'}tmp5</i>
-        <i>                        |   |      |       ${'$'}tmp4</i>
-        <i>                        |   |      ${'$'}tmp3</i>
-        <i>                        |   ${'$'}tmp2</i>
-        <i>                        ${'$'}tmp1</i>
+        <i>                       |   |      |       |  |   |</i>
+        <i>                       |   |      |       |  |   ${'$'}tmp6</i>
+        <i>                       |   |      |       |  ${'$'}tmp5</i>
+        <i>                       |   |      |       ${'$'}tmp4</i>
+        <i>                       |   |      ${'$'}tmp3</i>
+        <i>                       |   ${'$'}tmp2</i>
+        <i>                       ${'$'}tmp1</i>
         <i>            "${'"'}".trimIndent()</i>
         <i>        }</i>
         <i>    }</i>
             else -> <i>assert(</i>false<i>) {</i>
         <i>        "${'"'}"</i>
         <i>            assert(str.length >= 1 && str[0] == 'x')</i>
-        <i>                    |   |      |</i>
-        <i>                    |   |      ${'$'}tmp3</i>
-        <i>                    |   ${'$'}tmp2</i>
-        <i>                    ${'$'}tmp1</i>
+        <i>                   |   |      |</i>
+        <i>                   |   |      ${'$'}tmp3</i>
+        <i>                   |   ${'$'}tmp2</i>
+        <i>                   ${'$'}tmp1</i>
         <i>        "${'"'}".trimIndent()</i>
         <i>    }</i>
         }

@@ -6,8 +6,9 @@ import dev.bnorm.storyboard.core.StoryboardBuilder
 fun StoryboardBuilder.Today() {
     // TODO better title
     SectionAndTitle("How Does It Work?") {
+        ExampleOutput()
         ExampleTransformation()
-        // TODO function overloading here
+        FunctionOverloads()
         ComplexTransformation()
         WhenTransformation()
         ExpressionTree()

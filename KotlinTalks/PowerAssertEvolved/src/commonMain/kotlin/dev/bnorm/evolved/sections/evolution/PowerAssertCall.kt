@@ -1,38 +1,53 @@
 package dev.bnorm.evolved.sections.evolution
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.mac.MacTerminalPopup
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
+import dev.bnorm.evolved.template.code.padLines
+import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
+import dev.bnorm.storyboard.easel.template.SlideEnter
+import dev.bnorm.storyboard.easel.template.SlideExit
 
-fun StoryboardBuilder.CallTransformation() {
-    slide(stateCount = 6) {
+fun StoryboardBuilder.PowerAssertCall() {
+    slide(
+        stateCount = 8,
+        enterTransition = enter(start = SlideEnter(Alignment.CenterEnd)),
+        exitTransition = exit(start = SlideExit(Alignment.CenterEnd)),
+    ) {
         HeaderAndBody {
-            ProvideTextStyle(MaterialTheme.typography.h4) {
-                Text("How does it work?")
-            }
-            ProvideTextStyle(MaterialTheme.typography.body2) {
-                Box(
-                    modifier = Modifier.animateEnterExit(
-                        enter = enter(start = { slideInHorizontally { it } + fadeIn() }),
-                        exit = exit(start = { slideOutHorizontally { it } + fadeOut() }),
-                    ).fillMaxSize()
-                ) {
-                    state.createChildTransition { it.toState() + 1 }
-                        .MagicCode(CALL_TRANSFORMATIONS)
+            Box(Modifier.fillMaxSize()) {
+                Box(Modifier.padding(horizontal = 32.dp)) {
+                    state.createChildTransition { it.toState() }
+                        .MagicCode(
+                            CALL_TRANSFORMATIONS,
+                            identifierType = { highlighting, identifier ->
+                                when (identifier) {
+                                    "test" -> highlighting.functionDeclaration
+                                    "powerAssert", "powerAssert_Explained" -> highlighting.staticFunctionCall
+                                    else -> null
+                                }
+                            }
+                        )
+                }
+                ProvideTextStyle(MaterialTheme.typography.body2) {
+                    MacTerminalPopup(visible = { it.toInt() == 7 }) {
+                        Text(EXAMPLE_POWER_ASSERT_OUTPUT)
+                    }
                 }
             }
         }
@@ -40,16 +55,6 @@ fun StoryboardBuilder.CallTransformation() {
 }
 
 private val CALL_TRANSFORMATIONS = listOf(
-    """
-        @Test fun test() {
-            powerAssert("Hello".length == "World".substring(1, 4).length)
-        }
-    """.trimIndent() to """
-        @Test fun test() {
-            powerAssert("Hello".length == "World".substring(1, 4).length)
-        }
-    """.trimIndent(),
-
     """
         @Test fun test() {
             powerAssert(<m>"Hello".length</m=1> == "World".substring(1, 4).length)
@@ -123,4 +128,35 @@ private val CALL_TRANSFORMATIONS = listOf(
             powerAssert<i>_Explained</i>(tmp4<i>, CallExplanation(/* ... */)</i>)
         }
     """.trimIndent(),
+
+    """
+        @Test fun test() {
+        <i>    val tmp1 = </i><m>"Hello".length</m=1>
+        <i>    val tmp2 = </i><m>"World".substring(1, 4)</m=2>
+        <i>    val tmp3 = tmp2</i><m>.length</m=3>
+        <i>    val tmp4 = tmp1</i><m> == </m=4><i>tmp3</i>
+            powerAssert<i>_Explained</i>(<i>tmp4, CallExplanation(/* ... */)</i>)
+        }
+    """.trimIndent() to """
+        @Test fun test() {
+            powerAssert<i></i>(<m>"Hello".length</m=1><m> == </m=4><m>"World".substring(1, 4)</m=2><m>.length</m=3>)
+        }
+    """.trimIndent(),
+
+    """
+        @Test fun test() {
+            powerAssert("Hello".length == "World".substring(1, 4).length)
+        }
+    """.trimIndent().twice(),
 )
+
+val EXAMPLE_POWER_ASSERT_OUTPUT = """
+Assertion failed:
+powerAssert("Hello".length == "World".substring(1, 4).length)
+                    |      |          |               |
+                    5      false      orl             3
+
+Expected :5
+Actual   :3
+<Click to see difference>
+""".trimIndent().padLines(12)

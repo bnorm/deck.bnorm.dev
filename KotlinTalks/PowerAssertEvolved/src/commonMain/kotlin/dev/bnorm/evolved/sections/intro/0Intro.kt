@@ -6,7 +6,7 @@ import dev.bnorm.storyboard.core.StoryboardBuilder
 fun StoryboardBuilder.Intro() {
     SectionAndTitle("What's Power-Assert?") {
         Overview()
-        ExampleOutput()
+        Timeline()
     }
 }
 

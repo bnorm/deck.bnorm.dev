@@ -5,10 +5,8 @@ import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.evolved.template.HeaderAndBody
@@ -18,38 +16,35 @@ import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.slide
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
+import dev.bnorm.storyboard.easel.template.SlideEnter
+import dev.bnorm.storyboard.easel.template.SlideExit
 
 private val moveDuration = DefaultDurationMillis
 private val fadeDuration = moveDuration / 2
 
 fun StoryboardBuilder.FunctionTransformation() {
-    slide(stateCount = 5) {
+    slide(
+        stateCount = 5,
+        enterTransition = enter(end = SlideEnter(Alignment.CenterEnd)),
+        exitTransition = exit(end = SlideExit(Alignment.CenterEnd)),
+    ) {
         HeaderAndBody {
-            ProvideTextStyle(MaterialTheme.typography.h4) {
-                Text("How does it work?")
-            }
-            ProvideTextStyle(MaterialTheme.typography.body2) {
-                state.AnimatedContent(
-                    modifier = Modifier.animateEnterExit(
-                        enter = enter(end = { slideInHorizontally { -it } + fadeIn() }),
-                        exit = exit(end = { slideOutHorizontally { -it } + fadeOut() }),
-                    ),
-                    transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }
-                ) {
-                    when (it.toState()) {
-                        0 -> {
-                            Box(Modifier.fillMaxSize()) {
-                                OriginalFunction(this@AnimatedContent)
-                                SyntheticFunction(this@AnimatedContent)
-                            }
+            state.AnimatedContent(
+                transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }
+            ) {
+                when (it.toState()) {
+                    0 -> {
+                        Box(Modifier.fillMaxSize()) {
+                            OriginalFunction(this@AnimatedContent)
+                            SyntheticFunction(this@AnimatedContent)
                         }
+                    }
 
-                        else -> {
-                            Column(Modifier.fillMaxSize()) {
-                                OriginalFunction(this@AnimatedContent)
-                                Spacer(Modifier.height(16.dp))
-                                SyntheticFunction(this@AnimatedContent)
-                            }
+                    else -> {
+                        Column(Modifier.fillMaxSize()) {
+                            OriginalFunction(this@AnimatedContent)
+                            Spacer(Modifier.height(16.dp))
+                            SyntheticFunction(this@AnimatedContent)
                         }
                     }
                 }

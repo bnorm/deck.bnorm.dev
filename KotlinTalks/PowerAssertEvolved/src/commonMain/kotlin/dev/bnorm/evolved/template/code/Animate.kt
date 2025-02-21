@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontFamily
+import dev.bnorm.storyboard.text.highlight.Highlighting
 
 fun <T> T.twice(): Pair<T, T> = this to this
 
@@ -20,6 +22,7 @@ fun Transition<Int>.MagicCode(
     transitions: List<Pair<String, String>>,
     moveDuration: Int = DefaultDurationMillis,
     fadeDuration: Int = moveDuration / 2,
+    identifierType: (Highlighting, String) -> SpanStyle? = { _, _ -> null },
 ) {
     val currentState = currentState
     val targetState = targetState
@@ -91,27 +94,27 @@ fun Transition<Int>.MagicCode(
                     } else if (currentState == targetState) {
                         if (currentState < 0) {
                             val state = transitions.first().first
-                            render(state.toCodeTokens())
+                            render(state.toCodeTokens(identifierType))
                         } else if (currentState >= transitions.size) {
                             val state = transitions.last().second
-                            render(state.toCodeTokens())
+                            render(state.toCodeTokens(identifierType))
                         } else {
                             val state = transitions[currentState].first
-                            render(state.toCodeTokens())
+                            render(state.toCodeTokens(identifierType))
                         }
                     } else {
                         if (currentState < 0) {
                             val state = transitions.first().first
-                            render(state.toCodeTokens())
+                            render(state.toCodeTokens(identifierType))
                         } else if (currentState >= transitions.size) {
                             val state = transitions.last().second
-                            render(state.toCodeTokens())
+                            render(state.toCodeTokens(identifierType))
                         } else {
                             val (before, after) = transitions[currentState]
                             if (renderState == currentState) {
-                                render(before.toCodeTokens())
+                                render(before.toCodeTokens(identifierType))
                             } else {
-                                render(after.toCodeTokens())
+                                render(after.toCodeTokens(identifierType))
                             }
                         }
                     }
