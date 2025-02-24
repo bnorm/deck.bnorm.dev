@@ -6,13 +6,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
 import dev.bnorm.evolved.template.HeaderAndBody
@@ -44,30 +46,26 @@ fun StoryboardBuilder.ApiIntroduction() {
     }
 
     slide(stateCount = 5) {
+        val rememberTextMeasurer = rememberTextMeasurer()
+
         HeaderAndBody {
             if (currentState >= 1) {
-                Box(Modifier.Companion.fillMaxSize()) {
-                    var textLayoutResult: TextLayoutResult? by remember { mutableStateOf(null) }
-                    Text(
-                        text = code.toCode(),
-                        onTextLayout = { textLayoutResult = it },
-                    )
+                Box(Modifier.fillMaxSize()) {
+                    Text(text = code.toCode())
 
                     SharedTransitionLayout {
                         state.AnimatedContent(
-                            transitionSpec = { EnterTransition.Companion.None togetherWith ExitTransition.Companion.None },
+                            transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
                         ) {
-                            Box(Modifier.Companion.fillMaxSize())
+                            Box(Modifier.fillMaxSize())
 
-                            textLayoutResult?.let { result ->
-                                SurroundingBox(
-                                    result,
-                                    it.toState(),
-                                    this@SharedTransitionLayout,
-                                    this@AnimatedContent,
-                                ) {
-                                    getSnippetRange(it)
-                                }
+                            SurroundingBox(
+                                rememberTextMeasurer.measure(code.toCode(), style = LocalTextStyle.current),
+                                it.toState(),
+                                this@SharedTransitionLayout,
+                                this@AnimatedContent,
+                            ) {
+                                getSnippetRange(it)
                             }
                         }
                     }
@@ -93,7 +91,7 @@ private fun <T> SurroundingBox(
     with(sharedTransitionScope) {
         with(LocalDensity.current) {
             Box(
-                Modifier.Companion
+                Modifier
                     .size(size.x.toDp(), size.y.toDp())
                     .offset(offset.x.toDp(), offset.y.toDp())
                     .sharedElement(

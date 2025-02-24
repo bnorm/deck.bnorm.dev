@@ -5,10 +5,11 @@ import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -66,17 +67,16 @@ fun StoryboardBuilder.ExpressionTree() {
 
         HeaderAndBody {
             Box {
-                var textLayoutResult by remember<MutableState<TextLayoutResult?>> { mutableStateOf(null) }
-                Text(text = sample.toCode(), onTextLayout = { textLayoutResult = it })
-                textLayoutResult?.let { result ->
-                    SharedTransitionLayout {
-                        child.AnimatedContent(
-                            transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
-                        ) {
-                            TreeNodes(it, Modifier.fillMaxSize().padding(bottom = 32.dp))
+                Text(text = sample.toCode())
 
-                            SurroundingBox(result, it, this@SharedTransitionLayout, this@AnimatedContent, ::getSnippet)
-                        }
+                val result = rememberTextMeasurer().measure(sample.toCode(), style = LocalTextStyle.current)
+                SharedTransitionLayout {
+                    child.AnimatedContent(
+                        transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+                    ) {
+                        TreeNodes(it, Modifier.fillMaxSize().padding(bottom = 32.dp))
+
+                        SurroundingBox(result, it, this@SharedTransitionLayout, this@AnimatedContent, ::getSnippet)
                     }
                 }
             }

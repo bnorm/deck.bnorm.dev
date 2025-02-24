@@ -13,20 +13,11 @@ import dev.bnorm.deck.shared.socials.JetBrainsEmployee
 import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.evolved.sections.evolution.Evolution
 import dev.bnorm.evolved.sections.future.Future
-import dev.bnorm.evolved.sections.today.Today
 import dev.bnorm.evolved.sections.intro.Intro
+import dev.bnorm.evolved.sections.today.Today
 import dev.bnorm.evolved.template.THEME_DECORATOR
-import dev.bnorm.storyboard.core.SlideDecorator
 import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.plus
 import dev.bnorm.storyboard.core.slide
-import org.jetbrains.compose.reload.DevelopmentEntryPoint
-
-private val DEV = SlideDecorator { content ->
-    DevelopmentEntryPoint {
-        content()
-    }
-}
 
 fun createStoryboard() = Storyboard.build(
     title = "Power-Assert: Evolved",
@@ -40,7 +31,7 @@ fun createStoryboard() = Storyboard.build(
         like in the future!
     """.trimIndent(),
     size = Storyboard.DEFAULT_SIZE,
-    decorator = DEV + THEME_DECORATOR,
+    decorator = THEME_DECORATOR,
 ) {
     // TODO go through and add kodee reactions?
 
