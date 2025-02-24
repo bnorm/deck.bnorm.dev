@@ -51,6 +51,9 @@ kotlin {
                 implementation("io.ktor:ktor-client-core:$ktor_version")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+
+                implementation("dev.chrisbanes.haze:haze:1.3.1")
+                implementation("dev.chrisbanes.haze:haze-materials:1.3.1")
             }
         }
         jvmMain {

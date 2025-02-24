@@ -1,363 +1,232 @@
 package dev.bnorm.kc25
 
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.lerp
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.shared.*
-import dev.bnorm.storyboard.core.*
-import dev.bnorm.storyboard.easel.EmbeddedStoryboard
-import dev.bnorm.storyboard.easel.notes.NotesTab
+import androidx.compose.ui.util.lerp
+import dev.bnorm.deck.kotlinconf2025.generated.resources.*
+import dev.bnorm.deck.shared.socials.Bluesky
+import dev.bnorm.deck.shared.socials.JetBrainsEmployee
+import dev.bnorm.deck.shared.socials.Mastodon
+import dev.bnorm.kc25.template.THEME_DECORATOR
+import dev.bnorm.kc25.template.defaultSpec
+import dev.bnorm.storyboard.core.Storyboard
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.template.SlideEnter
 import dev.bnorm.storyboard.easel.template.SlideExit
-import dev.bnorm.storyboard.text.highlight.Highlighting
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
-import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.ui.FixedSize
-import org.jetbrains.compose.reload.DevelopmentEntryPoint
+import org.jetbrains.compose.resources.painterResource
+import kotlin.time.Duration.Companion.milliseconds
 
-val DEV = SlideDecorator { content ->
-    DevelopmentEntryPoint {
-        content()
+fun createStoryboard(): Storyboard {
+    return Storyboard.build(
+        title = "Writing Your Third Kotlin Compiler Plugin",
+        description = """
+            Compiler plugins have become an integral part of a developer’s experience with the Kotlin programming
+            language. Areas like UI development (Jetpack Compose), backend development (Spring Boot / Kotlin
+            Serialization), and even testing (Power-Assert) all leverage compiler plugins. But what is a Kotlin compiler
+            plugin and what can it do? Let’s learn by writing one!
+
+            In this talk, we’ll discuss use cases for compiler plugins and learn how they integrate with the Kotlin
+            compiler. Then we’ll explore everything related to how code is represented within the Kotlin compiler,
+            including how to inspect, navigate, transform, and create these representations. When we’re done, we’ll have
+            written a compiler plugin from scratch which can navigate the project code, inspect annotations, generate
+            boilerplate, and even report errors!
+        """.trimIndent(),
+        decorator = THEME_DECORATOR,
+    ) {
+        Title()
+        Closing()
     }
 }
 
-val HIGHLIGHTING: Highlighting
-    @Composable get() {
-        val fontFamily = JetBrainsMono
-        return Highlighting.build {
-            simple += SpanStyle(color = Color(0xFFBCBEC4), fontFamily = fontFamily)
-            number = simple + SpanStyle(color = Color(0xFF2AACB8))
-            keyword = simple + SpanStyle(color = Color(0xFFCF8E6D))
-            punctuation = simple + SpanStyle(color = Color(0xFFA1C17E))
-            annotation = simple + SpanStyle(color = Color(0xFFBBB529))
-            comment = simple + SpanStyle(color = Color(0xFF7A7E85))
-            string = simple + SpanStyle(color = Color(0xFF6AAB73))
-            property = simple + SpanStyle(color = Color(0xFFC77DBB))
-            functionDeclaration = simple + SpanStyle(color = Color(0xFF56A8F5))
-            extensionFunctionCall = simple + SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic)
-            staticFunctionCall = simple + SpanStyle(fontStyle = FontStyle.Italic)
-            typeParameters = simple + SpanStyle(color = Color(0xFF16BAAC))
-        }
-    }
-
-val DARK_COLORS = darkColors(
-    // KotlinConf 2024 website colors
-    // "blue/purple" : 7E53FE or 7F51FF
-    // "red" : FF2757
-    // "orange" : FDB60D
-
-    background = Color.Black,
-    surface = Color(0xFF1E1F22),
-    onBackground = Color(0xFFBCBEC4),
-    primary = Color(0xFF7F51FF),
-    primaryVariant = Color(0xFF7E53FE),
-    secondary = Color(0xFFFDB60D),
-)
-
-val LIGHT_COLORS = lightColors(
-    background = Color.White,
-    surface = Color(0xFFF5F5F5),
-    primary = Color(0xFF7F51FF),
-    primaryVariant = Color(0xFF7E53FE),
-    secondary = Color(0xFFFDB60D),
-)
-
-fun createStoryboard(colors: State<Colors>): Storyboard {
-    val theme = SlideDecorator { content ->
-        Highlighting(HIGHLIGHTING) {
-            MaterialTheme(
-                colors = animateColorsAsState(colors.value),
-                typography = Typography(defaultFontFamily = Inter)
-            ) {
-                content()
-            }
-        }
-    }
-
-    lateinit var storyboard: Storyboard
-    storyboard = Storyboard.build(
-        title = "Sample Storyboard",
-        size = Storyboard.DEFAULT_SIZE,
-        decorator = DEV + theme,
+private fun StoryboardBuilder.Title() {
+    slide(
+        stateCount = 1,
+        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
     ) {
-        slide(
-            @Composable {
-                """
-                    fun main() {}
-                """.trimIndent().toCode()
-            },
-            @Composable {
-                """
-                    fun main() {
-                        println()
-                    }
-                """.trimIndent().toCode()
-            },
-            @Composable {
-                """
-                    fun main() {
-                        println("Hello, World!")
-                    }
-                """.trimIndent().toCode().focusOn("\"Hello, World!\"")
-            },
-            @Composable {
-                """
-                    fun main() {
-                        println("Hello, World!")
-                    }
-                """.trimIndent().toCode()
-            },
-            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
-        ) {
-            val state = state.currentState.toState()()
-
-            Column {
-                Button(onClick = { storyboard.jumpTo(Storyboard.Frame(3, 0)) }) {
-                    Text("Skip!")
-                }
-                MagicText(state, modifier = Modifier.fillMaxWidth())
-            }
-
-            SharedKodee {
-                AnimateKodee {
-                    default { DefaultCornerKodee(Modifier.size(50.dp)) }
-                    show({ state.contains("Hello, World!") }) {
-                        KodeeSurprised(Modifier.size(75.dp))
-                    }
-                }
-            }
-        }
-
-        slide(
-            false,
-            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
-        ) {
-            val color by state.animateColor {
-                when (it.toBoolean()) {
-                    false -> MaterialTheme.colors.primary
-                    true -> MaterialTheme.colors.secondary
-                }
-            }
-
-            var count by rememberSaveable { mutableStateOf(0) }
-            Button(onClick = { count++ }, colors = ButtonDefaults.buttonColors(backgroundColor = color)) {
-                Text("Hello, World : $count")
-            }
-
-            SharedKodee {
-                AnimateKodee {
-                    default { DefaultCornerKodee(Modifier.size(50.dp)) }
-                }
-            }
-        }
-
-        slide(
-            0.0, 1.0, 2.0,
-            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
-        ) {
-            val state = state.currentState.toState()
-            val embeddedColors = remember { mutableStateOf(DARK_COLORS) }
-            val embeddedStoryboard = remember { createStoryboard(embeddedColors) }
-            embeddedColors.value = when (state > 1) {
-                true -> LIGHT_COLORS
-                false -> DARK_COLORS
-            }
-
-            Row {
-                Column(modifier = Modifier.weight(3f)) {
-                    var text by rememberSaveable { mutableStateOf("") }
-                    Text("$text : $state")
-                    TextField(text, onValueChange = { text = it })
-                }
-                Column(
-                    modifier = Modifier.weight(2f).fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    SampleStoryboard(embeddedStoryboard)
-                    LaunchedEffect(state) {
-                        embeddedStoryboard.moveTo(0, state.toInt())
-                    }
-                }
-            }
-
-            SharedKodee {
-                AnimateKodee {
-                    default { DefaultCornerKodee(Modifier.size(50.dp)) }
-                    show(condition = { state == 2.0 }) {
-                        KodeeSurprised(Modifier.size(75.dp))
-                    }
-                }
-            }
-        }
-
-        slide(
-            Unit,
-            enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SlideExit(alignment = Alignment.CenterEnd),
-        ) {
-            NotesTab("GitHub") {
-                TextField(
-                    value = githubInfo.repositoryPath,
-                    onValueChange = { githubInfo.repositoryPath = it },
-                    isError = githubInfo.isError,
-                    trailingIcon = {
-                        if (githubInfo.loading) CircularProgressIndicator()
-                    }
+        Box(Modifier.fillMaxSize()) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.start_background),
+                    contentDescription = "",
+                    modifier = Modifier.fillMaxSize(),
+                )
+                Image(
+                    painter = painterResource(Res.drawable.start_conference),
+                    contentDescription = "",
+                    modifier = Modifier.size(247.dp, 26.dp).offset(40.dp, 40.dp),
                 )
             }
 
-            Column {
-                when (val repository = githubInfo.repository) {
-                    null -> Row {
-                        Text("Loading...")
-                        CircularProgressIndicator()
+            Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                Column(
+                    Modifier.fillMaxWidth().align(Alignment.BottomStart),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
+                            Text("Writing Your Third")
+                            Text("Kotlin Compiler Plugin")
+                        }
                     }
-
-                    else -> {
-                        Text("Name: ${repository.name}")
-                        Text("Forks: ${repository.forks_count}")
-                        Text("Stars: ${repository.stargazers_count}")
-                        Text("Watchers: ${repository.subscribers_count}")
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                                .padding(16.dp),
+                        ) {
+                            JetBrainsEmployee(
+                                name = "Brian Norman",
+                                title = "Kotlin Compiler Developer",
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                                .background(
+                                    // TODO use haze instead?
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color.Black.copy(alpha = 0f),
+                                            Color.Black.copy(alpha = 0.7f),
+                                            Color.Black.copy(alpha = 0.7f),
+                                            Color.Black.copy(alpha = 0f),
+                                        )
+                                    ),
+                                    shape = RoundedCornerShape(16.dp),
+                                )
+                                .padding(16.dp),
+                        ) {
+                            Bluesky(username = "@bnorm.dev")
+                            Spacer(Modifier.size(4.dp))
+                            Mastodon(username = "bnorm@kotlin.social")
+                        }
                     }
                 }
             }
         }
     }
-    return storyboard
 }
 
-
-@Composable
-private fun SampleStoryboard(storyboard: Storyboard) {
-    Surface(
-        elevation = 8.dp,
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxSize()
-            .aspectRatio(storyboard.size.width / storyboard.size.height)
+private fun StoryboardBuilder.Closing() {
+    slide(
+        stateCount = 1,
+        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
     ) {
-        MaterialTheme(colors = darkColors(), typography = Typography(), shapes = Shapes()) {
-            FixedSize(Storyboard.DEFAULT_SIZE) {
-                EmbeddedStoryboard(storyboard, modifier = Modifier.fillMaxSize())
+        val slideInAnimationSpec = defaultSpec<IntOffset>()
+        val slideOutAnimationSpec = defaultSpec<IntOffset>(delay = 300.milliseconds)
+        val arcInAnimationSpec = defaultSpec<Float>(delay = 300.milliseconds)
+        val arcOutAnimationSpec = defaultSpec<Float>()
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            val arcFraction by state.animateFloat(
+                transitionSpec = { if (targetState.toInt() >= 0) arcInAnimationSpec else arcOutAnimationSpec }
+            ) {
+                if (it.toInt() >= 0) 1.2f else 0f
+            }
+
+            state.AnimatedVisibility(
+                visible = { it.toInt() >= 0 },
+                enter = slideInVertically(initialOffsetY = { -it }, animationSpec = slideInAnimationSpec),
+                exit = slideOutVertically(targetOffsetY = { -it }, animationSpec = slideOutAnimationSpec),
+
+                ) {
+                Image(
+                    painter = painterResource(Res.drawable.end_badge),
+                    contentDescription = "",
+                    modifier = Modifier.size(225.3.dp, 400.6.dp).offset(479.3.dp, 0.dp),
+                )
+            }
+
+            state.AnimatedVisibility(
+                visible = { it.toInt() >= 0 },
+                enter = slideInHorizontally(initialOffsetX = { 5 * it / 4 }, animationSpec = slideInAnimationSpec),
+                exit = slideOutHorizontally(targetOffsetX = { 5 * it / 4 }, animationSpec = slideOutAnimationSpec),
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.end_phone),
+                    contentDescription = "",
+                    modifier = Modifier.size(240.dp, 470.6.dp).offset(703.3.dp, 0.dp),
+                )
+            }
+
+            DrawArc(arcFraction)
+
+            Column(Modifier.align(Alignment.TopStart).padding(32.dp)) {
+                Bluesky(username = "@bnorm.dev")
+                Spacer(Modifier.size(4.dp))
+                Mastodon(username = "bnorm@kotlin.social")
+            }
+            Column(Modifier.align(Alignment.BottomStart).padding(32.dp)) {
+                ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
+                    Text("Thank You,")
+                    Text("and Don't")
+                    Text("Forget to Vote")
+                }
             }
         }
     }
 }
 
-private fun Storyboard.moveTo(slideIndex: Int, stateIndex: Int) {
-    val currentFrame = currentFrame
-    if (currentFrame.slideIndex == slideIndex) {
-        when (currentFrame.stateIndex) {
-            // The current index is the desired index -> do nothing.
-            stateIndex -> return
-            // The previous index is the current index -> advance forward to reach the desired index.
-            stateIndex - 1 -> advance(AdvanceDirection.Forward)
-            // The next index is the current index -> advance backward to reach the desired index.
-            stateIndex + 1 -> advance(AdvanceDirection.Backward)
-            // Otherwise -> jump directly to the desired index.
-            else -> jumpTo(Storyboard.Frame(slideIndex, stateIndex))
-        }
-    } else {
-        // TODO check for advancing to next or previous slide
-        jumpTo(Storyboard.Frame(slideIndex, stateIndex))
-    }
-}
-
-fun String.toStyle(codeStyle: Highlighting): SpanStyle? {
-    return when (this) {
-//        "",
-//            -> codeStyle.property
-
-        "main",
-            -> codeStyle.functionDeclaration
-
-//        "",
-//            -> codeStyle.extensionFunctionCall
-
-        "println",
-            -> codeStyle.staticFunctionCall
-
-        else -> null
-    }
-}
-
 @Composable
-fun String.toCode(
-    identifierType: (Highlighting, String) -> SpanStyle? = { _, _ -> null },
-): AnnotatedString {
-    val highlighting = Highlighting.current
-    return rememberSaveable(highlighting, this) {
-        highlight(
-            highlighting = highlighting,
-            language = Language.Kotlin,
-            identifierStyle = { identifierType(highlighting, it) ?: it.toStyle(highlighting) },
+private fun DrawArc(fraction: Float) {
+    Canvas(Modifier.fillMaxSize()) {
+        val xEnd = 744.dp.toPx()
+        val yEnd = 481.dp.toPx()
+        val topLeft = Offset(584.dp.toPx(), 310.dp.toPx())
+        val size = Size(194.dp.toPx(), 194.dp.toPx())
+
+        val brush = Brush.horizontalGradient(
+            startX = topLeft.x,
+            endX = xEnd,
+            colors = listOf(
+                Color(0xFFE901FF),
+                Color(0xFFFD061C),
+            )
         )
-    }
-}
 
-fun AnnotatedString.focusOn(
-    subString: String,
-    focused: SpanStyle = SpanStyle(),
-    unfocused: SpanStyle = SpanStyle(color = Color.Gray.copy(alpha = 0.5f)),
-): AnnotatedString {
-    val start = indexOf(subString).takeIf { it >= 0 } ?: return this
-    val end = start + subString.length
-    val length = length
+        if (fraction > 0f) {
+            val angleFraction = fraction.coerceAtMost(1f)
+            val angle = lerp(0f, -130f, angleFraction)
+            drawArc(brush, 180f, angle, false, topLeft, size, style = Stroke(4.0f))
 
-    return buildAnnotatedString {
-        append(this@focusOn.text)
-
-        if (start != 0) {
-            for (range in subSequence(0, start).spanStyles) {
-                addStyle(range.item + unfocused, range.start, range.end)
+            if (fraction > 1f) {
+                val arrowFraction = (fraction - 1f).coerceAtLeast(0f) * 5f
+                val left = lerp(Offset(xEnd, yEnd), Offset(xEnd - 27, yEnd - 3), arrowFraction)
+                val right = lerp(Offset(xEnd, yEnd), Offset(xEnd - 3, yEnd + 27), arrowFraction)
+                drawLine(brush, Offset(xEnd + 1, yEnd), left, strokeWidth = 4.0f)
+                drawLine(brush, Offset(xEnd, yEnd - 1), right, strokeWidth = 4.0f)
             }
-            addStyle(unfocused, 0, start)
-        }
-
-        for (range in subSequence(start, end).spanStyles) {
-            addStyle(range.item + focused, start + range.start, start + range.end)
-        }
-
-        if (end != length) {
-            for (range in subSequence(end, length).spanStyles) {
-                addStyle(range.item + unfocused, end + range.start, end + range.end)
-            }
-            addStyle(unfocused, end, length)
         }
     }
-}
-
-@Composable
-private fun animateColorsAsState(colors: Colors): Colors {
-    val transition = updateTransition(colors)
-    return colors.copy(
-        primary = transition.animateColor { it.primary }.value,
-        primaryVariant = transition.animateColor { it.primaryVariant }.value,
-        secondary = transition.animateColor { it.secondary }.value,
-        secondaryVariant = transition.animateColor { it.secondaryVariant }.value,
-        background = transition.animateColor { it.background }.value,
-        surface = transition.animateColor { it.surface }.value,
-        error = transition.animateColor { it.error }.value,
-        onPrimary = transition.animateColor { it.onPrimary }.value,
-        onSecondary = transition.animateColor { it.onSecondary }.value,
-        onBackground = transition.animateColor { it.onBackground }.value,
-        onSurface = transition.animateColor { it.onSurface }.value,
-        onError = transition.animateColor { it.onError }.value,
-    )
 }
