@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,7 +54,9 @@ val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
         decorator = { content ->
             Highlighting(Theme.codeStyle) {
                 MaterialTheme(colors = Theme.dark, typography = Theme.typography) {
-                    content()
+                    Surface {
+                        content()
+                    }
                 }
             }
         },

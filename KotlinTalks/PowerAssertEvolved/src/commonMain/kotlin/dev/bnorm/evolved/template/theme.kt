@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
@@ -24,7 +25,9 @@ val THEME_DECORATOR = SlideDecorator { content ->
             colors = DARK_COLORS,
             typography = Typography(defaultFontFamily = Inter)
         ) {
-            content()
+            Surface {
+                content()
+            }
         }
     }
 }
