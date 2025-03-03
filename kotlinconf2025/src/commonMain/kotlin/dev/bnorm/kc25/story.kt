@@ -2,12 +2,11 @@ package dev.bnorm.kc25
 
 import dev.bnorm.kc25.sections.Bueller
 import dev.bnorm.kc25.sections.Closing
+import dev.bnorm.kc25.sections.CompilerArchitecture
 import dev.bnorm.kc25.sections.Dont
 import dev.bnorm.kc25.sections.Title
-import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.kc25.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.easel.section
 
 fun createStoryboard(): Storyboard {
     return Storyboard.build(
@@ -32,9 +31,8 @@ fun createStoryboard(): Storyboard {
         Bueller()
         Title()
 
-        SectionAndTitle("Compiler Plugins") {
+        CompilerArchitecture()
 
-        }
         // What's a compiler plugin?
         // - Compose.
         // - Serialization.

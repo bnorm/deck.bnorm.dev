@@ -1,9 +1,5 @@
 package dev.bnorm.kc25.template
 
-import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +17,6 @@ import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.core.SlideDecorator
 import dev.bnorm.storyboard.text.highlight.Highlighting
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 val THEME_DECORATOR = SlideDecorator { content ->
     Highlighting(HIGHLIGHTING) {
@@ -43,13 +37,18 @@ val THEME_DECORATOR = SlideDecorator { content ->
     }
 }
 
+// Conference Palate
+// Yellow: 0xFFFF941A
+// Light purple: 0xFFC201D7
+// Dark purple: 0xFF480079
+
 val DARK_COLORS = darkColors(
     background = Color.Black,
-    surface = Color(0xFF1E1F22),
+    surface = Color(0xFF1D002E),
     onBackground = Color(0xFFBCBEC4),
-    primary = Color(0xFF7F51FF),
-    primaryVariant = Color(0xFF7E53FE),
-    secondary = Color(0xFFFDB60D),
+    primary = Color(0xFFC201D7),
+    primaryVariant = Color(0xFF480079),
+    secondary = Color(0xFFFF941A),
 )
 
 val HIGHLIGHTING: Highlighting
@@ -74,15 +73,3 @@ val HIGHLIGHTING: Highlighting
             typeParameters = simple + SpanStyle(color = Color(0xFF16BAAC))
         }
     }
-
-fun <T> defaultSpec(
-    duration: Duration = 300.milliseconds,
-    delay: Duration = Duration.ZERO,
-    easing: Easing = FastOutSlowInEasing,
-): FiniteAnimationSpec<T> {
-    return tween(
-        durationMillis = duration.inWholeMilliseconds.toInt(),
-        delayMillis = delay.inWholeMilliseconds.toInt(),
-        easing = easing,
-    )
-}

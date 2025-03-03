@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.AnimateKodee
@@ -19,9 +20,14 @@ fun SlideScope<*>.HeaderAndBody(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     CornerKodee(kodee) {
-        Column(Modifier.fillMaxSize()) {
-            Header()
-            Body(modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp).fillMaxSize()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            ProvideTextStyle(MaterialTheme.typography.h3) {
+                Header()
+            }
+            Body(modifier.fillMaxSize()) {
                 content()
             }
         }
@@ -33,10 +39,7 @@ fun SlideScope<*>.Body(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(
-        modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ProvideTextStyle(MaterialTheme.typography.body1) {
             content()
         }
