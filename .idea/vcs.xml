@@ -11,6 +11,7 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/samples/buildable" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/storyboard" vcs="Git" />
   </component>
 </project>

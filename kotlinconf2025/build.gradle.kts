@@ -1,3 +1,4 @@
+import dev.bnorm.gradle.sample.extraction.SampleExtraction
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -27,6 +28,8 @@ kotlin {
     sourceSets {
         all {
             languageSettings {
+                enableLanguageFeature("MultiDollarInterpolation")
+
                 optIn("androidx.compose.animation.core.ExperimentalTransitionApi")
                 optIn("androidx.compose.animation.ExperimentalAnimationApi")
                 optIn("androidx.compose.animation.ExperimentalSharedTransitionApi")
@@ -79,4 +82,19 @@ kotlin {
 tasks.register<Sync>("site") {
     from(tasks.named("wasmJsBrowserDistribution"))
     into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
+}
+
+val extractBuildableCompilerPluginSamples = tasks.register<SampleExtraction>("samplesBuildableCompilerPluginExtract") {
+    input = rootProject.layout.projectDirectory.dir("samples/buildable/compiler-plugin/src/main/kotlin")
+    output = layout.projectDirectory.dir("src/commonMain/composeResources/files/samples/buildable/compiler-plugin")
+}
+
+val extractBuildableRuntimeSamples = tasks.register<SampleExtraction>("extractBuildableRuntimeSamples") {
+    input = rootProject.layout.projectDirectory.dir("samples/buildable/runtime/src/commonMain/kotlin")
+    output = layout.projectDirectory.dir("src/commonMain/composeResources/files/samples/buildable/runtime")
+}
+
+tasks.named("copyNonXmlValueResourcesForCommonMain").configure {
+    dependsOn(extractBuildableCompilerPluginSamples)
+    dependsOn(extractBuildableRuntimeSamples)
 }

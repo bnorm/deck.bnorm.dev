@@ -1,3 +1,6 @@
 [submodule "storyboard"]
 	path = storyboard
 	url = git@github.com:bnorm/storyboard.git
+[submodule "samples/buildable"]
+	path = samples/buildable
+	url = https://github.com/bnorm/buildable

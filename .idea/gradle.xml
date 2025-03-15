@@ -7,6 +7,11 @@
         <compositeConfiguration>
           <compositeBuild compositeDefinitionSource="SCRIPT">
             <builds>
+              <build path="$PROJECT_DIR$/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="$PROJECT_DIR$/buildSrc" />
+                </projects>
+              </build>
               <build path="$PROJECT_DIR$/storyboard" name="storyboard">
                 <projects>
                   <project path="$PROJECT_DIR$/storyboard" />
@@ -27,6 +32,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/KotlinTalks" />
             <option value="$PROJECT_DIR$/KotlinTalks/PowerAssertEvolved" />
+            <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/deck.bnorm.dev" />
             <option value="$PROJECT_DIR$/kotlinconf2024" />
             <option value="$PROJECT_DIR$/kotlinconf2025" />
@@ -38,6 +44,17 @@
             <option value="$PROJECT_DIR$/storyboard/storyboard-core" />
             <option value="$PROJECT_DIR$/storyboard/storyboard-easel" />
             <option value="$PROJECT_DIR$/storyboard/storyboard-text" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/samples/buildable" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/samples/buildable" />
+            <option value="$PROJECT_DIR$/samples/buildable/compiler-plugin" />
+            <option value="$PROJECT_DIR$/samples/buildable/example" />
+            <option value="$PROJECT_DIR$/samples/buildable/runtime" />
           </set>
         </option>
       </GradleProjectSettings>
