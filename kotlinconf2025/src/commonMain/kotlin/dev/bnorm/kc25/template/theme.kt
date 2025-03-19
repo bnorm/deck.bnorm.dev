@@ -42,6 +42,10 @@ val THEME_DECORATOR = SlideDecorator { content ->
 // Light purple: 0xFFC201D7
 // Dark purple: 0xFF480079
 
+val CONFERENCE_YELLOW = Color(0xFFFF9419)
+val CONFERENCE_RED = Color(0xFFFF021D)
+val CONFERENCE_PURPLE = Color(0xFFE600FF)
+
 val DARK_COLORS = darkColors(
     background = Color.Black,
     surface = Color(0xFF1D002E),
@@ -54,7 +58,7 @@ val DARK_COLORS = darkColors(
 val HIGHLIGHTING: Highlighting
     @Composable get() {
         val fontFamily = JetBrainsMono
-        return Highlighting.Companion.build {
+        return Highlighting.build {
             simple += SpanStyle(color = Color(0xFFBCBEC4), fontFamily = fontFamily)
             number = simple + SpanStyle(color = Color(0xFF2AACB8))
             keyword = simple + SpanStyle(color = Color(0xFFCF8E6D))
@@ -65,11 +69,8 @@ val HIGHLIGHTING: Highlighting
             property = simple + SpanStyle(color = Color(0xFFC77DBB))
             staticProperty = property + SpanStyle(fontStyle = FontStyle.Italic)
             functionDeclaration = simple + SpanStyle(color = Color(0xFF56A8F5))
-            extensionFunctionCall = simple + SpanStyle(
-                color = Color(0xFF56A8F5),
-                fontStyle = FontStyle.Companion.Italic
-            )
-            staticFunctionCall = simple + SpanStyle(fontStyle = FontStyle.Companion.Italic)
+            extensionFunctionCall = simple + SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic)
+            staticFunctionCall = simple + SpanStyle(fontStyle = FontStyle.Italic)
             typeParameters = simple + SpanStyle(color = Color(0xFF16BAAC))
         }
     }

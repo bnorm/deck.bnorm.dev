@@ -114,12 +114,16 @@ fun SlideScope<Int>.SectionTitle(
             },
         )
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.sharedElement(
+        val modifier = when {
+            showAsBody.currentState -> Modifier.sharedElement(
                 rememberSharedContentState(key = SharedHeaderKey),
                 animatedVisibilityScope = this@SectionTitle,
-            ).fillMaxSize(),
+            )
+            else -> Modifier
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.fillMaxSize(),
         ) {
             Spacer(Modifier.heightIn(min = height))
             ProvideTextStyle(textStyle) {
