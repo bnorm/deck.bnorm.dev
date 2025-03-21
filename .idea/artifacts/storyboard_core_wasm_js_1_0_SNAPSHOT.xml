@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="storyboard-core-wasm-js-1.0-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/storyboard/storyboard-core/build/libs</output-path>
-    <root id="archive" name="storyboard-core-wasm-js-1.0-SNAPSHOT.jar">
-      <element id="module-output" name="storyboard.storyboard-core.wasmJsMain" />
-    </root>
-  </artifact>
-</component>

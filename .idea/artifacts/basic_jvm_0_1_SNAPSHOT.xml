@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="basic-jvm-0.1-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/storyboard/examples/basic/build/libs</output-path>
-    <root id="archive" name="basic-jvm-0.1-SNAPSHOT.jar">
-      <element id="module-output" name="storyboard.examples.basic.jvmMain" />
-    </root>
-  </artifact>
-</component>

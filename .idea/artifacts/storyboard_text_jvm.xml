@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="storyboard-text-jvm">
-    <output-path>$PROJECT_DIR$/storyboard/storyboard-text/build/libs</output-path>
-    <root id="archive" name="storyboard-text-jvm.jar">
-      <element id="module-output" name="storyboard.storyboard-text.jvmMain" />
-    </root>
-  </artifact>
-</component>
