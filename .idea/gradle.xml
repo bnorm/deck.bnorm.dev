@@ -49,13 +49,13 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/samples/buildable" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlinconf2025/buildable" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/samples/buildable" />
-            <option value="$PROJECT_DIR$/samples/buildable/compiler-plugin" />
-            <option value="$PROJECT_DIR$/samples/buildable/example" />
-            <option value="$PROJECT_DIR$/samples/buildable/runtime" />
+            <option value="$PROJECT_DIR$/kotlinconf2025/buildable" />
+            <option value="$PROJECT_DIR$/kotlinconf2025/buildable/compiler-plugin" />
+            <option value="$PROJECT_DIR$/kotlinconf2025/buildable/example" />
+            <option value="$PROJECT_DIR$/kotlinconf2025/buildable/runtime" />
           </set>
         </option>
       </GradleProjectSettings>

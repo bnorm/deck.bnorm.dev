@@ -2,5 +2,5 @@
 	path = storyboard
 	url = git@github.com:bnorm/storyboard.git
 [submodule "samples/buildable"]
-	path = samples/buildable
+	path = kotlinconf2025/buildable
 	url = https://github.com/bnorm/buildable

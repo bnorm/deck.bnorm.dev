@@ -85,12 +85,12 @@ tasks.register<Sync>("site") {
 }
 
 val extractBuildableCompilerPluginSamples = tasks.register<SampleExtraction>("samplesBuildableCompilerPluginExtract") {
-    input = rootProject.layout.projectDirectory.dir("samples/buildable/compiler-plugin/src/main/kotlin")
+    input = rootProject.layout.projectDirectory.dir("kotlinconf2025/buildable/compiler-plugin/src/main/kotlin")
     output = layout.projectDirectory.dir("src/commonMain/composeResources/files/samples/buildable/compiler-plugin")
 }
 
 val extractBuildableRuntimeSamples = tasks.register<SampleExtraction>("extractBuildableRuntimeSamples") {
-    input = rootProject.layout.projectDirectory.dir("samples/buildable/runtime/src/commonMain/kotlin")
+    input = rootProject.layout.projectDirectory.dir("kotlinconf2025/buildable/runtime/src/commonMain/kotlin")
     output = layout.projectDirectory.dir("src/commonMain/composeResources/files/samples/buildable/runtime")
 }
 

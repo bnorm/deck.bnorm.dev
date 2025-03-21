@@ -9,9 +9,14 @@
       </inspection_tool>
     </profile>
   </component>
+  <component name="GitSharedSettings">
+    <option name="FORCE_PUSH_PROHIBITED_PATTERNS">
+      <list />
+    </option>
+  </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/samples/buildable" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/kotlinconf2025/buildable" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/storyboard" vcs="Git" />
   </component>
 </project>
