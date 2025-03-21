@@ -2,29 +2,27 @@
 
 pluginManagement {
     repositories {
-        maven("https://packages.jetbrains.team/maven/p/firework/dev")
         mavenCentral()
         google()
         gradlePluginPortal()
     }
 
     plugins {
-        val kotlinVersion = "2.1.20-Beta2"
+        val kotlinVersion = "2.1.20"
 
         kotlin("multiplatform") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
         kotlin("plugin.compose") version kotlinVersion
         kotlin("plugin.power-assert") version kotlinVersion
-        id("org.jetbrains.compose") version "1.8.0-alpha02"
-        id("org.jetbrains.compose.hot-reload") version "1.0.0-dev-48"
+        id("org.jetbrains.compose") version "1.8.0-beta01"
+        id("org.jetbrains.compose.hot-reload") version "1.0.0-alpha02"
     }
+}
 
-    dependencyResolutionManagement {
-        repositories {
-            maven("https://packages.jetbrains.team/maven/p/firework/dev")
-            mavenCentral()
-            google()
-        }
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google()
     }
 }
 
