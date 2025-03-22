@@ -54,11 +54,6 @@ kotlin {
     }
 }
 
-tasks.register<Sync>("site") {
-    from(tasks.named("wasmJsBrowserDistribution"))
-    into(rootProject.layout.buildDirectory.dir("_site/kc25"))
-}
-
 val extractBuildableCompilerPluginSamples = tasks.register<SampleExtraction>("samplesBuildableCompilerPluginExtract") {
     input = rootProject.layout.projectDirectory.dir("kotlinconf2025/buildable/compiler-plugin/src/main/kotlin")
     output = layout.projectDirectory.dir("src/commonMain/composeResources/files/samples/buildable/compiler-plugin")
