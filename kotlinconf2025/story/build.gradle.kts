@@ -20,7 +20,7 @@ kotlin {
         binaries.executable()
         browser {
             commonWebpackConfig {
-                outputFileName = "kotlinconf2025.js"
+                outputFileName = "kc25.js"
             }
         }
     }
@@ -37,7 +37,6 @@ kotlin {
             }
         }
 
-        val ktor_version = "3.0.0-beta-2"
         commonMain {
             dependencies {
                 implementation(project(":shared"))
@@ -50,30 +49,6 @@ kotlin {
                 api("dev.bnorm.storyboard:storyboard-core")
                 api("dev.bnorm.storyboard:storyboard-easel")
                 api("dev.bnorm.storyboard:storyboard-text")
-
-                implementation("io.ktor:ktor-client-core:$ktor_version")
-                implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-
-                implementation("dev.chrisbanes.haze:haze:1.3.1")
-                implementation("dev.chrisbanes.haze:haze-materials:1.3.1")
-            }
-        }
-        jvmMain {
-            dependencies {
-                api(compose.desktop.currentOs)
-                implementation("io.ktor:ktor-client-okhttp:$ktor_version")
-            }
-        }
-        jvmTest {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(compose.desktop.uiTestJUnit4)
-            }
-        }
-        wasmJsMain {
-            dependencies {
-                implementation("io.ktor:ktor-client-js:$ktor_version")
             }
         }
     }
@@ -81,7 +56,7 @@ kotlin {
 
 tasks.register<Sync>("site") {
     from(tasks.named("wasmJsBrowserDistribution"))
-    into(rootProject.layout.buildDirectory.dir("_site/${project.name}"))
+    into(rootProject.layout.buildDirectory.dir("_site/kc25"))
 }
 
 val extractBuildableCompilerPluginSamples = tasks.register<SampleExtraction>("samplesBuildableCompilerPluginExtract") {

@@ -1,3 +1,5 @@
+package dev.bnorom.kc25.story.web
+
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.ui.ExperimentalComposeUiApi

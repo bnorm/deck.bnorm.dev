@@ -16,6 +16,7 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+http-client.private.env.json
 
 ### Mac OS ###
 .DS_Store

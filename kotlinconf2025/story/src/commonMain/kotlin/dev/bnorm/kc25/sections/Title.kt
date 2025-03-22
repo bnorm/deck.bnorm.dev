@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import dev.bnorm.deck.kotlinconf2025.generated.resources.Res
-import dev.bnorm.deck.kotlinconf2025.generated.resources.end_badge
-import dev.bnorm.deck.kotlinconf2025.generated.resources.end_phone
-import dev.bnorm.deck.kotlinconf2025.generated.resources.start_conference
+import dev.bnorm.deck.story.generated.resources.Res
+import dev.bnorm.deck.story.generated.resources.end_badge
+import dev.bnorm.deck.story.generated.resources.end_phone
+import dev.bnorm.deck.story.generated.resources.start_conference
 import dev.bnorm.deck.shared.socials.Bluesky
 import dev.bnorm.deck.shared.socials.JetBrainsEmployee
 import dev.bnorm.deck.shared.socials.Mastodon

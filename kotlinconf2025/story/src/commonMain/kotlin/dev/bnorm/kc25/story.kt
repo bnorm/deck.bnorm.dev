@@ -1,5 +1,6 @@
 package dev.bnorm.kc25
 
+import dev.bnorm.deck.shared.broadcast.BROADCAST_FRAME_DECORATOR
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealSlide
@@ -13,6 +14,7 @@ import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.kc25.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.core.plus
 
 fun createStoryboard(): Storyboard {
     return Storyboard.build(
@@ -29,7 +31,7 @@ fun createStoryboard(): Storyboard {
             written a compiler plugin from scratch which can navigate the project code, inspect annotations, generate
             boilerplate, and even report errors!
         """.trimIndent(),
-        decorator = THEME_DECORATOR,
+        decorator = BROADCAST_FRAME_DECORATOR + THEME_DECORATOR,
     ) {
         Intro()
         Outline()

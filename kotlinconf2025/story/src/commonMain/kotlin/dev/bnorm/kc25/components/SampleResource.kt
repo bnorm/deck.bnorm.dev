@@ -5,7 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import dev.bnorm.deck.kotlinconf2025.generated.resources.Res
+import dev.bnorm.deck.story.generated.resources.Res
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 

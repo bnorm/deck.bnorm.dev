@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.kotlinconf2025.generated.resources.Res
-import dev.bnorm.deck.kotlinconf2025.generated.resources.buildable_repo_qr
+import dev.bnorm.deck.story.generated.resources.Res
+import dev.bnorm.deck.story.generated.resources.buildable_repo_qr
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.slide
 import dev.bnorm.storyboard.easel.template.SlideEnter
