@@ -32,6 +32,7 @@ includeBuild("storyboard")
 
 include(":deck.bnorm.dev")
 include(":kotlinconf2024")
+  include(":kotlinconf2025:companion")
 include(":kotlinconf2025:story")
 include(":KotlinTalks:PowerAssertEvolved")
 include(":shared")

@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.channelFlow
 object BroadcastClient {
     private val json = DefaultJson
 
-    // OkHttp has a 10-second timeout which can cause problems.
-    // TODO is there a way to still use OkHttp and increase the timeout?
     private val client = HttpClient(BROADCAST_ENGINE) {
         install(SSE)
 
@@ -29,7 +27,6 @@ object BroadcastClient {
             incoming.collect {
                 val data = it.data
                 if (data != null) {
-                    println(data)
                     channel.send(json.decodeFromString(BroadcastMessage.serializer(), data))
                 }
             }
