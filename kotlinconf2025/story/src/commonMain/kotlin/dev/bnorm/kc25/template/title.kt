@@ -17,12 +17,12 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.storyboard.core.*
-import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.easel.SceneSection
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.section
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.SectionAndTitle(
     header: String,
@@ -40,34 +40,34 @@ fun StoryboardBuilder.SectionTitle(
     animateToBody: Boolean = false,
     title: (@Composable () -> Unit)? = null,
 ) {
-    slide(
+    scene(
         stateCount = 1,
         enterTransition = enter(
-            start = if (animateFromBody) DefaultEnterTransition else SlideEnter(alignment = Alignment.CenterEnd),
-            end = if (animateToBody) DefaultEnterTransition else SlideEnter(alignment = Alignment.CenterEnd),
+            start = if (animateFromBody) DefaultEnterTransition else SceneEnter(alignment = Alignment.CenterEnd),
+            end = if (animateToBody) DefaultEnterTransition else SceneEnter(alignment = Alignment.CenterEnd),
         ),
         exitTransition = exit(
-            start = if (animateFromBody) DefaultExitTransition else SlideExit(alignment = Alignment.CenterEnd),
-            end = if (animateToBody) DefaultExitTransition else SlideExit(alignment = Alignment.CenterEnd),
+            start = if (animateFromBody) DefaultExitTransition else SceneExit(alignment = Alignment.CenterEnd),
+            end = if (animateToBody) DefaultExitTransition else SceneExit(alignment = Alignment.CenterEnd),
         ),
     ) {
         SectionTitle(
-            showAsBody = state.createChildTransition {
+            showAsBody = frame.createChildTransition {
                 when (it) {
-                    SlideState.Start -> animateFromBody
-                    SlideState.End -> animateToBody
-                    is SlideState.Value -> false
+                    Frame.Start -> animateFromBody
+                    Frame.End -> animateToBody
+                    is Frame.State -> false
                 }
             },
-            title = title ?: SlideSection.title,
+            title = title ?: SceneSection.title,
         )
     }
 }
 
 @Composable
-fun SlideScope<Int>.SectionTitle(
+fun SceneScope<Int>.SectionTitle(
     showAsBody: Transition<Boolean>,
-    title: @Composable () -> Unit = SlideSection.title,
+    title: @Composable () -> Unit = SceneSection.title,
 ) {
     val moveDuration = 500
     val lineDuration = 500

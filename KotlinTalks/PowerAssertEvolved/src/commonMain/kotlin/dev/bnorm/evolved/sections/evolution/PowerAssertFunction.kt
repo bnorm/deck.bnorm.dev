@@ -19,15 +19,15 @@ import dev.bnorm.evolved.template.Header
 import dev.bnorm.evolved.template.code.KotlinFile
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.core.scene
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.PowerAssertFunction() {
-    slide(
+    scene(
         stateCount = 7,
-        enterTransition = SlideEnter(Alignment.CenterEnd),
-        exitTransition = SlideExit(Alignment.CenterEnd),
+        enterTransition = SceneEnter(Alignment.CenterEnd),
+        exitTransition = SceneExit(Alignment.CenterEnd),
     ) {
         CornerKodee {
             Column(Modifier.Companion.fillMaxSize()) {
@@ -46,21 +46,21 @@ fun StoryboardBuilder.PowerAssertFunction() {
                     KotlinFile(
                         text = CallExplanationCode.toCode(),
                         title = "CallExplanation",
-                        visible = state.createChildTransition { it.toState() == 1 },
+                        visible = frame.createChildTransition { it.toState() == 1 },
                         modifier = Modifier.Companion.align(Alignment.Companion.TopEnd),
                     )
 
                     KotlinFile(
                         text = ExpressionCode.toCode(),
                         title = "Expression",
-                        visible = state.createChildTransition { it.toState() == 3 },
+                        visible = frame.createChildTransition { it.toState() == 3 },
                         modifier = Modifier.Companion.align(Alignment.Companion.TopEnd),
                     )
 
                     KotlinFile(
                         text = ToDefaultMessageCode.toCode(),
                         title = "toDefaultMessage",
-                        visible = state.createChildTransition { it.toState() == 5 },
+                        visible = frame.createChildTransition { it.toState() == 5 },
                         modifier = Modifier.Companion.align(Alignment.Companion.TopEnd),
                     )
                 }

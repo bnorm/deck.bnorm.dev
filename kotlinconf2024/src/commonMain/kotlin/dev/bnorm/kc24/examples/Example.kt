@@ -82,19 +82,19 @@ fun StoryboardBuilder.slideForExample(
 ) {
     val states = buildExampleStates(builder)
     val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
-    slide(stateCount = states.size, enterTransition, exitTransition) {
-        val slideScope = this@slide
-        val exampleState = state.createChildTransition {
+    scene(stateCount = states.size, enterTransition, exitTransition) {
+        val slideScope = this@scene
+        val exampleState = frame.createChildTransition {
             when (it) {
-                SlideState.Start -> states.first()
-                SlideState.End -> exit
-                is SlideState.Value -> states[it.value]
+                Frame.Start -> states.first()
+                Frame.End -> exit
+                is Frame.State -> states[it.state]
             }
         }
 
         val scope = remember(slideScope, exampleState) {
             object : ExampleScope {
-                override val slideScope: SlideScope<*> get() = slideScope
+                override val sceneScope: SceneScope<*> get() = slideScope
                 override val transition: Transition<out ExampleState> get() = exampleState
             }
         }

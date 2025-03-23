@@ -31,25 +31,25 @@ import dev.bnorm.deck.shared.socials.Bluesky
 import dev.bnorm.deck.shared.socials.JetBrainsEmployee
 import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.kc25.components.KotlinConfBird
-import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Title() {
-    slide(
+    scene(
         stateCount = 1,
         enterTransition = enter(
-            start = SlideEnter(alignment = Alignment.CenterStart),
-            end = SlideEnter(alignment = Alignment.CenterEnd),
+            start = SceneEnter(alignment = Alignment.CenterStart),
+            end = SceneEnter(alignment = Alignment.CenterEnd),
         ),
         exitTransition = exit(
-            start = SlideExit(alignment = Alignment.CenterStart),
-            end = SlideExit(alignment = Alignment.CenterEnd),
+            start = SceneExit(alignment = Alignment.CenterStart),
+            end = SceneExit(alignment = Alignment.CenterEnd),
         ),
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -58,7 +58,7 @@ fun StoryboardBuilder.Title() {
                     .fillMaxSize()
             ) {
                 Image(
-                    painter = KotlinConfBird(state.createChildTransition { it is SlideState.Value }),
+                    painter = KotlinConfBird(frame.createChildTransition { it is Frame.State }),
                     contentDescription = "",
                     modifier = Modifier.size(508.dp).offset(416.dp, 16.dp),
                 )
@@ -120,19 +120,19 @@ fun StoryboardBuilder.Title() {
 }
 
 fun StoryboardBuilder.Closing() {
-    slide(
+    scene(
         stateCount = 1,
         enterTransition = enter(
-            start = SlideEnter(alignment = Alignment.CenterEnd),
-            end = SlideEnter(alignment = Alignment.CenterStart),
+            start = SceneEnter(alignment = Alignment.CenterEnd),
+            end = SceneEnter(alignment = Alignment.CenterStart),
         ),
         exitTransition = exit(
-            start = SlideExit(alignment = Alignment.CenterEnd),
-            end = SlideExit(alignment = Alignment.CenterStart),
+            start = SceneExit(alignment = Alignment.CenterEnd),
+            end = SceneExit(alignment = Alignment.CenterStart),
         ),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val visible = state.createChildTransition { it is SlideState.Value }
+            val visible = frame.createChildTransition { it is Frame.State }
             val arcFraction by visible.animateFloat(
                 transitionSpec = {
                     when (targetState) {

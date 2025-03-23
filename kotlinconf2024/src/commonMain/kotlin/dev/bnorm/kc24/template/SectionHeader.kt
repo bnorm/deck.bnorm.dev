@@ -19,35 +19,35 @@ import dev.bnorm.deck.shared.KodeeSitting
 import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.storyboard.core.SlideScope
-import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
-import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.core.scene
+import dev.bnorm.storyboard.easel.SceneSection
 
 fun StoryboardBuilder.SectionHeader(
     animateFromBody: Boolean = false,
     animateToBody: Boolean = false,
     title: (@Composable () -> Unit)? = null,
 ) {
-    slide(stateCount = 1) {
+    scene(stateCount = 1) {
         SectionHeader(
-            showAsBody = state.createChildTransition {
+            showAsBody = frame.createChildTransition {
                 when (it) {
-                    SlideState.Start -> animateFromBody
-                    SlideState.End -> animateToBody
-                    is SlideState.Value -> false
+                    Frame.Start -> animateFromBody
+                    Frame.End -> animateToBody
+                    is Frame.State -> false
                 }
             },
-            title = title ?: SlideSection.title,
+            title = title ?: SceneSection.title,
         )
     }
 }
 
 @Composable
-fun SlideScope<*>.SectionHeader(
+fun SceneScope<*>.SectionHeader(
     showAsBody: Transition<Boolean>,
-    title: @Composable () -> Unit = SlideSection.title,
+    title: @Composable () -> Unit = SceneSection.title,
 ) {
     val spacing by showAsBody.animateDp(transitionSpec = { defaultSpec() }) {
         when (it) {

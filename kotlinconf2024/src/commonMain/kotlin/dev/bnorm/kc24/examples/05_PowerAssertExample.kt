@@ -33,7 +33,7 @@ fun StoryboardBuilder.SimpleAssertExample() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        slideScope.TitleAndBody(
+        sceneScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.outputIndex >= 1 && it.showOutput == OutputState.Visible }) {
                     KodeeLoving(modifier = Modifier.requiredSize(200.dp).graphicsLayer { rotationY = 180f })

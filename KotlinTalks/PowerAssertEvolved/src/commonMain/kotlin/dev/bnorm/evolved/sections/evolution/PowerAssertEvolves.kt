@@ -22,12 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
 
 fun StoryboardBuilder.PowerAssertEvolves() {
-    slide(stateCount = 7) {
-        val transition = state.createChildTransition { it.toInt() }
+    scene(stateCount = 7) {
+        val transition = frame.createChildTransition { it.toInt() }
         HeaderAndBody {
             Box {
                 Column {

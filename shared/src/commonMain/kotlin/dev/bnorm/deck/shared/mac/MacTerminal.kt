@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.JetBrainsMono
-import dev.bnorm.storyboard.core.SlideScope
-import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.core.Frame
 
 @Composable
 fun MacTerminal(
@@ -45,12 +45,12 @@ fun MacTerminal(
 }
 
 @Composable
-fun <T> SlideScope<T>.MacTerminalPopup(
-    visible: (SlideState<T>) -> Boolean,
+fun <T> SceneScope<T>.MacTerminalPopup(
+    visible: (Frame<T>) -> Boolean,
     content: @Composable () -> Unit,
 ) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-        state.AnimatedVisibility(
+        frame.AnimatedVisibility(
             visible = visible,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),

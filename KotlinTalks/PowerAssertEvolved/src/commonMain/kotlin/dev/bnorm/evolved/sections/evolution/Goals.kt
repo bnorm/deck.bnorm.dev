@@ -11,17 +11,17 @@ import dev.bnorm.evolved.sections.intro.BULLET_1
 import dev.bnorm.evolved.sections.intro.BULLET_3
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.template.RevealEach
 
 fun StoryboardBuilder.Goals() {
-    slide(
+    scene(
         stateCount = 9,
     ) {
         HeaderAndBody {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ProvideTextStyle(MaterialTheme.typography.h5) {
-                    val reveal = state.createChildTransition { it.toState() - 1 }
+                    val reveal = frame.createChildTransition { it.toState() - 1 }
                     RevealEach(reveal) {
                         item { Text("$BULLET_1 Power-Assert Goals") }
                         item { Text("    $BULLET_3 Shorten feedback loop for tests.") }

@@ -27,7 +27,7 @@ fun StoryboardBuilder.RequireExample() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        slideScope.TitleAndBody(
+        sceneScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeSurprised(modifier = Modifier.requiredSize(150.dp))

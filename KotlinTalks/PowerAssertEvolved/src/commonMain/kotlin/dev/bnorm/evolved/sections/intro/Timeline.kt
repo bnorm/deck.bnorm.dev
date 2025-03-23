@@ -62,7 +62,7 @@ fun StoryboardBuilder.Timeline() {
         ),
     )
 
-    slide(states = states) {
+    scene(states = states) {
         HeaderAndBody(kodee = {
             for (s in states) {
                 if (s.kodee == null) continue

@@ -47,7 +47,7 @@ fun StoryboardBuilder.SoftAssertSetupWithoutMessage() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        slideScope.TitleAndBody {
+        sceneScope.TitleAndBody {
             val gradleTextSequence = GradleText.AddAssertNotNull.animateTo(GradleText.AddAssertSoftly)
             Example(
                 exampleText = SoftAssertWithoutMessageSetup,
@@ -67,7 +67,7 @@ fun StoryboardBuilder.SoftAssertExampleWithWarning() {
         enterTransition = { slideInHorizontally(defaultSpec(750.milliseconds)) { it } },
         exitTransition = { slideOutHorizontally(defaultSpec(750.milliseconds)) { it } },
     ) {
-        slideScope.TitleAndBody(
+        sceneScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeSad(modifier = Modifier.requiredSize(150.dp))
@@ -96,7 +96,7 @@ fun StoryboardBuilder.SoftAssertSetupWithMessage() {
         enterTransition = { slideInHorizontally(defaultSpec(750.milliseconds)) { -it } },
         exitTransition = { slideOutHorizontally(defaultSpec(750.milliseconds)) { -it } },
     ) {
-        slideScope.TitleAndBody {
+        sceneScope.TitleAndBody {
             val exampleText = transition.createChildTransition {
                 when (it.exampleIndex) {
                     0 -> SoftAssertWithoutMessageSetupMagic
@@ -123,7 +123,7 @@ fun StoryboardBuilder.SoftAssertWithMessageExample() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        slideScope.TitleAndBody(
+        sceneScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeSurprised(modifier = Modifier.requiredSize(150.dp))

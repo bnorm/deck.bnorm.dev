@@ -16,16 +16,16 @@ import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.LocalVariables() {
-    slide(
+    scene(
         stateCount = 5,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         HeaderAndBody {
             ProvideTextStyle(MaterialTheme.typography.h4) {
@@ -33,7 +33,7 @@ fun StoryboardBuilder.LocalVariables() {
             }
             Box(Modifier.fillMaxSize()) {
                 Box(Modifier.padding(horizontal = 32.dp)) {
-                    state.createChildTransition { it.toState() }
+                    frame.createChildTransition { it.toState() }
                         .MagicCode(
                             LOCAL_VARIABLE_TRANSFORMATIONS,
                             identifierType = { highlighting, identifier ->

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.round
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 
 fun StoryboardBuilder.ApiIntroduction() {
     val code = """
@@ -45,7 +45,7 @@ fun StoryboardBuilder.ApiIntroduction() {
         return index..(index + snippet.length)
     }
 
-    slide(stateCount = 5) {
+    scene(stateCount = 5) {
         val rememberTextMeasurer = rememberTextMeasurer()
 
         HeaderAndBody {
@@ -54,7 +54,7 @@ fun StoryboardBuilder.ApiIntroduction() {
                     Text(text = code.toCode())
 
                     SharedTransitionLayout {
-                        state.AnimatedContent(
+                        frame.AnimatedContent(
                             transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
                         ) {
                             Box(Modifier.fillMaxSize())

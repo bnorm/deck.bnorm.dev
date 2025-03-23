@@ -10,10 +10,10 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeScope
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.SlideScope
+import dev.bnorm.storyboard.core.SceneScope
 
 @Composable
-fun SlideScope<*>.HeaderAndBody(
+fun SceneScope<*>.HeaderAndBody(
     kodee: KodeeScope.() -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
@@ -29,7 +29,7 @@ fun SlideScope<*>.HeaderAndBody(
 }
 
 @Composable
-fun SlideScope<*>.Body(
+fun SceneScope<*>.Body(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -44,7 +44,7 @@ fun SlideScope<*>.Body(
 }
 
 @Composable
-fun SlideScope<*>.CornerKodee(
+fun SceneScope<*>.CornerKodee(
     kodee: KodeeScope.() -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,

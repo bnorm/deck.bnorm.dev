@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
-import dev.bnorm.deck.shared.broadcast.BroadcastFrame
+import dev.bnorm.deck.shared.broadcast.BroadcastIndex
 import dev.bnorm.deck.shared.broadcast.BroadcastMessage
 import dev.bnorm.deck.shared.broadcast.toStoryboard
 import dev.bnorm.kc25.createStoryboard
@@ -37,7 +37,7 @@ fun App() {
                 Text("Waiting to start...", fontSize = 50.sp)
             }
 
-            is BroadcastFrame -> {
+            is BroadcastIndex -> {
                 EmbeddedStoryboard(storyboard)
 
                 LaunchedEffect(latest) {

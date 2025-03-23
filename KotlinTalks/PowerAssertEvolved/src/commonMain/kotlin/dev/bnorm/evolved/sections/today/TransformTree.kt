@@ -21,7 +21,7 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import kotlin.math.PI
 import kotlin.math.atan2
 
@@ -31,8 +31,8 @@ fun StoryboardBuilder.TransformTree() {
     val root = EXPRESSION_TREE_ROOT
     val nodes = root.flattenNodes()
 
-    slide(stateCount = 15) {
-        val child = state.createChildTransition { it.toState() }
+    scene(stateCount = 15) {
+        val child = frame.createChildTransition { it.toState() }
 
         HeaderAndBody {
             Box(Modifier.fillMaxSize()) {

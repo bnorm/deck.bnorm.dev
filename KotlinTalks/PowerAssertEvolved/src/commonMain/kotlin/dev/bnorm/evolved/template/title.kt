@@ -15,11 +15,11 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeSitting
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.SlideScope
-import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
-import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.core.scene
+import dev.bnorm.storyboard.easel.SceneSection
 import dev.bnorm.storyboard.easel.section
 
 fun StoryboardBuilder.SectionAndTitle(
@@ -38,24 +38,24 @@ fun StoryboardBuilder.SectionTitle(
     animateToBody: Boolean = false,
     title: (@Composable () -> Unit)? = null,
 ) {
-    slide(stateCount = 1) {
+    scene(stateCount = 1) {
         SectionTitle(
-            showAsBody = state.createChildTransition {
+            showAsBody = frame.createChildTransition {
                 when (it) {
-                    SlideState.Start -> animateFromBody
-                    SlideState.End -> animateToBody
-                    is SlideState.Value -> false
+                    Frame.Start -> animateFromBody
+                    Frame.End -> animateToBody
+                    is Frame.State -> false
                 }
             },
-            title = title ?: SlideSection.title,
+            title = title ?: SceneSection.title,
         )
     }
 }
 
 @Composable
-fun SlideScope<Int>.SectionTitle(
+fun SceneScope<Int>.SectionTitle(
     showAsBody: Transition<Boolean>,
-    title: @Composable () -> Unit = SlideSection.title,
+    title: @Composable () -> Unit = SceneSection.title,
 ) {
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val height by showAsBody.animateDp(transitionSpec = { defaultSpec() }) {
@@ -84,7 +84,7 @@ fun SlideScope<Int>.SectionTitle(
 }
 
 @Composable
-private fun SlideScope<Int>.TitleWithKodee(
+private fun SceneScope<Int>.TitleWithKodee(
     showAsHeader: Transition<Boolean>,
     title: @Composable () -> Unit,
 ) {

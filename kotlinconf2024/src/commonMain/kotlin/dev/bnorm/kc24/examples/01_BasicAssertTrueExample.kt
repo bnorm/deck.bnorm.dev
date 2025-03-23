@@ -44,7 +44,7 @@ fun StoryboardBuilder.BasicAssertTrueExample() {
             }
         },
     ) {
-        slideScope.TitleAndBody(
+        sceneScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeBrokenHearted(modifier = Modifier.requiredSize(200.dp))

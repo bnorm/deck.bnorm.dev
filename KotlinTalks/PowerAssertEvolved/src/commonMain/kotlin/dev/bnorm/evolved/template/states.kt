@@ -3,7 +3,7 @@ package dev.bnorm.evolved.template
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import dev.bnorm.storyboard.core.AdvanceDirection
-import dev.bnorm.storyboard.core.SlideContent
+import dev.bnorm.storyboard.core.SceneContent
 import dev.bnorm.storyboard.core.StoryboardBuilder
 
 interface StateScope<T> {
@@ -26,8 +26,8 @@ fun <T> StoryboardBuilder.slide(
     block: StateScope<T>.() -> Unit,
     enterTransition: (AdvanceDirection) -> EnterTransition = { EnterTransition.None },
     exitTransition: (AdvanceDirection) -> ExitTransition = { ExitTransition.None },
-    content: SlideContent<T>,
-) = slide(
+    content: SceneContent<T>,
+) = scene(
     states = states(initial, block),
     enterTransition = enterTransition,
     exitTransition = exitTransition,

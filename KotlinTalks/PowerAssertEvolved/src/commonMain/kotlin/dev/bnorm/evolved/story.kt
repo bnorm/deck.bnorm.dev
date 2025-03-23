@@ -17,7 +17,7 @@ import dev.bnorm.evolved.sections.intro.Intro
 import dev.bnorm.evolved.sections.today.Today
 import dev.bnorm.evolved.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 
 fun createStoryboard() = Storyboard.build(
     title = "Power-Assert: Evolved",
@@ -35,7 +35,7 @@ fun createStoryboard() = Storyboard.build(
 ) {
     // TODO go through and add kodee reactions?
 
-    slide {
+    scene {
         Title {
             Text("Power-Assert:")
             Text("Evolved!")
@@ -45,7 +45,7 @@ fun createStoryboard() = Storyboard.build(
     Today()
     Evolution()
     Future()
-    slide {
+    scene {
         Title {
             Text("Thank you!")
         }

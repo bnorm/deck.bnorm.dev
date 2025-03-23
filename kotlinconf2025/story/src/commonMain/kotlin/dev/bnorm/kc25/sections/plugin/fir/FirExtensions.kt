@@ -1,6 +1,6 @@
 package dev.bnorm.kc25.sections.plugin.fir
 
-import dev.bnorm.kc25.components.temp.SamplesSlide
+import dev.bnorm.kc25.components.temp.SamplesScene
 import dev.bnorm.kc25.sections.plugin.CompilerPluginRegistrar
 import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.storyboard.core.StoryboardBuilder
@@ -49,11 +49,11 @@ val FirExtensionRegistrar = listOf(
 
 fun StoryboardBuilder.FirExtensions() {
     SectionAndTitle("FIR Extensions") {
-        SamplesSlide(CompilerPluginRegistrar)
-        SamplesSlide(FirExtensionRegistrar)
+        SamplesScene(CompilerPluginRegistrar)
+        SamplesScene(FirExtensionRegistrar)
 
-        SamplesSlide(FirDeclarationGenerationExtensionSamples)
-        SamplesSlide(FirStatusTransformerExtension)
-        SamplesSlide(FirAdditionalCheckersExtension)
+        SamplesScene(FirDeclarationGenerationExtensionSamples)
+        SamplesScene(FirStatusTransformerExtension)
+        SamplesScene(FirAdditionalCheckersExtension)
     }
 }

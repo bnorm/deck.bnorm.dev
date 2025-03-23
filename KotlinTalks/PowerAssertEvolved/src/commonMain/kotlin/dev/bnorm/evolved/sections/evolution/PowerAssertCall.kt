@@ -16,23 +16,23 @@ import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.PowerAssertCall() {
-    slide(
+    scene(
         stateCount = 8,
-        enterTransition = enter(start = SlideEnter(Alignment.CenterEnd)),
-        exitTransition = exit(start = SlideExit(Alignment.CenterEnd)),
+        enterTransition = enter(start = SceneEnter(Alignment.CenterEnd)),
+        exitTransition = exit(start = SceneExit(Alignment.CenterEnd)),
     ) {
         HeaderAndBody {
             Box(Modifier.fillMaxSize()) {
                 Box(Modifier.padding(horizontal = 32.dp)) {
-                    state.createChildTransition { it.toState() }
+                    frame.createChildTransition { it.toState() }
                         .MagicCode(
                             CALL_TRANSFORMATIONS,
                             identifierType = { highlighting, identifier ->

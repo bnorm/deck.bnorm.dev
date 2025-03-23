@@ -26,9 +26,9 @@ import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
-import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.easel.SceneSection
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.notes.NotesTab
@@ -51,14 +51,14 @@ fun StoryboardBuilder.PowerAssertIdeas() {
         AnnotatedString("• Integration into the language"),
     )
 
-    slide(stateCount = lines.size) {
+    scene(stateCount = lines.size) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
                 AnimateByLine(
-                    transition = state.createChildTransition { it.toInt() },
+                    transition = frame.createChildTransition { it.toInt() },
                     lines = lines
                 )
             }
@@ -71,13 +71,13 @@ fun StoryboardBuilder.PowerAssertIdeas() {
 }
 
 fun StoryboardBuilder.HowCanYouHelp() {
-    slide(stateCount = 3) {
+    scene(stateCount = 3) {
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
                 verticalArrangement = Arrangement.spacedBy(SLIDE_CONTENT_SPACING),
             ) {
-                state.createChildTransition { it.toInt() >= 0 }.AnimatedVisibility(
+                frame.createChildTransition { it.toInt() >= 0 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
                     modifier = Modifier.animateEnterExit(
@@ -87,7 +87,7 @@ fun StoryboardBuilder.HowCanYouHelp() {
                 ) {
                     Text("• We're looking for your feedback!")
                 }
-                state.createChildTransition { it.toInt() >= 1 }.AnimatedVisibility(
+                frame.createChildTransition { it.toInt() >= 1 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
                 ) {
@@ -107,13 +107,13 @@ fun StoryboardBuilder.HowCanYouHelp() {
                             },
                             modifier = Modifier.sharedBounds(
                                 rememberSharedContentState("docs-link"),
-                                animatedVisibilityScope = this@slide,
+                                animatedVisibilityScope = this@scene,
                                 boundsTransform = { _, _ -> defaultSpec() },
                             ),
                         )
                     }
                 }
-                state.createChildTransition { it.toInt() >= 2 }.AnimatedVisibility(
+                frame.createChildTransition { it.toInt() >= 2 }.AnimatedVisibility(
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
                     modifier = Modifier.animateEnterExit(
@@ -148,7 +148,7 @@ fun StoryboardBuilder.Resources() {
         },
     )
 
-    slide(stateCount = lines.size + 1) {
+    scene(stateCount = lines.size + 1) {
         Column(
             modifier = Modifier.animateEnterExit(
                 enter = enter(end = { fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it } }),
@@ -157,7 +157,7 @@ fun StoryboardBuilder.Resources() {
         ) {
             Box(Modifier.padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
                 ProvideTextStyle(MaterialTheme.typography.h3) {
-                    SlideSection.title()
+                    SceneSection.title()
                 }
             }
             Spacer(Modifier.fillMaxWidth().requiredHeight(4.dp).background(MaterialTheme.colors.primary))
@@ -183,13 +183,13 @@ fun StoryboardBuilder.Resources() {
                             },
                             modifier = Modifier.sharedBounds(
                                 rememberSharedContentState("docs-link"),
-                                animatedVisibilityScope = this@slide,
+                                animatedVisibilityScope = this@scene,
                                 boundsTransform = { _, _ -> defaultSpec(delay = 300.milliseconds) },
                             ),
                         )
 
                     AnimateByLine(
-                        transition = state.createChildTransition { it.toInt(start = 0) - 1 },
+                        transition = frame.createChildTransition { it.toInt(start = 0) - 1 },
                         lines = lines
                     )
                 }

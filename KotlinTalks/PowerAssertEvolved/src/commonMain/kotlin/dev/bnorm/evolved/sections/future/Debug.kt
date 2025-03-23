@@ -14,16 +14,16 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.Debug() {
-    slide(
+    scene(
         stateCount = 2,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         HeaderAndBody {
             ProvideTextStyle(MaterialTheme.typography.h4) {
@@ -52,10 +52,10 @@ fun StoryboardBuilder.Debug() {
             }
         }
     }
-    slide(
+    scene(
         stateCount = 2,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         HeaderAndBody {
             ProvideTextStyle(MaterialTheme.typography.h4) {

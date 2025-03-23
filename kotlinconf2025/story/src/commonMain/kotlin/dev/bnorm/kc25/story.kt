@@ -1,9 +1,9 @@
 package dev.bnorm.kc25
 
-import dev.bnorm.deck.shared.broadcast.BROADCAST_FRAME_DECORATOR
+import dev.bnorm.deck.shared.broadcast.BROADCAST_INDEX_DECORATOR
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
-import dev.bnorm.kc25.components.temp.RevealSlide
+import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
 import dev.bnorm.kc25.sections.plugin.BuildableIntro
@@ -31,7 +31,7 @@ fun createStoryboard(): Storyboard {
             written a compiler plugin from scratch which can navigate the project code, inspect annotations, generate
             boilerplate, and even report errors!
         """.trimIndent(),
-        decorator = BROADCAST_FRAME_DECORATOR + THEME_DECORATOR,
+        decorator = BROADCAST_INDEX_DECORATOR + THEME_DECORATOR,
     ) {
         Intro()
         Outline()
@@ -49,7 +49,7 @@ private fun StoryboardBuilder.Intro() {
 
 private fun StoryboardBuilder.Outline() {
     SectionAndTitle("Third?") {
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 Writing Your First Kotlin Compiler Plugin.",
             "    $BULLET_2 [link to KotlinConf talk here]",
             "    $BULLET_2 Primarily JVM bytecode manipulation.",
@@ -64,7 +64,7 @@ private fun StoryboardBuilder.Outline() {
 
     SectionAndTitle("What is a compiler-plugin?") {
         // TODO should each of these show an example of what code is being generated/transformed?
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 An extension to the Kotlin compiler to achieve some language-level feature.",
             "$BULLET_1 For example:",
             "    $BULLET_2 Serialization - Generates serializers for classes at compile-time.",
@@ -77,7 +77,7 @@ private fun StoryboardBuilder.Outline() {
 
 //    SectionAndTitle("Why would you need one?") {
 //        // TODO this section may not be important if the previous section includes examples?
-//        RevealSlide(
+//        RevealScene(
 //            "$BULLET_1 Boiler plate reduction.",
 //            "    $BULLET_2 Compiler-plugins can help write the boilerplate code for you.",
 //            "    $BULLET_2 Boilerplate is time consuming and error-prone.",
@@ -92,7 +92,7 @@ private fun StoryboardBuilder.Outline() {
 
     SectionAndTitle("Let's build one!") {
         // TODO summary of previous work for reference of project setup
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 Let's focus on the easy task: boilerplate reduction.",
             "$BULLET_1 Generate a \"Builder\" class based on a class constructor.",
         )
@@ -114,13 +114,13 @@ private fun StoryboardBuilder.Outline() {
     //   - FirAdditionalCheckersExtension
 
     SectionAndTitle("FIR") {
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 Structure",
             "    $BULLET_2 FIR is a tree-based representation of the *structure* of Kotlin code.",
             "    $BULLET_2 FIR is used to resolve symbol references and types within Kotlin code.",
             "    $BULLET_2 For example, every function call needs to be resolved to a known function.",
         )
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 Phases",
             "    $BULLET_2 Resolution is performed in a sequence of phases.",
             "    $BULLET_2 Each phase is responsible for resolving a different part of the FIR structure.",
@@ -128,21 +128,21 @@ private fun StoryboardBuilder.Outline() {
             "    $BULLET_2 Order is extremely important, as phases build on each other to completely resolve Kotlin code.",
             "    $BULLET_2 For example, function parameter types need to be resolved before call arguments types can be resolved.",
         )
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 Extensions",
             "    $BULLET_2 Multiple phases have extension points which can alter their behavior.",
             "    $BULLET_2 These extensions impact how code is resolved, while the code is being resolved.",
             "    $BULLET_2 This means extensions are extremely specific to their phase and purpose.",
             "    $BULLET_2 This also means accessible FIR elements may only be partially resolved.",
         )
-//        RevealSlide(
+//        RevealScene(
 //            "$BULLET_1 Foundation",
 //            "    $BULLET_2 `FirExtension` is the base class for all FIR extensions.",
 //            "    $BULLET_2 ",
 //            "$BULLET_1 ",
 //            "    $BULLET_2 ",
 //        )
-//        RevealSlide(
+//        RevealScene(
 //            "$BULLET_1 FirDeclarationGenerationExtension",
 //            "    $BULLET_2 Purpose built to generating new declarations: classes, functions, properties, etc.",
 //            "    $BULLET_2 Called in different phases depending on what information is currently required.",
@@ -161,17 +161,17 @@ private fun StoryboardBuilder.Outline() {
 //        //     2. nested class creation
 //        //     3. constructor / function / property generation
 //        //     4. ... ?
-//        RevealSlide(
+//        RevealScene(
 //            "[FirDeclarationGenerationExtension]",
 //            "[registerPredicates()]",
 //            "[val ANNOTATION_PREDICATE = annotated(ANNOTATION_FQ_NAME)]",
 //            "[session.predicateBasedProvider.getSymbolsByPredicate(Piecemeal.ANNOTATION_PREDICATE)]",
 //        )
-//        RevealSlide(
+//        RevealScene(
 //            "[getNestedClassifiersNames(...)]",
 //            "[generateNestedClassLikeDeclaration(...)]",
 //        )
-//        RevealSlide(
+//        RevealScene(
 //            "[getCallableNamesForClass(...)]",
 //            "[generateConstructors(...)]",
 //            "[generateFunctions(...)]",
@@ -179,7 +179,7 @@ private fun StoryboardBuilder.Outline() {
 //        )
 //
 //        // TODO Checkers
-//        RevealSlide(
+//        RevealScene(
 //            "[FirAdditionalCheckersExtension]",
 //            "[FirClassChecker]",
 //            "[check(...)]",
@@ -188,7 +188,7 @@ private fun StoryboardBuilder.Outline() {
 //
 //        // TODO Status transformer
 //        //  not include?
-//        RevealSlide(
+//        RevealScene(
 //            "[BuildableFirStatusTransformerExtension]",
 //            "[FirDeclarationDataKey / FirDeclaration.originalVisibility]",
 //            "[checker]",
@@ -200,13 +200,13 @@ private fun StoryboardBuilder.Outline() {
     //   - IrGenerationExtension
 
     SectionAndTitle("IR") {
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 Semantics",
             "    $BULLET_2 IR is a tree-based representation of the *semantics* of Kotlin code.",
             "    $BULLET_2 IR helps to convert high-level concepts into low-level process.",
             "    $BULLET_2 For example, suspend functions need to be lowered into a state machine.",
         )
-        RevealSlide(
+        RevealScene(
             "$BULLET_1 Lowerings",
             "    $BULLET_2 Performed in phases that each reduce or optimize some part of Kotlin code.",
         )
@@ -216,7 +216,7 @@ private fun StoryboardBuilder.Outline() {
 
 //    SectionAndTitle("Piecemeal IR") {
 //        // Implementation
-//        RevealSlide(
+//        RevealScene(
 //            "[IrGenerationExtension]",
 //            "[IrElementVisitorVoid]",
 //            "[irAttribute]",

@@ -5,13 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.HeaderAndBody
 import dev.bnorm.kc25.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.text.magic.MagicText
 
 private val BOOK = """
@@ -139,7 +138,7 @@ class Book @Buildable constructor(
 //  - primitives
 //  - referencing previous arguments in a default argument
 fun StoryboardBuilder.BuildableIntro() {
-    slide(
+    scene(
         stateCount = 5
     ) {
         HeaderAndBody {

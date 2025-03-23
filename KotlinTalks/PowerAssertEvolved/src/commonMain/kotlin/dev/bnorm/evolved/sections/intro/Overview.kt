@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.template.RevealEach
 
 fun StoryboardBuilder.Overview() {
@@ -23,7 +23,7 @@ fun StoryboardBuilder.Overview() {
     // Swift: https://github.com/kishikawakatsumi/swift-power-assert
     // Kotlin: https://kotlinlang.org/docs/power-assert.html
 
-    slide(
+    scene(
         stateCount = 9,
 //        enterTransition = enter(end = SlideEnter(alignment = Alignment.CenterEnd)),
 //        exitTransition = exit(end = SlideExit(alignment = Alignment.CenterEnd)),
@@ -31,7 +31,7 @@ fun StoryboardBuilder.Overview() {
         HeaderAndBody {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ProvideTextStyle(MaterialTheme.typography.h5) {
-                    val reveal = state.createChildTransition { it.toState() - 1 }
+                    val reveal = frame.createChildTransition { it.toState() - 1 }
                     RevealEach(reveal) {
                         item { Text("$BULLET_1 First seen in Groovy's Spock test framework as early as 2009") }
                         item { Text("$BULLET_1 Introduced into into the language with Groovy 1.7") }

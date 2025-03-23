@@ -9,15 +9,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.core.scene
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.Dont() {
-    slide(
+    scene(
         stateCount = 1,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             ProvideTextStyle(MaterialTheme.typography.h1.copy(fontWeight = FontWeight.SemiBold)) {
@@ -28,10 +28,10 @@ fun StoryboardBuilder.Dont() {
 }
 
 fun StoryboardBuilder.Bueller() {
-    slide(
+    scene(
         stateCount = 1,
-        enterTransition = SlideEnter(alignment = Alignment.CenterStart),
-        exitTransition = SlideExit(alignment = Alignment.CenterStart),
+        enterTransition = SceneEnter(alignment = Alignment.CenterStart),
+        exitTransition = SceneExit(alignment = Alignment.CenterStart),
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             ProvideTextStyle(MaterialTheme.typography.h1.copy(fontWeight = FontWeight.SemiBold)) {

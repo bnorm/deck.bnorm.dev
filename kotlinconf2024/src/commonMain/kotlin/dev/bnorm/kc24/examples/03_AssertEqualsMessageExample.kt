@@ -26,7 +26,7 @@ fun StoryboardBuilder.AssertEqualsMessageExample() {
             repeat(conclusions.size) { addConclusion() }
         }
     ) {
-        slideScope.TitleAndBody(
+        sceneScope.TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeExcited(modifier = Modifier.requiredSize(200.dp))

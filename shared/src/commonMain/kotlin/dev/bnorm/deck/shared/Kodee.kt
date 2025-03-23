@@ -20,14 +20,14 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.generated.resources.*
 import dev.bnorm.deck.shared.image.Kodee
 import dev.bnorm.deck.shared.image.kodee.*
-import dev.bnorm.storyboard.core.SlideScope
+import dev.bnorm.storyboard.core.SceneScope
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 private object SharedKodeeKey
 
 @Composable
-fun SlideScope<*>.SharedKodee(content: @Composable () -> Unit) {
+fun SceneScope<*>.SharedKodee(content: @Composable () -> Unit) {
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier

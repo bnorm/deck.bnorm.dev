@@ -16,19 +16,19 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
-import dev.bnorm.storyboard.core.SlideScope
+import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.template.RevealEach
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.SyntaxIdea() {
     val topicKey = Any()
 
     @Composable
-    fun SlideScope<*>.Topic() {
+    fun SceneScope<*>.Topic() {
         ProvideTextStyle(MaterialTheme.typography.h4) {
             Text(
                 text = "Language syntax?",
@@ -40,16 +40,16 @@ fun StoryboardBuilder.SyntaxIdea() {
         }
     }
 
-    slide(
+    scene(
         stateCount = 8,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         HeaderAndBody {
             Topic()
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ProvideTextStyle(MaterialTheme.typography.h5) {
-                    val reveal = state.createChildTransition { it.toState() - 1 }
+                    val reveal = frame.createChildTransition { it.toState() - 1 }
                     RevealEach(reveal) {
                         item { Text("$BULLET_1 Power-Assert as a compiler-plugin means...") }
                         item { Text("    $BULLET_3 Users are required to opt-in to transformation.") }
@@ -64,16 +64,16 @@ fun StoryboardBuilder.SyntaxIdea() {
         }
     }
 
-    slide(
+    scene(
         stateCount = 3,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         HeaderAndBody {
             Topic()
             Box(Modifier.fillMaxSize()) {
                 Box(Modifier.padding(horizontal = 32.dp)) {
-                    state.createChildTransition { it.toState() }
+                    frame.createChildTransition { it.toState() }
                         .MagicCode(MACRO_USE_TRANSITIONS)
                 }
                 ProvideTextStyle(MaterialTheme.typography.body2) {

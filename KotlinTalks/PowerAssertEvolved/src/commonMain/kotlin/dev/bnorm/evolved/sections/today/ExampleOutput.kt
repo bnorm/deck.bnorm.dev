@@ -16,7 +16,7 @@ import dev.bnorm.evolved.template.Header
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.evolved.template.slide
-import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
 
 fun StoryboardBuilder.ExampleOutput() {
@@ -36,17 +36,17 @@ fun StoryboardBuilder.ExampleOutput() {
                 next { it.copy(showPowerAssertOutput = true) }
             },
         ) {
-            fun SlideState<State>.toState(): State = when (this) {
-                SlideState.Start -> states.first()
-                SlideState.End -> states.last().copy(showOutput = false)
-                is SlideState.Value -> value
+            fun Frame<State>.toState(): State = when (this) {
+                Frame.Start -> states.first()
+                Frame.End -> states.last().copy(showOutput = false)
+                is Frame.State -> state
             }
 
             CornerKodee {
                 Column(Modifier.fillMaxSize()) {
                     Header()
                     Body(Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp).fillMaxWidth()) {
-                        state.AnimatedVisibility(
+                        frame.AnimatedVisibility(
                             visible = { it.toState().showExample },
                             enter = EnterTransition.None,
                             exit = ExitTransition.None,
@@ -55,7 +55,7 @@ fun StoryboardBuilder.ExampleOutput() {
                         }
                     }
                     Box(Modifier.weight(1f))
-                    state.AnimatedVisibility(
+                    frame.AnimatedVisibility(
                         modifier = Modifier.offset(y = 10.dp),
                         visible = { it.toState().showOutput },
                         enter = slideInVertically(initialOffsetY = { it }),

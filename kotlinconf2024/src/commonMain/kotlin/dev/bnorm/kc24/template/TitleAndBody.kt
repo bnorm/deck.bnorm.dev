@@ -12,12 +12,12 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeScope
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.SlideScope
-import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.easel.SceneSection
 
 @Composable
-fun SlideScope<*>.TitleAndBody(
-    title: @Composable () -> Unit = SlideSection.title,
+fun SceneScope<*>.TitleAndBody(
+    title: @Composable () -> Unit = SceneSection.title,
     kodee: KodeeScope.() -> Unit = {},
     body: @Composable () -> Unit = {},
 ) {
@@ -43,7 +43,7 @@ fun SlideScope<*>.TitleAndBody(
 private object SharedHeaderKey
 
 @Composable
-fun SlideScope<*>.SharedHeader(textStyle: TextStyle, title: @Composable () -> Unit) {
+fun SceneScope<*>.SharedHeader(textStyle: TextStyle, title: @Composable () -> Unit) {
     Column(
         modifier = Modifier.sharedElement(
             rememberSharedContentState(key = SharedHeaderKey),

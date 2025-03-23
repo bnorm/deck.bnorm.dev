@@ -14,12 +14,12 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
-import dev.bnorm.storyboard.core.SlideDecorator
+import dev.bnorm.storyboard.core.SceneDecorator
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-val THEME_DECORATOR = SlideDecorator { content ->
+val THEME_DECORATOR = SceneDecorator { content ->
     Highlighting(HIGHLIGHTING) {
         MaterialTheme(
             colors = DARK_COLORS,

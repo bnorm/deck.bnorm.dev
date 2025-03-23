@@ -65,7 +65,7 @@ val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
         val section2 = "Why Power-Assert?"
         val section3 = "A Look at the Future"
 
-        slide { Title() }
+        scene { Title() }
 
         section(title = section1) {
             SectionHeader(animateToBody = true)
@@ -111,18 +111,18 @@ val KotlinPlusPowerAssertEqualsLove: Storyboard by lazy {
             Future()
         }
 
-        slide { Summary(state) }
+        scene { Summary(frame) }
     }
 }
 
 private fun StoryboardBuilder.SectionChange(previousTitle: String, nextTitle: String) {
-    slideForTransition {
+    sceneForTransition {
         SectionHeader(showAsBody = updateTransition(false)) {
             val values = remember(previousTitle, nextTitle) {
                 startAnimation(previousTitle).thenLineEndDiff(nextTitle).toList()
             }
-            val text by state.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
-                if (it == SlideState.End) values.lastIndex else 0
+            val text by frame.animateList(values, transitionSpec = { typingSpec(count = values.size) }) {
+                if (it == Frame.End) values.lastIndex else 0
             }
             Text(text)
         }
@@ -168,8 +168,8 @@ fun Title() {
 }
 
 @Composable
-fun Summary(transition: Transition<out SlideState<*>>) {
-    val state = transition.createChildTransition { it != SlideState.Start }
+fun Summary(transition: Transition<out Frame<*>>) {
+    val state = transition.createChildTransition { it != Frame.Start }
     TitleSlide {
         Box(Modifier.fillMaxSize()) {
             SummaryBackground(state)

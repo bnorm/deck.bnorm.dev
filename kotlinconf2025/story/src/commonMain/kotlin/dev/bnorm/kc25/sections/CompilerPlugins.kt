@@ -40,7 +40,7 @@ private fun StoryboardBuilder.ArchitectureOverview() {
     )
 
     class State(val visible: Int, val scale: Float)
-    slide(
+    scene(
         buildList<State> {
             add(State(-1, 0f))
             for (i in titles.indices) {
@@ -50,11 +50,11 @@ private fun StoryboardBuilder.ArchitectureOverview() {
             }
         }
     ) {
-        val offset by state.animateDp(
+        val offset by frame.animateDp(
             transitionSpec = { tween(500, 500, easing = EaseInOut) },
             targetValueByState = { (-960 * it.toState().visible).coerceAtMost(0).dp },
         )
-        val scale by state.animateFloat(
+        val scale by frame.animateFloat(
             transitionSpec = { tween(500, easing = EaseInOut) },
             targetValueByState = { 0.4f + 0.6f * it.toState().scale },
         )
@@ -69,7 +69,7 @@ private fun StoryboardBuilder.ArchitectureOverview() {
                 Row(Modifier.offset(x = offset)) {
                     for ((index, title) in titles.withIndex()) {
                         Spacer(Modifier.width(32.dp))
-                        state.AnimatedVisibility(
+                        frame.AnimatedVisibility(
                             visible = { it.toState().visible >= index },
                             enter = fadeIn(tween(500, easing = EaseInOut)),
                             exit = fadeOut(tween(500, easing = EaseInOut)),

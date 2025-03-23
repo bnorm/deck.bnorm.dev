@@ -13,15 +13,15 @@ import dev.bnorm.evolved.sections.intro.BULLET_3
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.template.RevealEach
 
 fun StoryboardBuilder.FunctionOverloads() {
-    slide(stateCount = 8) {
+    scene(stateCount = 8) {
         HeaderAndBody {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ProvideTextStyle(MaterialTheme.typography.h5) {
-                    val reveal = state.createChildTransition { it.toState() }
+                    val reveal = frame.createChildTransition { it.toState() }
                     RevealEach(reveal) {
                         item { Text("$BULLET_1 Wait, didn't that just call a new function?!") }
                         item { Text("    $BULLET_3 Yep!") }

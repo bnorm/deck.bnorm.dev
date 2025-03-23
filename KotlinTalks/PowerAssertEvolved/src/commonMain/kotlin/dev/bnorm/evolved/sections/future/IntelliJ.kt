@@ -13,22 +13,22 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.core.scene
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.IntelliJ() {
-    slide(
+    scene(
         stateCount = 2,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         HeaderAndBody {
             ProvideTextStyle(MaterialTheme.typography.h4) {
                 Text("IntelliJ?")
             }
             Box(Modifier.padding(horizontal = 32.dp)) {
-                state.createChildTransition { it.toState() }
+                frame.createChildTransition { it.toState() }
                     .MagicCode(
                         INTELLIJ_TRANSFORMATIONS,
                         identifierType = { highlighting, identifier ->

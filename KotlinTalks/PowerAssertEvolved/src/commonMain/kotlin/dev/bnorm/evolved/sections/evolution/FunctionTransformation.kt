@@ -11,25 +11,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
-import dev.bnorm.storyboard.core.SlideScope
+import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
+import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 private val moveDuration = DefaultDurationMillis
 private val fadeDuration = moveDuration / 2
 
 fun StoryboardBuilder.FunctionTransformation() {
-    slide(
+    scene(
         stateCount = 5,
-        enterTransition = enter(end = SlideEnter(Alignment.CenterEnd)),
-        exitTransition = exit(end = SlideExit(Alignment.CenterEnd)),
+        enterTransition = enter(end = SceneEnter(Alignment.CenterEnd)),
+        exitTransition = exit(end = SceneExit(Alignment.CenterEnd)),
     ) {
         HeaderAndBody {
-            state.AnimatedContent(
+            frame.AnimatedContent(
                 transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }
             ) {
                 when (it.toState()) {
@@ -54,7 +54,7 @@ fun StoryboardBuilder.FunctionTransformation() {
 }
 
 @Composable
-private fun SlideScope<Int>.OriginalFunction(scope: AnimatedVisibilityScope) {
+private fun SceneScope<Int>.OriginalFunction(scope: AnimatedVisibilityScope) {
     Box(
         modifier = Modifier.sharedElement(
             sharedContentState = rememberSharedContentState("original-fun"),
@@ -64,13 +64,13 @@ private fun SlideScope<Int>.OriginalFunction(scope: AnimatedVisibilityScope) {
             },
         )
     ) {
-        state.createChildTransition { it.toState() - 2 }
+        frame.createChildTransition { it.toState() - 2 }
             .MagicCode(ORIGINAL_FUN_TRANSFORMATIONS)
     }
 }
 
 @Composable
-private fun SlideScope<Int>.SyntheticFunction(scope: AnimatedVisibilityScope) {
+private fun SceneScope<Int>.SyntheticFunction(scope: AnimatedVisibilityScope) {
     Box(
         modifier = Modifier.sharedElement(
             sharedContentState = rememberSharedContentState("synthetic-fun"),
@@ -80,7 +80,7 @@ private fun SlideScope<Int>.SyntheticFunction(scope: AnimatedVisibilityScope) {
             },
         )
     ) {
-        state.createChildTransition { it.toState() }
+        frame.createChildTransition { it.toState() }
             .MagicCode(SYNTHETIC_FUN_TRANSFORMATIONS)
     }
 }

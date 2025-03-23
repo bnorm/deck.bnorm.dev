@@ -8,15 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.storyboard.core.SlideScope
-import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.easel.SceneSection
 
 private object SharedHeaderKey
 
 @Composable
-fun SlideScope<*>.Header(
+fun SceneScope<*>.Header(
     textStyle: TextStyle = MaterialTheme.typography.h3,
-    title: @Composable () -> Unit = SlideSection.title,
+    title: @Composable () -> Unit = SceneSection.title,
 ) {
     Column(
         modifier = Modifier.sharedElement(

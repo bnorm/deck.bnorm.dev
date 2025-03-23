@@ -7,14 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.storyboard.core.SlideScope
-import dev.bnorm.storyboard.easel.SlideSection
+import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.easel.SceneSection
 
 object SharedHeaderKey
 
 @Composable
-fun SlideScope<*>.Header(
-    title: @Composable () -> Unit = SlideSection.title,
+fun SceneScope<*>.Header(
+    title: @Composable () -> Unit = SceneSection.title,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

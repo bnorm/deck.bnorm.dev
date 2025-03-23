@@ -28,7 +28,7 @@ fun Talk(title: @Composable () -> Unit, videoId: String, storyboard: Storyboard?
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
-                // TODO update storyboard to the desired slide?
+                // TODO update storyboard to the desired scene?
                 EmbeddedYouTubeVideo(
                     videoId = videoId,
                     modifier = Modifier.requiredSize(width = 560.dp, height = 315.dp),

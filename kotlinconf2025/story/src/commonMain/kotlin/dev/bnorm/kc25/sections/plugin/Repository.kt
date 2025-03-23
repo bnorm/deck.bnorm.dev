@@ -15,23 +15,23 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.buildable_repo_qr
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slide
-import dev.bnorm.storyboard.easel.template.SlideEnter
-import dev.bnorm.storyboard.easel.template.SlideExit
+import dev.bnorm.storyboard.core.scene
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Repository() {
-    slide(
+    scene(
         stateCount = 3,
-        enterTransition = SlideEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SlideExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("WARNING!", style = MaterialTheme.typography.h2)
                 Spacer(Modifier.height(16.dp))
 
-                state.AnimatedVisibility(
+                frame.AnimatedVisibility(
                     visible = { it.toState() >= 1 },
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically(),
@@ -42,7 +42,7 @@ fun StoryboardBuilder.Repository() {
                     }
                 }
 
-                state.AnimatedVisibility(
+                frame.AnimatedVisibility(
                     visible = { it.toState() >= 2 },
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically(),

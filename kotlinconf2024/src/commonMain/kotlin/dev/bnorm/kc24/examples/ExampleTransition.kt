@@ -9,9 +9,9 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.storyboard.core.SlideState
+import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.slideForTransition
+import dev.bnorm.storyboard.core.sceneForTransition
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.math.abs
 
@@ -21,9 +21,9 @@ fun StoryboardBuilder.ExampleTransition(
     },
     strings: @Composable () -> ImmutableList<AnnotatedString>,
 ) {
-    slideForTransition {
+    sceneForTransition {
         val values = strings()
-        val state = state.createChildTransition { if (it == SlideState.End) values.lastIndex else 0 }
+        val state = frame.createChildTransition { if (it == Frame.End) values.lastIndex else 0 }
         val text by state.animateList(values = values, transitionSpec = transitionSpec) { it }
 
         TitleAndBody {
