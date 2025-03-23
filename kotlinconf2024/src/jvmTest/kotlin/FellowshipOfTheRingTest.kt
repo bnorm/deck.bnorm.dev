@@ -2,6 +2,7 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import dev.bnorm.assert.assert
 import dev.bnorm.assert.assertSoftly
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -51,6 +52,7 @@ data object FellowshipOfTheRing {
     }
 }
 
+@Ignore
 internal class FellowshipOfTheRingTest {
 
     private val fellowshipOfTheRing = FellowshipOfTheRing

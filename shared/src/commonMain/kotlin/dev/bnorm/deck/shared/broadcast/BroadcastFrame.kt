@@ -28,11 +28,11 @@ val LocalBroadcaster = compositionLocalOf<Broadcaster?> { null }
 
 @Composable
 fun BroadcastFrame(storyboard: Storyboard = LocalStoryboard.current) {
-    val broadcaster = LocalBroadcaster.current
-    if (broadcaster != null) {
-        val frame = storyboard.currentFrame.toBroadcast()
-        LaunchedEffect(frame) { broadcaster.broadcast(frame) }
-    }
+//    val broadcaster = LocalBroadcaster.current
+//    if (broadcaster != null) {
+//        val frame = storyboard.currentFrame.toBroadcast()
+//        LaunchedEffect(frame) { broadcaster.broadcast(frame) }
+//    }
 }
 
 val BROADCAST_FRAME_DECORATOR = SlideDecorator { content ->
