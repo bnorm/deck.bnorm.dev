@@ -4,15 +4,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight
 
 @Composable
+fun AnnotatedString.toCode(
+    identifierType: (Highlighting, String) -> SpanStyle? = { _, _ -> null },
+): AnnotatedString {
+    val highlighting = Highlighting.current
+    return rememberSaveable(highlighting, this) {
+        val styled = text.highlight(
+            highlighting = highlighting,
+            language = Language.Kotlin,
+            identifierStyle = { identifierType(highlighting, it) ?: it.toStyle(highlighting) },
+        )
+        buildAnnotatedString {
+            append(this@toCode)
+            for (range in styled.spanStyles) {
+                addStyle(range.item, range.start, range.end)
+            }
+        }
+    }
+}
+
+@Composable
 fun String.toCode(
     identifierType: (Highlighting, String) -> SpanStyle? = { _, _ -> null },
 ): AnnotatedString {
-    val highlighting = Highlighting.Companion.current
+    val highlighting = Highlighting.current
     return rememberSaveable(highlighting, this) {
         highlight(
             highlighting = highlighting,
@@ -38,52 +59,5 @@ fun String.toCodeTokens(
 }
 
 fun String.toStyle(codeStyle: Highlighting): SpanStyle? {
-    return when (this) {
-        "days",
-        "duration",
-        "size",
-        "length",
-        "values",
-        "explanation",
-        "offset",
-        "source",
-        "dispatchReceiver",
-        "contextArguments",
-        "extensionReceiver",
-        "valueArguments",
-        "startOffset",
-        "endOffset",
-        "displayOffset",
-        "value",
-        "lhs",
-        "rhs",
-        "expressions",
-        "isImplicit",
-            -> codeStyle.property
-
-        "NEWBIE",
-        "FUNCTION",
-            -> codeStyle.staticProperty
-
-        "main",
-        "powerAssert",
-        "powerAssert_Explained",
-        "fillInStackTrace",
-            -> codeStyle.functionDeclaration
-
-        "trimIndent",
-        "map",
-        "substring",
-        "toDefaultMessage",
-            -> codeStyle.extensionFunctionCall
-
-        "require",
-        "buildList",
-            -> codeStyle.staticFunctionCall
-
-        "ExplainCall",
-            -> codeStyle.annotation
-
-        else -> null
-    }
+    return null
 }
