@@ -1,10 +1,7 @@
 package dev.bnorm.kc25.components
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.deck.story.generated.resources.Res
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
@@ -19,4 +16,16 @@ fun sampleResource(file: String): State<String> {
         }
         mutableState
     }
+}
+
+private const val VALIDATION = true
+
+@Composable
+fun validateSampleResource(sample: AnnotatedString, file: String): AnnotatedString {
+    if (VALIDATION) {
+        val expected by sampleResource(file)
+        require(expected == sample.text)
+    }
+
+    return sample
 }

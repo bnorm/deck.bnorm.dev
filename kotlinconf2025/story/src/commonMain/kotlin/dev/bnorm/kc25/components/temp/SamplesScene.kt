@@ -13,7 +13,6 @@ import dev.bnorm.kc25.components.sampleResource
 import dev.bnorm.kc25.template.HeaderAndBody
 import dev.bnorm.kc25.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 

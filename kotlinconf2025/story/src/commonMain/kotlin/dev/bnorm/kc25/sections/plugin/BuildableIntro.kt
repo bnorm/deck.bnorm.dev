@@ -1,159 +1,121 @@
 package dev.bnorm.kc25.sections.plugin
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.HeaderAndBody
+import dev.bnorm.kc25.template.code.CodeSample
+import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
+import dev.bnorm.storyboard.text.magic.toWords
 
-private val BOOK = """
-class Book(
-  val title: String,
-  val series: String? = null,
-  val author: String,
-  val publication: LocalDate,
-)
-""".trimIndent()
+private val SAMPLES = buildCodeSamples {
+    val ctor by tag("buildable annotated constructor")
+    val defs by tag("")
+    val body by tag("book class body")
+    val propImpl by tag("")
+    val prop by tag("")
+    val build by tag("")
 
-private val BOOK_WITH_BUILDER = """
-class Book private constructor(
-  val title: String,
-  val series: String?,
-  val author: String,
-  val publication: LocalDate,
-) {
-  class Builder {
-    var title: String
-    var series: String?
-    var author: String
-    var publication: LocalDate
+    val bookSample = extractTags(
+        """
+        class Book${ctor} @Buildable constructor${ctor}(
+          val title: String,
+          val series: String?${defs} = null${defs},
+          val author: String,
+          val publication: LocalDate,
+        )${body} {
+          class Builder {${propImpl}
+            ${prop}private var title_flag: Boolean = false
+            private var title_holder: String? = null${propImpl}
+            var title: String${propImpl}
+              get() = when {
+                title_flag -> title_holder!!
+                else -> throw IllegalStateException("Uninitialized property 'title'.")
+              }
+              set(value) {
+                title_holder = value
+                title_flag = true
+              }${prop}
+            ${propImpl}
+            var series: String?
+            var author: String
+            var publication: LocalDate
+    
+            ${build}fun build(): Book${build}
+          }
+        }${body}
+        """.trimIndent()
+    )
 
-    fun build(): Book
-  }
+    val whens by tag("")
+    val bImpl by tag("")
+    val title by tag("")
+    val series by tag("")
+
+    val buildSample = extractTags(
+        """ 
+        fun build(): Book${bImpl} = Book(
+          ${title}title = when {
+            title_flag -> title_holder!!
+            else -> throw IllegalStateException("Uninitialized property 'title'.")
+          }${title},
+          ${series}series = when {
+            series_flag -> series_holder!!
+            else -> null
+          }${series},
+          author = when {${whens}
+            author_flag -> author_holder!!
+            else -> throw IllegalStateException("Uninitialized property 'author'.")
+          ${whens}},
+          publication = when {${whens}
+            publication_flag -> publication_holder!!
+            else -> throw IllegalStateException("Uninitialized property 'publication'.")
+          ${whens}},
+        )${bImpl}
+        """.trimIndent()
+    )
+
+    val bookStart = CodeSample { bookSample.toCode() }.hide(ctor, body, propImpl)
+        .then { reveal(body).hide(defs) }
+        .then { reveal(propImpl).focus(prop) }
+        .then { hide(propImpl).unfocus() }
+        .then { focus(build) }
+
+    val buildSamples = CodeSample { buildSample.toCode() }.hide(bImpl).collapse(whens)
+        .then { reveal(bImpl).focus(title) }
+        .then { focus(series) }
+        .then { unfocus().reveal(whens).hide(bImpl).collapse(whens) } // TODO reveal+collapse whens to place at end
+
+    val bookEnd = bookStart.last().unfocus()
+        .then { hide(body).reveal(defs) }
+        .then { reveal(ctor) }
+
+    bookStart + buildSamples + bookEnd
 }
-""".trimIndent()
-
-private val BOOK_WITH_BUILDER_IMPL = """
-class Book private constructor(
-  val title: String,
-  val series: String?,
-  val author: String,
-  val publication: LocalDate,
-) {
-  class Builder {
-    private companion object {
-      private const val FLAG_TITLE = 0b0001
-      private const val FLAG_SERIES = 0b0010
-      private const val FLAG_AUTHOR = 0b0100
-      private const val FLAG_PUBLICATION = 0b1000
-    }
-
-    private var initialized = 0
-
-    private var titleHolder: String? = null
-    var title: String
-      get() = when {
-        initialized and FLAG_TITLE != 0 -> titleHolder!!
-        else -> throw IllegalStateException("Uninitialized property 'title'.")
-      }
-      set(value) {
-        titleHolder = value
-        initialized = initialized or FLAG_TITLE
-      }
-
-    private var seriesHolder: String? = null
-    var series: String?
-      get() = when {
-        initialized or FLAG_SERIES != 0 -> seriesHolder
-        else -> throw IllegalStateException("Uninitialized property 'series'.")
-      }
-      set(value) {
-        seriesHolder = value
-        initialized = initialized and FLAG_SERIES
-      }
-
-    private var authorHolder: String? = null
-    var author: String
-      get() = when {
-        initialized and FLAG_AUTHOR != 0 -> authorHolder!!
-        else -> throw IllegalStateException("Uninitialized property 'author'.")
-      }
-      set(value) {
-        authorHolder = value
-        initialized = initialized or FLAG_AUTHOR
-      }
-
-    private var publicationHolder: LocalDate? = null
-    var publication: LocalDate
-      get() = when {
-        initialized and FLAG_PUBLICATION != 0 -> publicationHolder!!
-        else -> throw IllegalStateException("Uninitialized property 'publication'.")
-      }
-      set(value) {
-        publicationHolder = value
-        initialized = initialized or FLAG_PUBLICATION
-      }
-
-    fun build(): Book {
-      return Book(
-        title = when {
-          initialized and FLAG_TITLE != 0 -> titleHolder!!
-          else -> throw IllegalStateException("Uninitialized property 'title'.")
-        },
-        series = when {
-          initialized or FLAG_SERIES != 0 -> seriesHolder!!
-          else -> null
-        },
-        author = when {
-          initialized and FLAG_AUTHOR != 0 -> authorHolder!!
-          else -> throw IllegalStateException("Uninitialized property 'author'.")
-        },
-        publication = when {
-          initialized and FLAG_PUBLICATION != 0 -> publicationHolder!!
-          else -> throw IllegalStateException("Uninitialized property 'publication'.")
-        },
-      )
-    }
-  }
-}
-""".trimIndent()
-
-private val BUILDABLE_BOOK = """
-class Book @Buildable constructor(
-  val title: String,
-  val series: String? = null,
-  val author: String,
-  val publication: LocalDate,
-)
-""".trimIndent()
 
 // TODO slightly more complex example with...
 //  - primitives
 //  - referencing previous arguments in a default argument
-fun StoryboardBuilder.BuildableIntro() {
-    scene(
-        stateCount = 5
-    ) {
-        HeaderAndBody {
-            val sample = when (currentState) {
-                0 -> BOOK.toCode()
-                1 -> BOOK_WITH_BUILDER.toCode()
-                2 -> BOOK_WITH_BUILDER_IMPL.toCode()
-                3 -> BOOK.toCode()
-                4 -> BUILDABLE_BOOK.toCode()
-                else -> "".toCode()
-            }
+fun StoryboardBuilder.BuildableIntro(start: Int = 0, endExclusive: Int = SAMPLES.size) {
+    require(start < endExclusive) { "start=$start must be less than endExclusive=$endExclusive" }
+    require(start >= 0) { "start=$start must be greater than or equal to 0" }
+    require(endExclusive <= SAMPLES.size) { "end must be less than or equal to ${SAMPLES.size}" }
 
-            val verticalScrollState = rememberScrollState()
-            Box(modifier = Modifier.fillMaxSize().verticalScroll(verticalScrollState).padding(32.dp)) {
-                MagicText(sample)
+    scene(stateCount = endExclusive - start) {
+        HeaderAndBody(
+            modifier = Modifier.padding(top = 32.dp, start = 64.dp, end = 64.dp)
+                .wrapContentHeight(unbounded = true, align = Alignment.Top)
+        ) {
+            val text = frame.createChildTransition {
+                SAMPLES[start + it.toState()].get().toWords()
             }
+            MagicText(text)
         }
     }
 }
