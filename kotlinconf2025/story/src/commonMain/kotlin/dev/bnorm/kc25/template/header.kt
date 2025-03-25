@@ -7,21 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.storyboard.core.SceneScope
-import dev.bnorm.storyboard.easel.SceneSection
-
-object SharedHeaderKey
 
 @Composable
-fun SceneScope<*>.Header(
-    title: @Composable () -> Unit = SceneSection.title,
+fun Header(
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.sharedElement(
-            rememberSharedContentState(key = SharedHeaderKey),
-            animatedVisibilityScope = this,
-        )
+        modifier = modifier
     ) {
         Spacer(Modifier.height(16.dp))
         title()

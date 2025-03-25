@@ -12,6 +12,7 @@ import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeScope
 import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.easel.SceneSection
 
 @Composable
 fun SceneScope<*>.HeaderAndBody(
@@ -25,17 +26,24 @@ fun SceneScope<*>.HeaderAndBody(
             modifier = Modifier.fillMaxSize(),
         ) {
             ProvideTextStyle(MaterialTheme.typography.h3) {
-                Header()
+                val section = SceneSection.current
+                Header(
+                    title = section.title,
+                    modifier = Modifier.sharedElement(
+                        rememberSharedContentState(key = section),
+                        animatedVisibilityScope = this@HeaderAndBody,
+                    )
+                )
             }
-            Body(modifier.fillMaxSize()) {
+            Body(modifier.fillMaxSize(), {
                 content()
-            }
+            })
         }
     }
 }
 
 @Composable
-fun SceneScope<*>.Body(
+fun Body(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {

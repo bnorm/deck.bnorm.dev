@@ -2,14 +2,17 @@ package dev.bnorm.kc25.template
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
@@ -70,7 +73,7 @@ fun SceneScope<Int>.SectionTitle(
     title: @Composable () -> Unit = SceneSection.title,
 ) {
     val moveDuration = 500
-    val lineDuration = 500
+    val lineDuration = 0 // TODO do we still want the line to disappear for the title?
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val textStyle = showAsBody.animateTextStyle(
@@ -92,48 +95,39 @@ fun SceneScope<Int>.SectionTitle(
                 }
             },
             targetValueByState = {
+                val textHeight = with(LocalDensity.current) { MaterialTheme.typography.h2.lineHeight.toDp() }
                 when (it) {
-                    false -> maxHeight / 2 - 36.dp
-                    true -> 16.dp
+                    false -> (maxHeight - textHeight) / 2 - 16.dp
+                    true -> 0.dp
                 }
             },
         )
-        val width by showAsBody.animateDp(
-            label = "header line width",
-            transitionSpec = {
-                when (targetState) {
-                    true -> tween(lineDuration, moveDuration, EaseInOut)
-                    false -> tween(lineDuration, delayMillis = 0, EaseInOut)
-                }
-            },
-            targetValueByState = {
-                when (it) {
-                    false -> 0.dp
-                    true -> maxWidth
-                }
-            },
-        )
+//        val width by showAsBody.animateDp(
+//            label = "header line width",
+//            transitionSpec = {
+//                when (targetState) {
+//                    true -> tween(lineDuration, moveDuration, EaseInOut)
+//                    false -> tween(lineDuration, delayMillis = 0, EaseInOut)
+//                }
+//            },
+//            targetValueByState = {
+//                when (it) {
+//                    false -> 0.dp
+//                    true -> maxWidth
+//                }
+//            },
+//        )
 
-        val modifier = when {
-            showAsBody.currentState -> Modifier.sharedElement(
-                rememberSharedContentState(key = SharedHeaderKey),
-                animatedVisibilityScope = this@SectionTitle,
-            )
-            else -> Modifier
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.fillMaxSize(),
-        ) {
-            Spacer(Modifier.heightIn(min = height))
-            ProvideTextStyle(textStyle) {
-                title()
-            }
-            Spacer(Modifier.height(4.dp))
-            Spacer(
-                Modifier.requiredSize(width, 2.dp)
-                    .padding(horizontal = 64.dp)
-                    .background(MaterialTheme.colors.secondary)
+        ProvideTextStyle(textStyle) {
+            Header(
+                title = title,
+                modifier = Modifier
+                    .sharedElement(
+                        rememberSharedContentState(key = SceneSection.current),
+                        animatedVisibilityScope = this@SectionTitle,
+                    )
+                    .fillMaxSize()
+                    .padding(top = height),
             )
         }
     }

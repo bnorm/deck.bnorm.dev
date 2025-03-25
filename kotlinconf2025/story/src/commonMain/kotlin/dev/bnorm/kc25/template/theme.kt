@@ -50,9 +50,9 @@ val DARK_COLORS = darkColors(
     background = Color.Black,
     surface = Color(0xFF1D002E),
     onBackground = Color(0xFFBCBEC4),
-    primary = Color(0xFFC201D7),
+    primary = CONFERENCE_PURPLE,
     primaryVariant = Color(0xFF480079),
-    secondary = Color(0xFFFF941A),
+    secondary = CONFERENCE_YELLOW,
 )
 
 val HIGHLIGHTING: Highlighting
