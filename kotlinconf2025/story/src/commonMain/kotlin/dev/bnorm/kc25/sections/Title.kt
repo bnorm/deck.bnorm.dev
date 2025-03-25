@@ -33,7 +33,6 @@ import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.kc25.components.KotlinConfBird
 import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.template.SceneEnter

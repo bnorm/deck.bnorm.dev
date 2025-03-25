@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.HeaderAndBody
 import dev.bnorm.kc25.template.code.toCode
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.text.magic.MagicText
 
 private val BOOK = """

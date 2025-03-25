@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.buildable_repo_qr
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import org.jetbrains.compose.resources.painterResource
@@ -56,12 +55,12 @@ fun StoryboardBuilder.Repository() {
                         Spacer(Modifier.height(16.dp))
 
                         Text(buildAnnotatedString {
-                            val link = LinkAnnotation.Url(
-                                "https://github.com/bnorm/buildable",
-                                TextLinkStyles(SpanStyle(textDecoration = TextDecoration.Underline))
+                            val url = "https://github.com/bnorm/buildable"
+                            val linkStyles = TextLinkStyles(
+                                style = SpanStyle(textDecoration = TextDecoration.Underline),
                             )
-                            withLink(link) {
-                                append("https://github.com/bnorm/buildable")
+                            withLink(LinkAnnotation.Url(url, linkStyles)) {
+                                append(url)
                             }
                         })
                     }

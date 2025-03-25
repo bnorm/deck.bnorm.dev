@@ -16,7 +16,6 @@ import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit

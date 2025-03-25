@@ -26,7 +26,6 @@ import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.SceneSection
 import dev.bnorm.storyboard.easel.enter

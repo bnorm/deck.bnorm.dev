@@ -22,7 +22,6 @@ import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.SceneSection
 
 fun StoryboardBuilder.SectionHeader(

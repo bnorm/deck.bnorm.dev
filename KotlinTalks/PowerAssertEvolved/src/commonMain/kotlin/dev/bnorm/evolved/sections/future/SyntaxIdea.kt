@@ -18,7 +18,6 @@ import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.core.toInt
 import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.easel.template.SceneEnter

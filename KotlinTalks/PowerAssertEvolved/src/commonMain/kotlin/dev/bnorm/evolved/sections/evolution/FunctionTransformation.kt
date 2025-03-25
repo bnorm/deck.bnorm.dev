@@ -13,7 +13,6 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.template.SceneEnter

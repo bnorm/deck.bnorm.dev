@@ -18,7 +18,6 @@ import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.scene
 import dev.bnorm.storyboard.easel.SceneSection
 import dev.bnorm.storyboard.easel.section
 

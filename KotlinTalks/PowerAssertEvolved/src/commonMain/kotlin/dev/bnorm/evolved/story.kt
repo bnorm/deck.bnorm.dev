@@ -17,7 +17,6 @@ import dev.bnorm.evolved.sections.intro.Intro
 import dev.bnorm.evolved.sections.today.Today
 import dev.bnorm.evolved.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.scene
 
 fun createStoryboard() = Storyboard.build(
     title = "Power-Assert: Evolved",
