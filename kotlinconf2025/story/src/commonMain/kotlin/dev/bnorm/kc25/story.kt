@@ -6,15 +6,18 @@ import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
+import dev.bnorm.kc25.sections.existing.DataFrameExample
 import dev.bnorm.kc25.sections.plugin.BuildableIntro
 import dev.bnorm.kc25.sections.plugin.Repository
 import dev.bnorm.kc25.sections.plugin.fir.FirExtensions
 import dev.bnorm.kc25.sections.plugin.ir.IrExtensions
 import dev.bnorm.kc25.template.SectionAndTitle
+import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.plus
+import dev.bnorm.storyboard.easel.section
 
 fun createStoryboard(): Storyboard {
     return Storyboard.build(
@@ -73,6 +76,15 @@ private fun StoryboardBuilder.Outline() {
             "    $BULLET_2 Power-Assert - Rewrites function calls to include call-site information about parameters.",
             "$BULLET_1 All of these compiler-plugins generate or transform Kotlin code as it is being compiled.",
         )
+    }
+
+    section("Example Plugins") {
+        SectionTitle()
+        // TODO Serialization
+        // TODO Compose
+        // TODO Spring?
+        DataFrameExample()
+        // TODO Power-Assert
     }
 
 //    SectionAndTitle("Why would you need one?") {
