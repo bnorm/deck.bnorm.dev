@@ -6,7 +6,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
@@ -20,16 +19,17 @@ import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import dev.bnorm.deck.shared.socials.Bluesky
+import dev.bnorm.deck.shared.socials.JetBrainsEmployee
+import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.end_badge
 import dev.bnorm.deck.story.generated.resources.end_phone
 import dev.bnorm.deck.story.generated.resources.start_conference
-import dev.bnorm.deck.shared.socials.Bluesky
-import dev.bnorm.deck.shared.socials.JetBrainsEmployee
-import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.kc25.components.KotlinConfBird
 import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
@@ -37,6 +37,7 @@ import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.ui.LocalStoryboard
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Title() {
@@ -52,65 +53,65 @@ fun StoryboardBuilder.Title() {
         ),
     ) {
         Box(Modifier.fillMaxSize()) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-            ) {
-                Image(
-                    painter = KotlinConfBird(frame.createChildTransition { it is Frame.State }),
-                    contentDescription = "",
-                    modifier = Modifier.size(508.dp).offset(416.dp, 16.dp),
-                )
-                Image(
-                    painter = painterResource(Res.drawable.start_conference),
-                    contentDescription = "",
-                    modifier = Modifier.size(247.dp, 26.dp).offset(40.dp, 40.dp),
+            // TODO the bird is clipped on the right side; can we fix that?
+            Image(
+                painter = KotlinConfBird(frame.createChildTransition { it is Frame.State }),
+                contentDescription = "",
+                modifier = Modifier.size(508.dp).offset(416.dp, 16.dp),
+            )
+
+            with(LocalDensity.current) {
+                val storyboard = LocalStoryboard.current
+                val xSize = storyboard.size.width.toPx()
+                val ySize = storyboard.size.height.toPx()
+                Box(
+                    Modifier.fillMaxSize()
+                        .background(
+                            Brush.linearGradient(
+                                colors = listOf(Color.Transparent, Color.Black),
+                                start = Offset(xSize * 0.9f, ySize * 0.5f),
+                                end = Offset(xSize, ySize),
+                            )
+                        )
                 )
             }
 
-            Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                Column(
-                    Modifier.fillMaxWidth().align(Alignment.BottomStart),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Column(Modifier.padding(16.dp)) {
-                        ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
-                            Text("Writing Your Third")
-                            Text("Kotlin Compiler Plugin")
-                        }
+            Image(
+                painter = painterResource(Res.drawable.start_conference),
+                contentDescription = "",
+                modifier = Modifier.size(247.dp, 26.dp).offset(40.dp, 40.dp),
+            )
+
+            Column(
+                Modifier.fillMaxWidth()
+                    .padding(16.dp)
+                    .align(Alignment.BottomStart)
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
+                        Text("Writing Your Third")
+                        Text("Kotlin Compiler Plugin")
                     }
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.align(Alignment.CenterStart)
-                                .padding(16.dp),
-                        ) {
-                            JetBrainsEmployee(
-                                name = "Brian Norman",
-                                title = "Kotlin Compiler Developer",
-                            )
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                                .background(
-                                    // TODO use haze instead?
-                                    Brush.verticalGradient(
-                                        listOf(
-                                            Color.Black.copy(alpha = 0f),
-                                            Color.Black.copy(alpha = 0.7f),
-                                            Color.Black.copy(alpha = 0.7f),
-                                            Color.Black.copy(alpha = 0f),
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(16.dp),
-                                )
-                                .padding(16.dp),
-                        ) {
-                            Bluesky(username = "@bnorm.dev")
-                            Spacer(Modifier.size(4.dp))
-                            Mastodon(username = "bnorm@kotlin.social")
-                        }
+                }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.align(Alignment.CenterStart)
+                            .padding(16.dp),
+                    ) {
+                        JetBrainsEmployee(
+                            name = "Brian Norman",
+                            title = "Kotlin Compiler Developer",
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                            .padding(16.dp),
+                    ) {
+                        Bluesky(username = "@bnorm.dev")
+                        Spacer(Modifier.size(4.dp))
+                        Mastodon(username = "bnorm@kotlin.social")
                     }
                 }
             }
