@@ -17,8 +17,9 @@ class CodeSample private constructor(
     private val sample: @Composable () -> AnnotatedString,
     private val focus: TextTag?,
     private val replaced: Map<TextTag, AnnotatedString>,
+    private val styled: Map<TextTag, SpanStyle>,
 ) {
-    constructor(sample: @Composable () -> AnnotatedString) : this(sample, null, emptyMap())
+    constructor(sample: @Composable () -> AnnotatedString) : this(sample, null, emptyMap(), emptyMap())
 
     private var cached: AnnotatedString? = null
 
@@ -28,17 +29,27 @@ class CodeSample private constructor(
         private val UNFOCUSED_STYLE = SpanStyle(color = Color.Gray.copy(alpha = 0.5f))
     }
 
-    fun collapse(tag: TextTag): CodeSample = CodeSample(sample, focus, replaced + (tag to ELLIPSIS))
-    fun collapse(vararg tags: TextTag): CodeSample = CodeSample(sample, focus, replaced + tags.map { it to ELLIPSIS })
+    private fun copy(
+        sample: @Composable () -> AnnotatedString = this.sample,
+        focus: TextTag? = this.focus,
+        replaced: Map<TextTag, AnnotatedString> = this.replaced,
+        styled: Map<TextTag, SpanStyle> = this.styled,
+    ): CodeSample = CodeSample(sample, focus, replaced, styled)
 
-    fun hide(tag: TextTag): CodeSample = CodeSample(sample, focus, replaced + (tag to EMPTY))
-    fun hide(vararg tags: TextTag): CodeSample = CodeSample(sample, focus, replaced + tags.map { it to EMPTY })
+    fun collapse(tag: TextTag): CodeSample = copy(replaced = replaced + (tag to ELLIPSIS))
+    fun collapse(vararg tags: TextTag): CodeSample = copy(replaced = replaced + tags.map { it to ELLIPSIS })
 
-    fun reveal(tag: TextTag): CodeSample = CodeSample(sample, focus, replaced - tag)
-    fun reveal(vararg tags: TextTag): CodeSample = CodeSample(sample, focus, replaced - tags)
+    fun hide(tag: TextTag): CodeSample = copy(replaced = replaced + (tag to EMPTY))
+    fun hide(vararg tags: TextTag): CodeSample = copy(replaced = replaced + tags.map { it to EMPTY })
 
-    fun focus(tag: TextTag): CodeSample = CodeSample(sample, tag, replaced)
-    fun unfocus(): CodeSample = CodeSample(sample, null, replaced)
+    fun reveal(tag: TextTag): CodeSample = copy(replaced = replaced - tag)
+    fun reveal(vararg tags: TextTag): CodeSample = copy(replaced = replaced - tags)
+
+    fun focus(tag: TextTag): CodeSample = copy(focus = tag)
+    fun unfocus(): CodeSample = copy(focus = null)
+
+    fun styled(tag: TextTag, style: SpanStyle): CodeSample = copy(styled = styled + (tag to style))
+    fun unstyled(tag: TextTag): CodeSample = copy(styled = styled - tag)
 
     @Composable
     fun get(): AnnotatedString {
@@ -46,6 +57,9 @@ class CodeSample private constructor(
         cached?.let { return it }
 
         var str = sample()
+        for ((tag, style) in styled) {
+            str = str.addStyleByTag(tag, tagged = style)
+        }
         if (focus != null) {
             str = str.addStyleByTag(focus, untagged = UNFOCUSED_STYLE)
         }

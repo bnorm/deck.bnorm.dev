@@ -68,14 +68,15 @@ private val SAMPLES = buildCodeSamples {
             }
         })
     }.hide(p, s1, a1, a2, s2, a3, a4, s3)
-        .then { reveal(p) }
-        .then { reveal(s1) }
-        .then { reveal(a1) }
-        .then { reveal(a2) }
-        .then { reveal(s2) }
-        .then { reveal(a3) }
-        .then { reveal(a4) }
-        .then { reveal(s3) }
+        .then { reveal(p).focus(p) }
+        .then { reveal(s1).focus(s1) }
+        .then { reveal(a1).focus(a1) }
+        .then { reveal(a2).focus(a2) }
+        .then { reveal(s2).focus(s2) }
+        .then { reveal(a3).focus(a3) }
+        .then { reveal(a4).focus(a4) }
+        .then { reveal(s3).focus(s3) }
+        .then { unfocus() }
 }
 
 private val OUTPUT = listOf(
@@ -156,6 +157,17 @@ private val OUTPUT = listOf(
      5          5            5            JetBrains/Exposed     5688           4             10
      6          6            6            JetBrains/ring-ui     2836           3             12
      7          7            7     JetBrains/kotlinconf-app     2628           1             14
+    """.trimIndent(),
+    """
+       topicsRank watchersRank                         name watchers topicsCount promotionScore
+     0          7            7     JetBrains/kotlinconf-app     2628           1             14
+     1          6            6            JetBrains/ring-ui     2836           3             12
+     2          5            5            JetBrains/Exposed     5688           4             10
+     3          2            4      JetBrains/JetBrainsMono     6059           6              6
+     4          4            2      JetBrains/kotlin-native     7101           5              6
+     5          1            3            JetBrains/ideavim     6120           7              4
+     6          3            1 JetBrains/intellij-community    12926           5              4
+     7          0            0             JetBrains/kotlin    39402           7              0
     """.trimIndent(),
     """
        topicsRank watchersRank                         name watchers topicsCount promotionScore

@@ -6,7 +6,9 @@ import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
+import dev.bnorm.kc25.sections.existing.ComposeExample
 import dev.bnorm.kc25.sections.existing.DataFrameExample
+import dev.bnorm.kc25.sections.existing.PowerAssertExample
 import dev.bnorm.kc25.sections.plugin.BuildableIntro
 import dev.bnorm.kc25.sections.plugin.Repository
 import dev.bnorm.kc25.sections.plugin.fir.FirExtensions
@@ -78,13 +80,14 @@ private fun StoryboardBuilder.Outline() {
         )
     }
 
-    section("Example Plugins") {
+    section("What is a compiler-plugin?") {
         SectionTitle()
+
         // TODO Serialization
-        // TODO Compose
+        ComposeExample()
         // TODO Spring?
         DataFrameExample()
-        // TODO Power-Assert
+        PowerAssertExample()
     }
 
 //    SectionAndTitle("Why would you need one?") {
@@ -103,6 +106,7 @@ private fun StoryboardBuilder.Outline() {
 //    }
 
     SectionAndTitle("Let's build one!") {
+        // TODO reference template project for faster project setup
         // TODO summary of previous work for reference of project setup
         RevealScene(
             "$BULLET_1 Let's focus on the easy task: boilerplate reduction.",
