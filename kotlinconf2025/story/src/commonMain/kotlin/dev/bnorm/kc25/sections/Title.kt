@@ -61,7 +61,7 @@ fun StoryboardBuilder.Title() {
             )
 
             with(LocalDensity.current) {
-                val storyboard = LocalStoryboard.current
+                val storyboard = LocalStoryboard.current!!
                 val xSize = storyboard.size.width.toPx()
                 val ySize = storyboard.size.height.toPx()
                 Box(
