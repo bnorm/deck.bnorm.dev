@@ -13,10 +13,6 @@ import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
 
-val CompilerPluginRegistrar = listOf(
-    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/BuildableCompilerPluginRegistrar.kt@BuildableCompilerPluginRegistrar",
-)
-
 private const val FILE = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/BuildableCompilerPluginRegistrar.kt"
 
 private val SAMPLES = buildCodeSamples {

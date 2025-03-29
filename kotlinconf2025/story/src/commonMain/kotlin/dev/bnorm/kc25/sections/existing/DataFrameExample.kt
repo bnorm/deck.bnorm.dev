@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -20,15 +23,16 @@ import dev.bnorm.kc25.template.HeaderAndBody
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code.toCode
+import dev.bnorm.storyboard.core.DisplayType
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.map
-import dev.bnorm.storyboard.core.toState
 import dev.bnorm.storyboard.easel.section
 import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
+import dev.bnorm.storyboard.ui.LocalDisplayType
+import dev.bnorm.storyboard.ui.StoryEffect
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -235,19 +239,20 @@ fun StoryboardBuilder.DataFrameExample() {
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
+            val displayType = LocalDisplayType.current
             HeaderAndBody {
-                // When transitioning into the scene, make sure it starts from the beginning.
-                // But when rendering the scene state directly, render in the finished state.
-                // Also, when rendering directly, do not animate the sample.
-                val frozen = remember { frame.currentState.map { true }.toState(start = false, end = false) }
-                var sampleIndex by remember { mutableIntStateOf(if (frozen) SAMPLES.lastIndex else 0) }
+                // TODO could I hide some animation controls, to make them pausable and navigable?
+                // When rendering the scene for preview, render the finished state and do not animate the sample.
+                var sampleIndex by remember {
+                    mutableIntStateOf(if (displayType == DisplayType.Story) 0 else SAMPLES.lastIndex)
+                }
                 val sampleTransition = updateTransition(sampleIndex)
 
                 var outputIndex by remember { mutableIntStateOf(sampleIndex) }
                 val outputTransition = updateTransition(outputIndex)
 
-                LaunchedEffect(Unit) {
-                    while (!frozen) {
+                StoryEffect(Unit) {
+                    while (true) {
                         delay(2.seconds)
                         if (sampleIndex == SAMPLES.lastIndex) {
                             // Delay a little longer on the last sample.
