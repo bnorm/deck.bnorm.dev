@@ -11,12 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.StoryboardState
-import dev.bnorm.storyboard.easel.EmbeddedStoryboard
+import dev.bnorm.storyboard.core.StoryState
+import dev.bnorm.storyboard.easel.EmbeddedStory
 
 @Composable
 fun Talk(title: @Composable () -> Unit, videoId: String, storyboard: Storyboard? = null) {
-    val state = remember(storyboard) { storyboard?.let { StoryboardState(it) } }
+    val state = remember(storyboard) { storyboard?.let { StoryState(it) } }
 
     Surface(elevation = 8.dp, shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(32.dp), modifier = Modifier.padding(32.dp)) {
@@ -35,7 +35,7 @@ fun Talk(title: @Composable () -> Unit, videoId: String, storyboard: Storyboard?
                 )
                 if (state != null) {
                     Box(Modifier.requiredSize(width = 560.dp, height = 315.dp)) {
-                        EmbeddedStoryboard(state)
+                        EmbeddedStory(state)
                     }
                 }
             }

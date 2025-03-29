@@ -12,14 +12,14 @@ import dev.bnorm.deck.shared.broadcast.BroadcastIndex
 import dev.bnorm.deck.shared.broadcast.BroadcastMessage
 import dev.bnorm.deck.shared.broadcast.toStoryboard
 import dev.bnorm.kc25.createStoryboard
-import dev.bnorm.storyboard.core.StoryboardState
-import dev.bnorm.storyboard.easel.EmbeddedStoryboard
+import dev.bnorm.storyboard.core.StoryState
+import dev.bnorm.storyboard.easel.EmbeddedStory
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun App() {
-    val storyboard = remember { StoryboardState(createStoryboard()) }
+    val storyboard = remember { StoryState(createStoryboard()) }
 
     var latest by remember { mutableStateOf<BroadcastMessage?>(null) }
     LaunchedEffect(Unit) {
@@ -38,7 +38,7 @@ fun App() {
             }
 
             is BroadcastIndex -> {
-                EmbeddedStoryboard(storyboard)
+                EmbeddedStory(storyboard)
 
                 LaunchedEffect(latest) {
                     storyboard.jumpTo(latest.toStoryboard())
