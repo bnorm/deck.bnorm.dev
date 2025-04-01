@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.*
-import dev.bnorm.storyboard.easel.SceneSection
-import dev.bnorm.storyboard.easel.enter
-import dev.bnorm.storyboard.easel.exit
-import dev.bnorm.storyboard.easel.section
+import dev.bnorm.storyboard.core.DefaultEnterTransition
+import dev.bnorm.storyboard.core.DefaultExitTransition
+import dev.bnorm.storyboard.core.Frame
+import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.easel.*
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 
@@ -68,7 +68,8 @@ fun StoryboardBuilder.SectionTitle(
 }
 
 @Composable
-fun SceneScope<Int>.SectionTitle(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun SectionTitle(
     showAsBody: Transition<Boolean>,
     title: @Composable () -> Unit = SceneSection.title,
 ) {
@@ -122,10 +123,7 @@ fun SceneScope<Int>.SectionTitle(
             Header(
                 title = title,
                 modifier = Modifier
-                    .sharedElement(
-                        rememberSharedContentState(key = SceneSection.current),
-                        animatedVisibilityScope = this@SectionTitle,
-                    )
+                    .sharedElement(rememberSharedContentState(key = SceneSection.current))
                     .fillMaxSize()
                     .padding(top = height),
             )

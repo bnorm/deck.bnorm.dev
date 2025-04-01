@@ -15,6 +15,8 @@ import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.easel.enter
 import dev.bnorm.storyboard.easel.exit
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 
@@ -34,16 +36,16 @@ fun StoryboardBuilder.FunctionTransformation() {
                 when (it.toState()) {
                     0 -> {
                         Box(Modifier.fillMaxSize()) {
-                            OriginalFunction(this@AnimatedContent)
-                            SyntheticFunction(this@AnimatedContent)
+                            OriginalFunction()
+                            SyntheticFunction()
                         }
                     }
 
                     else -> {
                         Column(Modifier.fillMaxSize()) {
-                            OriginalFunction(this@AnimatedContent)
+                            OriginalFunction()
                             Spacer(Modifier.height(16.dp))
-                            SyntheticFunction(this@AnimatedContent)
+                            SyntheticFunction()
                         }
                     }
                 }
@@ -53,11 +55,11 @@ fun StoryboardBuilder.FunctionTransformation() {
 }
 
 @Composable
-private fun SceneScope<Int>.OriginalFunction(scope: AnimatedVisibilityScope) {
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+private fun SceneScope<Int>.OriginalFunction() {
     Box(
         modifier = Modifier.sharedElement(
             sharedContentState = rememberSharedContentState("original-fun"),
-            animatedVisibilityScope = scope,
             boundsTransform = { _, _ ->
                 tween(moveDuration, delayMillis = fadeDuration)
             },
@@ -69,11 +71,11 @@ private fun SceneScope<Int>.OriginalFunction(scope: AnimatedVisibilityScope) {
 }
 
 @Composable
-private fun SceneScope<Int>.SyntheticFunction(scope: AnimatedVisibilityScope) {
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+private fun SceneScope<Int>.SyntheticFunction() {
     Box(
         modifier = Modifier.sharedElement(
             sharedContentState = rememberSharedContentState("synthetic-fun"),
-            animatedVisibilityScope = scope,
             boundsTransform = { _, _ ->
                 tween(moveDuration, delayMillis = fadeDuration)
             },

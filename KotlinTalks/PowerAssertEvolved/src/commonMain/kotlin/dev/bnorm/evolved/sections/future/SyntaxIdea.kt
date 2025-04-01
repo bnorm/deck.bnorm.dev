@@ -1,5 +1,7 @@
 package dev.bnorm.evolved.sections.future
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -16,9 +18,10 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
-import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.toInt
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
@@ -27,14 +30,12 @@ fun StoryboardBuilder.SyntaxIdea() {
     val topicKey = Any()
 
     @Composable
-    fun SceneScope<*>.Topic() {
+    context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+    fun Topic() {
         ProvideTextStyle(MaterialTheme.typography.h4) {
             Text(
                 text = "Language syntax?",
-                modifier = Modifier.sharedElement(
-                    rememberSharedContentState(topicKey),
-                    animatedVisibilityScope = this
-                )
+                modifier = Modifier.sharedElement(rememberSharedContentState(topicKey))
             )
         }
     }

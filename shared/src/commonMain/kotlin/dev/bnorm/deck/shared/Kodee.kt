@@ -1,11 +1,9 @@
 package dev.bnorm.deck.shared
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,21 +18,20 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.generated.resources.*
 import dev.bnorm.deck.shared.image.Kodee
 import dev.bnorm.deck.shared.image.kodee.*
-import dev.bnorm.storyboard.core.SceneScope
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 private object SharedKodeeKey
 
 @Composable
-fun SceneScope<*>.SharedKodee(content: @Composable () -> Unit) {
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun SharedKodee(content: @Composable () -> Unit) {
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
-            .sharedElement(
-                rememberSharedContentState(SharedKodeeKey),
-                animatedVisibilityScope = this,
-            )
+            .sharedElement(rememberSharedContentState(SharedKodeeKey))
             .fillMaxSize().padding(8.dp),
     ) {
         content()

@@ -1,5 +1,7 @@
 package dev.bnorm.kc24.template
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -12,11 +14,13 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeScope
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.easel.SceneSection
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 
 @Composable
-fun SceneScope<*>.TitleAndBody(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun TitleAndBody(
     title: @Composable () -> Unit = SceneSection.title,
     kodee: KodeeScope.() -> Unit = {},
     body: @Composable () -> Unit = {},
@@ -43,11 +47,11 @@ fun SceneScope<*>.TitleAndBody(
 private object SharedHeaderKey
 
 @Composable
-fun SceneScope<*>.SharedHeader(textStyle: TextStyle, title: @Composable () -> Unit) {
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun SharedHeader(textStyle: TextStyle, title: @Composable () -> Unit) {
     Column(
         modifier = Modifier.sharedElement(
             rememberSharedContentState(key = SharedHeaderKey),
-            animatedVisibilityScope = this,
         )
     ) {
         Box(Modifier.fillMaxWidth().padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {

@@ -44,7 +44,8 @@ fun StoryboardBuilder.SectionHeader(
 }
 
 @Composable
-fun SceneScope<*>.SectionHeader(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun SectionHeader(
     showAsBody: Transition<Boolean>,
     title: @Composable () -> Unit = SceneSection.title,
 ) {
