@@ -2,6 +2,7 @@ import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.compose.resources.ResourcesExtension
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
     kotlin("multiplatform") apply false
@@ -21,6 +22,23 @@ allprojects {
 
         extensions.configure<ComposeCompilerGradlePluginExtension> {
             featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
+        }
+    }
+
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        extensions.configure<KotlinMultiplatformExtension> {
+            sourceSets.all {
+                languageSettings {
+                    enableLanguageFeature("ContextParameters")
+                    enableLanguageFeature("WhenGuards")
+                    enableLanguageFeature("MultiDollarInterpolation")
+
+                    optIn("androidx.compose.animation.core.ExperimentalTransitionApi")
+                    optIn("androidx.compose.animation.ExperimentalAnimationApi")
+                    optIn("androidx.compose.animation.ExperimentalSharedTransitionApi")
+                    optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
+                }
+            }
         }
     }
 }

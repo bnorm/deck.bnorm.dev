@@ -5,10 +5,11 @@ pluginManagement {
         mavenCentral()
         google()
         gradlePluginPortal()
+        maven { setUrl("https://redirector.kotlinlang.org/maven/dev") }
     }
 
     plugins {
-        val kotlinVersion = "2.1.20"
+        val kotlinVersion = "2.2.0-dev-12451"
 
         kotlin("multiplatform") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
@@ -23,6 +24,7 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
+        maven { setUrl("https://redirector.kotlinlang.org/maven/dev") }
     }
 }
 
