@@ -24,7 +24,7 @@ private const val VALIDATION = true
 fun validateSampleResource(sample: AnnotatedString, file: String): AnnotatedString {
     if (VALIDATION) {
         val expected by sampleResource(file)
-        require(expected == sample.text)
+        require(expected == sample.text) { "Expected: $expected\n\nActual: ${sample.text}"}
     }
 
     return sample
