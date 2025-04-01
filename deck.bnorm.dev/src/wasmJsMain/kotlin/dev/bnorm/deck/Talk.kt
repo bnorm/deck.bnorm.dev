@@ -6,17 +6,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.StoryState
+import dev.bnorm.storyboard.core.rememberStoryState
 import dev.bnorm.storyboard.easel.EmbeddedStory
 
 @Composable
 fun Talk(title: @Composable () -> Unit, videoId: String, storyboard: Storyboard? = null) {
-    val state = remember(storyboard) { storyboard?.let { StoryState(it) } }
+    val state = storyboard?.let { rememberStoryState(it) }
 
     Surface(elevation = 8.dp, shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(32.dp), modifier = Modifier.padding(32.dp)) {

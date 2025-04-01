@@ -7,16 +7,20 @@ import androidx.compose.ui.window.application
 import dev.bnorm.deck.shared.broadcast.Broadcaster
 import dev.bnorm.deck.shared.broadcast.LocalBroadcaster
 import dev.bnorm.kc25.createStoryboard
+import dev.bnorm.storyboard.core.ExperimentalStoryStateApi
+import dev.bnorm.storyboard.core.rememberStoryState
 import dev.bnorm.storyboard.easel.DesktopStory
 import org.jetbrains.compose.reload.DevelopmentEntryPoint
 
+@OptIn(ExperimentalStoryStateApi::class)
 fun main() {
     application {
-        val storyboard = createStoryboard()
+        val state = rememberStoryState()
         DevelopmentEntryPoint {
+            state.updateStoryboard(createStoryboard())
             CompositionLocalProvider(LocalBroadcaster provides Broadcaster("story-kc25")) {
                 MaterialTheme(colors = darkColors()) {
-                    DesktopStory(storyboard = storyboard)
+                    DesktopStory(state)
                 }
             }
         }
