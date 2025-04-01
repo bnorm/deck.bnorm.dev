@@ -9,6 +9,7 @@ import dev.bnorm.kc25.sections.Title
 import dev.bnorm.kc25.sections.existing.ComposeExample
 import dev.bnorm.kc25.sections.existing.DataFrameExample
 import dev.bnorm.kc25.sections.existing.PowerAssertExample
+import dev.bnorm.kc25.sections.intro.ThirdPlugin
 import dev.bnorm.kc25.sections.plugin.BuildableIntro
 import dev.bnorm.kc25.sections.plugin.Repository
 import dev.bnorm.kc25.sections.plugin.fir.FirExtensions
@@ -53,22 +54,19 @@ private fun StoryboardBuilder.Intro() {
 }
 
 private fun StoryboardBuilder.Outline() {
-    SectionAndTitle("Third?") {
-        RevealScene(
-            "$BULLET_1 Writing Your First Kotlin Compiler Plugin.",
-            "    $BULLET_2 [link to KotlinConf talk here]",
-            "    $BULLET_2 Primarily JVM bytecode manipulation.",
-            "$BULLET_1 Writing Your Second Kotlin Compiler Plugin.",
-            "    $BULLET_2 [link to first blog post part here]",
-            "    $BULLET_2 Primarily IR manipulation.",
-            "$BULLET_1 Writing Your Third Kotlin Compiler Plugin.",
-            "    $BULLET_2 This talk!",
-            "    $BULLET_2 Primarily FIR manipulation.",
-        )
+    section("Third?") {
+        SectionTitle(animateToBody = true)
+        ThirdPlugin()
     }
 
-    SectionAndTitle("What is a compiler-plugin?") {
-        // TODO should each of these show an example of what code is being generated/transformed?
+    // TODO add animation to title to change from third to forth
+    Title()
+
+    section("Compiler-Plugin?") {
+        SectionTitle(animateToBody = true)
+
+        // TODO need a section comparing it to KSP
+
         RevealScene(
             "$BULLET_1 An extension to the Kotlin compiler to achieve some language-level feature.",
             "$BULLET_1 For example:",
@@ -78,32 +76,15 @@ private fun StoryboardBuilder.Outline() {
             "    $BULLET_2 Power-Assert - Rewrites function calls to include call-site information about parameters.",
             "$BULLET_1 All of these compiler-plugins generate or transform Kotlin code as it is being compiled.",
         )
-    }
-
-    section("What is a compiler-plugin?") {
-        SectionTitle()
 
         // TODO Serialization
         ComposeExample()
         // TODO Spring?
         DataFrameExample()
         PowerAssertExample()
-    }
 
-//    SectionAndTitle("Why would you need one?") {
-//        // TODO this section may not be important if the previous section includes examples?
-//        RevealScene(
-//            "$BULLET_1 Boiler plate reduction.",
-//            "    $BULLET_2 Compiler-plugins can help write the boilerplate code for you.",
-//            "    $BULLET_2 Boilerplate is time consuming and error-prone.",
-//            "$BULLET_1 Colored functions.",
-//            "    $BULLET_2 Compose offers a different \"color\" of function declarations.",
-//            "    $BULLET_2 Allows for a different kind of behavior encapsulation, similar to suspend functions.",
-//            "$BULLET_1 Dynamic properties.",
-//            "    $BULLET_2 Generate synthetic properties based on some external schema.",
-//            "    $BULLET_2 Achieve dynamic-typed like behavior in a static-typed language.",
-//        )
-//    }
+        SectionTitle(animateFromBody = true)
+    }
 
     SectionAndTitle("Let's build one!") {
         // TODO reference template project for faster project setup
