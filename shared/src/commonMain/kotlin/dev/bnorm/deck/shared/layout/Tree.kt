@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
 private enum class TreeSubSlot {
@@ -62,7 +66,7 @@ fun <T> HorizontalTree(
     // TODO support staggering nodes at the same depth?
     //  - more important in a top-down tree
 
-    connection: @Composable (parent: T, parentRect: IntRect, child: T, childRect: IntRect) -> Unit = { _, _, _, _ -> },
+    connection: @Composable (parent: T, parentRect: Rect, child: T, childRect: Rect) -> Unit = { _, _, _, _ -> },
     content: @Composable (node: T) -> Unit,
 ) {
     SubcomposeLayout(modifier) { constraints ->
@@ -186,18 +190,18 @@ fun <T> HorizontalTree(
             for (child in nodes) {
                 val parent = child.parent ?: break
 
-                val offset = IntOffset(parent.x, minOf(parent.y, child.y))
-                val parentRect = IntRect(
-                    left = parent.x,
-                    top = parent.y,
-                    right = parent.x + parent.placeable.width,
-                    bottom = parent.y + parent.placeable.height,
+                val offset = Offset(parent.x.toFloat(), minOf(parent.y, child.y).toFloat())
+                val parentRect = Rect(
+                    left = parent.x.toFloat(),
+                    top = parent.y.toFloat(),
+                    right = (parent.x + parent.placeable.width).toFloat(),
+                    bottom = (parent.y + parent.placeable.height).toFloat(),
                 )
-                val childRect = IntRect(
-                    left = child.x,
-                    top = child.y,
-                    right = child.x + child.placeable.width,
-                    bottom = child.y + child.placeable.height,
+                val childRect = Rect(
+                    left = child.x.toFloat(),
+                    top = child.y.toFloat(),
+                    right = (child.x + child.placeable.width).toFloat(),
+                    bottom = (child.y + child.placeable.height).toFloat(),
                 )
                 connection(parent.value, parentRect.translate(-offset), child.value, childRect.translate(-offset))
             }
@@ -213,12 +217,12 @@ fun <T> HorizontalTree(
             nodes[index].curve = measurable.measure(constraints)
         }
 
-        layout(minWidth, height) {
+        layout(minWidth, maxOf(height, constraints.minHeight)) {
             for (node in nodes) {
                 node.placeable.place(x = node.x, y = node.y)
 
                 val parent = node.parent ?: continue
-                val curve = node.curve!!
+                val curve = node.curve ?: continue
                 curve.place(x = parent.x, y = minOf(parent.y, node.y))
             }
         }
