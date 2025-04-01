@@ -8,6 +8,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -16,10 +18,15 @@ import androidx.compose.ui.text.font.FontStyle
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.core.SceneDecorator
+import dev.bnorm.storyboard.text.highlight.CacheableHighlighter
 import dev.bnorm.storyboard.text.highlight.Highlighting
+import dev.bnorm.storyboard.text.highlight.KotlinHighlighter
+import dev.bnorm.storyboard.text.highlight.LocalHighlighter
 
 val THEME_DECORATOR = SceneDecorator { content ->
-    Highlighting(HIGHLIGHTING) {
+    val highlighting = HIGHLIGHTING
+    var highlighter = remember(highlighting) { CacheableHighlighter(KotlinHighlighter(highlighting)) }
+    CompositionLocalProvider(LocalHighlighter provides highlighter) {
         MaterialTheme(
             colors = DARK_COLORS,
             typography = Typography(defaultFontFamily = Inter)
