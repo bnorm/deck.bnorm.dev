@@ -1,5 +1,7 @@
 package dev.bnorm.evolved.template
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -8,21 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.easel.SceneSection
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 
 private object SharedHeaderKey
 
 @Composable
-fun SceneScope<*>.Header(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun Header(
     textStyle: TextStyle = MaterialTheme.typography.h3,
     title: @Composable () -> Unit = SceneSection.title,
 ) {
     Column(
-        modifier = Modifier.sharedElement(
-            rememberSharedContentState(key = SharedHeaderKey),
-            animatedVisibilityScope = this,
-        )
+        modifier = Modifier.sharedElement(rememberSharedContentState(SharedHeaderKey))
     ) {
         Box(Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 16.dp)) {
             ProvideTextStyle(textStyle) {

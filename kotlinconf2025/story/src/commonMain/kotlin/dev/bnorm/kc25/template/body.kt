@@ -1,5 +1,7 @@
 package dev.bnorm.kc25.template
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -11,11 +13,13 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeScope
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.easel.SceneSection
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 
 @Composable
-fun SceneScope<*>.HeaderAndBody(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun HeaderAndBody(
     kodee: KodeeScope.() -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
@@ -29,10 +33,7 @@ fun SceneScope<*>.HeaderAndBody(
                 val section = SceneSection.current
                 Header(
                     title = section.title,
-                    modifier = Modifier.sharedElement(
-                        rememberSharedContentState(key = section),
-                        animatedVisibilityScope = this@HeaderAndBody,
-                    )
+                    modifier = Modifier.sharedElement(rememberSharedContentState(key = section))
                 )
             }
             Body(modifier.fillMaxSize(), {
@@ -55,7 +56,8 @@ fun Body(
 }
 
 @Composable
-fun SceneScope<*>.CornerKodee(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun CornerKodee(
     kodee: KodeeScope.() -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,

@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeSitting
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.easel.SceneSection
@@ -52,7 +51,8 @@ fun StoryboardBuilder.SectionTitle(
 }
 
 @Composable
-fun SceneScope<Int>.SectionTitle(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun SectionTitle(
     showAsBody: Transition<Boolean>,
     title: @Composable () -> Unit = SceneSection.title,
 ) {
@@ -83,7 +83,8 @@ fun SceneScope<Int>.SectionTitle(
 }
 
 @Composable
-private fun SceneScope<Int>.TitleWithKodee(
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+private fun TitleWithKodee(
     showAsHeader: Transition<Boolean>,
     title: @Composable () -> Unit,
 ) {

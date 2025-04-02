@@ -1,12 +1,9 @@
 package dev.bnorm.kc24.examples
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.*
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,7 +20,9 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.storyboard.core.*
+import dev.bnorm.storyboard.core.AdvanceDirection
+import dev.bnorm.storyboard.core.Frame
+import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.jvm.JvmName
@@ -78,7 +77,7 @@ fun StoryboardBuilder.slideForExample(
     builder: ExampleState.Builder.() -> Unit,
     enterTransition: (AdvanceDirection) -> EnterTransition = { EnterTransition.None },
     exitTransition: (AdvanceDirection) -> ExitTransition = { ExitTransition.None },
-    content: @Composable ExampleScope.() -> Unit,
+    content: @Composable context(AnimatedVisibilityScope, SharedTransitionScope) ExampleScope.() -> Unit,
 ) {
     val states = buildExampleStates(builder)
     val exit = states.last().copy(showGradle = false, showOutput = OutputState.Hidden, conclusionIndex = 0)
@@ -94,7 +93,6 @@ fun StoryboardBuilder.slideForExample(
 
         val scope = remember(slideScope, exampleState) {
             object : ExampleScope {
-                override val sceneScope: SceneScope<*> get() = slideScope
                 override val transition: Transition<out ExampleState> get() = exampleState
             }
         }

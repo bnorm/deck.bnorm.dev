@@ -35,7 +35,7 @@ fun StoryboardBuilder.AssertEqualsAndNotNullExample() {
         enterTransition = EnterForward,
         exitTransition = ExitForward,
     ) {
-        sceneScope.TitleAndBody(
+        TitleAndBody(
             kodee = {
                 transition.both(condition = { it.showOutput != OutputState.Hidden }) {
                     KodeeSurprised(modifier = Modifier.requiredSize(150.dp))

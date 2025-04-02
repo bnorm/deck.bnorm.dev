@@ -27,9 +27,7 @@ import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.toInt
-import dev.bnorm.storyboard.easel.SceneSection
-import dev.bnorm.storyboard.easel.enter
-import dev.bnorm.storyboard.easel.exit
+import dev.bnorm.storyboard.easel.*
 import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -106,7 +104,6 @@ fun StoryboardBuilder.HowCanYouHelp() {
                             },
                             modifier = Modifier.sharedBounds(
                                 rememberSharedContentState("docs-link"),
-                                animatedVisibilityScope = this@scene,
                                 boundsTransform = { _, _ -> defaultSpec() },
                             ),
                         )
@@ -182,7 +179,6 @@ fun StoryboardBuilder.Resources() {
                             },
                             modifier = Modifier.sharedBounds(
                                 rememberSharedContentState("docs-link"),
-                                animatedVisibilityScope = this@scene,
                                 boundsTransform = { _, _ -> defaultSpec(delay = 300.milliseconds) },
                             ),
                         )

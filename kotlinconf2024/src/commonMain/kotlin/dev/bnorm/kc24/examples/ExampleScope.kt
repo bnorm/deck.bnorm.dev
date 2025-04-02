@@ -6,6 +6,5 @@ import dev.bnorm.storyboard.core.SceneScope
 
 @Stable
 interface ExampleScope {
-    val sceneScope: SceneScope<*>
     val transition: Transition<out ExampleState>
 }
