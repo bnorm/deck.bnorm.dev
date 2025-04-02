@@ -8,16 +8,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.*
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.CONFERENCE_PURPLE
-import dev.bnorm.kc25.template.CONFERENCE_RED
-import dev.bnorm.kc25.template.CONFERENCE_YELLOW
+import dev.bnorm.kc25.template.BIRD_PURPLE
+import dev.bnorm.kc25.template.BIRD_RED
+import dev.bnorm.kc25.template.BIRD_YELLOW
 
 @Composable
 fun KotlinConfBird(visible: Transition<Boolean>): VectorPainter = rememberVectorPainter(
     name = "KotlinConfBird",
-    defaultWidth = 780.dp,
+    defaultWidth = 840.dp,
     defaultHeight = 720.dp,
-    viewportWidth = 780f,
+    viewportWidth = 840f,
     viewportHeight = 720f,
     autoMirror = false,
 ) { _, _ ->
@@ -392,9 +392,9 @@ fun KotlinConfBird(visible: Transition<Boolean>): VectorPainter = rememberVector
 
 private val paint0_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
-        1f to CONFERENCE_PURPLE
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
+        1f to BIRD_PURPLE
     ),
     start = Offset(53.03f, 152.61f),
     end = Offset(54.46f, 159.5f),
@@ -402,12 +402,12 @@ private val paint0_linear_12_2 = Brush.linearGradient(
 
 private val paint1_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
         0.63f to Color(0xFFEE01B4).copy(alpha = 0.0f),
         0.86f to Color(0xFFED01C1),
         0.91f to Color(0xFFEA00DD),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(5.34f, 151.53f),
     end = Offset(154.65f, 384.52f),
@@ -415,14 +415,14 @@ private val paint1_linear_12_2 = Brush.linearGradient(
 
 private val paint2_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
         0.64f to Color(0xFFF70169).copy(alpha = 0.0f),
         0.68f to Color(0xFFF4017E),
         0.81f to Color(0xFFF001A4),
         0.85f to Color(0xFFEE01B3).copy(alpha = 0.0f),
         0.88f to Color(0xFFED01C0),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(4.26f, 150.45f),
     end = Offset(696.37f, 189.26f),
@@ -430,10 +430,10 @@ private val paint2_linear_12_2 = Brush.linearGradient(
 
 private val paint3_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.62f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0f to BIRD_YELLOW,
+        0.62f to BIRD_RED.copy(alpha = 0.0f),
         0.66f to Color(0xFFF40181),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(0.82f, 112.14f),
     end = Offset(705.15f, 176.54f),
@@ -441,13 +441,13 @@ private val paint3_linear_12_2 = Brush.linearGradient(
 
 private val paint4_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
         0.65f to Color(0xFFF5017B).copy(alpha = 0.0f),
         0.67f to Color(0xFFF1019A),
         0.76f to Color(0xFFEC01C6),
         0.79f to Color(0xFFEA00D7).copy(alpha = 0.0f),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(-1.66f, 152.07f),
     end = Offset(791.22f, 76.84f),
@@ -455,11 +455,11 @@ private val paint4_linear_12_2 = Brush.linearGradient(
 
 private val paint5_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
         0.71f to Color(0xFFF3018D).copy(alpha = 0.0f),
         0.8f to Color(0xFFF001A9),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(3.18f, 150.45f),
     end = Offset(675.78f, 252.97f),
@@ -467,11 +467,11 @@ private val paint5_linear_12_2 = Brush.linearGradient(
 
 private val paint6_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.34f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.34f to BIRD_RED,
         0.63f to Color(0xFFF70169).copy(alpha = 0.0f),
         0.67f to Color(0xFFF40181),
-        0.96f to CONFERENCE_PURPLE
+        0.96f to BIRD_PURPLE
     ),
     start = Offset(27.74f, -62.21f),
     end = Offset(490.87f, 419.97f),
@@ -479,11 +479,11 @@ private val paint6_linear_12_2 = Brush.linearGradient(
 
 private val paint7_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW.copy(alpha = 0.0f),
-        0.35f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0f to BIRD_YELLOW.copy(alpha = 0.0f),
+        0.35f to BIRD_RED.copy(alpha = 0.0f),
         0.56f to Color(0xFFEC00CC),
         0.82f to Color(0xFFED01BB).copy(alpha = 0.0f),
-        0.89f to CONFERENCE_PURPLE
+        0.89f to BIRD_PURPLE
     ),
     start = Offset(21.7f, 217.73f),
     end = Offset(685.31f, 223.15f),
@@ -491,11 +491,11 @@ private val paint7_linear_12_2 = Brush.linearGradient(
 
 private val paint8_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW.copy(alpha = 0.0f),
-        0.16f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0f to BIRD_YELLOW.copy(alpha = 0.0f),
+        0.16f to BIRD_RED.copy(alpha = 0.0f),
         0.24f to Color(0xFFFB0241).copy(alpha = 0.0f),
         0.3f to Color(0xFFF90156),
-        0.69f to CONFERENCE_PURPLE
+        0.69f to BIRD_PURPLE
     ),
     start = Offset(275.83f, 322.99f),
     end = Offset(589.6f, 336.12f),
@@ -503,10 +503,10 @@ private val paint8_linear_12_2 = Brush.linearGradient(
 
 private val paint9_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW.copy(alpha = 0.0f),
-        0.62f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0f to BIRD_YELLOW.copy(alpha = 0.0f),
+        0.62f to BIRD_RED.copy(alpha = 0.0f),
         0.68f to Color(0xFFF6016C),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(-1.66f, 149.37f),
     end = Offset(653.63f, 285.44f),
@@ -514,10 +514,10 @@ private val paint9_linear_12_2 = Brush.linearGradient(
 
 private val paint10_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0.0474716f to CONFERENCE_YELLOW,
-        0.102406f to CONFERENCE_YELLOW,
-        0.398382f to CONFERENCE_RED,
-        1f to CONFERENCE_PURPLE
+        0.0474716f to BIRD_YELLOW,
+        0.102406f to BIRD_YELLOW,
+        0.398382f to BIRD_RED,
+        1f to BIRD_PURPLE
     ),
     start = Offset(-1.70171f, 152.307f),
     end = Offset(658.021f, 284.949f),
@@ -525,11 +525,11 @@ private val paint10_linear_12_2 = Brush.linearGradient(
 
 private val paint11_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0.15f to CONFERENCE_YELLOW,
+        0.15f to BIRD_YELLOW,
         0.26f to Color(0xFFFF801A).copy(alpha = 0.0f),
-        0.4f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0.4f to BIRD_RED.copy(alpha = 0.0f),
         0.48f to Color(0xFFFD022E),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(3.18f, 150.45f),
     end = Offset(584.84f, -192.23f),
@@ -537,9 +537,9 @@ private val paint11_linear_12_2 = Brush.linearGradient(
 
 private val paint12_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
-        1f to CONFERENCE_PURPLE
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
+        1f to BIRD_PURPLE
     ),
     start = Offset(-2.05f, 145.06f),
     end = Offset(609.05f, 343.57f),
@@ -547,10 +547,10 @@ private val paint12_linear_12_2 = Brush.linearGradient(
 
 private val paint13_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.22f to CONFERENCE_YELLOW.copy(alpha = 0.0f),
-        0.4f to CONFERENCE_RED,
-        1f to CONFERENCE_PURPLE
+        0f to BIRD_YELLOW,
+        0.22f to BIRD_YELLOW.copy(alpha = 0.0f),
+        0.4f to BIRD_RED,
+        1f to BIRD_PURPLE
     ),
     start = Offset(6.96f, 150.45f),
     end = Offset(100.69f, 335.21f),
@@ -558,11 +558,11 @@ private val paint13_linear_12_2 = Brush.linearGradient(
 
 private val paint14_radial_12_2 = Brush.radialGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
+        0f to BIRD_YELLOW,
         0.22f to Color(0xFFFF451B),
-        0.38f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0.38f to BIRD_RED.copy(alpha = 0.0f),
         0.45f to Color(0xFFFE0227),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     center = Offset(-1.31f, 149.2f),
     radius = 722.57f
@@ -570,11 +570,11 @@ private val paint14_radial_12_2 = Brush.radialGradient(
 
 private val paint15_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
         0.66f to Color(0xFFEA00DF).copy(alpha = 0.0f),
         0.69f to Color(0xFFE800E9),
-        0.94f to CONFERENCE_PURPLE
+        0.94f to BIRD_PURPLE
     ),
     start = Offset(227.04f, 775.74f),
     end = Offset(949.27f, 670.54f),
@@ -582,12 +582,12 @@ private val paint15_linear_12_2 = Brush.linearGradient(
 
 private val paint16_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
         0.87f to Color(0xFFEA00D9).copy(alpha = 0.0f),
         0.91f to Color(0xBEE900E5),
         0.93f to Color(0xFFE800E9),
-        0.93f to CONFERENCE_PURPLE
+        0.93f to BIRD_PURPLE
     ),
     start = Offset(1.57f, 150.99f),
     end = Offset(832.73f, 467.89f),
@@ -595,11 +595,11 @@ private val paint16_linear_12_2 = Brush.linearGradient(
 
 private val paint20_linear_26_812 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED.copy(alpha = 0.0f),
         0.62f to Color(0xFFF70167).copy(alpha = 0.0f),
         0.73f to Color(0xFFF40182),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(115.83f, 351.92f),
     end = Offset(592.2f, 359.18f),
@@ -607,11 +607,11 @@ private val paint20_linear_26_812 = Brush.linearGradient(
 
 private val paint21_linear_26_812 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED.copy(alpha = 0.0f),
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED.copy(alpha = 0.0f),
         0.62f to Color(0xFFF70167).copy(alpha = 0.0f),
         0.73f to Color(0xFFF40182),
-        1f to CONFERENCE_PURPLE
+        1f to BIRD_PURPLE
     ),
     start = Offset(115.83f, 351.92f),
     end = Offset(592.2f, 359.18f),
@@ -619,10 +619,10 @@ private val paint21_linear_26_812 = Brush.linearGradient(
 
 private val paint18_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
         0.69f to Color(0xFFEA00DA).copy(alpha = 0.0f),
-        0.95f to CONFERENCE_PURPLE
+        0.95f to BIRD_PURPLE
     ),
     start = Offset(10.55f, 96.1f),
     end = Offset(360.68f, 535.02f),
@@ -630,9 +630,9 @@ private val paint18_linear_12_2 = Brush.linearGradient(
 
 private val paint19_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
-        1f to CONFERENCE_PURPLE
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
+        1f to BIRD_PURPLE
     ),
     start = Offset(3.19f, 149.37f),
     end = Offset(676.78f, 244.26f),
@@ -640,9 +640,9 @@ private val paint19_linear_12_2 = Brush.linearGradient(
 
 private val paint20_linear_12_2 = Brush.linearGradient(
     colorStops = arrayOf(
-        0f to CONFERENCE_YELLOW,
-        0.4f to CONFERENCE_RED,
-        1f to CONFERENCE_PURPLE
+        0f to BIRD_YELLOW,
+        0.4f to BIRD_RED,
+        1f to BIRD_PURPLE
     ),
     start = Offset(11.26f, 146.68f),
     end = Offset(584.45f, 361.87f),

@@ -53,11 +53,10 @@ fun StoryboardBuilder.Title() {
         ),
     ) {
         Box(Modifier.fillMaxSize()) {
-            // TODO the bird is clipped on the right side; can we fix that?
             Image(
                 painter = KotlinConfBird(frame.createChildTransition { it is Frame.State }),
                 contentDescription = "",
-                modifier = Modifier.size(508.dp).offset(416.dp, 16.dp),
+                modifier = Modifier.size(548.dp).offset(416.dp, 0.dp),
             )
 
             with(LocalDensity.current) {
