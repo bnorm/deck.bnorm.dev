@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
     kotlin("plugin.compose")
     id("org.jetbrains.compose")
 }
@@ -40,7 +39,8 @@ kotlin {
                 api("dev.bnorm.storyboard:storyboard-easel")
                 api("dev.bnorm.storyboard:storyboard-text")
 
-                implementation("io.ktor:ktor-client-core:$ktor_version")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+                api("io.ktor:ktor-client-core:$ktor_version")
                 implementation("io.ktor:ktor-client-auth:$ktor_version")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")

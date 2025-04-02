@@ -8,23 +8,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
-import dev.bnorm.deck.shared.broadcast.BroadcastIndex
-import dev.bnorm.deck.shared.broadcast.BroadcastMessage
-import dev.bnorm.deck.shared.broadcast.toStoryboard
+import dev.bnorm.kc25.broadcast.BroadcastMessage
 import dev.bnorm.kc25.createStoryboard
+import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.rememberStoryState
 import dev.bnorm.storyboard.easel.EmbeddedStory
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
+fun BroadcastMessage.toStoryboard(): Storyboard.Index {
+    return Storyboard.Index(sceneIndex, stateIndex)
+}
+
 @Composable
 fun App() {
     val storyboard = rememberStoryState(remember { createStoryboard() })
+    val broadcastClient = remember { BroadcastClient(bearerToken = null, BroadcastMessage.serializer()) }
 
     var latest by remember { mutableStateOf<BroadcastMessage?>(null) }
     LaunchedEffect(Unit) {
         while (true) {
-            BroadcastClient.subscribe("story-kc25").collect {
+            broadcastClient.subscribe("story-kc25").collect {
                 latest = it
             }
             delay(30.seconds)
@@ -37,7 +41,7 @@ fun App() {
                 Text("Waiting to start...", fontSize = 50.sp)
             }
 
-            is BroadcastIndex -> {
+            else -> {
                 EmbeddedStory(storyboard)
 
                 LaunchedEffect(latest) {
