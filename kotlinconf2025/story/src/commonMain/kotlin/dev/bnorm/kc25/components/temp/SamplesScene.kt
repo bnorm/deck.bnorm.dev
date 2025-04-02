@@ -2,27 +2,31 @@ package dev.bnorm.kc25.components.temp
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.components.sampleResource
-import dev.bnorm.kc25.template.HeaderAndBody
+import dev.bnorm.kc25.template.Body
+import dev.bnorm.kc25.template.Header
+import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.kc25.template.code.toCode
+import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 
 fun StoryboardBuilder.SamplesScene(files: List<String>) {
-    scene(
+    KodeeScene(
         stateCount = files.size,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        HeaderAndBody {
+        Header()
+        Body {
             val samples = buildList {
                 for (sample in files) {
                     add(sampleResource(sample).value.toCode())
@@ -30,8 +34,10 @@ fun StoryboardBuilder.SamplesScene(files: List<String>) {
             }
 
             val verticalScrollState = rememberScrollState()
-            Box(modifier = Modifier.Companion.verticalScroll(verticalScrollState)) {
-                Text(samples[currentState], modifier = Modifier.Companion.fillMaxSize().padding(32.dp))
+            ProvideTextStyle(MaterialTheme.typography.code1) {
+                Box(modifier = Modifier.verticalScroll(verticalScrollState)) {
+                    Text(samples[currentState], modifier = Modifier.fillMaxSize())
+                }
             }
         }
     }

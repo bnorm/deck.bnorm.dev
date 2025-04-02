@@ -14,7 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.core.SceneDecorator
@@ -29,7 +32,7 @@ val THEME_DECORATOR = SceneDecorator { content ->
     CompositionLocalProvider(LocalHighlighter provides highlighter) {
         MaterialTheme(
             colors = DARK_COLORS,
-            typography = Typography(defaultFontFamily = Inter)
+            typography = Kc25Typography(),
         ) {
             Surface {
                 Box(
@@ -44,22 +47,16 @@ val THEME_DECORATOR = SceneDecorator { content ->
     }
 }
 
-// Conference Palate
-// Yellow: 0xFFFF941A
-// Light purple: 0xFFC201D7
-// Dark purple: 0xFF480079
-
-val CONFERENCE_YELLOW = Color(0xFFFF9419)
-val CONFERENCE_RED = Color(0xFFFF021D)
-val CONFERENCE_PURPLE = Color(0xFFE600FF)
+val BIRD_YELLOW = Color(0xFFFF9419)
+val BIRD_RED = Color(0xFFFF021D)
+val BIRD_PURPLE = Color(0xFFE600FF)
 
 val DARK_COLORS = darkColors(
     background = Color.Black,
     surface = Color(0xFF1D002E),
     onBackground = Color(0xFFBCBEC4),
-    primary = CONFERENCE_PURPLE,
-    primaryVariant = Color(0xFF480079),
-    secondary = CONFERENCE_YELLOW,
+    primary = Color(0xFF8854FF),
+    secondary = Color(0xFFFF5800),
 )
 
 val HIGHLIGHTING: Highlighting
@@ -81,3 +78,37 @@ val HIGHLIGHTING: Highlighting
             typeParameters = simple + SpanStyle(color = Color(0xFF16BAAC))
         }
     }
+
+val Typography.code1: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = JetBrainsMono,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.5.sp
+    )
+
+val Typography.code2: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = JetBrainsMono,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp
+    )
+
+
+@Composable
+private fun Kc25Typography(): Typography {
+    val typography = Typography(defaultFontFamily = Inter)
+    return typography.copy(
+        body1 = typography.body1.copy(
+            fontWeight = FontWeight.Normal,
+            fontSize = 24.sp,
+            lineHeight = 24.sp,
+            letterSpacing = 0.sp
+        )
+    )
+}

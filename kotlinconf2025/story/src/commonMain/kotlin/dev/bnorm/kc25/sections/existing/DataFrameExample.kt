@@ -4,7 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
@@ -12,14 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.deck.shared.mac.MacTerminal
 import dev.bnorm.kc25.components.temp.BULLET_1
-import dev.bnorm.kc25.template.HeaderAndBody
+import dev.bnorm.kc25.template.*
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code.toCode
@@ -27,8 +28,6 @@ import dev.bnorm.storyboard.core.DisplayType
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.easel.section
 import dev.bnorm.storyboard.easel.template.RevealEach
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
 import dev.bnorm.storyboard.ui.LocalDisplayType
@@ -212,65 +211,54 @@ fun StoryboardBuilder.DataFrameExample() {
     require(SAMPLES.size == OUTPUT.size) { "Samples (${SAMPLES.size}) != Outputs (${OUTPUT.size})" }
 
     section("DataFrame") {
-        scene(
-            stateCount = 3,
-            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-        ) {
-            HeaderAndBody {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(horizontal = 64.dp, vertical = 32.dp),
-                ) {
-                    ProvideTextStyle(MaterialTheme.typography.h5) {
-                        RevealEach(frame.createChildTransition { it.toState() }) {
-                            item { Text("$BULLET_1 DataFrame is an abstraction for working with structured data.") }
-                            item { Text("$BULLET_1 It is hierarchical, interoperable, generic, and immutable.") }
-                            item { Text("$BULLET_1 And now, thanks to a compiler-plugin, inferred.") }
-                            // item { Text("$BULLET_1 The DataFrame compiler-plugin infers the schema at each step,") }
-                            // item { Text("$BULLET_1 and generates synthetic extension properties for each schema.") }
-                        }
-                    }
+        KodeeScene(stateCount = 3) {
+            Header()
+            Body {
+                RevealEach(frame.createChildTransition { it.toState() }) {
+                    item { Text("$BULLET_1 DataFrame is an abstraction for working with structured data.") }
+                    item { Text("$BULLET_1 It is hierarchical, interoperable, generic, and immutable.") }
+                    item { Text("$BULLET_1 And now, thanks to a compiler-plugin, inferred.") }
+                    // item { Text("$BULLET_1 The DataFrame compiler-plugin infers the schema at each step,") }
+                    // item { Text("$BULLET_1 and generates synthetic extension properties for each schema.") }
                 }
             }
         }
 
-        scene(
-            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-        ) {
+        KodeeScene {
+            Header()
+
+            // TODO could I hide some animation controls, to make them pausable and navigable?
+            // When rendering the scene for preview, render the finished state and do not animate the sample.
             val displayType = LocalDisplayType.current
-            HeaderAndBody {
-                // TODO could I hide some animation controls, to make them pausable and navigable?
-                // When rendering the scene for preview, render the finished state and do not animate the sample.
-                var sampleIndex by remember {
-                    mutableIntStateOf(if (displayType == DisplayType.Story) 0 else SAMPLES.lastIndex)
-                }
-                val sampleTransition = updateTransition(sampleIndex)
+            var sampleIndex by remember {
+                mutableIntStateOf(if (displayType == DisplayType.Story) 0 else SAMPLES.lastIndex)
+            }
+            val sampleTransition = updateTransition(sampleIndex)
 
-                var outputIndex by remember { mutableIntStateOf(sampleIndex) }
-                val outputTransition = updateTransition(outputIndex)
+            var outputIndex by remember { mutableIntStateOf(sampleIndex) }
+            val outputTransition = updateTransition(outputIndex)
 
-                StoryEffect(Unit) {
-                    while (true) {
-                        delay(2.seconds)
-                        if (sampleIndex == SAMPLES.lastIndex) {
-                            // Delay a little longer on the last sample.
-                            delay(3.seconds)
-                            sampleIndex = 0
-                        } else {
-                            sampleIndex += 1
-                            // Delay updating the output just a little
-                            // until the sample is done updating.
-                            delay(1200.milliseconds)
-                        }
-
-                        outputIndex = sampleIndex
+            StoryEffect(Unit) {
+                while (true) {
+                    delay(2.seconds)
+                    if (sampleIndex == SAMPLES.lastIndex) {
+                        // Delay a little longer on the last sample.
+                        delay(3.seconds)
+                        sampleIndex = 0
+                    } else {
+                        sampleIndex += 1
+                        // Delay updating the output just a little
+                        // until the sample is done updating.
+                        delay(1200.milliseconds)
                     }
-                }
 
+                    outputIndex = sampleIndex
+                }
+            }
+
+            Body {
                 Box(Modifier.fillMaxSize()) {
-                    Box(Modifier.padding(horizontal = 64.dp, vertical = 32.dp)) {
+                    ProvideTextStyle(MaterialTheme.typography.code1) {
                         MagicText(sampleTransition.createChildTransition { SAMPLES[it].get().toWords() })
                     }
 
@@ -279,12 +267,8 @@ fun StoryboardBuilder.DataFrameExample() {
                         enter = slideInVertically(tween(900, delayMillis = 900, easing = EaseIn)) { it },
                         exit = slideOutVertically(tween(900, easing = EaseOut)) { it },
                     ) {
-                        MacTerminal(
-                            modifier = Modifier.offset(y = 278.dp)
-                                .fillMaxWidth()
-                                .wrapContentHeight(unbounded = true, align = Alignment.Top)
-                        ) {
-                            ProvideTextStyle(MaterialTheme.typography.body2.copy(fontFamily = JetBrainsMono)) {
+                        MacTerminal(modifier = Modifier.offset(y = 278.dp).fillMaxWidth()) {
+                            ProvideTextStyle(MaterialTheme.typography.code2) {
                                 MagicText(outputTransition.createChildTransition { OUTPUT[it] })
                             }
                         }

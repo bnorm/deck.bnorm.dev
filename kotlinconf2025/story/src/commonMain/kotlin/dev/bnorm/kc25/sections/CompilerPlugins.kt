@@ -20,7 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.HeaderAndBody
+import dev.bnorm.kc25.template.Header
+import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.storyboard.core.StoryboardBuilder
 
@@ -40,7 +41,7 @@ private fun StoryboardBuilder.ArchitectureOverview() {
     )
 
     class State(val visible: Int, val scale: Float)
-    scene(
+    KodeeScene(
         buildList<State> {
             add(State(-1, 0f))
             for (i in titles.indices) {
@@ -50,6 +51,8 @@ private fun StoryboardBuilder.ArchitectureOverview() {
             }
         }
     ) {
+        Header()
+
         val offset by frame.animateDp(
             transitionSpec = { tween(500, 500, easing = EaseInOut) },
             targetValueByState = { (-960 * it.toState().visible).coerceAtMost(0).dp },
@@ -59,45 +62,43 @@ private fun StoryboardBuilder.ArchitectureOverview() {
             targetValueByState = { 0.4f + 0.6f * it.toState().scale },
         )
 
-        HeaderAndBody {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-                    .scale(scale)
-                    .wrapContentWidth(align = Alignment.Start, unbounded = true)
-            ) {
-                Row(Modifier.offset(x = offset)) {
-                    for ((index, title) in titles.withIndex()) {
-                        Spacer(Modifier.width(32.dp))
-                        frame.AnimatedVisibility(
-                            visible = { it.toState().visible >= index },
-                            enter = fadeIn(tween(500, easing = EaseInOut)),
-                            exit = fadeOut(tween(500, easing = EaseInOut)),
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+                .scale(scale)
+                .wrapContentWidth(align = Alignment.Start, unbounded = true)
+        ) {
+            Row(Modifier.offset(x = offset)) {
+                for ((index, title) in titles.withIndex()) {
+                    Spacer(Modifier.width(32.dp))
+                    frame.AnimatedVisibility(
+                        visible = { it.toState().visible >= index },
+                        enter = fadeIn(tween(500, easing = EaseInOut)),
+                        exit = fadeOut(tween(500, easing = EaseInOut)),
+                    ) {
+                        Surface(
+                            modifier = Modifier.size(896.dp, 400.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            border = BorderStroke(2.dp, MaterialTheme.colors.primary),
+                            color = MaterialTheme.colors.surface.copy(alpha = 0.75f),
                         ) {
-                            Surface(
-                                modifier = Modifier.size(896.dp, 400.dp),
-                                shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(2.dp, MaterialTheme.colors.primary),
-                                color = MaterialTheme.colors.surface.copy(alpha = 0.75f),
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(16.dp)
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.padding(16.dp)
-                                ) {
-                                    ProvideTextStyle(MaterialTheme.typography.h4) {
-                                        Text(title)
-                                    }
-                                    Spacer(Modifier.height(8.dp))
-                                    Spacer(
-                                        Modifier.height(2.dp).fillMaxWidth().background(MaterialTheme.colors.primary)
-                                    )
-
-                                    // TODO content for each phase
+                                ProvideTextStyle(MaterialTheme.typography.h4) {
+                                    Text(title)
                                 }
+                                Spacer(Modifier.height(8.dp))
+                                Spacer(
+                                    Modifier.height(2.dp).fillMaxWidth().background(MaterialTheme.colors.primary)
+                                )
+
+                                // TODO content for each phase
                             }
                         }
-                        Spacer(Modifier.width(32.dp))
                     }
+                    Spacer(Modifier.width(32.dp))
                 }
             }
         }

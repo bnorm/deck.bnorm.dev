@@ -77,6 +77,8 @@ private fun StoryboardBuilder.Outline() {
             "$BULLET_1 All of these compiler-plugins generate or transform Kotlin code as it is being compiled.",
         )
 
+        // TODO it would be cool to leave the line in place as the titles change between examples
+
         // TODO Serialization
         ComposeExample()
         // TODO Spring?

@@ -1,17 +1,24 @@
 package dev.bnorm.kc25.template
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.bnorm.storyboard.easel.SceneSection
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 
 @Composable
 fun Header(
-    title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    lineFraction: Float = 1f,
+    title: @Composable () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -22,9 +29,24 @@ fun Header(
         Spacer(Modifier.height(4.dp))
         Spacer(
             Modifier
-                .fillMaxWidth().requiredHeight(2.dp)
+                .fillMaxWidth(lineFraction).requiredHeight(2.dp)
                 .padding(horizontal = 64.dp)
-                .background(MaterialTheme.colors.secondary)
+                .background(MaterialTheme.colors.primary)
         )
+    }
+}
+
+@Composable
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun Header(modifier: Modifier = Modifier) {
+    val section = SceneSection.current
+    ProvideTextStyle(MaterialTheme.typography.h3) {
+        Header(
+            modifier = modifier.sharedElement(
+                rememberSharedContentState(key = section)
+            ),
+        ) {
+            section.title()
+        }
     }
 }

@@ -2,27 +2,24 @@ package dev.bnorm.kc25.sections.existing
 
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.HeaderAndBody
+import dev.bnorm.kc25.template.Body
+import dev.bnorm.kc25.template.Header
+import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code.toCode
+import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.core.DisplayType
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.easel.section
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
 import dev.bnorm.storyboard.ui.LocalDisplayType
@@ -90,29 +87,17 @@ private val SAMPLES = buildCodeSamples {
 
 fun StoryboardBuilder.ComposeExample() {
     section("Compose") {
-        scene(
-            stateCount = 1,
-            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-        ) {
-            HeaderAndBody {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(horizontal = 64.dp, vertical = 32.dp),
-                ) {
-                    ProvideTextStyle(MaterialTheme.typography.h5) {
-                        // TODO add some bullet points?
-                    }
-                }
+        KodeeScene(stateCount = 1) {
+            Header()
+            Body {
+                // TODO add some bullet points?
             }
         }
 
-        scene(
-            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-        ) {
+        KodeeScene {
             val displayType = LocalDisplayType.current
-            HeaderAndBody {
+            Header()
+            Body {
                 // TODO could I hide some animation controls, to make them pausable and navigable?
                 // When rendering the scene for preview, render the finished state and do not animate the sample.
                 var sampleIndex by remember {
@@ -132,13 +117,7 @@ fun StoryboardBuilder.ComposeExample() {
                     }
                 }
 
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 64.dp)
-                        .padding(top = 32.dp)
-                        .wrapContentHeight(align = Alignment.Top, unbounded = true)
-                ) {
+                ProvideTextStyle(MaterialTheme.typography.code1) {
                     MagicText(sampleTransition.createChildTransition { SAMPLES[it].get().toWords() })
                 }
             }

@@ -45,14 +45,8 @@ fun StoryboardBuilder.SectionTitle(
 ) {
     scene(
         stateCount = 1,
-        enterTransition = enter(
-            start = if (animateFromBody) DefaultEnterTransition else SceneEnter(alignment = Alignment.CenterEnd),
-            end = if (animateToBody) DefaultEnterTransition else SceneEnter(alignment = Alignment.CenterEnd),
-        ),
-        exitTransition = exit(
-            start = if (animateFromBody) DefaultExitTransition else SceneExit(alignment = Alignment.CenterEnd),
-            end = if (animateToBody) DefaultExitTransition else SceneExit(alignment = Alignment.CenterEnd),
-        ),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         SectionTitle(
             showAsBody = frame.createChildTransition {
@@ -73,12 +67,12 @@ fun SectionTitle(
     showAsBody: Transition<Boolean>,
     title: @Composable () -> Unit = SceneSection.title,
 ) {
-    val moveDuration = 500
-    val lineDuration = 0 // TODO do we still want the line to disappear for the title?
+    val moveDuration = 300
+    val lineDuration = 300
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val textStyle = showAsBody.animateTextStyle(
-            whenFalse = MaterialTheme.typography.h2,
+            whenFalse = MaterialTheme.typography.h1,
             whenTrue = MaterialTheme.typography.h3,
             transitionSpec = {
                 when (targetState) {
@@ -96,36 +90,33 @@ fun SectionTitle(
                 }
             },
             targetValueByState = {
-                val textHeight = with(LocalDensity.current) { MaterialTheme.typography.h2.lineHeight.toDp() }
+                val textHeight = with(LocalDensity.current) { MaterialTheme.typography.h1.lineHeight.toDp() }
                 when (it) {
                     false -> (maxHeight - textHeight) / 2 - 16.dp
                     true -> 0.dp
                 }
             },
         )
-//        val width by showAsBody.animateDp(
-//            label = "header line width",
-//            transitionSpec = {
-//                when (targetState) {
-//                    true -> tween(lineDuration, moveDuration, EaseInOut)
-//                    false -> tween(lineDuration, delayMillis = 0, EaseInOut)
-//                }
-//            },
-//            targetValueByState = {
-//                when (it) {
-//                    false -> 0.dp
-//                    true -> maxWidth
-//                }
-//            },
-//        )
+
+        val lineFraction by showAsBody.animateFloat(
+            label = "header line width",
+            transitionSpec = {
+                when (targetState) {
+                    true -> tween(lineDuration, moveDuration, EaseInOut)
+                    false -> tween(lineDuration, delayMillis = 0, EaseInOut)
+                }
+            },
+            targetValueByState = { if (it) 1f else 0f },
+        )
 
         ProvideTextStyle(textStyle) {
             Header(
-                title = title,
                 modifier = Modifier
                     .sharedElement(rememberSharedContentState(key = SceneSection.current))
                     .fillMaxSize()
                     .padding(top = height),
+                lineFraction = lineFraction,
+                title = title,
             )
         }
     }
