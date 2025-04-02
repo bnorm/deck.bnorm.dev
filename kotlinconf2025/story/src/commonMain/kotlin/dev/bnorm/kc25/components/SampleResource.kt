@@ -18,7 +18,8 @@ fun sampleResource(file: String): State<String> {
     }
 }
 
-private const val VALIDATION = true
+internal expect val VALIDATION: Boolean
+    inline get
 
 @Composable
 fun validateSampleResource(sample: AnnotatedString, file: String): AnnotatedString {
