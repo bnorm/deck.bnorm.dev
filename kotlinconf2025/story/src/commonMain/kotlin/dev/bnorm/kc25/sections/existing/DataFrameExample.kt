@@ -256,21 +256,21 @@ fun StoryboardBuilder.DataFrameExample() {
                 }
             }
 
-            Body {
-                Box(Modifier.fillMaxSize()) {
+            Box(Modifier.fillMaxSize()) {
+                Body {
                     ProvideTextStyle(MaterialTheme.typography.code1) {
                         MagicText(sampleTransition.createChildTransition { SAMPLES[it].get().toWords() })
                     }
+                }
 
-                    sampleTransition.AnimatedVisibility(
-                        visible = { it != 0 },
-                        enter = slideInVertically(tween(900, delayMillis = 900, easing = EaseIn)) { it },
-                        exit = slideOutVertically(tween(900, easing = EaseOut)) { it },
-                    ) {
-                        MacTerminal(modifier = Modifier.offset(y = 278.dp).fillMaxWidth()) {
-                            ProvideTextStyle(MaterialTheme.typography.code2) {
-                                MagicText(outputTransition.createChildTransition { OUTPUT[it] })
-                            }
+                sampleTransition.AnimatedVisibility(
+                    visible = { it != 0 },
+                    enter = slideInVertically(tween(900, delayMillis = 900, easing = EaseIn)) { it },
+                    exit = slideOutVertically(tween(900, easing = EaseOut)) { it },
+                ) {
+                    MacTerminal(modifier = Modifier.offset(y = 278.dp).fillMaxWidth()) {
+                        ProvideTextStyle(MaterialTheme.typography.code2) {
+                            MagicText(outputTransition.createChildTransition { OUTPUT[it] })
                         }
                     }
                 }

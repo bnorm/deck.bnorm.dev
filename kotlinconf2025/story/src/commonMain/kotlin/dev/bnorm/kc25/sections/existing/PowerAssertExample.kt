@@ -206,6 +206,9 @@ fun StoryboardBuilder.PowerAssertExample() {
                     if (sampleIndex == SAMPLES.lastIndex) {
                         delay(3.seconds)
                         sampleIndex = 0
+                    } else if (sampleIndex == SAMPLES.lastIndex - 1 || sampleIndex == SAMPLES.lastIndex - 2) {
+                        delay(1.seconds)
+                        sampleIndex += 1
                     } else {
                         sampleIndex += 1
                     }
