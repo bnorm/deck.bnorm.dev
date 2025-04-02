@@ -1,6 +1,6 @@
 package dev.bnorm.kc25
 
-import dev.bnorm.deck.shared.broadcast.BROADCAST_INDEX_DECORATOR
+import dev.bnorm.kc25.broadcast.BROADCAST_INDEX_DECORATOR
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
@@ -59,8 +59,7 @@ private fun StoryboardBuilder.Outline() {
         ThirdPlugin()
     }
 
-    // TODO add animation to title to change from third to forth
-    Title()
+    Title(withTransition = true)
 
     section("Compiler-Plugin?") {
         SectionTitle(animateToBody = true)

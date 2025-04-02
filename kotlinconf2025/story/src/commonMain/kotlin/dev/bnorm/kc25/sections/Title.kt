@@ -40,9 +40,12 @@ import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.ui.LocalStoryboard
 import org.jetbrains.compose.resources.painterResource
 
-fun StoryboardBuilder.Title() {
+private const val THIRD = "Third"
+private const val FORTH = "Forth"
+
+fun StoryboardBuilder.Title(withTransition: Boolean = false) {
     scene(
-        stateCount = 1,
+        stateCount = if (withTransition) 2 else 1,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterStart),
             end = SceneEnter(alignment = Alignment.CenterEnd),
@@ -88,7 +91,12 @@ fun StoryboardBuilder.Title() {
             ) {
                 Column(Modifier.padding(16.dp)) {
                     ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
-                        Text("Writing Your Third")
+                        // TODO maybe do something with https://github.com/saket/extended-spans?
+                        val index by frame.createChildTransition { it.toState() > 0 }
+                            .animateInt(transitionSpec = { tween((THIRD.length + FORTH.length) * 50, easing = LinearEasing) }) {
+                                if (it) FORTH.length else -THIRD.length
+                            }
+                        Text("Writing Your ${if (index < 0) THIRD.substring(0, -index) else FORTH.substring(0, index)}")
                         Text("Kotlin Compiler Plugin")
                     }
                 }
