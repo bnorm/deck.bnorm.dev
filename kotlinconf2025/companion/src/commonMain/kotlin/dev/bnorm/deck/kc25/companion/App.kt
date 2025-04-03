@@ -1,15 +1,22 @@
 package dev.bnorm.deck.kc25.companion
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.kc25.broadcast.BroadcastMessage
 import dev.bnorm.kc25.createStoryboard
+import dev.bnorm.storyboard.core.StoryState
 import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.rememberStoryState
 import dev.bnorm.storyboard.easel.EmbeddedStory
@@ -25,29 +32,100 @@ fun App() {
     val storyboard = rememberStoryState(remember { createStoryboard() })
     val broadcastClient = remember { BroadcastClient(bearerToken = null, BroadcastMessage.serializer()) }
 
-    var latest by remember { mutableStateOf<BroadcastMessage?>(null) }
+    var latest by remember { mutableStateOf(Storyboard.Index(3, 0)) }
     LaunchedEffect(Unit) {
         while (true) {
             broadcastClient.subscribe("story-kc25").collect {
-                latest = it
+                // latest = maxOf(latest, it.toStoryboard())
+                latest = it.toStoryboard()
             }
             delay(30.seconds)
         }
     }
 
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-        when (val latest = latest) {
-            null -> {
-                Text("Waiting to start...", fontSize = 50.sp)
-            }
+    LaunchedEffect(latest) {
+        storyboard.jumpTo(latest)
+    }
 
-            else -> {
-                EmbeddedStory(storyboard)
-
-                LaunchedEffect(latest) {
-                    storyboard.jumpTo(latest.toStoryboard())
-                }
+    MaterialTheme(colors = lightColors()) {
+        Box(
+            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(16.dp),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    // TODO can i make the content scrollable once smaller than min width?
+                    .widthIn(max = 960.dp)
+                    .requiredWidthIn(min = 720.dp)
+            ) {
+                Content(latest, storyboard)
             }
         }
+    }
+}
+
+@Composable
+private fun LazyItemScope.ContentCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Card(
+        modifier = modifier
+            .animateItem()
+            .padding(8.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
+            content()
+        }
+    }
+}
+
+private fun LazyListScope.Content(latest: Storyboard.Index, storyState: StoryState) {
+    // TODO make some of these sticky?
+    item("title") {
+        ContentCard {
+            Text("Writing Your Third", style = MaterialTheme.typography.h2)
+            Text("Kotlin Compiler Plugin", style = MaterialTheme.typography.h2)
+            Spacer(Modifier.height(16.dp))
+            Text("A Presentation Companion", style = MaterialTheme.typography.h4)
+        }
+    }
+
+    item("slides") {
+        ContentCard {
+            Text("Slides", style = MaterialTheme.typography.h2)
+            Spacer(Modifier.height(16.dp))
+
+            // TODO oof! the overlay is making the bottom drop out.
+            //  - what's the best way to handle this?
+            //  - probably need to fix EmbeddedStory
+            // TODO force render the storyboard in preview mode?
+            // TODO disable navigation until presentation is complete?
+            EmbeddedStory(
+                storyState,
+                modifier = Modifier
+                    .aspectRatio(16f / 9f)
+                    .sizeIn(
+                        minHeight = storyState.storyboard.size.height / 4,
+                        maxHeight = storyState.storyboard.size.height,
+                        minWidth = storyState.storyboard.size.width / 4,
+                        maxWidth = storyState.storyboard.size.width,
+                    )
+            )
+        }
+    }
+
+    repeat(latest.sceneIndex) {
+        item(it) {
+            ContentCard {
+                Text("Information ${it + 1}", style = MaterialTheme.typography.h2)
+            }
+        }
+    }
+
+    item("End") {
+        Box(Modifier.height(32.dp))
     }
 }

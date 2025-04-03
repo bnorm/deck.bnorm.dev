@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.broadcast
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.storyboard.core.SceneDecorator
 import dev.bnorm.storyboard.ui.LocalStoryState
@@ -18,8 +19,10 @@ data class BroadcastMessage(
     val stateIndex: Int,
 )
 
-object Broadcaster {
-    private const val CHANNEL_ID = "story-kc25"
+class Broadcaster {
+    companion object {
+        private const val CHANNEL_ID = "story-kc25"
+    }
 
     private val client = BroadcastClient(BroadcastMessage.serializer())
     private var enabled = true
@@ -35,12 +38,15 @@ object Broadcaster {
     }
 }
 
+val LocalBroadcaster = compositionLocalOf<Broadcaster?> { null }
+
 @Composable
 fun Broadcast() {
     val storyState = LocalStoryState.current ?: return
+    val broadcaster = LocalBroadcaster.current ?: return
     val frame = storyState.currentIndex
     StoryEffect(frame) {
-        Broadcaster.broadcast(
+        broadcaster.broadcast(
             BroadcastMessage(
                 sceneIndex = frame.sceneIndex,
                 stateIndex = frame.stateIndex,
