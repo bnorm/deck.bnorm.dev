@@ -13,6 +13,7 @@ import dev.bnorm.kc25.sections.intro.ThirdPlugin
 import dev.bnorm.kc25.sections.plugin.BuildableIntro
 import dev.bnorm.kc25.sections.plugin.Repository
 import dev.bnorm.kc25.sections.plugin.fir.FirExtensions
+import dev.bnorm.kc25.sections.plugin.fir.FirTree
 import dev.bnorm.kc25.sections.plugin.ir.IrExtensions
 import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.kc25.template.SectionTitle
@@ -22,6 +23,7 @@ import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.plus
 import dev.bnorm.storyboard.easel.section
 
+// TODO review all slides for consistent code formatting!
 fun createStoryboard(): Storyboard {
     return Storyboard.build(
         title = "Writing Your Third Kotlin Compiler Plugin",
@@ -89,7 +91,6 @@ private fun StoryboardBuilder.Outline() {
 
     SectionAndTitle("Let's build one!") {
         // TODO reference template project for faster project setup
-        // TODO summary of previous work for reference of project setup
         RevealScene(
             "$BULLET_1 Let's focus on the easy task: boilerplate reduction.",
             "$BULLET_1 Generate a \"Builder\" class based on a class constructor.",
@@ -118,6 +119,7 @@ private fun StoryboardBuilder.Outline() {
             "    $BULLET_2 FIR is used to resolve symbol references and types within Kotlin code.",
             "    $BULLET_2 For example, every function call needs to be resolved to a known function.",
         )
+        FirTree()
         RevealScene(
             "$BULLET_1 Phases",
             "    $BULLET_2 Resolution is performed in a sequence of phases.",
@@ -152,47 +154,6 @@ private fun StoryboardBuilder.Outline() {
 
     FirExtensions()
 
-//    SectionAndTitle("Piecemeal FIR") {
-//        // TODO Generation
-//        //  sections we need to talk about
-//        //     1. predicates and finding declarations
-//        //     2. nested class creation
-//        //     3. constructor / function / property generation
-//        //     4. ... ?
-//        RevealScene(
-//            "[FirDeclarationGenerationExtension]",
-//            "[registerPredicates()]",
-//            "[val ANNOTATION_PREDICATE = annotated(ANNOTATION_FQ_NAME)]",
-//            "[session.predicateBasedProvider.getSymbolsByPredicate(Piecemeal.ANNOTATION_PREDICATE)]",
-//        )
-//        RevealScene(
-//            "[getNestedClassifiersNames(...)]",
-//            "[generateNestedClassLikeDeclaration(...)]",
-//        )
-//        RevealScene(
-//            "[getCallableNamesForClass(...)]",
-//            "[generateConstructors(...)]",
-//            "[generateFunctions(...)]",
-//            "[generateProperties(...)]",
-//        )
-//
-//        // TODO Checkers
-//        RevealScene(
-//            "[FirAdditionalCheckersExtension]",
-//            "[FirClassChecker]",
-//            "[check(...)]",
-//            "[BuildableErrors]",
-//        )
-//
-//        // TODO Status transformer
-//        //  not include?
-//        RevealScene(
-//            "[BuildableFirStatusTransformerExtension]",
-//            "[FirDeclarationDataKey / FirDeclaration.originalVisibility]",
-//            "[checker]",
-//        )
-//    }
-
     // IR
     // - Extensions:
     //   - IrGenerationExtension
@@ -212,18 +173,7 @@ private fun StoryboardBuilder.Outline() {
 
     IrExtensions()
 
-//    SectionAndTitle("Piecemeal IR") {
-//        // Implementation
-//        RevealScene(
-//            "[IrGenerationExtension]",
-//            "[IrElementVisitorVoid]",
-//            "[irAttribute]",
-//        )
-//    }
-
-    // MPP
-
-    // Testing setup
-
-    // Future
+    // TODO MPP?
+    // TODO Testing setup?
+    // TODO Future?
 }

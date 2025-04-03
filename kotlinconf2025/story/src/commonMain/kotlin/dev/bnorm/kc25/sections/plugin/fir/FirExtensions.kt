@@ -53,7 +53,17 @@ fun StoryboardBuilder.FirExtensions() {
         Registration(endExclusive = REGISTRATION_IR_CHECKPOINT)
         SamplesScene(FirExtensionRegistrar)
 
+        // TODO instead of utility functions, inline everything in to the extension
+        //  - this keeps context to a single file
+        //  - use collapse and focus ***a lot***
+        // TODO remove support for type parameters
+        //  - avoids talking about type substitution
+        //  - create a checker as a gentle introduction to those
         SamplesScene(FirDeclarationGenerationExtensionSamples)
+        // TODO instead of status transformation and the current checker...
+        //  - create a checker that validates there is only one annotated constructor
+        //  - this will be better because they we don't need to talk about status transformation
+        //  - and we still get to talk about scopes to find all constructors
         SamplesScene(FirStatusTransformerExtension)
         SamplesScene(FirAdditionalCheckersExtension)
     }
