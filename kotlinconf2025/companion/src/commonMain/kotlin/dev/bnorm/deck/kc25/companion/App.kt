@@ -102,17 +102,13 @@ private fun LazyListScope.Content(latest: Storyboard.Index, storyState: StorySta
             //  - what's the best way to handle this?
             //  - probably need to fix EmbeddedStory
             // TODO force render the storyboard in preview mode?
-            // TODO disable navigation until presentation is complete?
+            // TODO do we need to disable key events? doesn't seem like it...
             EmbeddedStory(
-                storyState,
-                modifier = Modifier
-                    .aspectRatio(16f / 9f)
-                    .sizeIn(
-                        minHeight = storyState.storyboard.size.height / 4,
-                        maxHeight = storyState.storyboard.size.height,
-                        minWidth = storyState.storyboard.size.width / 4,
-                        maxWidth = storyState.storyboard.size.width,
-                    )
+                storyState = storyState,
+                overlay = {
+                    // TODO enable navigation when the story is complete?
+                    //  - or maybe custom navigation that only allows navigating before latest
+                },
             )
         }
     }

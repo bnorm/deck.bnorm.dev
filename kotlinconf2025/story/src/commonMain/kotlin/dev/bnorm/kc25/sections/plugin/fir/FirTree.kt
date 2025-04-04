@@ -189,7 +189,13 @@ private fun FirTree(
                         }
                     },
                     modifier = Modifier.onPlaced {
-                        offset = it.positionInParent()
+                         try {
+                            offset = it.positionInParent()
+                        } catch (_: IllegalStateException) {
+                            // TODO there seems to be a possible internal error
+                            //  which can be caused by navigating the overview quickly.
+                            //  - just ignore it?
+                        }
                     }
                 ) { node ->
                     FirElement(
@@ -200,7 +206,15 @@ private fun FirTree(
                                 rememberSharedContentState(node.name),
                                 animatedVisibilityScope = this@AnimatedContent
                             )
-                            .onPlaced { placements[node] = it.boundsInParent() }
+                            .onPlaced {
+                                try {
+                                    placements[node] = it.boundsInParent()
+                                } catch (_: IllegalStateException) {
+                                    // TODO there seems to be a possible internal error
+                                    //  which can be caused by navigating the overview quickly.
+                                    //  - just ignore it?
+                                }
+                            }
                     )
                 }
 
