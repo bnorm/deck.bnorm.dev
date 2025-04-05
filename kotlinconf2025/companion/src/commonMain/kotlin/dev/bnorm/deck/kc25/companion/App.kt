@@ -16,11 +16,11 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.kc25.broadcast.BroadcastMessage
 import dev.bnorm.kc25.createStoryboard
-import dev.bnorm.storyboard.core.StoryState
+import dev.bnorm.storyboard.easel.StoryState
 import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.rememberStoryState
+import dev.bnorm.storyboard.easel.rememberStoryState
 import dev.bnorm.storyboard.easel.overlay.StoryOverlay
-import dev.bnorm.storyboard.ui.StoryScene
+import dev.bnorm.storyboard.easel.StoryScene
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 

@@ -23,7 +23,7 @@ import dev.bnorm.storyboard.text.highlight.Highlighting
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
 import dev.bnorm.storyboard.ui.LocalDisplayType
-import dev.bnorm.storyboard.ui.StoryEffect
+import dev.bnorm.storyboard.easel.template.StoryEffect
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 

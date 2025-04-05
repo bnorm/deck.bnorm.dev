@@ -3,7 +3,7 @@ package dev.bnorm.kc25.broadcast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
-import dev.bnorm.storyboard.core.StoryState
+import dev.bnorm.storyboard.easel.StoryState
 import io.ktor.http.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable

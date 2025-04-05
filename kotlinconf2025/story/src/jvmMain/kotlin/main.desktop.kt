@@ -11,8 +11,8 @@ import dev.bnorm.kc25.broadcast.Broadcast
 import dev.bnorm.kc25.broadcast.Broadcaster
 import dev.bnorm.kc25.broadcast.OverlayBroadcasting
 import dev.bnorm.kc25.createStoryboard
-import dev.bnorm.storyboard.core.ExperimentalStoryStateApi
-import dev.bnorm.storyboard.core.rememberStoryState
+import dev.bnorm.storyboard.easel.ExperimentalStoryStateApi
+import dev.bnorm.storyboard.easel.rememberStoryState
 import dev.bnorm.storyboard.easel.DesktopStory
 import dev.bnorm.storyboard.easel.overlay.OverlayNavigation
 import org.jetbrains.compose.reload.DevelopmentEntryPoint
