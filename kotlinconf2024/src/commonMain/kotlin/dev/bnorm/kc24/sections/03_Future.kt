@@ -33,6 +33,7 @@ import dev.bnorm.storyboard.easel.sharedBounds
 import dev.bnorm.storyboard.easel.template.SceneSection
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.easel.template.rememberAdvanceDirection
 import dev.bnorm.storyboard.toInt
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -74,6 +75,8 @@ fun StoryboardBuilder.PowerAssertIdeas() {
 
 fun StoryboardBuilder.HowCanYouHelp() {
     scene(stateCount = 3) {
+        val direction = rememberAdvanceDirection()
+
         TitleAndBody {
             Column(
                 modifier = Modifier.fillMaxSize().padding(SLIDE_PADDING),
@@ -83,8 +86,8 @@ fun StoryboardBuilder.HowCanYouHelp() {
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
                     modifier = Modifier.animateEnterExit(
-                        enter = enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
-                        exit = exit(end = { fadeOut(defaultSpec()) }),
+                        enter = direction.enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
+                        exit = direction.exit(end = { fadeOut(defaultSpec()) }),
                     ),
                 ) {
                     Text("• We're looking for your feedback!")
@@ -97,8 +100,8 @@ fun StoryboardBuilder.HowCanYouHelp() {
                         Text(
                             "   • Try out Power-Assert! ",
                             modifier = Modifier.animateEnterExit(
-                                enter = enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
-                                exit = exit(end = { fadeOut(defaultSpec()) }),
+                                enter = direction.enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
+                                exit = direction.exit(end = { fadeOut(defaultSpec()) }),
                             ),
                         )
 
@@ -118,8 +121,8 @@ fun StoryboardBuilder.HowCanYouHelp() {
                     enter = fadeIn(defaultSpec()) + expandVertically(defaultSpec()),
                     exit = fadeOut(defaultSpec()) + shrinkVertically(defaultSpec()),
                     modifier = Modifier.animateEnterExit(
-                        enter = enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
-                        exit = exit(end = { fadeOut(defaultSpec()) }),
+                        enter = direction.enter(end = { fadeIn(defaultSpec(delay = 300.milliseconds)) }),
+                        exit = direction.exit(end = { fadeOut(defaultSpec()) }),
                     ),
                 ) {
                     Text("   • Report any compilation errors or strange diagrams")
@@ -150,10 +153,12 @@ fun StoryboardBuilder.Resources() {
     )
 
     scene(stateCount = lines.size + 1) {
+        val direction = rememberAdvanceDirection()
+
         Column(
             modifier = Modifier.animateEnterExit(
-                enter = enter(end = { fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it } }),
-                exit = exit(end = { fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it } }),
+                enter = direction.enter(end = { fadeIn(defaultSpec()) + slideInVertically(defaultSpec()) { -it } }),
+                exit = direction.exit(end = { fadeOut(defaultSpec()) + slideOutVertically(defaultSpec()) { -it } }),
             )
         ) {
             Box(Modifier.padding(horizontal = SLIDE_PADDING, vertical = SLIDE_CONTENT_SPACING)) {
@@ -199,8 +204,8 @@ fun StoryboardBuilder.Resources() {
         Box(Modifier.fillMaxSize()) {
             AnimateKodee(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp).animateEnterExit(
-                    enter = enter(end = { fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it } }),
-                    exit = exit(end = { fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it } }),
+                    enter = direction.enter(end = { fadeIn(defaultSpec()) + slideInHorizontally(defaultSpec()) { it } }),
+                    exit = direction.exit(end = { fadeOut(defaultSpec()) + slideOutHorizontally(defaultSpec()) { it } }),
                 )
             ) {
                 default { DefaultCornerKodee(Modifier.size(100.dp)) }
