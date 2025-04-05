@@ -21,6 +21,7 @@ import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.toInt
+import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.PowerAssertCall() {
     scene(

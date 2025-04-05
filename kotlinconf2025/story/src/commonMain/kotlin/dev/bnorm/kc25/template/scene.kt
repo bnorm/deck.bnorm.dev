@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.storyboard.AdvanceDirection
+import dev.bnorm.storyboard.Render
 import dev.bnorm.storyboard.Scene
 import dev.bnorm.storyboard.SceneContent
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -24,7 +25,7 @@ fun <T> StoryboardBuilder.KodeeScene(
     content: SceneContent<T>,
 ): Scene<T> = scene(states, enterTransition, exitTransition) {
     Column(Modifier.fillMaxSize()) {
-        content()
+        Render(content)
     }
 
     SharedKodee {
@@ -39,7 +40,7 @@ fun StoryboardBuilder.KodeeScene(
     content: SceneContent<Int>,
 ): Scene<Int> = scene(stateCount, enterTransition, exitTransition) {
     Column(Modifier.fillMaxSize()) {
-        content()
+        Render(content)
     }
 
     SharedKodee {

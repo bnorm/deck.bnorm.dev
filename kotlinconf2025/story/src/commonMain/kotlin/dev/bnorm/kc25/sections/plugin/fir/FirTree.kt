@@ -41,6 +41,7 @@ import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
+import dev.bnorm.storyboard.toState
 
 private abstract class FirNode(
     val name: String,

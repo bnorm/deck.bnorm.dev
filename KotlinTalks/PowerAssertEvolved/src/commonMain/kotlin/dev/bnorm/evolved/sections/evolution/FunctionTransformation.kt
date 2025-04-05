@@ -19,6 +19,7 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.toState
 
 private val moveDuration = DefaultDurationMillis
 private val fadeDuration = moveDuration / 2

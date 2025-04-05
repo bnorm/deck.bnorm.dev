@@ -17,6 +17,7 @@ import dev.bnorm.deck.story.generated.resources.buildable_repo_qr
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.toState
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Repository() {

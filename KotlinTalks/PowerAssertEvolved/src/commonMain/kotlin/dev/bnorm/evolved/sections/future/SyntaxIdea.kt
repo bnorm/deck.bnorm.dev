@@ -25,6 +25,7 @@ import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.toInt
+import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.SyntaxIdea() {
     val topicKey = Any()

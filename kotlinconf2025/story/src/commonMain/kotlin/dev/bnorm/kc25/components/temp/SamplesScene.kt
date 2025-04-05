@@ -16,6 +16,7 @@ import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.kc25.template.code.toCode
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.currentState
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 

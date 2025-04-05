@@ -21,6 +21,7 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.toState
 import kotlin.math.PI
 import kotlin.math.atan2
 

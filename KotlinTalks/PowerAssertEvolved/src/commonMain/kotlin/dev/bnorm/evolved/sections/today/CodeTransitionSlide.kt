@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.CodeTransitionSlide(transitions: List<Pair<String, String>>) {
     scene(stateCount = transitions.size + 1) {

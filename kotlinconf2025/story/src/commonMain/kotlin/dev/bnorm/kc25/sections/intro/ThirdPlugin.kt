@@ -31,6 +31,7 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.toState
 
 private fun <T> tSpec(): @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<T> = { tween(300) }
 private fun <T> spec(): FiniteAnimationSpec<T> = tween(300)

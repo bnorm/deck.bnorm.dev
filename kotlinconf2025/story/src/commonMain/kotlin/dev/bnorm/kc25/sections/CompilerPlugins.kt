@@ -24,6 +24,7 @@ import dev.bnorm.kc25.template.Header
 import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.CompilerArchitecture() {
     SectionAndTitle("Compiler Architecture") {

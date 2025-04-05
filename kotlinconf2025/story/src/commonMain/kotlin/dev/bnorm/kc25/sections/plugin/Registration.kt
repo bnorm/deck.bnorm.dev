@@ -14,6 +14,7 @@ import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
+import dev.bnorm.storyboard.toState
 
 private const val FILE = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/BuildableCompilerPluginRegistrar.kt"
 

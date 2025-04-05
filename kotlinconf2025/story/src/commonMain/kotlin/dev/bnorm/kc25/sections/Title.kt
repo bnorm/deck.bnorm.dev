@@ -38,6 +38,7 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.toState
 import org.jetbrains.compose.resources.painterResource
 
 private const val THIRD = "Third"

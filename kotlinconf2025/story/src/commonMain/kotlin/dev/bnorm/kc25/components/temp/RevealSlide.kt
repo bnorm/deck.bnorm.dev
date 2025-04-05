@@ -7,6 +7,7 @@ import dev.bnorm.kc25.template.Header
 import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.RevealEach
+import dev.bnorm.storyboard.toState
 
 const val BULLET_1 = " • "
 const val BULLET_2 = " ◦ "
