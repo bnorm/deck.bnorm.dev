@@ -42,10 +42,7 @@ import dev.bnorm.kc24.template.TitleSlide
 import dev.bnorm.librettist.animation.animateList
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.text.thenLineEndDiff
-import dev.bnorm.storyboard.core.Frame
-import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.sceneForTransition
+import dev.bnorm.storyboard.core.*
 import dev.bnorm.storyboard.easel.template.section
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import org.jetbrains.compose.resources.painterResource

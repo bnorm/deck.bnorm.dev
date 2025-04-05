@@ -1,11 +1,9 @@
 package dev.bnorm.kc25.broadcast
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.LaunchedEffect
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
-import dev.bnorm.storyboard.core.SceneDecorator
-import dev.bnorm.storyboard.ui.LocalStoryState
-import dev.bnorm.storyboard.ui.StoryEffect
+import dev.bnorm.storyboard.core.StoryState
 import io.ktor.http.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -38,14 +36,12 @@ class Broadcaster {
     }
 }
 
-val LocalBroadcaster = compositionLocalOf<Broadcaster?> { null }
-
 @Composable
-fun Broadcast() {
-    val storyState = LocalStoryState.current ?: return
-    val broadcaster = LocalBroadcaster.current ?: return
+fun Broadcast(storyState: StoryState, broadcaster: Broadcaster?) {
+    if (broadcaster == null) return
+
     val frame = storyState.currentIndex
-    StoryEffect(frame) {
+    LaunchedEffect(frame) {
         broadcaster.broadcast(
             BroadcastMessage(
                 sceneIndex = frame.sceneIndex,
@@ -53,9 +49,4 @@ fun Broadcast() {
             )
         )
     }
-}
-
-val BROADCAST_INDEX_DECORATOR = SceneDecorator { content ->
-    Broadcast()
-    content()
 }
