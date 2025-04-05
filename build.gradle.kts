@@ -48,10 +48,6 @@ tasks.register<Sync>("site") {
 
     from(project(":deck.bnorm.dev").tasks.named("wasmJsBrowserDistribution"))
 
-    into("PowerAssertEvolved") {
-        from(project(":KotlinTalks:PowerAssertEvolved").tasks.named("wasmJsBrowserDistribution"))
-    }
-
     into("kotlinconf2024") {
         from(project(":kotlinconf2024").tasks.named("wasmJsBrowserDistribution"))
     }

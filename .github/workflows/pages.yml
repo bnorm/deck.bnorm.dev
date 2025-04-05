@@ -39,6 +39,13 @@ jobs:
             echo "::warning title=Invalid file permissions automatically fixed::$line"
           done
 
+      - uses: robinraju/release-downloader@v1
+        with:
+          tag: 'PowerAssertEvolved'
+          fileName: 'PowerAssertEvolved.zip'
+          extract: 'true'
+          out-file-path: build/_site
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
