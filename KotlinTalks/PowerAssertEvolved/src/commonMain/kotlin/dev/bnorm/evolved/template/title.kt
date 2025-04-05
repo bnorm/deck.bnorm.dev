@@ -17,8 +17,8 @@ import dev.bnorm.deck.shared.KodeeSitting
 import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.easel.SceneSection
-import dev.bnorm.storyboard.easel.section
+import dev.bnorm.storyboard.easel.template.SceneSection
+import dev.bnorm.storyboard.easel.template.section
 
 fun StoryboardBuilder.SectionAndTitle(
     header: String,

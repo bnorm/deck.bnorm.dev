@@ -19,13 +19,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.DefaultEnterTransition
-import dev.bnorm.storyboard.core.DefaultExitTransition
 import dev.bnorm.storyboard.core.Frame
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.easel.*
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.template.SceneSection
+import dev.bnorm.storyboard.easel.template.section
 
 fun StoryboardBuilder.SectionAndTitle(
     header: String,

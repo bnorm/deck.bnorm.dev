@@ -14,9 +14,9 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeScope
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.easel.SceneSection
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
+import dev.bnorm.storyboard.easel.template.SceneSection
 
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)

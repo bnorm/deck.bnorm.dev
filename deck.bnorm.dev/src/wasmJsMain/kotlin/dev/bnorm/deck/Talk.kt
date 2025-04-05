@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.rememberStoryState
-import dev.bnorm.storyboard.easel.EmbeddedStory
+import dev.bnorm.storyboard.easel.overlay.OverlayNavigation
+import dev.bnorm.storyboard.easel.overlay.StoryOverlay
+import dev.bnorm.storyboard.ui.StoryScene
 
 @Composable
 fun Talk(title: @Composable () -> Unit, videoId: String, storyboard: Storyboard? = null) {
@@ -34,7 +36,9 @@ fun Talk(title: @Composable () -> Unit, videoId: String, storyboard: Storyboard?
                 )
                 if (state != null) {
                     Box(Modifier.requiredSize(width = 560.dp, height = 315.dp)) {
-                        EmbeddedStory(state)
+                        StoryOverlay(overlay = { OverlayNavigation(state) }) {
+                            StoryScene(state)
+                        }
                     }
                 }
             }

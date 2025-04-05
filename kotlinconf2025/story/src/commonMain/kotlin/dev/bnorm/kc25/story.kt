@@ -21,7 +21,7 @@ import dev.bnorm.kc25.template.THEME_DECORATOR
 import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.plus
-import dev.bnorm.storyboard.easel.section
+import dev.bnorm.storyboard.easel.template.section
 
 // TODO review all slides for consistent code formatting!
 fun createStoryboard(): Storyboard {

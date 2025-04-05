@@ -19,7 +19,8 @@ import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.storyboard.core.StoryState
 import dev.bnorm.storyboard.core.Storyboard
 import dev.bnorm.storyboard.core.rememberStoryState
-import dev.bnorm.storyboard.easel.EmbeddedStory
+import dev.bnorm.storyboard.easel.overlay.StoryOverlay
+import dev.bnorm.storyboard.ui.StoryScene
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -98,18 +99,17 @@ private fun LazyListScope.Content(latest: Storyboard.Index, storyState: StorySta
             Text("Slides", style = MaterialTheme.typography.h2)
             Spacer(Modifier.height(16.dp))
 
-            // TODO oof! the overlay is making the bottom drop out.
-            //  - what's the best way to handle this?
-            //  - probably need to fix EmbeddedStory
             // TODO force render the storyboard in preview mode?
+            //  - or at least while the navigation is synced?
             // TODO do we need to disable key events? doesn't seem like it...
-            EmbeddedStory(
-                storyState = storyState,
+            StoryOverlay(
                 overlay = {
                     // TODO enable navigation when the story is complete?
                     //  - or maybe custom navigation that only allows navigating before latest
-                },
-            )
+                }
+            ) {
+                StoryScene(storyState)
+            }
         }
     }
 

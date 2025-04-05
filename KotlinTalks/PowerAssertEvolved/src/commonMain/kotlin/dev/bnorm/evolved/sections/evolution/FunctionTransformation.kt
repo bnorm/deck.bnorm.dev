@@ -13,12 +13,12 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.storyboard.core.SceneScope
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.easel.enter
-import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 
 private val moveDuration = DefaultDurationMillis
 private val fadeDuration = moveDuration / 2

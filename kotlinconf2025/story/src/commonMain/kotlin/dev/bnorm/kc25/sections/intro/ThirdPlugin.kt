@@ -27,10 +27,10 @@ import dev.bnorm.kc25.template.Body
 import dev.bnorm.kc25.template.Header
 import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.easel.enter
-import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 
 private fun <T> tSpec(): @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<T> = { tween(300) }
 private fun <T> spec(): FiniteAnimationSpec<T> = tween(300)

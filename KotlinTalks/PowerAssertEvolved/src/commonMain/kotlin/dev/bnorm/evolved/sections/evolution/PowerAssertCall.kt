@@ -17,10 +17,10 @@ import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
 import dev.bnorm.storyboard.core.StoryboardBuilder
 import dev.bnorm.storyboard.core.toInt
-import dev.bnorm.storyboard.easel.enter
-import dev.bnorm.storyboard.easel.exit
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 
 fun StoryboardBuilder.PowerAssertCall() {
     scene(
