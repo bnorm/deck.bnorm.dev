@@ -15,10 +15,10 @@ import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.MagicCode
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.twice
-import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.toInt
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.toInt
 
 fun StoryboardBuilder.LocalVariables() {
     scene(

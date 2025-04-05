@@ -5,7 +5,7 @@ import androidx.compose.material.Text
 import dev.bnorm.kc25.template.Body
 import dev.bnorm.kc25.template.Header
 import dev.bnorm.kc25.template.KodeeScene
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.RevealEach
 
 const val BULLET_1 = " • "

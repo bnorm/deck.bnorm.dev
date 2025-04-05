@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.bnorm.evolved.template.HeaderAndBody
-import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.toInt
+import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.toInt
 
 fun StoryboardBuilder.PowerAssertEvolves() {
     scene(stateCount = 7) {

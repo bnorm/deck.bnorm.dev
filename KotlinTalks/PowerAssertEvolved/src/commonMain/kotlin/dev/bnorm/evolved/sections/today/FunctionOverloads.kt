@@ -12,7 +12,7 @@ import dev.bnorm.evolved.sections.intro.BULLET_1
 import dev.bnorm.evolved.sections.intro.BULLET_3
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.toCode
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.RevealEach
 
 fun StoryboardBuilder.FunctionOverloads() {

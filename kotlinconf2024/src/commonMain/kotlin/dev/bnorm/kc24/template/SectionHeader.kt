@@ -19,8 +19,8 @@ import dev.bnorm.deck.shared.KodeeSitting
 import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.kc24.elements.AnimatedVisibility
 import dev.bnorm.kc24.elements.defaultSpec
-import dev.bnorm.storyboard.core.Frame
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneSection
 
 fun StoryboardBuilder.SectionHeader(

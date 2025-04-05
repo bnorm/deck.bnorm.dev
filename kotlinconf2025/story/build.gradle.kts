@@ -46,7 +46,7 @@ kotlin {
                 implementation(compose.material)
                 api(compose.components.resources)
 
-                api("dev.bnorm.storyboard:storyboard-core")
+                api("dev.bnorm.storyboard:storyboard")
                 api("dev.bnorm.storyboard:storyboard-easel")
                 api("dev.bnorm.storyboard:storyboard-text")
             }

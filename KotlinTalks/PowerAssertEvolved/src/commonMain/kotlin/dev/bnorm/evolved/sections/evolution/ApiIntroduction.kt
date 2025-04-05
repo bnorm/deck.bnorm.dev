@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
 import dev.bnorm.evolved.template.HeaderAndBody
 import dev.bnorm.evolved.template.code.toCode
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 
 fun StoryboardBuilder.ApiIntroduction() {
     val code = """

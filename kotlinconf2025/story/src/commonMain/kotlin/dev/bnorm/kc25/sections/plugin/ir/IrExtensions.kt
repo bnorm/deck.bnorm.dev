@@ -4,7 +4,7 @@ import dev.bnorm.kc25.components.temp.SamplesScene
 import dev.bnorm.kc25.sections.plugin.REGISTRATION_IR_CHECKPOINT
 import dev.bnorm.kc25.sections.plugin.Registration
 import dev.bnorm.kc25.template.SectionAndTitle
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 
 val IrGenerationExtension = listOf(
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/ir/BuildableIrGenerationExtension.kt@BuildableIrGenerationExtension",

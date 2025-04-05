@@ -14,7 +14,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
-import dev.bnorm.storyboard.core.SceneDecorator
+import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds

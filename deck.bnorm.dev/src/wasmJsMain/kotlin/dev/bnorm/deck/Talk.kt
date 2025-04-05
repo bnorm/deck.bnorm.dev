@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.easel.rememberStoryState
+import dev.bnorm.storyboard.Storyboard
+import dev.bnorm.storyboard.easel.StoryScene
 import dev.bnorm.storyboard.easel.overlay.OverlayNavigation
 import dev.bnorm.storyboard.easel.overlay.StoryOverlay
-import dev.bnorm.storyboard.easel.StoryScene
+import dev.bnorm.storyboard.easel.rememberStoryState
 
 @Composable
 fun Talk(title: @Composable () -> Unit, videoId: String, storyboard: Storyboard? = null) {

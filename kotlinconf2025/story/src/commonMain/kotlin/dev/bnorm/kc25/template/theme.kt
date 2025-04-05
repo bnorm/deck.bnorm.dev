@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
-import dev.bnorm.storyboard.core.SceneDecorator
+import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.text.highlight.CacheableHighlighter
 import dev.bnorm.storyboard.text.highlight.Highlighting
 import dev.bnorm.storyboard.text.highlight.KotlinHighlighter

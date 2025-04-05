@@ -16,7 +16,7 @@ import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.notes.NotesTab
 import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight

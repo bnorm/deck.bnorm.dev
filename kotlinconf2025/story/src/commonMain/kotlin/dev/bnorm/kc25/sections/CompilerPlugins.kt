@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.Header
 import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.kc25.template.SectionAndTitle
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 
 fun StoryboardBuilder.CompilerArchitecture() {
     SectionAndTitle("Compiler Architecture") {

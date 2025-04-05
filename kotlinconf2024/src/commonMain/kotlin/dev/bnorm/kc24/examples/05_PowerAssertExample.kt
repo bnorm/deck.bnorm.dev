@@ -16,7 +16,7 @@ import dev.bnorm.kc24.elements.animateTo
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.startAnimation
 import dev.bnorm.librettist.text.thenLines
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf

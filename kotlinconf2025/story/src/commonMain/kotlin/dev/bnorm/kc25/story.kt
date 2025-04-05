@@ -17,8 +17,8 @@ import dev.bnorm.kc25.sections.plugin.ir.IrExtensions
 import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.THEME_DECORATOR
-import dev.bnorm.storyboard.core.Storyboard
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.Storyboard
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.section
 
 // TODO review all slides for consistent code formatting!

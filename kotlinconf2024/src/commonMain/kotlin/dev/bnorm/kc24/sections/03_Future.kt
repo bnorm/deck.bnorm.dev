@@ -25,13 +25,15 @@ import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.SLIDE_CONTENT_SPACING
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.toInt
-import dev.bnorm.storyboard.easel.*
+import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.animateEnterExit
 import dev.bnorm.storyboard.easel.notes.NotesTab
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedBounds
 import dev.bnorm.storyboard.easel.template.SceneSection
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.toInt
 import kotlin.time.Duration.Companion.milliseconds
 
 fun StoryboardBuilder.Future() {

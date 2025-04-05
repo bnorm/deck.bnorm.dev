@@ -1,6 +1,6 @@
 package dev.bnorm.evolved.sections.today
 
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 
 fun StoryboardBuilder.WhenTransformation() {
     CodeTransitionSlide(WHEN_TRANSITIONS)

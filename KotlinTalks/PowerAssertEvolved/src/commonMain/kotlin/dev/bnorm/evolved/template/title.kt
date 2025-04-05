@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.KodeeSitting
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.Frame
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneSection
 import dev.bnorm.storyboard.easel.template.section
 

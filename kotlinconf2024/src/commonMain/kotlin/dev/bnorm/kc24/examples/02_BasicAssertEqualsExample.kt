@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.KodeeLost
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
 

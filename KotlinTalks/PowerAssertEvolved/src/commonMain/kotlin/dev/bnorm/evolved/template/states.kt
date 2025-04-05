@@ -2,9 +2,9 @@ package dev.bnorm.evolved.template
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import dev.bnorm.storyboard.core.AdvanceDirection
-import dev.bnorm.storyboard.core.SceneContent
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.AdvanceDirection
+import dev.bnorm.storyboard.SceneContent
+import dev.bnorm.storyboard.StoryboardBuilder
 
 interface StateScope<T> {
     fun next(generator: (previous: T) -> T)

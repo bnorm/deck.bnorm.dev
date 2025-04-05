@@ -20,9 +20,9 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.*
 import dev.bnorm.kc24.template.SLIDE_PADDING
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.storyboard.core.AdvanceDirection
-import dev.bnorm.storyboard.core.Frame
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.AdvanceDirection
+import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.jvm.JvmName

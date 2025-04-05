@@ -1,7 +1,7 @@
 package dev.bnorm.evolved.sections.evolution
 
 import dev.bnorm.evolved.template.SectionAndTitle
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 
 fun StoryboardBuilder.Evolution() {
     SectionAndTitle("What's Next?") {

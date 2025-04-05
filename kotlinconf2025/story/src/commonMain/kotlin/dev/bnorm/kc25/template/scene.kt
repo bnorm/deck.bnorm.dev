@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.core.AdvanceDirection
-import dev.bnorm.storyboard.core.Scene
-import dev.bnorm.storyboard.core.SceneContent
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.AdvanceDirection
+import dev.bnorm.storyboard.Scene
+import dev.bnorm.storyboard.SceneContent
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 

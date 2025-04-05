@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.JetBrainsMono
-import dev.bnorm.storyboard.core.SceneScope
-import dev.bnorm.storyboard.core.Frame
+import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.SceneScope
 
 @Composable
 fun MacTerminal(

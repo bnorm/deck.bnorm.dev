@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.evolved.template.HeaderAndBody
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.RevealEach
 
 fun StoryboardBuilder.Overview() {

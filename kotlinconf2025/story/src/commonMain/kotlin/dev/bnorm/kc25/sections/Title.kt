@@ -31,13 +31,13 @@ import dev.bnorm.deck.story.generated.resources.end_badge
 import dev.bnorm.deck.story.generated.resources.end_phone
 import dev.bnorm.deck.story.generated.resources.start_conference
 import dev.bnorm.kc25.components.KotlinConfBird
-import dev.bnorm.storyboard.core.Frame
-import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.LocalStoryboard
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.ui.LocalStoryboard
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 import org.jetbrains.compose.resources.painterResource
 
 private const val THIRD = "Third"

@@ -9,9 +9,9 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.bnorm.kc24.elements.typingSpec
 import dev.bnorm.kc24.template.TitleAndBody
 import dev.bnorm.librettist.animation.animateList
-import dev.bnorm.storyboard.core.Frame
-import dev.bnorm.storyboard.core.StoryboardBuilder
-import dev.bnorm.storyboard.core.sceneForTransition
+import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.sceneForTransition
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.math.abs
 

@@ -16,8 +16,8 @@ import dev.bnorm.evolved.template.Header
 import dev.bnorm.evolved.template.code.padLines
 import dev.bnorm.evolved.template.code.toCode
 import dev.bnorm.evolved.template.slide
-import dev.bnorm.storyboard.core.Frame
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.StoryboardBuilder
 
 fun StoryboardBuilder.ExampleOutput() {
     data class State(

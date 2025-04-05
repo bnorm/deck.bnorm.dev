@@ -12,7 +12,7 @@ import dev.bnorm.deck.shared.KodeeElectrified
 import dev.bnorm.deck.shared.KodeeLoving
 import dev.bnorm.deck.shared.KodeeSurprised
 import dev.bnorm.evolved.template.HeaderAndBody
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.StoryboardBuilder
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 

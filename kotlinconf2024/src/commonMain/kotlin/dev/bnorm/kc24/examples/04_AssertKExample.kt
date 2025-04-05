@@ -14,8 +14,8 @@ import dev.bnorm.deck.shared.KodeeExcited
 import dev.bnorm.kc24.elements.OutputState
 import dev.bnorm.kc24.elements.defaultSpec
 import dev.bnorm.kc24.template.TitleAndBody
-import dev.bnorm.storyboard.core.AdvanceDirection
-import dev.bnorm.storyboard.core.StoryboardBuilder
+import dev.bnorm.storyboard.AdvanceDirection
+import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.notes.NotesTab
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.time.Duration.Companion.milliseconds
