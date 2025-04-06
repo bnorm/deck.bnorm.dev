@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.compose")
@@ -10,8 +8,7 @@ group = "dev.bnorm.deck"
 version = "1.0-SNAPSHOT"
 
 kotlin {
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
+    js {
         binaries.executable()
         browser {
             commonWebpackConfig {
@@ -21,14 +18,10 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
+        jsMain {
             dependencies {
-                implementation(project(":shared"))
-                implementation(project(":kotlinconf2024"))
-            }
-        }
-        wasmJsMain {
-            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.html.core)
                 implementation(npm("youtube-player", "5.6.0"))
             }
         }

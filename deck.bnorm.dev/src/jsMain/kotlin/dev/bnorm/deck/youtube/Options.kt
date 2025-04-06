@@ -3,23 +3,23 @@ package dev.bnorm.deck.youtube
 fun Options(): Options = js("({})")
 fun Options(block: Options.() -> Unit): Options = Options().apply(block)
 
-external interface Options : JsAny {
-    var width: JsAny? /* JsNumber? | String? */
+external interface Options {
+    var width: Any? /* JsNumber? | String? */
         get() = definedExternally
         set(value) = definedExternally
-    var height: JsAny? /* JsNumber? | String? */
+    var height: Any? /* JsNumber? | String? */
         get() = definedExternally
         set(value) = definedExternally
-    var videoId: JsString?
+    var videoId: String?
         get() = definedExternally
         set(value) = definedExternally
-    var host: JsString?
+    var host: String?
         get() = definedExternally
         set(value) = definedExternally
     var playerVars: PlayerVars?
         get() = definedExternally
         set(value) = definedExternally
-    var events: JsAny?
+    var events: Any?
         get() = definedExternally
         set(value) = definedExternally
 }
