@@ -17,7 +17,7 @@ import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.kc25.broadcast.BroadcastMessage
 import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.storyboard.Storyboard
-import dev.bnorm.storyboard.easel.StoryScene
+import dev.bnorm.storyboard.easel.Story
 import dev.bnorm.storyboard.easel.StoryState
 import dev.bnorm.storyboard.easel.overlay.StoryOverlay
 import dev.bnorm.storyboard.easel.rememberStoryState
@@ -108,7 +108,7 @@ private fun LazyListScope.Content(latest: Storyboard.Index, storyState: StorySta
                     //  - or maybe custom navigation that only allows navigating before latest
                 }
             ) {
-                StoryScene(storyState)
+                Story(storyState)
             }
         }
     }
