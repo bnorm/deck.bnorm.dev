@@ -13,7 +13,7 @@ import dev.bnorm.kc25.broadcast.OverlayBroadcasting
 import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.storyboard.easel.ExperimentalStoryStateApi
 import dev.bnorm.storyboard.easel.rememberStoryState
-import dev.bnorm.storyboard.easel.DesktopStory
+import dev.bnorm.storyboard.easel.DesktopStoryEasel
 import dev.bnorm.storyboard.easel.overlay.OverlayNavigation
 import org.jetbrains.compose.reload.DevelopmentEntryPoint
 
@@ -27,7 +27,7 @@ fun main() {
             Broadcast(state, broadcaster) // Important to be after updating state with storyboard.
 
             MaterialTheme(colors = darkColors()) {
-                DesktopStory(
+                DesktopStoryEasel(
                     storyState = state,
                     overlay = {
                         OverlayNavigation(state)
