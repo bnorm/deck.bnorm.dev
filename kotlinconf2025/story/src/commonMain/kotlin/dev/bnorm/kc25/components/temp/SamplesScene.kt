@@ -16,9 +16,9 @@ import dev.bnorm.kc25.template.KodeeScene
 import dev.bnorm.kc25.template.code.toCode
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.currentState
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.SamplesScene(files: List<String>) {
     KodeeScene(
@@ -37,7 +37,7 @@ fun StoryboardBuilder.SamplesScene(files: List<String>) {
             val verticalScrollState = rememberScrollState()
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 Box(modifier = Modifier.verticalScroll(verticalScrollState)) {
-                    Text(samples[currentState], modifier = Modifier.fillMaxSize())
+                    Text(samples[frame.currentState.toState()], modifier = Modifier.fillMaxSize())
                 }
             }
         }
