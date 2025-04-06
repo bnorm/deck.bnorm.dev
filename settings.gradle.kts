@@ -35,7 +35,6 @@ rootProject.name = "deck.bnorm.dev"
 includeBuild("storyboard")
 
 include(":deck.bnorm.dev")
-include(":kotlinconf2024")
 include(":kotlinconf2025:companion")
 include(":kotlinconf2025:story")
 include(":shared")
