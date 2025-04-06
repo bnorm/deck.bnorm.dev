@@ -41,6 +41,13 @@ jobs:
 
       - uses: robinraju/release-downloader@v1
         with:
+          tag: 'kotlinconf2024'
+          fileName: 'kotlinconf2024.zip'
+          extract: 'true'
+          out-file-path: build/_site
+
+      - uses: robinraju/release-downloader@v1
+        with:
           tag: 'PowerAssertEvolved'
           fileName: 'PowerAssertEvolved.zip'
           extract: 'true'
