@@ -46,7 +46,7 @@ allprojects {
 tasks.register<Sync>("site") {
     into(project.layout.buildDirectory.dir("_site"))
 
-    from(project(":deck.bnorm.dev").tasks.named("wasmJsBrowserDistribution"))
+    from(project(":deck.bnorm.dev").tasks.named("jsBrowserDistribution"))
 
     into("kc25") {
         from(project(":kotlinconf2025:story").tasks.named("wasmJsBrowserDistribution"))
