@@ -1,4 +1,5 @@
 @file:JsModule("youtube-player")
+@file:JsNonModule
 
 package dev.bnorm.deck.youtube
 
