@@ -49,6 +49,8 @@ kotlin {
                 api("dev.bnorm.storyboard:storyboard")
                 api("dev.bnorm.storyboard:storyboard-easel")
                 api("dev.bnorm.storyboard:storyboard-text")
+
+                implementation("dev.chrisbanes.haze:haze:1.5.2")
             }
         }
     }
