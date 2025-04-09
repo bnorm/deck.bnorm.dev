@@ -10,13 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.kc25.template.Body
-import dev.bnorm.kc25.template.Header
-import dev.bnorm.kc25.template.KodeeScene
-import dev.bnorm.kc25.template.code.CodeSample
+import dev.bnorm.kc25.template.*
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code.toCode
-import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -39,49 +34,45 @@ private val SAMPLES = buildCodeSamples {
     val c5 by tag("update scope")
 
     // TODO named parameters aren't highlighted correctly...
-    val basic = extractTags(
-        """
-            @Composable fun MyCounter(${c1}composer: Composer${c1}${c3}, changed: Int${c3}) {${c2}
-              composer.startRestartGroup(123)${c2}
-              var count by remember(${c1}composer${c1}${c3}, 0${c3}) { mutableStateOf(0) }
-              MyButton(${c1}
-                ${n}composer = ${n}composer,${c1}${c3}
-                ${n}changed = ${n}0,${c3}
-                ${n}text = ${n}"Count: ${'$'}count",
-                ${n}onPress = ${n}{ count += 1 }
-              )${c2}
-              composer.endRestartGroup()${c2}
-            }
-        """.trimIndent()
-    )
+    val basic = """
+        @Composable fun MyCounter(${c1}composer: Composer${c1}${c3}, changed: Int${c3}) {${c2}
+          composer.startRestartGroup(123)${c2}
+          var count by remember(${c1}composer${c1}${c3}, 0${c3}) { mutableStateOf(0) }
+          MyButton(${c1}
+            ${n}composer = ${n}composer,${c1}${c3}
+            ${n}changed = ${n}0,${c3}
+            ${n}text = ${n}"Count: ${'$'}count",
+            ${n}onPress = ${n}{ count += 1 }
+          )${c2}
+          composer.endRestartGroup()${c2}
+        }
+    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    val restartable = extractTags(
-        """
-            @Composable fun MyCounter($s${s}composer: Composer$s${s}, changed: Int$s${s}) {
-              composer.startRestartGroup(123)
-              ${c4}if (changed == 0 && composer.getSkipping()) {
-                composer.skipToGroupEnd()
-              }${c4} else {
-                var count by remember($s${s}composer$s${s}, 0$s${s}) { mutableStateOf(0) }
-                MyButton(
-                  ${n}composer = ${n}composer,
-                  ${n}changed = ${n}0,
-                  ${n}text = ${n}"Count: ${'$'}count",
-                  ${n}onPress = ${n}{ count += 1 }
-                )
-              }
-              composer.endRestartGroup()${c5}?.let {
-                it.updateScope { composer, _ -> MyCounter(composer, changed or 1) }
-              }${c5}
-            }
-        """.trimIndent()
-    )
+    val restartable = """
+        @Composable fun MyCounter($s${s}composer: Composer$s${s}, changed: Int$s${s}) {
+          composer.startRestartGroup(123)
+          ${c4}if (changed == 0 && composer.getSkipping()) {
+            composer.skipToGroupEnd()
+          }${c4} else {
+            var count by remember($s${s}composer$s${s}, 0$s${s}) { mutableStateOf(0) }
+            MyButton(
+              ${n}composer = ${n}composer,
+              ${n}changed = ${n}0,
+              ${n}text = ${n}"Count: ${'$'}count",
+              ${n}onPress = ${n}{ count += 1 }
+            )
+          }
+          composer.endRestartGroup()${c5}?.let {
+            it.updateScope { composer, _ -> MyCounter(composer, changed or 1) }
+          }${c5}
+        }
+    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    CodeSample { basic.toCode() }.styled(n, namedArguments).hide(c1, c2, c3)
+    basic.styled(n, namedArguments).hide(c1, c2, c3)
         .then { reveal(c1).focus(c1) }
         .then { reveal(c2).focus(c2) }
         .then { reveal(c3).focus(c3) }
-        .then { CodeSample { restartable.toCode() }.styled(n, namedArguments).hide(c5).focus(c4) }
+        .then { restartable.styled(n, namedArguments).hide(c5).focus(c4) }
         .then { reveal(c5).focus(c5) }
         .then { unfocus() }
 }
@@ -120,9 +111,7 @@ fun StoryboardBuilder.ComposeExample() {
 
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     MagicText(sampleTransition.createChildTransition {
-                        SAMPLES[it].get().splitByTags().also { split ->
-                            println(split.map { it.text.replace("\n", "") })
-                        }
+                        SAMPLES[it].get().splitByTags()
                     })
                 }
             }

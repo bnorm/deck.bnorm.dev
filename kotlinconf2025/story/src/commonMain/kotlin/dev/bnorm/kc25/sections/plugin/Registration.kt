@@ -3,17 +3,10 @@ package dev.bnorm.kc25.sections.plugin
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import dev.bnorm.kc25.components.validateSampleResource
-import dev.bnorm.kc25.template.Body
-import dev.bnorm.kc25.template.Header
-import dev.bnorm.kc25.template.KodeeScene
-import dev.bnorm.kc25.template.code.CodeSample
+import dev.bnorm.kc25.template.*
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code.toCode
-import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.text.magic.toWords
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
@@ -28,8 +21,7 @@ private val SAMPLES = buildCodeSamples {
     val reb by tag("registerExtensions function body")
     val ir by tag("IrGenerationExtension.registerExtension")
 
-    val baseSample = extractTags(
-        """
+    val baseSample = """
         @OptIn(ExperimentalCompilerApi::class)
         class BuildableCompilerPluginRegistrar : ${sc}CompilerPluginRegistrar()${sc} {${cb}
           ${k2}override val supportsK2: Boolean${k2b} get() = true${k2b}${k2}
@@ -45,13 +37,13 @@ private val SAMPLES = buildCodeSamples {
             )${ir}
           }${reb}${re}
         ${cb}}
-        """.trimIndent()
-    )
+    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    CodeSample {
-        validateSampleResource(baseSample, "$FILE@BuildableCompilerPluginRegistrar")
-            .toCode()
-    }.collapse(cb).hide(k2b, reb, ir)
+//    CodeSample {
+//        validateSampleResource(baseSample, "$FILE@BuildableCompilerPluginRegistrar")
+//            .toCode()
+//    }
+    baseSample.collapse(cb).hide(k2b, reb, ir)
         .then { focus(sc) }
         .then { reveal(cb).focus(cb) }
         .then { focus(k2) }

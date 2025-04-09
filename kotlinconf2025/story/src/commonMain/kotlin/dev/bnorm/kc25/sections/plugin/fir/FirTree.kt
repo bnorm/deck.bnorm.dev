@@ -30,11 +30,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.layout.HorizontalTree
+import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.Header
 import dev.bnorm.kc25.template.KodeeScene
-import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code.toCode
+import dev.bnorm.kc25.template.code.toCodeSample
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
@@ -54,7 +54,7 @@ private abstract class FirNode(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
         ) {
-            Text(name, style = MaterialTheme.typography.body1)
+            Text(name, style = MaterialTheme.typography.code1)
         }
     }
 }
@@ -84,6 +84,7 @@ private class FirClass : FirNode("FirClass")
 
 private class FirFunction : FirNode("FirFunction") {
     val codeSamples = buildCodeSamples {
+        val n by tag("class name")
         val p1 by tag("p1")
         val p2 by tag("p2")
         val p3 by tag("p3")
@@ -91,21 +92,19 @@ private class FirFunction : FirNode("FirFunction") {
         val p5 by tag("p5")
         val p6 by tag("p6")
 
-        val base = extractTags(
-            """
-                class FirFunction {${p1}
-                    val typeParameters: List<FirTypeParameterRef>${p1}${p2}
-                    val dispatchReceiverType: ConeSimpleKotlinType?${p2}${p3}
-                    val receiverParameter: FirReceiverParameter?${p3}${p4}
-                    val valueParameters: List<FirValueParameter>${p4}${p5}
-                    val returnTypeRef: FirTypeRef${p5}${p6}
-                    val body: FirBlock?${p6}
-                }
-            """.trimIndent()
-        )
+        val base = """
+            class ${n}FirFunction${n} {${p1}
+              val typeParameters: List<FirTypeParameterRef>${p1}${p2}
+              val dispatchReceiverType: ConeSimpleKotlinType?${p2}${p3}
+              val receiverParameter: FirReceiverParameter?${p3}${p4}
+              val valueParameters: List<FirValueParameter>${p4}${p5}
+              val returnTypeRef: FirTypeRef${p5}${p6}
+              val body: FirBlock?${p6}
+            }
+        """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-        val node = CodeSample { AnnotatedString("FirFunction", MaterialTheme.typography.body1.toSpanStyle()) }
-        val baseCodeSample = CodeSample { base.toCode() }.hide(p1, p2, p3, p4, p5, p6)
+        val node = AnnotatedString("FirFunction").toCodeSample()
+        val baseCodeSample = base.hide(p1, p2, p3, p4, p5, p6)
 
         node
             .then { baseCodeSample }

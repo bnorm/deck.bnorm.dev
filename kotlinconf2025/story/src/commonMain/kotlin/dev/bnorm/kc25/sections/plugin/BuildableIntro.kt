@@ -3,16 +3,10 @@ package dev.bnorm.kc25.sections.plugin
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import dev.bnorm.kc25.template.Body
-import dev.bnorm.kc25.template.Header
-import dev.bnorm.kc25.template.KodeeScene
-import dev.bnorm.kc25.template.code.CodeSample
+import dev.bnorm.kc25.template.*
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code.toCode
-import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.text.magic.toWords
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
@@ -24,8 +18,7 @@ private val SAMPLES = buildCodeSamples {
     val prop by tag("")
     val build by tag("")
 
-    val bookSample = extractTags(
-        """
+    val bookSample = """
         class Book${ctor} @Buildable constructor${ctor}(
           val title: String,
           val series: String?${defs} = null${defs},
@@ -52,16 +45,14 @@ private val SAMPLES = buildCodeSamples {
             ${build}fun build(): Book${build}
           }
         }${body}
-        """.trimIndent()
-    )
+    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
     val whens by tag("")
     val bImpl by tag("")
     val title by tag("")
     val series by tag("")
 
-    val buildSample = extractTags(
-        """ 
+    val buildSample = """ 
         fun build(): Book${bImpl} = Book(
           ${title}title = when {
             title_flag -> title_holder!!
@@ -80,16 +71,15 @@ private val SAMPLES = buildCodeSamples {
             else -> throw IllegalStateException("Uninitialized property 'publication'.")
           ${whens}},
         )${bImpl}
-        """.trimIndent()
-    )
+    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    val bookStart = CodeSample { bookSample.toCode() }.hide(ctor, body, propImpl)
+    val bookStart = bookSample.hide(ctor, body, propImpl)
         .then { reveal(body).hide(defs) }
         .then { reveal(propImpl).focus(prop) }
         .then { hide(propImpl).unfocus() }
         .then { focus(build) }
 
-    val buildSamples = CodeSample { buildSample.toCode() }.hide(bImpl).collapse(whens)
+    val buildSamples = buildSample.hide(bImpl).collapse(whens)
         .then { reveal(bImpl).focus(title) }
         .then { focus(series) }
         .then { unfocus().reveal(whens).hide(bImpl).collapse(whens) } // TODO reveal+collapse whens to place at end

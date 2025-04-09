@@ -1,12 +1,12 @@
 package dev.bnorm.kc25.template.code
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.storyboard.text.TextTag
 import dev.bnorm.storyboard.text.addStyleByTag
+import dev.bnorm.storyboard.text.highlight.CodeStyle
 import dev.bnorm.storyboard.text.replaceAllByTag
 import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
@@ -14,14 +14,30 @@ import kotlin.reflect.KProperty
 
 @Immutable
 class CodeSample private constructor(
-    private val sample: @Composable () -> AnnotatedString,
+    private val base: AnnotatedString,
     private val focus: TextTag?,
     private val replaced: Map<TextTag, AnnotatedString>,
     private val styled: Map<TextTag, SpanStyle>,
 ) {
-    constructor(sample: @Composable () -> AnnotatedString) : this(sample, null, emptyMap(), emptyMap())
+    constructor(sample: AnnotatedString) : this(sample, null, emptyMap(), emptyMap())
 
-    private var cached: AnnotatedString? = null
+    val string: AnnotatedString by lazy {
+        var str = base
+        for ((tag, style) in styled) {
+            str = str.addStyleByTag(tag, tagged = style)
+        }
+        if (focus != null) {
+            str = str.addStyleByTag(focus, untagged = UNFOCUSED_STYLE)
+        }
+        // TODO collapse first and then hide?
+        //  - will keep the collapses from being split,
+        //    which results in adjacent collapses
+        //  - or maybe the replaceAll can manage this by merging them together?
+        for ((tag, replacement) in replaced) {
+            str = str.replaceAllByTag(tag, replacement)
+        }
+        str
+    }
 
     companion object {
         private val UNFOCUSED_STYLE = SpanStyle(color = Color(0xFF555555))
@@ -30,11 +46,11 @@ class CodeSample private constructor(
     }
 
     private fun copy(
-        sample: @Composable () -> AnnotatedString = this.sample,
+        base: AnnotatedString = this.base,
         focus: TextTag? = this.focus,
         replaced: Map<TextTag, AnnotatedString> = this.replaced,
         styled: Map<TextTag, SpanStyle> = this.styled,
-    ): CodeSample = CodeSample(sample, focus, replaced, styled)
+    ): CodeSample = CodeSample(base, focus, replaced, styled)
 
     fun collapse(tag: TextTag): CodeSample = copy(replaced = replaced + (tag to ELLIPSIS))
     fun collapse(vararg tags: TextTag): CodeSample = copy(replaced = replaced + tags.map { it to ELLIPSIS })
@@ -51,27 +67,8 @@ class CodeSample private constructor(
     fun styled(tag: TextTag, style: SpanStyle): CodeSample = copy(styled = styled + (tag to style))
     fun unstyled(tag: TextTag): CodeSample = copy(styled = styled - tag)
 
-    @Composable
     fun get(): AnnotatedString {
-        // Cache the result outside Compose since it never changes.
-        cached?.let { return it }
-
-        var str = sample()
-        for ((tag, style) in styled) {
-            str = str.addStyleByTag(tag, tagged = style)
-        }
-        if (focus != null) {
-            str = str.addStyleByTag(focus, untagged = UNFOCUSED_STYLE)
-        }
-        // TODO collapse first and then hide?
-        //  - will keep the collapses from being split,
-        //    which results in adjacent collapses
-        //  - or maybe the replaceAll can manage this by merging them together?
-        for ((tag, replacement) in replaced) {
-            str = str.replaceAllByTag(tag, replacement)
-        }
-        cached = str
-        return str
+        return string
     }
 
     override fun equals(other: Any?): Boolean {
@@ -80,19 +77,21 @@ class CodeSample private constructor(
 
         other as CodeSample
 
-        if (sample != other.sample) return false
+        if (base != other.base) return false
         if (focus != other.focus) return false
         if (replaced != other.replaced) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sample.hashCode()
+        var result = base.hashCode()
         result = 31 * result + (focus?.hashCode() ?: 0)
         result = 31 * result + replaced.hashCode()
         return result
     }
 }
+
+fun AnnotatedString.toCodeSample(): CodeSample = CodeSample(this)
 
 fun buildCodeSamples(builder: CodeSamplesBuilder.() -> List<CodeSample>): List<CodeSample> =
     CodeSamplesBuilder.Default.builder()
@@ -120,6 +119,13 @@ sealed class CodeSamplesBuilder {
 
     fun extractTags(string: String): AnnotatedString {
         return TextTag.extractTags(string)
+    }
+
+    fun String.toCodeSample(
+        codeStyle: CodeStyle,
+        identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
+    ): CodeSample {
+        return extractTags(this).toCode(codeStyle, identifierType).toCodeSample()
     }
 
     fun tag(description: String): PropertyDelegateProvider<Any?, ReadOnlyProperty<Any?, TextTag>> =

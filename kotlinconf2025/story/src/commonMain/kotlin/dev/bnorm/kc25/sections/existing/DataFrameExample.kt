@@ -21,9 +21,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.mac.MacTerminal
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.template.*
-import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code.toCode
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -47,31 +45,31 @@ private val SAMPLES = buildCodeSamples {
     val a4 by tag("add2")
     val s3 by tag("sortBy3")
 
-    val base = extractTags(
-        """
-            (@Import DataFrame.readCSV("jetbrains_repositories.csv"))
-                .convert { topics }.with { it.removeSurrounding("[", "]").split(", ") }$s1
-                .sortBy { watchers.desc() }$s1$a1
-                .addId("watchersRank")$a1$a2
-                .add { "topicsCount" from { topics.size } }.remove { topics }$a2$s2
-                .sortBy { topicsCount.desc() }$s2$a3
-                .addId("topicsRank")$a3$a4
-                .add { "promotionScore" from { watchersRank + topicsRank } }$a4$s3
-                .sortBy { promotionScore.desc() }$s3$p
-                .print()$p
-        """.trimIndent()
-    )
-
-    CodeSample {
-        base.toCode(identifierType = { highlighting, string ->
-            when (string) {
-                "readCSV", "convert", "with", "removeSurrounding", "split", "sortBy", "addId", "add", "print", "desc", "from", "remove" -> highlighting.extensionFunctionCall
-                "watchers", "watchersRank", "topics", "topicsCount", "topicsRank", "promotionScore" -> highlighting.staticProperty
-                "size" -> highlighting.property
-                else -> null
+    val base = """
+        (@Import DataFrame.readCSV("jetbrains_repositories.csv"))
+            .convert { topics }.with { it.removeSurrounding("[", "]").split(", ") }$s1
+            .sortBy { watchers.desc() }$s1$a1
+            .addId("watchersRank")$a1$a2
+            .add { "topicsCount" from { topics.size } }.remove { topics }$a2$s2
+            .sortBy { topicsCount.desc() }$s2$a3
+            .addId("topicsRank")$a3$a4
+            .add { "promotionScore" from { watchersRank + topicsRank } }$a4$s3
+            .sortBy { promotionScore.desc() }$s3$p
+            .print()$p
+    """.trimIndent()
+        .toCodeSample(
+            codeStyle = INTELLIJ_DARK_CODE_STYLE,
+            identifierType = { highlighting, string ->
+                when (string) {
+                    "readCSV", "convert", "with", "removeSurrounding", "split", "sortBy", "addId", "add", "print", "desc", "from", "remove" -> highlighting.extensionFunctionCall
+                    "watchers", "watchersRank", "topics", "topicsCount", "topicsRank", "promotionScore" -> highlighting.staticProperty
+                    "size" -> highlighting.property
+                    else -> null
+                }
             }
-        })
-    }.hide(p, s1, a1, a2, s2, a3, a4, s3)
+        )
+
+    base.hide(p, s1, a1, a2, s2, a3, a4, s3)
         .then { reveal(p).focus(p) }
         .then { reveal(s1).focus(s1) }
         .then { reveal(a1).focus(a1) }
