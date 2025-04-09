@@ -33,8 +33,8 @@ import dev.bnorm.deck.shared.layout.HorizontalTree
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.Header
 import dev.bnorm.kc25.template.KodeeScene
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code.toCodeSample
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
@@ -103,7 +103,7 @@ private class FirFunction : FirNode("FirFunction") {
             }
         """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-        val node = AnnotatedString("FirFunction").toCodeSample()
+        val node = CodeSample(AnnotatedString("FirFunction"))
         val baseCodeSample = base.hide(p1, p2, p3, p4, p5, p6)
 
         node
@@ -127,7 +127,7 @@ private class FirFunction : FirNode("FirFunction") {
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 MagicText(
                     transition.createChildTransition {
-                        codeSamples[it.coerceIn(codeSamples.indices)].get().splitByTags()
+                        codeSamples[it.coerceIn(codeSamples.indices)].string.splitByTags()
                     },
                     moveDurationMillis = 300,
                     fadeDurationMillis = 300,

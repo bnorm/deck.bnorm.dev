@@ -258,7 +258,7 @@ fun StoryboardBuilder.DataFrameExample() {
             Box(Modifier.fillMaxSize()) {
                 Body {
                     ProvideTextStyle(MaterialTheme.typography.code1) {
-                        MagicText(sampleTransition.createChildTransition { SAMPLES[it].get().splitByTags() })
+                        MagicText(sampleTransition.createChildTransition { SAMPLES[it].string.splitByTags() })
                     }
                 }
 

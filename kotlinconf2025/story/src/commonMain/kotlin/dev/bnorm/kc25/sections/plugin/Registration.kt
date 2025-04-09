@@ -68,7 +68,7 @@ fun StoryboardBuilder.Registration(start: Int = 0, endExclusive: Int = SAMPLES.s
         Body {
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 val text = frame.createChildTransition {
-                    SAMPLES[start + it.toState()].get().splitByTags()
+                    SAMPLES[start + it.toState()].string.splitByTags()
                 }
                 MagicText(text)
             }

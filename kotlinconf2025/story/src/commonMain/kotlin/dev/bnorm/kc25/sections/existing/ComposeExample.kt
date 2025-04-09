@@ -111,7 +111,7 @@ fun StoryboardBuilder.ComposeExample() {
 
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     MagicText(sampleTransition.createChildTransition {
-                        SAMPLES[it].get().splitByTags()
+                        SAMPLES[it].string.splitByTags()
                     })
                 }
             }

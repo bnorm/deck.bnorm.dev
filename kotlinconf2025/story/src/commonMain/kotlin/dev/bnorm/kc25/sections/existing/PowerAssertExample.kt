@@ -9,14 +9,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.kc25.template.Body
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.Header
-import dev.bnorm.kc25.template.KodeeScene
+import dev.bnorm.kc25.template.*
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code.toCode
-import dev.bnorm.kc25.template.code.toCodeSample
-import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -174,7 +168,7 @@ private val SAMPLES = buildCodeSamples {
     }
 
     // TODO formatting bug with `$` in a string
-    samples.map { it.toCode(INTELLIJ_DARK_CODE_STYLE, identifierType).toCodeSample() }
+    samples.map { it.toCodeSample(INTELLIJ_DARK_CODE_STYLE, identifierType) }
         .then { finalExample.toCodeSample(INTELLIJ_DARK_CODE_STYLE, identifierType) }
         .then { collapse(m) }
 }
@@ -216,7 +210,7 @@ fun StoryboardBuilder.PowerAssertExample() {
 
             Body {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
-                    MagicText(sampleTransition.createChildTransition { SAMPLES[it].get().toWords() })
+                    MagicText(sampleTransition.createChildTransition { SAMPLES[it].string.toWords() })
                 }
             }
         }

@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.EaseInCubic
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -113,7 +112,6 @@ fun KodeeScaffold(
                         progressive = HazeProgressive.verticalGradient(
                             startIntensity = 1f,
                             endIntensity = 0f,
-                            easing = EaseInCubic,
                         )
                     }
                     .fillMaxWidth()
@@ -143,7 +141,7 @@ fun KodeeScaffold(
             top = headerHeight.toDp(),
             bottom = 128.dp,
             start = 32.dp,
-            end = 32.dp,
+            end = 0.dp,
         )
 
         val bodyPlaceables = subcompose(KodeeSceneContent.Body) {
