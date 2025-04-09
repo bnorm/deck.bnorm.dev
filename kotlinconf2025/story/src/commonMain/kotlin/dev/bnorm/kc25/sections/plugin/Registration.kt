@@ -14,6 +14,7 @@ import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
+import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
 private const val FILE = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/BuildableCompilerPluginRegistrar.kt"
@@ -75,7 +76,7 @@ fun StoryboardBuilder.Registration(start: Int = 0, endExclusive: Int = SAMPLES.s
         Body {
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 val text = frame.createChildTransition {
-                    SAMPLES[start + it.toState()].get().toWords()
+                    SAMPLES[start + it.toState()].get().splitByTags()
                 }
                 MagicText(text)
             }

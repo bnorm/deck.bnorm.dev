@@ -24,9 +24,9 @@ class CodeSample private constructor(
     private var cached: AnnotatedString? = null
 
     companion object {
-        private val ELLIPSIS = AnnotatedString(" … ", spanStyle = SpanStyle(color = Color.Gray.copy(alpha = 0.5f)))
+        private val UNFOCUSED_STYLE = SpanStyle(color = Color(0xFF555555))
+        private val ELLIPSIS = AnnotatedString(" … ", spanStyle = UNFOCUSED_STYLE)
         private val EMPTY = AnnotatedString("")
-        private val UNFOCUSED_STYLE = SpanStyle(color = Color.Gray.copy(alpha = 0.5f))
     }
 
     private fun copy(
@@ -97,12 +97,21 @@ class CodeSample private constructor(
 fun buildCodeSamples(builder: CodeSamplesBuilder.() -> List<CodeSample>): List<CodeSample> =
     CodeSamplesBuilder.Default.builder()
 
-sealed interface CodeSamplesBuilder {
-    companion object Default : CodeSamplesBuilder
+sealed class CodeSamplesBuilder {
+    internal companion object Default : CodeSamplesBuilder()
 
-    private object TagProvider : PropertyDelegateProvider<Any?, ReadOnlyProperty<Any?, TextTag>> {
+    private val tags = mutableListOf<TextTag>()
+
+    fun CodeSample.collapseAll(): CodeSample = collapse(*tags.toTypedArray())
+    fun CodeSample.hideAll(): CodeSample = hide(*tags.toTypedArray())
+    fun CodeSample.revealAll(): CodeSample = reveal(*tags.toTypedArray())
+
+    private inner class TagProvider(
+        val description: String,
+    ) : PropertyDelegateProvider<Any?, ReadOnlyProperty<Any?, TextTag>> {
         override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, TextTag> {
-            val tag = TextTag(property.name)
+            val tag = TextTag(property.name, description, null)
+            tags.add(tag)
             return object : ReadOnlyProperty<Any?, TextTag> {
                 override fun getValue(thisRef: Any?, property: KProperty<*>): TextTag = tag
             }
@@ -113,7 +122,8 @@ sealed interface CodeSamplesBuilder {
         return TextTag.extractTags(string)
     }
 
-    fun tag(description: String): PropertyDelegateProvider<Any?, ReadOnlyProperty<Any?, TextTag>> = TagProvider
+    fun tag(description: String): PropertyDelegateProvider<Any?, ReadOnlyProperty<Any?, TextTag>> =
+        TagProvider(description)
 
     fun CodeSample.then(transformer: CodeSample.() -> CodeSample): List<CodeSample> {
         return listOf(this, transformer(this))

@@ -23,12 +23,13 @@ import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.StoryEffect
 import dev.bnorm.storyboard.easel.template.section
 import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.text.magic.toWords
+import dev.bnorm.storyboard.text.splitByTags
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 private val SAMPLES = buildCodeSamples {
     val namedArguments = SpanStyle(color = Color(0xFF56C1D6))
+    val s by tag("splitter") // TODO support a "point" tag?
     val n by tag("named arguments")
 
     val c1 by tag("composer")
@@ -56,12 +57,12 @@ private val SAMPLES = buildCodeSamples {
 
     val restartable = extractTags(
         """
-            @Composable fun MyCounter(composer: Composer, changed: Int) {
+            @Composable fun MyCounter($s${s}composer: Composer$s${s}, changed: Int$s${s}) {
               composer.startRestartGroup(123)
               ${c4}if (changed == 0 && composer.getSkipping()) {
                 composer.skipToGroupEnd()
               }${c4} else {
-                var count by remember(composer, 0) { mutableStateOf(0) }
+                var count by remember($s${s}composer$s${s}, 0$s${s}) { mutableStateOf(0) }
                 MyButton(
                   ${n}composer = ${n}composer,
                   ${n}changed = ${n}0,
@@ -118,7 +119,11 @@ fun StoryboardBuilder.ComposeExample() {
                 }
 
                 ProvideTextStyle(MaterialTheme.typography.code1) {
-                    MagicText(sampleTransition.createChildTransition { SAMPLES[it].get().toWords() })
+                    MagicText(sampleTransition.createChildTransition {
+                        SAMPLES[it].get().splitByTags().also { split ->
+                            println(split.map { it.text.replace("\n", "") })
+                        }
+                    })
                 }
             }
         }

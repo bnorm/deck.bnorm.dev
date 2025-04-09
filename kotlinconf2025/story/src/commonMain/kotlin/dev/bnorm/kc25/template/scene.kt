@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.EaseInCubic
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -109,7 +110,11 @@ fun KodeeScaffold(
             Header(
                 Modifier.sharedElement(rememberSharedContentState(key = section))
                     .hazeEffect(state = hazeState, style = style) {
-                        progressive = HazeProgressive.verticalGradient(startIntensity = 1f, endIntensity = 0f)
+                        progressive = HazeProgressive.verticalGradient(
+                            startIntensity = 1f,
+                            endIntensity = 0f,
+                            easing = EaseInCubic,
+                        )
                     }
                     .fillMaxWidth()
                     .padding(bottom = 32.dp)

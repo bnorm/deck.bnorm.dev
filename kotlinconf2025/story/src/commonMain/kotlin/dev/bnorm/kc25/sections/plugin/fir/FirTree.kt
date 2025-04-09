@@ -40,7 +40,7 @@ import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.text.magic.toWords
+import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
 private abstract class FirNode(
@@ -128,7 +128,7 @@ private class FirFunction : FirNode("FirFunction") {
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 MagicText(
                     transition.createChildTransition {
-                        codeSamples[it.coerceIn(codeSamples.indices)].get().toWords()
+                        codeSamples[it.coerceIn(codeSamples.indices)].get().splitByTags()
                     },
                     moveDurationMillis = 300,
                     fadeDurationMillis = 300,

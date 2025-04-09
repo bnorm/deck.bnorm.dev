@@ -61,9 +61,9 @@ val DARK_COLORS = darkColors(
 
 val HIGHLIGHTING: Highlighting
     @Composable get() {
-        val fontFamily = JetBrainsMono
+//        val fontFamily = JetBrainsMono
         return Highlighting.build {
-            simple += SpanStyle(color = Color(0xFFBCBEC4), fontFamily = fontFamily)
+            simple += SpanStyle(color = Color(0xFFBCBEC4))
             number = simple + SpanStyle(color = Color(0xFF2AACB8))
             keyword = simple + SpanStyle(color = Color(0xFFCF8E6D))
             punctuation = simple + SpanStyle(color = Color(0xFFA1C17E))
