@@ -10,17 +10,17 @@ val FirDeclarationGenerationExtensionSamples = listOf(
     // TODO better example of entire extension
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@BuildableFirDeclarationGenerationExtension",
 
-    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@ANNOTATION_PREDICATE",
-    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/BuildableNames.kt@BuildableNames",
+     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@NAMES",
+    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@BUILDABLE_PREDICATE",
+    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@HAS_BUILDABLE_PREDICATE",
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@registerPredicates",
-    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@classIds",
-    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@builderClassIds",
 
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@getNestedClassifiersNames",
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@generateNestedClassLikeDeclaration",
-    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/BuildableKey.kt@BuildableKey",
+    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/keys.kt@BuilderClassKey", // TODO side panel?
 
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@getCallableNamesForClass",
+    "buildable/compiler-plugin/dev/bnorm/buildable/plugin/keys.kt@BuildableKey", // TODO side panel?
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@generateConstructors",
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@generateProperties",
     "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@generateFunctions",
@@ -41,9 +41,12 @@ fun StoryboardBuilder.FirExtensions() {
         Registration(endExclusive = REGISTRATION_IR_CHECKPOINT)
         SamplesScene(FirExtensionRegistrar)
 
-        // TODO remove support for type parameters
-        //  - avoids talking about type substitution
-        //  - create a checker as a gentle introduction to those
+        // TODO can have a nice aside showing some code for all the annotation predicate types
+        //  and what each of the different types would match
+
+        // TODO create a checker for no type parameters as another example?
+        //  - or maybe leave this to the companion?
+
         SamplesScene(FirDeclarationGenerationExtensionSamples)
         SamplesScene(FirAdditionalCheckersExtension)
     }
