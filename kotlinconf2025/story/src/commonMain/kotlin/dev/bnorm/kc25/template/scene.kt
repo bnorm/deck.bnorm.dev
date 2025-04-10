@@ -67,9 +67,10 @@ private enum class KodeeSceneContent {
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun KodeeScaffold(
+    modifier: Modifier = Modifier,
     header: (@Composable () -> Unit)? = null,
     kodee: @Composable () -> Unit = { DefaultCornerKodee(Modifier.size(50.dp)) },
-    body: @Composable ColumnScope.(PaddingValues) -> Unit,
+    body: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
     val hazeState = remember { HazeState() }
     val style = HazeDefaults.style(
@@ -100,7 +101,7 @@ fun KodeeScaffold(
         else -> remember(header) { SceneSection(header) }
     }
 
-    SubcomposeLayout { constraints ->
+    SubcomposeLayout(modifier) { constraints ->
         val layoutWidth = constraints.maxWidth
         val layoutHeight = constraints.maxHeight
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
@@ -139,13 +140,13 @@ fun KodeeScaffold(
 
         contentPadding.paddingHolder = PaddingValues(
             top = headerHeight.toDp(),
-            bottom = 128.dp,
+            bottom = 0.dp,
             start = 32.dp,
-            end = 0.dp,
+            end = 32.dp,
         )
 
         val bodyPlaceables = subcompose(KodeeSceneContent.Body) {
-            Column(Modifier.fillMaxSize().hazeSource(state = hazeState).padding(horizontal = 32.dp)) {
+            Box(Modifier.fillMaxSize().hazeSource(state = hazeState)) {
                 body(contentPadding)
             }
         }.fastMap { it.measure(looseConstraints) }

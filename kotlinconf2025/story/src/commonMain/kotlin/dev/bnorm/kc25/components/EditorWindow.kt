@@ -19,7 +19,7 @@ fun EditorWindow(
     content: @Composable () -> Unit,
 ) {
     MacWindow(
-        color = Color(0xFF313438),
+        color = Color(0xFF3B3E40),
         modifier = modifier.fillMaxSize(),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -37,7 +37,7 @@ fun EditorWindow(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF1E1F22))
+                .background(Color(0xFF202124))
         ) {
             content()
         }

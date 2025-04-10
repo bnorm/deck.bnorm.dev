@@ -47,7 +47,7 @@ fun StoryboardBuilder.FirExtensions() {
         // TODO create a checker for no type parameters as another example?
         //  - or maybe leave this to the companion?
 
-        SamplesScene(FirDeclarationGenerationExtensionSamples)
+        Generation()
         SamplesScene(FirAdditionalCheckersExtension)
     }
 }

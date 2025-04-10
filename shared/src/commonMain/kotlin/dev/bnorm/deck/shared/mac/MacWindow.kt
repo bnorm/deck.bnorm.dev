@@ -42,12 +42,15 @@ fun MacWindow(
     }
 
     val shape = RoundedCornerShape(10.dp)
-    Box(modifier = modifier.border(1.dp, Color.Gray, shape).clip(shape)) {
+    Box(
+        modifier = modifier
+            .border(1.dp, Color.Gray, shape)
+            .clip(shape)
+            .background(color)
+    ) {
         Column {
             Box(
-                modifier = Modifier.fillMaxWidth()
-                    .background(color)
-                    .height(28.dp)
+                modifier = Modifier.fillMaxWidth().height(28.dp)
             ) {
                 Row {
                     WindowButton(Color(0xFFFF5F57))

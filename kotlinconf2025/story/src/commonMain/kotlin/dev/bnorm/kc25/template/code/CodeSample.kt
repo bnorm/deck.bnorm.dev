@@ -17,8 +17,9 @@ class CodeSample private constructor(
     private val replaced: Map<TextTag, AnnotatedString>,
     private val styled: Map<TextTag, SpanStyle>,
     private val scrollTag: TextTag?,
+    val data: Any?,
 ) {
-    constructor(sample: AnnotatedString) : this(sample, null, emptyMap(), emptyMap(), null)
+    constructor(sample: AnnotatedString) : this(sample, null, emptyMap(), emptyMap(), null, null)
 
     val string: AnnotatedString by lazy {
         var str = base
@@ -60,7 +61,8 @@ class CodeSample private constructor(
         replaced: Map<TextTag, AnnotatedString> = this.replaced,
         styled: Map<TextTag, SpanStyle> = this.styled,
         scrollTag: TextTag? = this.scrollTag,
-    ): CodeSample = CodeSample(base, focus, replaced, styled, scrollTag)
+        data: Any? = this.data,
+    ): CodeSample = CodeSample(base, focus, replaced, styled, scrollTag, data)
 
     fun collapse(tag: TextTag): CodeSample = copy(replaced = replaced + (tag to ELLIPSIS))
     fun collapse(vararg tags: TextTag): CodeSample = collapse(tags.asList())
@@ -94,6 +96,16 @@ class CodeSample private constructor(
 
     fun scroll(tag: TextTag?): CodeSample = copy(scrollTag = tag)
 
+    fun attach(data: Any): CodeSample {
+        if (this.data == data) return this
+        return copy(data = data)
+    }
+
+    fun detach(): CodeSample {
+        if (data == null) return this
+        return copy(data = null)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -105,6 +117,7 @@ class CodeSample private constructor(
         if (replaced != other.replaced) return false
         if (styled != other.styled) return false
         if (scrollTag != other.scrollTag) return false
+        if (data != other.data) return false
         return true
     }
 
@@ -114,6 +127,7 @@ class CodeSample private constructor(
         result = 31 * result + replaced.hashCode()
         result = 31 * result + styled.hashCode()
         result = 31 * result + (scrollTag?.hashCode() ?: 0)
+        result = 31 * result + (data?.hashCode() ?: 0)
         return result
     }
 }
