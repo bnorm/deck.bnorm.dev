@@ -64,6 +64,8 @@ val INTELLIJ_DARK_CODE_STYLE = CodeStyle.build {
     extensionFunctionCall = simple + SpanStyle(color = Color(0xFF56A8F5), fontStyle = FontStyle.Italic)
     staticFunctionCall = simple + SpanStyle(fontStyle = FontStyle.Italic)
     typeParameters = simple + SpanStyle(color = Color(0xFF16BAAC))
+    namedArgument = simple + SpanStyle(color = Color(0xFF56C1D6))
+    label = simple + SpanStyle(color = Color(0xFF32B8AF))
 }
 
 val Typography.code1: TextStyle

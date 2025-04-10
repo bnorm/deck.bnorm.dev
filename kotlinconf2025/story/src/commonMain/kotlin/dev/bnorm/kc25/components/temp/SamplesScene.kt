@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.components.sampleResource
@@ -29,9 +30,9 @@ fun StoryboardBuilder.SamplesScene(files: List<String>) {
         KodeeScaffold { padding ->
             val samples = buildList {
                 for (sample in files) {
-                    add(sampleResource(sample).value.toCode(INTELLIJ_DARK_CODE_STYLE))
+                    add(sampleResource(sample).value)
                 }
-            }
+            }.map { rememberSaveable(it) { it.toCode(INTELLIJ_DARK_CODE_STYLE) } }
 
             val verticalScrollState = rememberScrollState()
             Box(Modifier.verticalScroll(verticalScrollState).padding(padding)) {

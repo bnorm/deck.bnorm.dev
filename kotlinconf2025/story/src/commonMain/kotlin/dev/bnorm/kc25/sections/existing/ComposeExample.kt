@@ -8,8 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.kc25.template.*
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.storyboard.DisplayType
@@ -23,9 +21,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 private val SAMPLES = buildCodeSamples {
-    val namedArguments = SpanStyle(color = Color(0xFF56C1D6))
     val s by tag("splitter") // TODO support a "point" tag?
-    val n by tag("named arguments")
 
     val c1 by tag("composer")
     val c2 by tag("composer calls")
@@ -38,11 +34,11 @@ private val SAMPLES = buildCodeSamples {
         @Composable fun MyCounter(${c1}composer: Composer${c1}${c3}, changed: Int${c3}) {${c2}
           composer.startRestartGroup(123)${c2}
           var count by remember(${c1}composer${c1}${c3}, 0${c3}) { mutableStateOf(0) }
-          MyButton(${c1}
-            ${n}composer = ${n}composer,${c1}${c3}
-            ${n}changed = ${n}0,${c3}
-            ${n}text = ${n}"Count: ${'$'}count",
-            ${n}onPress = ${n}{ count += 1 }
+          MyButton(
+            text = "Count: ${'$'}count",
+            onPress = { count += 1 },${c1}
+            composer = composer,${c1}${c3}
+            changed = 0,${c3}
           )${c2}
           composer.endRestartGroup()${c2}
         }
@@ -56,10 +52,10 @@ private val SAMPLES = buildCodeSamples {
           }${c4} else {
             var count by remember($s${s}composer$s${s}, 0$s${s}) { mutableStateOf(0) }
             MyButton(
-              ${n}composer = ${n}composer,
-              ${n}changed = ${n}0,
-              ${n}text = ${n}"Count: ${'$'}count",
-              ${n}onPress = ${n}{ count += 1 }
+              text = "Count: ${'$'}count",
+              onPress = { count += 1 },
+              composer = composer,
+              changed = 0,
             )
           }
           composer.endRestartGroup()${c5}?.let {
@@ -68,11 +64,11 @@ private val SAMPLES = buildCodeSamples {
         }
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    basic.styled(n, namedArguments).hide(c1, c2, c3)
+    basic.hide(c1, c2, c3)
         .then { reveal(c1).focus(c1) }
         .then { reveal(c2).focus(c2) }
         .then { reveal(c3).focus(c3) }
-        .then { restartable.styled(n, namedArguments).hide(c5).focus(c4) }
+        .then { restartable.hide(c5).focus(c4) }
         .then { reveal(c5).focus(c5) }
         .then { unfocus() }
 }

@@ -7,6 +7,7 @@ import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.storyboard.text.TextTag
 import dev.bnorm.storyboard.text.TextTagScope
 import dev.bnorm.storyboard.text.addStyleByTag
+import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.highlight.CodeStyle
 import dev.bnorm.storyboard.text.replaceAllByTag
 
@@ -138,9 +139,10 @@ fun buildCodeSamples(builder: CodeSamplesBuilder.() -> List<CodeSample>): List<C
 class CodeSamplesBuilder : TextTagScope.Default() {
     fun String.toCodeSample(
         codeStyle: CodeStyle,
+        scope: CodeScope = CodeScope.File,
         identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
     ): CodeSample {
-        return CodeSample(extractTags(this).toCode(codeStyle, identifierType))
+        return CodeSample(extractTags(this).toCode(codeStyle, scope, identifierType))
     }
 
     fun CodeSample.collapse(data: Any?): CodeSample = collapse(tags.filter { data == it.data })

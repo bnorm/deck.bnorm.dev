@@ -16,6 +16,7 @@ import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.StoryEffect
 import dev.bnorm.storyboard.easel.template.section
+import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.highlight.CodeStyle
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
@@ -168,8 +169,8 @@ private val SAMPLES = buildCodeSamples {
     }
 
     // TODO formatting bug with `$` in a string
-    samples.map { it.toCodeSample(INTELLIJ_DARK_CODE_STYLE, identifierType) }
-        .then { finalExample.toCodeSample(INTELLIJ_DARK_CODE_STYLE, identifierType) }
+    samples.map { it.toCodeSample(INTELLIJ_DARK_CODE_STYLE, scope = CodeScope.Function, identifierType) }
+        .then { finalExample.toCodeSample(INTELLIJ_DARK_CODE_STYLE, scope = CodeScope.Function, identifierType) }
         .then { collapse(m) }
 }
 
