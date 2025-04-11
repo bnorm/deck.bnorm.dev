@@ -4,10 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
@@ -15,17 +12,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.mac.MacTerminal
 import dev.bnorm.kc25.components.temp.BULLET_1
-import dev.bnorm.kc25.template.*
+import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
+import dev.bnorm.kc25.template.KodeeScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
+import dev.bnorm.kc25.template.code1
+import dev.bnorm.kc25.template.code2
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.RevealEach
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.StoryEffect
 import dev.bnorm.storyboard.easel.template.section
 import dev.bnorm.storyboard.text.magic.MagicText
@@ -210,66 +213,80 @@ fun StoryboardBuilder.DataFrameExample() {
     require(SAMPLES.size == OUTPUT.size) { "Samples (${SAMPLES.size}) != Outputs (${OUTPUT.size})" }
 
     section("DataFrame") {
-        KodeeScene(stateCount = 3) {
-            Header()
-            Body {
-                RevealEach(frame.createChildTransition { it.toState() }) {
-                    item { Text("$BULLET_1 DataFrame is an abstraction for working with structured data.") }
-                    item { Text("$BULLET_1 It is hierarchical, interoperable, generic, and immutable.") }
-                    item { Text("$BULLET_1 And now, thanks to a compiler-plugin, inferred.") }
-                    // item { Text("$BULLET_1 The DataFrame compiler-plugin infers the schema at each step,") }
-                    // item { Text("$BULLET_1 and generates synthetic extension properties for each schema.") }
+        scene(
+            stateCount = 3,
+                    enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+            ) {
+            KodeeScaffold { padding ->
+                Column(
+                    modifier = Modifier.padding(padding),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    RevealEach(frame.createChildTransition { it.toState() }) {
+                        item { Text("$BULLET_1 DataFrame is an abstraction for working with structured data.") }
+                        item { Text("$BULLET_1 It is hierarchical, interoperable, generic, and immutable.") }
+                        item { Text("$BULLET_1 And now, thanks to a compiler-plugin, inferred.") }
+                        // item { Text("$BULLET_1 The DataFrame compiler-plugin infers the schema at each step,") }
+                        // item { Text("$BULLET_1 and generates synthetic extension properties for each schema.") }
+                    }
                 }
             }
         }
 
-        KodeeScene {
-            Header()
-
-            // TODO could I hide some animation controls, to make them pausable and navigable?
-            // When rendering the scene for preview, render the finished state and do not animate the sample.
-            val displayType = LocalDisplayType.current
-            var sampleIndex by remember {
-                mutableIntStateOf(if (displayType == DisplayType.Story) 0 else SAMPLES.lastIndex)
-            }
-            val sampleTransition = updateTransition(sampleIndex)
-
-            var outputIndex by remember { mutableIntStateOf(sampleIndex) }
-            val outputTransition = updateTransition(outputIndex)
-
-            StoryEffect(Unit) {
-                while (true) {
-                    delay(2.seconds)
-                    if (sampleIndex == SAMPLES.lastIndex) {
-                        // Delay a little longer on the last sample.
-                        delay(3.seconds)
-                        sampleIndex = 0
-                    } else {
-                        sampleIndex += 1
-                        // Delay updating the output just a little
-                        // until the sample is done updating.
-                        delay(1200.milliseconds)
-                    }
-
-                    outputIndex = sampleIndex
+        scene(
+            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        ) {
+            KodeeScaffold { padding ->
+                // TODO could I hide some animation controls, to make them pausable and navigable?
+                // When rendering the scene for preview, render the finished state and do not animate the sample.
+                val displayType = LocalDisplayType.current
+                var sampleIndex by remember {
+                    mutableIntStateOf(if (displayType == DisplayType.Story) 0 else SAMPLES.lastIndex)
                 }
-            }
+                val sampleTransition = updateTransition(sampleIndex)
 
-            Box(Modifier.fillMaxSize()) {
-                Body {
-                    ProvideTextStyle(MaterialTheme.typography.code1) {
-                        MagicText(sampleTransition.createChildTransition { SAMPLES[it].string.splitByTags() })
+                var outputIndex by remember { mutableIntStateOf(sampleIndex) }
+                val outputTransition = updateTransition(outputIndex)
+
+                StoryEffect(Unit) {
+                    while (true) {
+                        delay(2.seconds)
+                        if (sampleIndex == SAMPLES.lastIndex) {
+                            // Delay a little longer on the last sample.
+                            delay(3.seconds)
+                            sampleIndex = 0
+                        } else {
+                            sampleIndex += 1
+                            // Delay updating the output just a little
+                            // until the sample is done updating.
+                            delay(1200.milliseconds)
+                        }
+
+                        outputIndex = sampleIndex
                     }
                 }
 
-                sampleTransition.AnimatedVisibility(
-                    visible = { it != 0 },
-                    enter = slideInVertically(tween(900, delayMillis = 900, easing = EaseIn)) { it },
-                    exit = slideOutVertically(tween(900, easing = EaseOut)) { it },
-                ) {
-                    MacTerminal(modifier = Modifier.offset(y = 278.dp).fillMaxWidth()) {
-                        ProvideTextStyle(MaterialTheme.typography.code2) {
-                            MagicText(outputTransition.createChildTransition { OUTPUT[it] })
+                Box(Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier.padding(padding),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        ProvideTextStyle(MaterialTheme.typography.code1) {
+                            MagicText(sampleTransition.createChildTransition { SAMPLES[it].string.splitByTags() })
+                        }
+                    }
+
+                    sampleTransition.AnimatedVisibility(
+                        visible = { it != 0 },
+                        enter = slideInVertically(tween(900, delayMillis = 900, easing = EaseIn)) { it },
+                        exit = slideOutVertically(tween(900, easing = EaseOut)) { it },
+                    ) {
+                        MacTerminal(modifier = Modifier.offset(y = 278.dp).fillMaxWidth()) {
+                            ProvideTextStyle(MaterialTheme.typography.code2) {
+                                MagicText(outputTransition.createChildTransition { OUTPUT[it] })
+                            }
                         }
                     }
                 }

@@ -2,18 +2,29 @@ package dev.bnorm.kc25.sections.existing
 
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
-import dev.bnorm.kc25.template.*
+import androidx.compose.ui.unit.dp
+import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
+import dev.bnorm.kc25.template.KodeeScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
+import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.StoryEffect
 import dev.bnorm.storyboard.easel.template.section
 import dev.bnorm.storyboard.text.highlight.CodeScope
@@ -176,16 +187,25 @@ private val SAMPLES = buildCodeSamples {
 
 fun StoryboardBuilder.PowerAssertExample() {
     section("Power-Assert") {
-        KodeeScene(stateCount = 1) {
-            Header()
-            Body {
-                // TODO add some bullet points?
+        scene(
+            stateCount = 1,
+            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        ) {
+            KodeeScaffold { padding ->
+                Column(
+                    modifier = Modifier.padding(padding),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    // TODO add some bullet points?
+                }
             }
         }
 
-        KodeeScene {
-            Header()
-
+        scene(
+            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        ) {
             // TODO could I hide some animation controls, to make them pausable and navigable?
             // When rendering the scene for preview, render the finished state and do not animate the sample.
             val displayType = LocalDisplayType.current
@@ -209,9 +229,11 @@ fun StoryboardBuilder.PowerAssertExample() {
                 }
             }
 
-            Body {
-                ProvideTextStyle(MaterialTheme.typography.code1) {
-                    MagicText(sampleTransition.createChildTransition { SAMPLES[it].string.toWords() })
+            KodeeScaffold { padding ->
+                Box(Modifier.padding(padding)) {
+                    ProvideTextStyle(MaterialTheme.typography.code1) {
+                        MagicText(sampleTransition.createChildTransition { SAMPLES[it].string.toWords() })
+                    }
                 }
             }
         }

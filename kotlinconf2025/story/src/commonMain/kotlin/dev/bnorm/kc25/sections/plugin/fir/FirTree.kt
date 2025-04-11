@@ -31,14 +31,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.layout.HorizontalTree
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.Header
-import dev.bnorm.kc25.template.KodeeScene
+import dev.bnorm.kc25.template.KodeeScaffold
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.DisplayType
 import dev.bnorm.storyboard.LocalDisplayType
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
@@ -155,12 +156,16 @@ fun StoryboardBuilder.FirTree() {
         add(element)
     }.withIndex().toList()
 
-    KodeeScene(states) {
-        Header()
-
-        Box(Modifier.padding(bottom = 32.dp)) {
-            val root = frame.createChildTransition { it.toState() }
-            FirTree(root)
+    scene(
+        states,
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+    ) {
+        KodeeScaffold { padding ->
+            Box(Modifier.padding(padding).padding(bottom = 32.dp)) {
+                val root = frame.createChildTransition { it.toState() }
+                FirTree(root)
+            }
         }
     }
 }

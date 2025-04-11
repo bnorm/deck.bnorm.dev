@@ -1,14 +1,11 @@
 package dev.bnorm.kc25.template
 
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
@@ -18,45 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
-import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.storyboard.*
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.SceneSection
 import dev.chrisbanes.haze.*
-
-fun <T> StoryboardBuilder.KodeeScene(
-    states: List<T>,
-    enterTransition: (AdvanceDirection) -> EnterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-    exitTransition: (AdvanceDirection) -> ExitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    content: SceneContent<T>,
-): Scene<T> = scene(states, enterTransition, exitTransition) {
-    Column(Modifier.fillMaxSize()) {
-        Render(content)
-    }
-
-    SharedKodee {
-        DefaultCornerKodee(Modifier.size(50.dp))
-    }
-}
-
-fun StoryboardBuilder.KodeeScene(
-    stateCount: Int = 1,
-    enterTransition: (AdvanceDirection) -> EnterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-    exitTransition: (AdvanceDirection) -> ExitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    content: SceneContent<Int>,
-): Scene<Int> = scene(stateCount, enterTransition, exitTransition) {
-    Column(Modifier.fillMaxSize()) {
-        Render(content)
-    }
-
-    SharedKodee {
-        DefaultCornerKodee(Modifier.size(50.dp))
-    }
-}
 
 private enum class KodeeSceneContent {
     Header,
@@ -108,16 +71,16 @@ fun KodeeScaffold(
 
         val headerPlaceables = subcompose(KodeeSceneContent.Header) {
             Header(
-                Modifier.sharedElement(rememberSharedContentState(key = section))
+                Modifier
                     .hazeEffect(state = hazeState, style = style) {
                         progressive = HazeProgressive.verticalGradient(
                             startIntensity = 1f,
                             endIntensity = 0f,
                         )
                     }
+                    .sharedElement(rememberSharedContentState(key = section))
                     .fillMaxWidth()
                     .padding(bottom = 32.dp)
-
             ) {
                 ProvideTextStyle(MaterialTheme.typography.h3) {
                     section.title()

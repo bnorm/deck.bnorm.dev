@@ -2,10 +2,7 @@ package dev.bnorm.kc25.sections.intro
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,9 +20,7 @@ import dev.bnorm.deck.story.generated.resources.writing_your_second_kotlin_compi
 import dev.bnorm.kc25.components.ResourceImage
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
-import dev.bnorm.kc25.template.Body
-import dev.bnorm.kc25.template.Header
-import dev.bnorm.kc25.template.KodeeScene
+import dev.bnorm.kc25.template.KodeeScaffold
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
@@ -39,7 +34,7 @@ private fun vEnter(): EnterTransition = fadeIn(spec()) + slideInHorizontally(spe
 private fun vExit(): ExitTransition = fadeOut(spec()) + slideOutHorizontally(spec()) { it / 2 }
 
 fun StoryboardBuilder.ThirdPlugin() {
-    KodeeScene(
+    scene(
         stateCount = 9,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
@@ -50,13 +45,11 @@ fun StoryboardBuilder.ThirdPlugin() {
             end = SceneExit(alignment = Alignment.CenterStart),
         ),
     ) {
-        Header()
-
         val state = frame.createChildTransition { it.toState() }
-        Box {
+        KodeeScaffold { padding ->
             Box(
                 contentAlignment = Alignment.TopEnd,
-                modifier = Modifier.fillMaxSize().padding(32.dp)
+                modifier = Modifier.fillMaxSize().padding(padding)
             ) {
                 state.AnimatedVisibility(visible = { it >= 1 }, enter = vEnter(), exit = vExit()) {
                     val shift by state.animateDp(tSpec()) { if (it >= 7) 32.dp else if (it >= 4) 16.dp else 0.dp }
@@ -72,7 +65,6 @@ fun StoryboardBuilder.ThirdPlugin() {
                     val shift by state.animateDp(tSpec()) { if (it >= 7) 16.dp else 0.dp }
                     val tint by state.animateFloat(tSpec()) { if (it >= 7) 0.33f else 0.01f }
                     ResourceImage(
-                        // TODO take a new screen shot with the same aspect ratio as the others
                         Res.drawable.writing_your_second_kotlin_compiler_plugin,
                         modifier = Modifier.padding(top = 96.dp, end = shift).width(320.dp).padding(end = shift),
                         contentScale = ContentScale.FillWidth,
@@ -88,7 +80,10 @@ fun StoryboardBuilder.ThirdPlugin() {
                 }
             }
 
-            Body {
+            Column(
+                modifier = Modifier.padding(padding),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 state.RevealAfter(0) { Text("$BULLET_1 Writing Your First Kotlin Compiler Plugin") }
                 state.RevealAfter(1) { Text("    $BULLET_2 KotlinConf 2018 - Kevin Most") }
                 state.RevealAfter(2) { Text("    $BULLET_2 Project setup and JVM bytecode") }
