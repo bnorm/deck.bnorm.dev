@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.kc25.broadcast.BroadcastMessage
@@ -121,9 +122,10 @@ private fun LazyListScope.Content(
 
     item("Reactions") {
         ContentCard {
-            val scope = rememberCoroutineScope()
+            Text("Send A Reaction!", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
+            Spacer(Modifier.height(16.dp))
 
-            Text("Send A Reaction!", style = MaterialTheme.typography.h2)
+            val scope = rememberCoroutineScope()
             Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
                 Reaction(
                     scope = scope,
@@ -177,6 +179,6 @@ private fun Reaction(
         },
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
     ) {
-        message.Image(Modifier.size(75.dp))
+        message.Image(Modifier.size(64.dp))
     }
 }

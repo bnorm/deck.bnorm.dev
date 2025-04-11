@@ -17,6 +17,8 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.kc25.broadcast.LocalReactionListener
 import dev.bnorm.kc25.broadcast.ReactionMessage
+import dev.bnorm.storyboard.DisplayType
+import dev.bnorm.storyboard.LocalDisplayType
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.filter
 import kotlin.random.Random
@@ -41,10 +43,34 @@ private class FloatingKodee(
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun DefaultReactionKodee() {
-    val queue = remember { mutableStateSetOf<FloatingKodee>() }
-
-    val listener = LocalReactionListener.current
     var reaction by remember { mutableStateOf<ReactionMessage?>(null) }
+
+    FloatingReactions()
+
+    AnimateKodee {
+        default { DefaultCornerKodee(Modifier.size(50.dp)) }
+
+        show(condition = { reaction != null }) {
+            when (val reaction = reaction) {
+                null, is ReactionMessage.Ping -> {
+                    DefaultCornerKodee(Modifier.size(50.dp))
+                }
+
+                else -> {
+                    reaction.Image(Modifier.size(100.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FloatingReactions() {
+    // Do not render floating reactions in anything but story mode!
+    if (LocalDisplayType.current != DisplayType.Story) return
+
+    val queue = remember { mutableStateSetOf<FloatingKodee>() }
+    val listener = LocalReactionListener.current
     LaunchedEffect(listener) {
         val reactions = listener?.listen() ?: return@LaunchedEffect
         reactions
@@ -73,22 +99,6 @@ fun DefaultReactionKodee() {
                     }
                 }
                 kodee.content(rememberTransition(kodee.state, label = "kodee ${kodee.timestamp}"))
-            }
-        }
-    }
-
-    AnimateKodee {
-        default { DefaultCornerKodee(Modifier.size(50.dp)) }
-
-        show(condition = { reaction != null }) {
-            when (val reaction = reaction) {
-                null, is ReactionMessage.Ping -> {
-                    DefaultCornerKodee(Modifier.size(50.dp))
-                }
-
-                else -> {
-                    reaction.Image(Modifier.size(100.dp))
-                }
             }
         }
     }

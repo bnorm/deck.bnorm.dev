@@ -19,6 +19,7 @@ fun main() {
         val state = rememberStoryState()
         var storyBroadcaster by remember { mutableStateOf<StoryBroadcaster?>(null) }
         var reactionListener by remember { mutableStateOf<ReactionListener?>(null) }
+        Broadcast(state, storyBroadcaster)
 
         @Composable
         fun StoryOverlayScope.DesktopOverlay() {
@@ -34,7 +35,6 @@ fun main() {
 
         DevelopmentEntryPoint {
             remember { createStoryboard().also { state.updateStoryboard(it) } }
-            Broadcast(state, storyBroadcaster) // Important to be after updating state with storyboard.
 
             MaterialTheme(colors = darkColors()) {
                 CompositionLocalProvider(LocalReactionListener provides reactionListener) {

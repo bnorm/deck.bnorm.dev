@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.storyboard.easel.StoryState
-import io.ktor.http.*
 
 class StoryBroadcaster {
     companion object {
@@ -12,16 +11,9 @@ class StoryBroadcaster {
     }
 
     private val client = BroadcastClient(BroadcastMessage.serializer())
-    private var enabled = true
 
     suspend fun broadcast(message: BroadcastMessage) {
-        if (!enabled) return
-
-        val response = client.broadcast(CHANNEL_ID, message)
-        if (response.status != HttpStatusCode.OK && response.status != HttpStatusCode.Created) {
-            // An unsuccessful response should disable the broadcaster.
-            enabled = false
-        }
+        client.broadcast(CHANNEL_ID, message)
     }
 }
 

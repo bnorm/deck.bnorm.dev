@@ -346,6 +346,9 @@ private fun Transition<CodeSample>.animateScroll(
     },
     label: String = "ScrollAnimation",
 ) {
+    // TODO auto-scroll doesn't seem to be working on the companion app...
+    //  - i bet it's the same problem as with the start animation!
+    //  - something to do with SeekableTransitionState.snapTo()?
     val lineHeight = with(LocalDensity.current) { style.lineHeight.toPx() }
     val scrollPosition by animateFloat(transitionSpec, label) { it.scroll * lineHeight }
     verticalScrollState.dispatchRawDelta(scrollPosition - verticalScrollState.value)

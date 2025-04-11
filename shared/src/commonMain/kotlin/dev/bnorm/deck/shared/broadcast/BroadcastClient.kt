@@ -35,6 +35,7 @@ class BroadcastClient<T>(
     }
 
     fun subscribe(channelId: String): Flow<T> = channelFlow {
+        // TODO Ktor isn't cleanup the OkHttp SSE request correctly: KTOR-8409
         client.sse(
             "https://broadcast.bnorm.dev/channels/$channelId/subscribe",
             showRetryEvents = true,

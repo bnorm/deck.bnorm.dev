@@ -27,7 +27,6 @@ kotlin {
             }
         }
 
-        val ktor_version = "3.1.1"
         commonMain {
             dependencies {
                 api(compose.runtime)
@@ -39,22 +38,26 @@ kotlin {
                 api("dev.bnorm.storyboard:storyboard-easel")
                 api("dev.bnorm.storyboard:storyboard-text")
 
+                api(dependencies.platform("io.ktor:ktor-bom:3.1.2"))
+                api(dependencies.platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2"))
+
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-                api("io.ktor:ktor-client-core:$ktor_version")
-                implementation("io.ktor:ktor-client-auth:$ktor_version")
-                implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+                api("io.ktor:ktor-client-core")
+                implementation("io.ktor:ktor-client-auth")
+                implementation("io.ktor:ktor-client-content-negotiation")
+                implementation("io.ktor:ktor-serialization-kotlinx-json")
             }
         }
         jvmMain {
             dependencies {
                 api(compose.desktop.currentOs)
-                implementation("io.ktor:ktor-client-okhttp:$ktor_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug")
+                implementation("io.ktor:ktor-client-okhttp")
             }
         }
         wasmJsMain {
             dependencies {
-                implementation("io.ktor:ktor-client-js:$ktor_version")
+                implementation("io.ktor:ktor-client-js")
             }
         }
     }
