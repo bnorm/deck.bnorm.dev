@@ -69,7 +69,7 @@ context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun KodeeScaffold(
     modifier: Modifier = Modifier,
     header: (@Composable () -> Unit)? = null,
-    kodee: @Composable () -> Unit = { DefaultCornerKodee(Modifier.size(50.dp)) },
+    kodee: @Composable () -> Unit = { DefaultReactionKodee() },
     body: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
     val hazeState = remember { HazeState() }

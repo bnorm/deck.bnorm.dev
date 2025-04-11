@@ -3,6 +3,10 @@ GET https://broadcast.bnorm.dev/channels/story-kc25/subscribe
 Accept: text/event-stream
 
 ###
+GET https://broadcast.bnorm.dev/channels/story-kc25-react/subscribe
+Accept: text/event-stream
+
+###
 GET https://broadcast.bnorm.dev/channels
 Authorization: Bearer {{$env.BROADCAST_TOKEN}}
 Accept: application/json

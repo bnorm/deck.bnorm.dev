@@ -5,23 +5,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.lightColors
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.kc25.broadcast.BroadcastMessage
+import dev.bnorm.kc25.broadcast.ReactionMessage
 import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.easel.Story
 import dev.bnorm.storyboard.easel.StoryState
 import dev.bnorm.storyboard.easel.overlay.StoryOverlay
 import dev.bnorm.storyboard.easel.rememberStoryState
+import io.ktor.util.date.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 fun BroadcastMessage.toStoryboard(): Storyboard.Index {
@@ -31,12 +32,13 @@ fun BroadcastMessage.toStoryboard(): Storyboard.Index {
 @Composable
 fun App() {
     val storyboard = rememberStoryState(remember { createStoryboard() })
-    val broadcastClient = remember { BroadcastClient(bearerToken = null, BroadcastMessage.serializer()) }
+    val broadcastListener = remember { BroadcastClient(bearerToken = null, BroadcastMessage.serializer()) }
+    val broadcastReactor = remember { BroadcastClient(bearerToken = null, ReactionMessage.serializer()) }
 
     var latest by remember { mutableStateOf(Storyboard.Index(3, 0)) }
     LaunchedEffect(Unit) {
         while (true) {
-            broadcastClient.subscribe("story-kc25").collect {
+            broadcastListener.subscribe("story-kc25").collect {
                 // latest = maxOf(latest, it.toStoryboard())
                 latest = it.toStoryboard()
             }
@@ -62,7 +64,7 @@ fun App() {
                     .widthIn(max = 960.dp)
                     .requiredWidthIn(min = 720.dp)
             ) {
-                Content(latest, storyboard)
+                Content(latest, storyboard, broadcastReactor)
             }
         }
     }
@@ -83,7 +85,11 @@ private fun LazyItemScope.ContentCard(modifier: Modifier = Modifier, content: @C
     }
 }
 
-private fun LazyListScope.Content(latest: Storyboard.Index, storyState: StoryState) {
+private fun LazyListScope.Content(
+    latest: Storyboard.Index,
+    storyState: StoryState,
+    broadcastReactor: BroadcastClient<ReactionMessage>,
+) {
     // TODO make some of these sticky?
     item("title") {
         ContentCard {
@@ -113,6 +119,36 @@ private fun LazyListScope.Content(latest: Storyboard.Index, storyState: StorySta
         }
     }
 
+    item("Reactions") {
+        ContentCard {
+            val scope = rememberCoroutineScope()
+
+            Text("Send A Reaction!", style = MaterialTheme.typography.h2)
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                Reaction(
+                    scope = scope,
+                    broadcastReactor = broadcastReactor,
+                    onClick = { ReactionMessage.Heart(getTimeMillis()) },
+                )
+                Reaction(
+                    scope = scope,
+                    broadcastReactor = broadcastReactor,
+                    onClick = { ReactionMessage.Excited(getTimeMillis()) },
+                )
+                Reaction(
+                    scope = scope,
+                    broadcastReactor = broadcastReactor,
+                    onClick = { ReactionMessage.Electrified(getTimeMillis()) },
+                )
+                Reaction(
+                    scope = scope,
+                    broadcastReactor = broadcastReactor,
+                    onClick = { ReactionMessage.Lost(getTimeMillis()) },
+                )
+            }
+        }
+    }
+
     repeat(latest.sceneIndex) {
         item(it) {
             ContentCard {
@@ -123,5 +159,24 @@ private fun LazyListScope.Content(latest: Storyboard.Index, storyState: StorySta
 
     item("End") {
         Box(Modifier.height(32.dp))
+    }
+}
+
+@Composable
+private fun Reaction(
+    scope: CoroutineScope,
+    broadcastReactor: BroadcastClient<ReactionMessage>,
+    onClick: () -> ReactionMessage,
+) {
+    val message = remember(onClick) { onClick() }
+    Button(
+        onClick = {
+            scope.launch {
+                broadcastReactor.broadcast("story-kc25-react", onClick())
+            }
+        },
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+    ) {
+        message.Image(Modifier.size(75.dp))
     }
 }

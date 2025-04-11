@@ -49,10 +49,11 @@ class BroadcastClient<T>(
         }
     }
 
-    suspend fun broadcast(channelId: String, message: T): HttpResponse {
+    suspend fun broadcast(channelId: String, message: T, public: Boolean = false): HttpResponse {
         return client.post("https://broadcast.bnorm.dev/channels/$channelId") {
             contentType(ContentType.Application.Json)
             setBody(json.encodeToString(serializer, message))
+            parameter("public", public)
         }
     }
 }

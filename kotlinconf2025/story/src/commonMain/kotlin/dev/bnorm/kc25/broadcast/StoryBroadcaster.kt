@@ -5,19 +5,8 @@ import androidx.compose.runtime.LaunchedEffect
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.storyboard.easel.StoryState
 import io.ktor.http.*
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializable
-@JsonIgnoreUnknownKeys
-data class BroadcastMessage(
-    val sceneIndex: Int,
-    val stateIndex: Int,
-)
-
-class Broadcaster {
+class StoryBroadcaster {
     companion object {
         private const val CHANNEL_ID = "story-kc25"
     }
@@ -37,12 +26,12 @@ class Broadcaster {
 }
 
 @Composable
-fun Broadcast(storyState: StoryState, broadcaster: Broadcaster?) {
-    if (broadcaster == null) return
+fun Broadcast(storyState: StoryState, storyBroadcaster: StoryBroadcaster?) {
+    if (storyBroadcaster == null) return
 
     val frame = storyState.currentIndex
     LaunchedEffect(frame) {
-        broadcaster.broadcast(
+        storyBroadcaster.broadcast(
             BroadcastMessage(
                 sceneIndex = frame.sceneIndex,
                 stateIndex = frame.stateIndex,

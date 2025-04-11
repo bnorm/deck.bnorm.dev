@@ -13,6 +13,7 @@ import dev.bnorm.kc25.sections.plugin.BuildableIntro
 import dev.bnorm.kc25.sections.plugin.Repository
 import dev.bnorm.kc25.sections.plugin.fir.FirExtensions
 import dev.bnorm.kc25.sections.plugin.fir.FirTree
+import dev.bnorm.kc25.sections.plugin.fir.Generation
 import dev.bnorm.kc25.sections.plugin.ir.IrExtensions
 import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.kc25.template.SectionTitle
@@ -39,6 +40,9 @@ fun createStoryboard(): Storyboard {
         """.trimIndent(),
         decorator = THEME_DECORATOR,
     ) {
+        section("FIR") {
+            Generation()
+        }
         Intro()
         Outline()
         Closing()

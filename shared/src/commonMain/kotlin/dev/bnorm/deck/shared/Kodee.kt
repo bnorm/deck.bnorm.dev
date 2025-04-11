@@ -95,7 +95,7 @@ fun AnimateKodee(
 
 @Composable
 fun DefaultCornerKodee(modifier: Modifier = Modifier) {
-    KodeePleased(modifier.graphicsLayer { rotationY = 180f })
+    KodeePleased(modifier.graphicsLayer(rotationY = 180f))
 }
 
 @Composable
