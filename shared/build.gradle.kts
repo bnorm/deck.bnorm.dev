@@ -52,7 +52,9 @@ kotlin {
             dependencies {
                 api(compose.desktop.currentOs)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug")
-                implementation("io.ktor:ktor-client-okhttp")
+                 // TODO KTOR-8409
+                // implementation("io.ktor:ktor-client-okhttp")
+                implementation("io.ktor:ktor-client-cio")
             }
         }
         wasmJsMain {
