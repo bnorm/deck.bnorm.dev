@@ -283,7 +283,7 @@ fun StoryboardBuilder.DataFrameExample() {
                         enter = slideInVertically(tween(900, delayMillis = 900, easing = EaseIn)) { it },
                         exit = slideOutVertically(tween(900, easing = EaseOut)) { it },
                     ) {
-                        MacTerminal(modifier = Modifier.offset(y = 278.dp).fillMaxWidth()) {
+                        MacTerminal(modifier = Modifier.offset(y = 246.dp + padding.calculateTopPadding()).fillMaxWidth()) {
                             ProvideTextStyle(MaterialTheme.typography.code2) {
                                 MagicText(outputTransition.createChildTransition { OUTPUT[it] })
                             }

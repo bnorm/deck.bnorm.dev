@@ -15,6 +15,7 @@ import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.kc25.broadcast.BroadcastMessage
 import dev.bnorm.kc25.broadcast.ReactionMessage
 import dev.bnorm.kc25.createStoryboard
+import dev.bnorm.storyboard.AdvanceDirection
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.easel.Story
 import dev.bnorm.storyboard.easel.StoryState
@@ -33,23 +34,36 @@ fun BroadcastMessage.toStoryboard(): Storyboard.Index {
 // TODO doesn't seem to work on iOS Chrome: https://developer.chrome.com/blog/debugging-chrome-on-ios
 @Composable
 fun App() {
-    val storyboard = rememberStoryState(remember { createStoryboard() })
+    val storyState = rememberStoryState(remember { createStoryboard() })
     val broadcastListener = remember { BroadcastClient(bearerToken = null, BroadcastMessage.serializer()) }
     val broadcastReactor = remember { BroadcastClient(bearerToken = null, ReactionMessage.serializer()) }
 
-    var latest by remember { mutableStateOf(Storyboard.Index(3, 0)) }
+    var targetIndex by remember { mutableStateOf<Storyboard.Index?>(null) }
     LaunchedEffect(Unit) {
         while (true) {
             broadcastListener.subscribe("story-kc25").collect {
-                // latest = maxOf(latest, it.toStoryboard())
-                latest = it.toStoryboard()
+                val targetIndex = it.toStoryboard()
+                val i = storyState.storyboard.indices.binarySearch(targetIndex)
+                if (i < 0) return@collect // TODO error?
+
+                val direction = when (targetIndex > storyState.currentIndex) {
+                    true -> AdvanceDirection.Forward
+                    false -> AdvanceDirection.Backward
+                }
+                val previous = when (direction) {
+                    AdvanceDirection.Forward -> storyState.storyboard.indices.getOrNull(i - 1)
+                    AdvanceDirection.Backward -> storyState.storyboard.indices.getOrNull(i + 1)
+                }
+
+                // Jump to the index directly to the target state if we cannot gracefully advance to it.
+                if (storyState.currentIndex != previous) {
+                    storyState.jumpTo(targetIndex)
+                } else {
+                    storyState.advance(direction)
+                }
             }
             delay(30.seconds)
         }
-    }
-
-    LaunchedEffect(latest) {
-        storyboard.jumpTo(latest)
     }
 
     MaterialTheme(colors = lightColors()) {
@@ -66,7 +80,7 @@ fun App() {
                     .widthIn(max = 960.dp)
                     .requiredWidthIn(min = 720.dp)
             ) {
-                Content(latest, storyboard, broadcastReactor)
+                Content(targetIndex, storyState, broadcastReactor)
             }
         }
     }
@@ -88,7 +102,7 @@ private fun LazyItemScope.ContentCard(modifier: Modifier = Modifier, content: @C
 }
 
 private fun LazyListScope.Content(
-    latest: Storyboard.Index,
+    latest: Storyboard.Index?,
     storyState: StoryState,
     broadcastReactor: BroadcastClient<ReactionMessage>,
 ) {
@@ -152,7 +166,7 @@ private fun LazyListScope.Content(
         }
     }
 
-    repeat(latest.sceneIndex) {
+    repeat(latest?.sceneIndex ?: 0) {
         item(it) {
             ContentCard {
                 Text("Information ${it + 1}", style = MaterialTheme.typography.h2)

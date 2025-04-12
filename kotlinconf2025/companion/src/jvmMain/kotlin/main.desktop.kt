@@ -4,7 +4,7 @@ import dev.bnorm.deck.kc25.companion.App
 
 fun main() {
     application {
-        Window(onCloseRequest = ::exitApplication) {
+        Window(onCloseRequest = ::exitApplication, title = "Companion") {
             App()
         }
     }

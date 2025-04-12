@@ -21,7 +21,7 @@ class StoryBroadcaster {
 fun Broadcast(storyState: StoryState, storyBroadcaster: StoryBroadcaster?) {
     if (storyBroadcaster == null) return
 
-    val frame = storyState.currentIndex
+    val frame = storyState.targetIndex
     LaunchedEffect(frame) {
         storyBroadcaster.broadcast(
             BroadcastMessage(
