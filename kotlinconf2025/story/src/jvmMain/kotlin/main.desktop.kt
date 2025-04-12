@@ -9,8 +9,10 @@ import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.storyboard.easel.DesktopStoryEasel
 import dev.bnorm.storyboard.easel.ExperimentalStoryStateApi
 import dev.bnorm.storyboard.easel.StoryState
+import dev.bnorm.storyboard.easel.assist.Caption
 import dev.bnorm.storyboard.easel.overlay.OverlayNavigation
 import dev.bnorm.storyboard.easel.overlay.StoryOverlayScope
+import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalStoryStateApi::class)
 fun main() {
@@ -39,7 +41,10 @@ fun main() {
             CompositionLocalProvider(LocalReactionListener provides reactionListener) {
                 DesktopStoryEasel(
                     storyState = state,
-                    overlay = { DesktopOverlay() }
+                    overlay = { DesktopOverlay() },
+                    captions = persistentListOf(
+                        Caption { ReactionGraph(reactionListener) }
+                    )
                 )
             }
         }

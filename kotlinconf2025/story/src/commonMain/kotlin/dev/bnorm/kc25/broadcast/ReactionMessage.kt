@@ -14,12 +14,16 @@ import kotlinx.serialization.Serializable
 sealed class ReactionMessage {
     abstract val timestamp: Long
 
+    abstract fun clear(): ReactionMessage
+
     @Composable
     abstract fun Image(modifier: Modifier)
 
     @Serializable
     @SerialName("ping")
     data class Ping(override val timestamp: Long) : ReactionMessage() {
+        override fun clear(): Ping = Ping(0)
+
         @Composable
         override fun Image(modifier: Modifier) {
         }
@@ -28,6 +32,8 @@ sealed class ReactionMessage {
     @Serializable
     @SerialName("heart")
     data class Heart(override val timestamp: Long) : ReactionMessage() {
+        override fun clear(): Heart = Heart(0)
+
         @Composable
         override fun Image(modifier: Modifier) {
             KodeeLoving(modifier.graphicsLayer(rotationY = 180f))
@@ -37,6 +43,8 @@ sealed class ReactionMessage {
     @Serializable
     @SerialName("excited")
     data class Excited(override val timestamp: Long) : ReactionMessage() {
+        override fun clear(): Excited = Excited(0)
+
         @Composable
         override fun Image(modifier: Modifier) {
             KodeeExcited(modifier)
@@ -46,6 +54,8 @@ sealed class ReactionMessage {
     @Serializable
     @SerialName("electrified")
     data class Electrified(override val timestamp: Long) : ReactionMessage() {
+        override fun clear(): Electrified = Electrified(0)
+
         @Composable
         override fun Image(modifier: Modifier) {
             KodeeElectrified(modifier)
@@ -55,6 +65,8 @@ sealed class ReactionMessage {
     @Serializable
     @SerialName("lost")
     data class Lost(override val timestamp: Long) : ReactionMessage() {
+        override fun clear(): Lost = Lost(0)
+
         @Composable
         override fun Image(modifier: Modifier) {
             KodeeLost(modifier.graphicsLayer(rotationY = 180f))
