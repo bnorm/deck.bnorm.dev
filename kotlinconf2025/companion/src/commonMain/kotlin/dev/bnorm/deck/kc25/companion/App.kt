@@ -30,6 +30,7 @@ fun BroadcastMessage.toStoryboard(): Storyboard.Index {
     return Storyboard.Index(sceneIndex, stateIndex)
 }
 
+// TODO doesn't seem to work on iOS Chrome: https://developer.chrome.com/blog/debugging-chrome-on-ios
 @Composable
 fun App() {
     val storyboard = rememberStoryState(remember { createStoryboard() })
