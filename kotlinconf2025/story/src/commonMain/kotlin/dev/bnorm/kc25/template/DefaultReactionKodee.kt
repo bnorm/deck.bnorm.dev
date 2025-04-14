@@ -17,8 +17,8 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.kc25.broadcast.LocalReactionListener
 import dev.bnorm.kc25.broadcast.ReactionMessage
-import dev.bnorm.storyboard.DisplayType
-import dev.bnorm.storyboard.LocalDisplayType
+import dev.bnorm.storyboard.SceneMode
+import dev.bnorm.storyboard.LocalSceneMode
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.filter
 import kotlin.random.Random
@@ -67,7 +67,7 @@ fun DefaultReactionKodee() {
 @Composable
 private fun FloatingReactions() {
     // Do not render floating reactions in anything but story mode!
-    if (LocalDisplayType.current != DisplayType.Story) return
+    if (LocalSceneMode.current != SceneMode.Story) return
 
     val queue = remember { mutableStateSetOf<FloatingKodee>() }
     val listener = LocalReactionListener.current

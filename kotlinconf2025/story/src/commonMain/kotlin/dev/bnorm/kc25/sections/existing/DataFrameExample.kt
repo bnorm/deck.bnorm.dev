@@ -23,8 +23,8 @@ import dev.bnorm.kc25.template.KodeeScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code2
-import dev.bnorm.storyboard.DisplayType
-import dev.bnorm.storyboard.LocalDisplayType
+import dev.bnorm.storyboard.SceneMode
+import dev.bnorm.storyboard.LocalSceneMode
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.easel.template.SceneEnter
@@ -241,9 +241,9 @@ fun StoryboardBuilder.DataFrameExample() {
             KodeeScaffold { padding ->
                 // TODO could I hide some animation controls, to make them pausable and navigable?
                 // When rendering the scene for preview, render the finished state and do not animate the sample.
-                val displayType = LocalDisplayType.current
+                val sceneMode = LocalSceneMode.current
                 var sampleIndex by remember {
-                    mutableIntStateOf(if (displayType == DisplayType.Story) 0 else SAMPLES.lastIndex)
+                    mutableIntStateOf(if (sceneMode == SceneMode.Story) 0 else SAMPLES.lastIndex)
                 }
                 val sampleTransition = updateTransition(sampleIndex)
 

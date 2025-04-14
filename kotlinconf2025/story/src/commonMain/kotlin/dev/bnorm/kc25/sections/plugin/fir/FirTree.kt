@@ -35,8 +35,8 @@ import dev.bnorm.kc25.template.KodeeScaffold
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
-import dev.bnorm.storyboard.DisplayType
-import dev.bnorm.storyboard.LocalDisplayType
+import dev.bnorm.storyboard.SceneMode
+import dev.bnorm.storyboard.LocalSceneMode
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
@@ -189,7 +189,7 @@ private fun FirTree(
                     root = root,
                     getChildren = { node -> node.children },
                     connection = { parent, parentRect, child, childRect ->
-                        if (LocalDisplayType.current == DisplayType.Preview) {
+                        if (LocalSceneMode.current == SceneMode.Preview) {
                             Connection(parentRect, childRect)
                         }
                     },
@@ -223,7 +223,7 @@ private fun FirTree(
                     )
                 }
 
-                if (LocalDisplayType.current != DisplayType.Preview) {
+                if (LocalSceneMode.current != SceneMode.Preview) {
                     for (element in placements) {
                         val (parent, parentRect) = element
                         for (child in parent.children) {
