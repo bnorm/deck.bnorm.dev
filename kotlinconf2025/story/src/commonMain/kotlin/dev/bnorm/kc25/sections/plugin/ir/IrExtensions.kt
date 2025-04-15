@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.sections.plugin.ir
 
 import dev.bnorm.kc25.components.temp.SamplesScene
+import dev.bnorm.kc25.sections.CompilerStage
 import dev.bnorm.kc25.sections.plugin.REGISTRATION_IR_CHECKPOINT
 import dev.bnorm.kc25.sections.plugin.PluginRegistrar
 import dev.bnorm.kc25.template.SectionAndTitle
@@ -33,7 +34,7 @@ fun StoryboardBuilder.IrExtensions() {
     SectionAndTitle("IR Extensions") {
         PluginRegistrar(start = REGISTRATION_IR_CHECKPOINT)
 
-        SamplesScene(IrGenerationExtension)
-        SamplesScene(IrVisitorVoid)
+        SamplesScene(CompilerStage.Transform, IrGenerationExtension)
+        SamplesScene(CompilerStage.Transform, IrVisitorVoid)
     }
 }

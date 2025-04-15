@@ -20,8 +20,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.components.EditorWindow
+import dev.bnorm.kc25.sections.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code.toCode
@@ -289,7 +290,7 @@ fun StoryboardBuilder.Generation(start: Int = 0, endExclusive: Int = SAMPLES.siz
     ) {
         val sample = frame.createChildTransition { SAMPLES[start + it.toState()] }
 
-        KodeeScaffold { padding ->
+        StageScaffold(updateTransition(CompilerStage.Resolve)) { padding ->
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 sample.MagicCodeSample(modifier = Modifier.padding(padding))
             }

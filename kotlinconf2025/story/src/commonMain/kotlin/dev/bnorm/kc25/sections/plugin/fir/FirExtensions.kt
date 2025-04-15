@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.sections.plugin.fir
 
 import dev.bnorm.kc25.components.temp.SamplesScene
+import dev.bnorm.kc25.sections.CompilerStage
 import dev.bnorm.kc25.sections.plugin.REGISTRATION_IR_CHECKPOINT
 import dev.bnorm.kc25.sections.plugin.PluginRegistrar
 import dev.bnorm.kc25.template.SectionAndTitle
@@ -24,6 +25,6 @@ fun StoryboardBuilder.FirExtensions() {
         //  - or maybe leave this to the companion?
 
         Generation()
-        SamplesScene(FirAdditionalCheckersExtension)
+        SamplesScene(CompilerStage.Analyse, FirAdditionalCheckersExtension)
     }
 }

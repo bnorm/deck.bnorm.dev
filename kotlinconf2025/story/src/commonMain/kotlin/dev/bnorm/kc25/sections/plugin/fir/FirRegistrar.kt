@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.sections.plugin.fir
 
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -8,7 +9,7 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -61,7 +62,7 @@ fun StoryboardBuilder.FirRegistrar(start: Int = 0, endExclusive: Int = SAMPLES.s
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        KodeeScaffold { padding ->
+        StageScaffold(updateTransition(null)) { padding ->
             Box(Modifier.padding(padding)) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = frame.createChildTransition {
