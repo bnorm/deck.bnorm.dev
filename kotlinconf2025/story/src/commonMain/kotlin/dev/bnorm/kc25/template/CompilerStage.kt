@@ -19,15 +19,6 @@ import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.section
-
-// TODO actually fill in details about stages
-fun StoryboardBuilder.CompilerArchitecture() {
-    section("Architecture") {
-        SectionTitle()
-        CompilerStages()
-    }
-}
 
 enum class CompilerStage {
     Parse,
@@ -36,20 +27,6 @@ enum class CompilerStage {
     Transform,
     Generate,
     ;
-}
-
-private fun StoryboardBuilder.CompilerStages() {
-    StageTimeline(null)
-    StageDetail(CompilerStage.Parse)
-    StageTimeline(CompilerStage.Parse)
-    StageDetail(CompilerStage.Resolve)
-    StageTimeline(CompilerStage.Resolve)
-    StageDetail(CompilerStage.Analyse)
-    StageTimeline(CompilerStage.Analyse)
-    StageDetail(CompilerStage.Transform)
-    StageTimeline(CompilerStage.Transform)
-    StageDetail(CompilerStage.Generate)
-    StageTimeline(CompilerStage.Generate)
 }
 
 private fun <T> fadeOutSpec(): TweenSpec<T> =
@@ -83,7 +60,7 @@ private fun <T> fadeInSpec(): TweenSpec<T> =
     tween(250, delayMillis = 250, easing = EaseIn)
 
 
-private fun StoryboardBuilder.StageDetail(state: CompilerStage) {
+fun StoryboardBuilder.StageDetail(state: CompilerStage) {
     scene {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -115,7 +92,7 @@ private fun StoryboardBuilder.StageDetail(state: CompilerStage) {
 
 // TODO animate to details as part of start & end of scene?
 //  - would allow transitioning the text as well
-private fun StoryboardBuilder.StageTimeline(currentState: CompilerStage?) {
+fun StoryboardBuilder.StageTimeline(currentState: CompilerStage?) {
     scene {
         val currentOrdinal = currentState?.ordinal ?: -1
 

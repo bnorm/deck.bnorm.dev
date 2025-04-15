@@ -4,12 +4,12 @@ import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
-import dev.bnorm.kc25.template.CompilerArchitecture
 import dev.bnorm.kc25.sections.Title
 import dev.bnorm.kc25.sections.existing.ComposeExample
 import dev.bnorm.kc25.sections.existing.DataFrameExample
 import dev.bnorm.kc25.sections.existing.PowerAssertExample
 import dev.bnorm.kc25.sections.intro.ThirdPlugin
+import dev.bnorm.kc25.sections.plugin.Architecture
 import dev.bnorm.kc25.sections.plugin.BuildableIntro
 import dev.bnorm.kc25.sections.plugin.Repository
 import dev.bnorm.kc25.sections.plugin.fir.FirExtensions
@@ -88,7 +88,7 @@ private fun StoryboardBuilder.Outline() {
         SectionTitle(animateFromHeader = true)
     }
 
-    CompilerArchitecture()
+    Architecture()
 
     SectionAndTitle("Let's build one!") {
         // TODO reference template project for faster project setup

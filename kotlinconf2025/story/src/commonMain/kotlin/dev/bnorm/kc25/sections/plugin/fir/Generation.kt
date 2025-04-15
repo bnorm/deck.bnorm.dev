@@ -1,11 +1,9 @@
 package dev.bnorm.kc25.sections.plugin.fir
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.LocalTextStyle
@@ -19,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.components.EditorWindow
+import dev.bnorm.kc25.components.RightPanel
 import dev.bnorm.kc25.template.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageScaffold
@@ -294,28 +292,15 @@ fun StoryboardBuilder.Generation(start: Int = 0, endExclusive: Int = SAMPLES.siz
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 sample.MagicCodeSample(modifier = Modifier.padding(padding))
             }
-        }
 
-        // TODO add to the scaffold so it can be shown above the header but below kodee?
-        Box(modifier = Modifier.fillMaxSize()) {
-            sample.createChildTransition { it.data == ShowBuilderClassKey }
-                .AnimatedVisibility(
-                    visible = { it },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .requiredWidth(960.dp / 5f * 3f)
-                        .offset(x = 10.dp),
-                    enter = slideInHorizontally { it },
-                    exit = slideOutHorizontally { it },
-                ) {
-                    EditorWindow("keys.kt") {
-                        Box(modifier = Modifier.padding(16.dp)) {
-                            ProvideTextStyle(MaterialTheme.typography.code1) {
-                                Text(BuilderClassKey)
-                            }
-                        }
-                    }
+            RightPanel(
+                show = sample.createChildTransition { it.data == ShowBuilderClassKey },
+                modifier = Modifier.padding(top = padding.calculateTopPadding()),
+            ) {
+                Box(modifier = Modifier.padding(32.dp)) {
+                    Text(BuilderClassKey, style = MaterialTheme.typography.code1)
                 }
+            }
         }
     }
 }

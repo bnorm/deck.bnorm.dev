@@ -1,9 +1,6 @@
 package dev.bnorm.kc25.sections.existing
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -16,10 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.shared.mac.MacTerminal
+import dev.bnorm.kc25.components.BottomPanel
 import dev.bnorm.kc25.components.temp.BULLET_1
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.HeaderScaffold
+import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code2
@@ -261,12 +258,14 @@ fun StoryboardBuilder.DataFrameExample() {
                         }
                     }
 
-                    sampleTransition.AnimatedVisibility(
-                        visible = { it != 0 },
-                        enter = slideInVertically(tween(900, delayMillis = 900, easing = EaseIn)) { it },
-                        exit = slideOutVertically(tween(900, easing = EaseOut)) { it },
+                    // TODO different border color?
+                    BottomPanel(
+                        show = sampleTransition.createChildTransition { it != 0 },
+                        enterSpec = tween(900, delayMillis = 900, easing = EaseIn),
+                        exitSpec = tween(900, easing = EaseOut),
+                        modifier = Modifier.offset(y = 38.dp)
                     ) {
-                        MacTerminal(modifier = Modifier.offset(y = 246.dp + padding.calculateTopPadding()).fillMaxWidth()) {
+                        Box(Modifier.padding(start = 32.dp, top = 16.dp, end = 32.dp)) {
                             ProvideTextStyle(MaterialTheme.typography.code2) {
                                 MagicText(outputTransition.createChildTransition { OUTPUT[it] })
                             }
