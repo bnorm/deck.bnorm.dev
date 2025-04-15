@@ -20,7 +20,7 @@ import dev.bnorm.deck.story.generated.resources.writing_your_second_kotlin_compi
 import dev.bnorm.kc25.components.ResourceImage
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
-import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
@@ -46,7 +46,7 @@ fun StoryboardBuilder.ThirdPlugin() {
         ),
     ) {
         val state = frame.createChildTransition { it.toState() }
-        KodeeScaffold { padding ->
+        HeaderScaffold { padding ->
             Box(
                 contentAlignment = Alignment.TopEnd,
                 modifier = Modifier.fillMaxSize().padding(padding)

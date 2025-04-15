@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.mac.MacTerminal
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code2
@@ -212,7 +212,7 @@ fun StoryboardBuilder.DataFrameExample() {
                     enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
             ) {
-            KodeeScaffold { padding ->
+            HeaderScaffold { padding ->
                 Column(
                     modifier = Modifier.padding(padding),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -232,7 +232,7 @@ fun StoryboardBuilder.DataFrameExample() {
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
-            KodeeScaffold { padding ->
+            HeaderScaffold { padding ->
                 val sampleIndex by animateSampleIndex(samples = SAMPLES)
 
                 var outputIndex by remember { mutableIntStateOf(sampleIndex) }

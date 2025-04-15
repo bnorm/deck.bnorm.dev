@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -87,7 +87,7 @@ fun StoryboardBuilder.ComposeExample() {
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
-            KodeeScaffold { padding ->
+            HeaderScaffold { padding ->
                 Column(
                     modifier = Modifier.padding(padding),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -101,7 +101,7 @@ fun StoryboardBuilder.ComposeExample() {
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
-            KodeeScaffold { padding ->
+            HeaderScaffold { padding ->
                 val index by animateSampleIndex(samples = SAMPLES)
 
                 Box(Modifier.padding(padding)) {

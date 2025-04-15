@@ -21,7 +21,7 @@ import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneSection
 import dev.chrisbanes.haze.*
 
-private enum class KodeeSceneContent {
+private enum class HeaderSceneContent {
     Header,
     Body,
     Kodee,
@@ -29,7 +29,7 @@ private enum class KodeeSceneContent {
 
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
-fun KodeeScaffold(
+fun HeaderScaffold(
     modifier: Modifier = Modifier,
     header: (@Composable () -> Unit)? = null,
     kodee: @Composable () -> Unit = { DefaultReactionKodee() },
@@ -69,7 +69,7 @@ fun KodeeScaffold(
         val layoutHeight = constraints.maxHeight
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
-        val headerPlaceables = subcompose(KodeeSceneContent.Header) {
+        val headerPlaceables = subcompose(HeaderSceneContent.Header) {
             Header(
                 Modifier
                     .hazeEffect(state = hazeState, style = style) {
@@ -90,7 +90,7 @@ fun KodeeScaffold(
 
         val headerHeight = headerPlaceables.fastMaxBy { it.height }?.height ?: 0
 
-        val kodeePlaceables = subcompose(KodeeSceneContent.Kodee) {
+        val kodeePlaceables = subcompose(HeaderSceneContent.Kodee) {
             SharedKodee {
                 kodee()
             }
@@ -108,7 +108,7 @@ fun KodeeScaffold(
             end = 32.dp,
         )
 
-        val bodyPlaceables = subcompose(KodeeSceneContent.Body) {
+        val bodyPlaceables = subcompose(HeaderSceneContent.Body) {
             Box(Modifier.fillMaxSize().hazeSource(state = hazeState)) {
                 body(contentPadding)
             }

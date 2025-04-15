@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.layout.HorizontalTree
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
@@ -161,7 +161,7 @@ fun StoryboardBuilder.FirTree() {
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        KodeeScaffold { padding ->
+        HeaderScaffold { padding ->
             Box(Modifier.padding(padding).padding(bottom = 32.dp)) {
                 val root = frame.createChildTransition { it.toState() }
                 FirTree(root)

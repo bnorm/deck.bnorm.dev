@@ -8,7 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.easel.template.SceneEnter
@@ -25,7 +25,7 @@ fun StoryboardBuilder.RevealScene(vararg items: String) {
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        KodeeScaffold { padding ->
+        HeaderScaffold { padding ->
             Column(
                 modifier = Modifier.padding(padding),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
