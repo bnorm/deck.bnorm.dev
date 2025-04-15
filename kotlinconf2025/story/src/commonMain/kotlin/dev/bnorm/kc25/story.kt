@@ -4,6 +4,7 @@ import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
+import dev.bnorm.kc25.sections.CompilerArchitecture
 import dev.bnorm.kc25.sections.Title
 import dev.bnorm.kc25.sections.existing.ComposeExample
 import dev.bnorm.kc25.sections.existing.DataFrameExample
@@ -86,6 +87,8 @@ private fun StoryboardBuilder.Outline() {
 
         SectionTitle(animateFromBody = true)
     }
+
+    CompilerArchitecture()
 
     SectionAndTitle("Let's build one!") {
         // TODO reference template project for faster project setup
