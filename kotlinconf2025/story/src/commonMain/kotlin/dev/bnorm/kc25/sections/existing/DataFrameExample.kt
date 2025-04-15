@@ -23,14 +23,8 @@ import dev.bnorm.kc25.template.KodeeScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code2
-import dev.bnorm.storyboard.SceneMode
-import dev.bnorm.storyboard.LocalSceneMode
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.RevealEach
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.StoryEffect
-import dev.bnorm.storyboard.easel.template.section
+import dev.bnorm.storyboard.easel.template.*
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
@@ -81,7 +75,7 @@ private val SAMPLES = buildCodeSamples {
         .then { reveal(a3).focus(a3) }
         .then { reveal(a4).focus(a4) }
         .then { reveal(s3).focus(s3) }
-        .then { unfocus() }
+        .then { unfocus().attach(5.seconds) }
 }
 
 private val OUTPUT = listOf(
@@ -239,34 +233,23 @@ fun StoryboardBuilder.DataFrameExample() {
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
             KodeeScaffold { padding ->
-                // TODO could I hide some animation controls, to make them pausable and navigable?
-                // When rendering the scene for preview, render the finished state and do not animate the sample.
-                val sceneMode = LocalSceneMode.current
-                var sampleIndex by remember {
-                    mutableIntStateOf(if (sceneMode == SceneMode.Story) 0 else SAMPLES.lastIndex)
-                }
-                val sampleTransition = updateTransition(sampleIndex)
+                val sampleIndex by animateSampleIndex(samples = SAMPLES)
 
                 var outputIndex by remember { mutableIntStateOf(sampleIndex) }
-                val outputTransition = updateTransition(outputIndex)
 
-                StoryEffect(Unit) {
-                    while (true) {
-                        delay(2.seconds)
-                        if (sampleIndex == SAMPLES.lastIndex) {
-                            // Delay a little longer on the last sample.
-                            delay(3.seconds)
-                            sampleIndex = 0
-                        } else {
-                            sampleIndex += 1
-                            // Delay updating the output just a little
-                            // until the sample is done updating.
+                if (sampleIndex == 0) {
+                    outputIndex = sampleIndex
+                } else {
+                    StoryEffect(sampleIndex) {
+                        if (sampleIndex != 0) {
                             delay(1200.milliseconds)
+                            outputIndex = sampleIndex
                         }
-
-                        outputIndex = sampleIndex
                     }
                 }
+
+                val sampleTransition = updateTransition(sampleIndex)
+                val outputTransition = updateTransition(outputIndex)
 
                 Box(Modifier.fillMaxSize()) {
                     Column(

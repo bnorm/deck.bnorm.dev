@@ -1,7 +1,5 @@
 package dev.bnorm.kc25.sections.existing
 
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,29 +7,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.KodeeScaffold
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
-import dev.bnorm.storyboard.SceneMode
-import dev.bnorm.storyboard.LocalSceneMode
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.StoryEffect
 import dev.bnorm.storyboard.easel.template.section
 import dev.bnorm.storyboard.text.highlight.CodeScope
-import dev.bnorm.storyboard.text.highlight.CodeStyle
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 private val SAMPLES = buildCodeSamples {
@@ -170,19 +160,24 @@ private val SAMPLES = buildCodeSamples {
         }
     """.trimIndent()
 
-    val identifierType: (CodeStyle, String) -> SpanStyle? = { highlighting, identifier ->
-        when (identifier) {
-            "assert" -> highlighting.staticFunctionCall
-            "trimIndent" -> highlighting.extensionFunctionCall
-            "length" -> highlighting.property
-            else -> null
-        }
+    fun String.toCodeSample(): CodeSample {
+        return toCodeSample(
+            INTELLIJ_DARK_CODE_STYLE,
+            scope = CodeScope.Function,
+            identifierType = { _, identifier ->
+                when (identifier) {
+                    "assert" -> INTELLIJ_DARK_CODE_STYLE.staticFunctionCall
+                    "trimIndent" -> INTELLIJ_DARK_CODE_STYLE.extensionFunctionCall
+                    "length" -> INTELLIJ_DARK_CODE_STYLE.property
+                    else -> null
+                }
+            })
     }
 
     // TODO formatting bug with `$` in a string
-    samples.map { it.toCodeSample(INTELLIJ_DARK_CODE_STYLE, scope = CodeScope.Function, identifierType) }
-        .then { finalExample.toCodeSample(INTELLIJ_DARK_CODE_STYLE, scope = CodeScope.Function, identifierType) }
-        .then { collapse(m) }
+    samples.map { it.toCodeSample() }
+        .then { finalExample.toCodeSample().attach(5.seconds) }
+        .then { collapse(m).attach(3.seconds) }
 }
 
 fun StoryboardBuilder.PowerAssertExample() {
@@ -206,33 +201,12 @@ fun StoryboardBuilder.PowerAssertExample() {
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
-            // TODO could I hide some animation controls, to make them pausable and navigable?
-            // When rendering the scene for preview, render the finished state and do not animate the sample.
-            val sceneMode = LocalSceneMode.current
-            var sampleIndex by remember {
-                mutableIntStateOf(if (sceneMode == SceneMode.Story) 0 else SAMPLES.lastIndex)
-            }
-            val sampleTransition = updateTransition(sampleIndex)
-
-            StoryEffect(Unit) {
-                while (true) {
-                    delay(2.seconds)
-                    if (sampleIndex == SAMPLES.lastIndex) {
-                        delay(3.seconds)
-                        sampleIndex = 0
-                    } else if (sampleIndex == SAMPLES.lastIndex - 1 || sampleIndex == SAMPLES.lastIndex - 2) {
-                        delay(1.seconds)
-                        sampleIndex += 1
-                    } else {
-                        sampleIndex += 1
-                    }
-                }
-            }
+            val index by animateSampleIndex(samples = SAMPLES, defaultDelay = 2.seconds)
 
             KodeeScaffold { padding ->
                 Box(Modifier.padding(padding)) {
                     ProvideTextStyle(MaterialTheme.typography.code1) {
-                        MagicText(sampleTransition.createChildTransition { SAMPLES[it].string.toWords() })
+                        MagicText(SAMPLES[index].string.toWords())
                     }
                 }
             }
