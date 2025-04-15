@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.plugin.fir
+package dev.bnorm.kc25.sections.stages
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Transition
@@ -43,6 +43,7 @@ import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
+import kotlin.collections.iterator
 
 private abstract class FirNode(
     val name: String,

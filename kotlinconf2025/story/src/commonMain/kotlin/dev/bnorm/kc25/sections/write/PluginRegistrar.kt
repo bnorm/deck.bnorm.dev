@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.plugin
+package dev.bnorm.kc25.sections.write
 
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.updateTransition

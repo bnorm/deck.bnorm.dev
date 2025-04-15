@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.plugin.fir
+package dev.bnorm.kc25.sections.write.resolve
 
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.updateTransition
@@ -32,6 +32,8 @@ private val SAMPLES = buildCodeSamples {
     val dge by tag("declaration generation extension")
     val ace by tag("additional checkers extension")
 
+    // TODO start with the factory version and transform into the method reference version?
+    // TODO talk about the different extensions available or just list them all?
     val baseSample = """
         class ${name}BuildableFirExtensionRegistrar${name} : ${sup}FirExtensionRegistrar()${sup} {${body}
           ${sig}override fun ExtensionRegistrarContext.configurePlugin()${sig} {${dge}

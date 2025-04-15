@@ -36,14 +36,8 @@ private fun vExit(): ExitTransition = fadeOut(spec()) + slideOutHorizontally(spe
 fun StoryboardBuilder.ThirdPlugin() {
     scene(
         stateCount = 9,
-        enterTransition = enter(
-            start = SceneEnter(alignment = Alignment.CenterEnd),
-            end = SceneEnter(alignment = Alignment.CenterStart),
-        ),
-        exitTransition = exit(
-            start = SceneExit(alignment = Alignment.CenterEnd),
-            end = SceneExit(alignment = Alignment.CenterStart),
-        ),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         val state = frame.createChildTransition { it.toState() }
         HeaderScaffold { padding ->

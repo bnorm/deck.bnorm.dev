@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.plugin
+package dev.bnorm.kc25.sections.write
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.Image

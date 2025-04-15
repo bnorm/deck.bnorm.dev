@@ -1,9 +1,9 @@
-package dev.bnorm.kc25.sections.plugin.ir
+package dev.bnorm.kc25.sections.write.transform
 
 import dev.bnorm.kc25.components.temp.SamplesScene
-import dev.bnorm.kc25.template.CompilerStage
-import dev.bnorm.kc25.sections.plugin.REGISTRATION_IR_CHECKPOINT
-import dev.bnorm.kc25.sections.plugin.PluginRegistrar
+import dev.bnorm.kc25.sections.stages.CompilerStage
+import dev.bnorm.kc25.sections.write.REGISTRATION_IR_CHECKPOINT
+import dev.bnorm.kc25.sections.write.PluginRegistrar
 import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.storyboard.StoryboardBuilder
 

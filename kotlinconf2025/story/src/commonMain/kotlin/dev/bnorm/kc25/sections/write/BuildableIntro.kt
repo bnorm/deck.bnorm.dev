@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.plugin
+package dev.bnorm.kc25.sections.write
 
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.Box
@@ -60,6 +60,7 @@ private val SAMPLES = buildCodeSamples {
     val title by tag("")
     val series by tag("")
 
+    // TODO do this as part of the larger sample but with scrolling
     val buildSample = """ 
         fun build(): Book${bImpl} = Book(
           ${title}title = when {
@@ -67,7 +68,7 @@ private val SAMPLES = buildCodeSamples {
             else -> throw IllegalStateException("Uninitialized property 'title'.")
           }${title},
           ${series}series = when {
-            series_flag -> series_holder!!
+            series_flag -> series_holder
             else -> null
           }${series},
           author = when {${whens}

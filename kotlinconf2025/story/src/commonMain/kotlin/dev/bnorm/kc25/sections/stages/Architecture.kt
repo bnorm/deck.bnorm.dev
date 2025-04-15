@@ -1,9 +1,6 @@
-package dev.bnorm.kc25.sections.plugin
+package dev.bnorm.kc25.sections.stages
 
-import dev.bnorm.kc25.template.CompilerStage
 import dev.bnorm.kc25.template.SectionTitle
-import dev.bnorm.kc25.template.StageDetail
-import dev.bnorm.kc25.template.StageTimeline
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.section
 
@@ -17,14 +14,15 @@ fun StoryboardBuilder.Architecture() {
 
 private fun StoryboardBuilder.CompilerStages() {
     StageTimeline(null)
-    StageDetail(CompilerStage.Parse)
+    StageParse()
     StageTimeline(CompilerStage.Parse)
-    StageDetail(CompilerStage.Resolve)
+    StageResolve()
     StageTimeline(CompilerStage.Resolve)
-    StageDetail(CompilerStage.Analyse)
-    StageTimeline(CompilerStage.Analyse)
-    StageDetail(CompilerStage.Transform)
+    StageAnalyze()
+    StageTimeline(CompilerStage.Analyze)
+    // TODO talk about frontend vs backend?
+    StageTransform()
     StageTimeline(CompilerStage.Transform)
-    StageDetail(CompilerStage.Generate)
+    StageGenerate()
     StageTimeline(CompilerStage.Generate)
 }

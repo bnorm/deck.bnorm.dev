@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.plugin.fir
+package dev.bnorm.kc25.sections.write.resolve
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ScrollState
@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.components.RightPanel
-import dev.bnorm.kc25.template.CompilerStage
+import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.CodeSample

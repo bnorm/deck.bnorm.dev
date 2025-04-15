@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.template
+package dev.bnorm.kc25.sections.stages
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -15,7 +15,10 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.SharedKodee
+import dev.bnorm.kc25.template.DefaultReactionKodee
 import dev.bnorm.storyboard.Frame
+import dev.bnorm.storyboard.Render
+import dev.bnorm.storyboard.SceneContent
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -23,7 +26,7 @@ import dev.bnorm.storyboard.easel.sharedElement
 enum class CompilerStage {
     Parse,
     Resolve,
-    Analyse,
+    Analyze,
     Transform,
     Generate,
     ;
@@ -60,14 +63,17 @@ private fun <T> fadeInSpec(): TweenSpec<T> =
     tween(250, delayMillis = 250, easing = EaseIn)
 
 
-fun StoryboardBuilder.StageDetail(state: CompilerStage) {
-    scene {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+fun StoryboardBuilder.StageDetail(
+    stateCount: Int,
+    stage: CompilerStage,
+    content: SceneContent<Int>,
+) {
+    scene(stateCount) {
+        Box(
             modifier = Modifier
                 .padding(32.dp)
                 .sharedElement(
-                    rememberSharedContentState("box:$state"),
+                    rememberSharedContentState("box:$stage"),
                     zIndexInOverlay = -1f,
                     boundsTransform = BoxMovementSpec,
                 )
@@ -80,7 +86,16 @@ fun StoryboardBuilder.StageDetail(state: CompilerStage) {
                 enter = fadeIn(fadeInSpec()),
                 exit = fadeOut(fadeOutSpec()),
             ) {
-                Text(state.name, style = MaterialTheme.typography.h3)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(stage.name, style = MaterialTheme.typography.h3)
+                    // TODO horizontal line like with the header scaffold?
+                    Box(Modifier.padding(16.dp)) {
+                        Render(content)
+                    }
+                }
             }
         }
 

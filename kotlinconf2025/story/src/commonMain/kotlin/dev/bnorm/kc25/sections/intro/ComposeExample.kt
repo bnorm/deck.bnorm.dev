@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.existing
+package dev.bnorm.kc25.sections.intro
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
