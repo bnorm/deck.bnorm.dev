@@ -33,8 +33,8 @@ private val SAMPLES = buildCodeSamples {
           val author: String,
           val publication: LocalDate,
         )${body} {
-          class Builder {${propImpl}
-            ${prop}private var title_flag: Boolean = false
+          class Builder {${prop}${propImpl}
+            private var title_flag: Boolean = false
             private var title_holder: String? = null${propImpl}
             var title: String${propImpl}
               get() = when {
@@ -44,8 +44,8 @@ private val SAMPLES = buildCodeSamples {
               set(value) {
                 title_holder = value
                 title_flag = true
-              }${prop}
-            ${propImpl}
+              }
+            ${propImpl}${prop}
             var series: String?
             var author: String
             var publication: LocalDate
@@ -90,7 +90,8 @@ private val SAMPLES = buildCodeSamples {
     val buildSamples = buildSample.hide(bImpl).collapse(whens)
         .then { reveal(bImpl).focus(title) }
         .then { focus(series) }
-        .then { unfocus().reveal(whens).hide(bImpl).collapse(whens) } // TODO reveal+collapse whens to place at end
+        .then { unfocus().reveal(whens) }
+        .then { hide(bImpl) }
 
     val bookEnd = bookStart.last().unfocus()
         .then { hide(body).reveal(defs) }
