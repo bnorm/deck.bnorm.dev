@@ -32,6 +32,7 @@ fun BroadcastMessage.toStoryboard(): Storyboard.Index {
 }
 
 // TODO doesn't seem to work on iOS Chrome: https://developer.chrome.com/blog/debugging-chrome-on-ios
+// TODO the app seems to become non-responsive on Android Chrome after the phone goes to sleep
 @Composable
 fun App() {
     val storyState = rememberStoryState(remember { createStoryboard() })

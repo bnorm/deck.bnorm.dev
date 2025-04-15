@@ -17,8 +17,8 @@ import dev.bnorm.deck.shared.AnimateKodee
 import dev.bnorm.deck.shared.DefaultCornerKodee
 import dev.bnorm.kc25.broadcast.LocalReactionListener
 import dev.bnorm.kc25.broadcast.ReactionMessage
-import dev.bnorm.storyboard.SceneMode
 import dev.bnorm.storyboard.LocalSceneMode
+import dev.bnorm.storyboard.SceneMode
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.filter
 import kotlin.random.Random
@@ -42,22 +42,24 @@ private class FloatingKodee(
 
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
-fun DefaultReactionKodee() {
+fun DefaultReactionKodee(modifier: Modifier = Modifier) {
     var reaction by remember { mutableStateOf<ReactionMessage?>(null) }
 
-    FloatingReactions()
+    Box(contentAlignment = Alignment.BottomEnd, modifier = modifier) {
+        FloatingReactions()
 
-    AnimateKodee {
-        default { DefaultCornerKodee(Modifier.size(50.dp)) }
+        AnimateKodee {
+            default { DefaultCornerKodee(Modifier.size(50.dp)) }
 
-        show(condition = { reaction != null }) {
-            when (val reaction = reaction) {
-                null, is ReactionMessage.Ping -> {
-                    DefaultCornerKodee(Modifier.size(50.dp))
-                }
+            show(condition = { reaction != null }) {
+                when (val reaction = reaction) {
+                    null, is ReactionMessage.Ping -> {
+                        DefaultCornerKodee(Modifier.size(50.dp))
+                    }
 
-                else -> {
-                    reaction.Image(Modifier.size(100.dp))
+                    else -> {
+                        reaction.Image(Modifier.size(100.dp))
+                    }
                 }
             }
         }

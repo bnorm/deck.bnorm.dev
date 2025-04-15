@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.template
 
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.EaseOut
@@ -23,7 +24,6 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.kc25.sections.CompilerStage
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.chrisbanes.haze.*
@@ -90,17 +90,19 @@ fun StageScaffold(
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp)
                 ) {
-                    for (state in CompilerStage.entries) {
+                    for (stage in CompilerStage.entries) {
+                        // TODO how do we animate color across scenes?
+                        //  - will it require a transition scene?
                         val borderColor by currentStage.animateColor(
                             transitionSpec = { tween(500, easing = EaseOut) },
                         ) {
                             when (it) {
-                                state -> MaterialTheme.colors.secondary
+                                stage -> MaterialTheme.colors.secondary
                                 else -> MaterialTheme.colors.primary
                             }
                         }
 
-                        CompilerStateBox(state, borderColor)
+                        CompilerStateBox(stage, borderColor)
                     }
                 }
             }
@@ -154,7 +156,7 @@ private fun CompilerStateBox(
         ) {
             Text(
                 state.name,
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
             )
         }

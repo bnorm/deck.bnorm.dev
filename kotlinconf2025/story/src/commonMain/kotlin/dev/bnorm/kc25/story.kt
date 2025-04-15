@@ -4,7 +4,7 @@ import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
-import dev.bnorm.kc25.sections.CompilerArchitecture
+import dev.bnorm.kc25.template.CompilerArchitecture
 import dev.bnorm.kc25.sections.Title
 import dev.bnorm.kc25.sections.existing.ComposeExample
 import dev.bnorm.kc25.sections.existing.DataFrameExample
@@ -56,14 +56,14 @@ private fun StoryboardBuilder.Intro() {
 
 private fun StoryboardBuilder.Outline() {
     section("Third?") {
-        SectionTitle(animateToBody = true)
+        SectionTitle(animateToHeader = true)
         ThirdPlugin()
     }
 
     Title(withTransition = true)
 
     section("Compiler-Plugin?") {
-        SectionTitle(animateToBody = true)
+        SectionTitle(animateToHeader = true)
 
         // TODO need a section comparing it to KSP
 
@@ -85,7 +85,7 @@ private fun StoryboardBuilder.Outline() {
         DataFrameExample()
         PowerAssertExample()
 
-        SectionTitle(animateFromBody = true)
+        SectionTitle(animateFromHeader = true)
     }
 
     CompilerArchitecture()

@@ -2,10 +2,12 @@ package dev.bnorm.kc25.template
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
@@ -119,5 +121,27 @@ fun HeaderScaffold(
             headerPlaceables.fastForEach { it.place(0, 0) }
             kodeePlaceables.fastForEach { it.place(kodeeLeftOffset, kodeeTopOffset) }
         }
+    }
+}
+
+@Composable
+fun Header(
+    modifier: Modifier = Modifier,
+    lineFraction: Float = 1f,
+    title: @Composable () -> Unit,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        Spacer(Modifier.height(16.dp))
+        title()
+        Spacer(Modifier.height(4.dp))
+        Spacer(
+            Modifier
+                .fillMaxWidth(lineFraction).requiredHeight(2.dp)
+                .padding(horizontal = 64.dp)
+                .background(MaterialTheme.colors.primary)
+        )
     }
 }

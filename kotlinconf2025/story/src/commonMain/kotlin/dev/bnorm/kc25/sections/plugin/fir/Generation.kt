@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.components.EditorWindow
-import dev.bnorm.kc25.sections.CompilerStage
+import dev.bnorm.kc25.template.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.CodeSample

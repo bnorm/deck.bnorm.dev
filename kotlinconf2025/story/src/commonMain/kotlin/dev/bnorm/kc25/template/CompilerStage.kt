@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections
+package dev.bnorm.kc25.template
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -15,14 +15,13 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.kc25.template.DefaultReactionKodee
-import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.section
 
+// TODO actually fill in details about stages
 fun StoryboardBuilder.CompilerArchitecture() {
     section("Architecture") {
         SectionTitle()
@@ -30,14 +29,12 @@ fun StoryboardBuilder.CompilerArchitecture() {
     }
 }
 
-enum class CompilerStage(
-    val detailName: String,
-) {
-    Parse("Parsing"),
-    Resolve("Resolution"),
-    Analyse("Analysis"),
-    Transform("Transformation"),
-    Generate("Generation"),
+enum class CompilerStage {
+    Parse,
+    Resolve,
+    Analyse,
+    Transform,
+    Generate,
     ;
 }
 
@@ -106,7 +103,7 @@ private fun StoryboardBuilder.StageDetail(state: CompilerStage) {
                 enter = fadeIn(fadeInSpec()),
                 exit = fadeOut(fadeOutSpec()),
             ) {
-                Text(state.detailName, style = MaterialTheme.typography.h3)
+                Text(state.name, style = MaterialTheme.typography.h3)
             }
         }
 
@@ -116,6 +113,8 @@ private fun StoryboardBuilder.StageDetail(state: CompilerStage) {
     }
 }
 
+// TODO animate to details as part of start & end of scene?
+//  - would allow transitioning the text as well
 private fun StoryboardBuilder.StageTimeline(currentState: CompilerStage?) {
     scene {
         val currentOrdinal = currentState?.ordinal ?: -1
@@ -157,7 +156,7 @@ private fun StoryboardBuilder.StageTimeline(currentState: CompilerStage?) {
                         if (focus) MaterialTheme.colors.secondary else MaterialTheme.colors.primary
                     }
 
-                    CompilerStateBox(
+                    CompilerStageBox(
                         state,
                         borderColor,
                         boxVisible = boxVisible,
@@ -168,6 +167,7 @@ private fun StoryboardBuilder.StageTimeline(currentState: CompilerStage?) {
         }
 
         SharedKodee {
+            // TODO need to slide him in when transition from the title
             DefaultReactionKodee()
         }
     }
@@ -175,7 +175,7 @@ private fun StoryboardBuilder.StageTimeline(currentState: CompilerStage?) {
 
 @Composable
 context(sharedVisibilityScope: AnimatedVisibilityScope, _: SharedTransitionScope)
-private fun CompilerStateBox(
+private fun CompilerStageBox(
     state: CompilerStage,
     borderColor: Color,
     boxVisible: Transition<Boolean>,

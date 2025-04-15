@@ -13,7 +13,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.components.sampleResource
-import dev.bnorm.kc25.sections.CompilerStage
+import dev.bnorm.kc25.template.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.toCode
