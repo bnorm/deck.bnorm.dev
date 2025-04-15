@@ -1,109 +1,215 @@
 package dev.bnorm.kc25.sections
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.KodeeScaffold
-import dev.bnorm.kc25.template.SectionAndTitle
+import dev.bnorm.deck.shared.SharedKodee
+import dev.bnorm.kc25.template.DefaultReactionKodee
+import dev.bnorm.kc25.template.SectionTitle
+import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
+import dev.bnorm.storyboard.easel.template.section
 
 fun StoryboardBuilder.CompilerArchitecture() {
-    SectionAndTitle("Compiler Architecture") {
-        ArchitectureOverview()
+    section("Architecture") {
+        SectionTitle()
+        CompilerStages()
     }
 }
 
-private fun StoryboardBuilder.ArchitectureOverview() {
-    val titles = listOf(
-        "Parsing",
-        "Resolution",
-        "Conversion",
-        "Transformation",
-        "Generation",
-    )
+enum class CompilerStage(
+    val detailName: String,
+) {
+    Parse("Parsing"),
+    Resolve("Resolution"),
+    Analyse("Analysis"),
+    Transform("Transformation"),
+    Generate("Generation"),
+    ;
+}
 
-    class State(val visible: Int, val scale: Float)
-    scene(
-        states = buildList<State> {
-            add(State(-1, 0f))
-            for (i in titles.indices) {
-                add(State(i, 0f))
-                add(State(i, 1f))
-                add(State(i, 0f))
-            }
-        },
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    ) {
-        KodeeScaffold { padding ->
-            val offset by frame.animateDp(
-                transitionSpec = { tween(500, 500, easing = EaseInOut) },
-                targetValueByState = { (-960 * it.toState().visible).coerceAtMost(0).dp },
-            )
-            val scale by frame.animateFloat(
-                transitionSpec = { tween(500, easing = EaseInOut) },
-                targetValueByState = { 0.4f + 0.6f * it.toState().scale },
-            )
+private fun StoryboardBuilder.CompilerStages() {
+    StageTimeline(null)
+    StageDetail(CompilerStage.Parse)
+    StageTimeline(CompilerStage.Parse)
+    StageDetail(CompilerStage.Resolve)
+    StageTimeline(CompilerStage.Resolve)
+    StageDetail(CompilerStage.Analyse)
+    StageTimeline(CompilerStage.Analyse)
+    StageDetail(CompilerStage.Transform)
+    StageTimeline(CompilerStage.Transform)
+    StageDetail(CompilerStage.Generate)
+    StageTimeline(CompilerStage.Generate)
+}
 
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-                    .padding(top = padding.calculateTopPadding())
-                    .scale(scale)
-                    .wrapContentWidth(align = Alignment.Start, unbounded = true)
+private fun <T> fadeOutSpec(): TweenSpec<T> =
+    tween(250, easing = EaseOut)
+
+private fun <T> slideOutSpec(): TweenSpec<T> =
+    tween(250, delayMillis = 250, easing = EaseOut)
+
+private val BoxMovementSpec = BoundsTransform { initial, target ->
+    if (initial.width < target.width) {
+        keyframes {
+            durationMillis = 500
+            initial at 0 using EaseIn
+            Rect(initial.left, target.top, initial.right, target.bottom) at 250 using EaseIn
+            target at 500
+        }
+    } else {
+        keyframes {
+            durationMillis = 500
+            initial at 0 using EaseIn
+            Rect(target.left, initial.top, target.right, initial.bottom) at 250 using EaseIn
+            target at 500
+        }
+    }
+}
+
+private fun <T> slideInSpec(): TweenSpec<T> =
+    tween(250, delayMillis = 0, easing = EaseIn)
+
+private fun <T> fadeInSpec(): TweenSpec<T> =
+    tween(250, delayMillis = 250, easing = EaseIn)
+
+
+private fun StoryboardBuilder.StageDetail(state: CompilerStage) {
+    scene {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(32.dp)
+                .sharedElement(
+                    rememberSharedContentState("box:$state"),
+                    zIndexInOverlay = -1f,
+                    boundsTransform = BoxMovementSpec,
+                )
+                .fillMaxSize()
+                .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(16.dp))
+                .padding(16.dp)
+        ) {
+            frame.AnimatedVisibility(
+                visible = { it is Frame.State<*> },
+                enter = fadeIn(fadeInSpec()),
+                exit = fadeOut(fadeOutSpec()),
             ) {
-                Row(Modifier.offset(x = offset)) {
-                    for ((index, title) in titles.withIndex()) {
-                        Spacer(Modifier.width(32.dp))
-                        frame.AnimatedVisibility(
-                            visible = { it.toState().visible >= index },
-                            enter = fadeIn(tween(500, easing = EaseInOut)),
-                            exit = fadeOut(tween(500, easing = EaseInOut)),
-                        ) {
-                            Surface(
-                                modifier = Modifier.size(896.dp, 400.dp),
-                                shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(2.dp, MaterialTheme.colors.primary),
-                                color = MaterialTheme.colors.surface.copy(alpha = 0.75f),
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.padding(16.dp)
-                                ) {
-                                    ProvideTextStyle(MaterialTheme.typography.h4) {
-                                        Text(title)
-                                    }
-                                    Spacer(Modifier.height(8.dp))
-                                    Spacer(
-                                        Modifier.height(2.dp).fillMaxWidth().background(MaterialTheme.colors.primary)
-                                    )
+                Text(state.detailName, style = MaterialTheme.typography.h3)
+            }
+        }
 
-                                    // TODO content for each phase
-                                }
-                            }
+        SharedKodee {
+            DefaultReactionKodee()
+        }
+    }
+}
+
+private fun StoryboardBuilder.StageTimeline(currentState: CompilerStage?) {
+    scene {
+        val currentOrdinal = currentState?.ordinal ?: -1
+
+        Box(
+            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .offset(y = (-16).dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+            ) {
+                for (state in CompilerStage.entries) {
+                    val boxVisible = frame.createChildTransition {
+                        when (it) {
+                            Frame.Start -> currentOrdinal == state.ordinal
+                            is Frame.State<*> -> true // All visible.
+                            Frame.End -> currentOrdinal + 1 == state.ordinal
                         }
-                        Spacer(Modifier.width(32.dp))
                     }
+
+                    val contentVisible = frame.createChildTransition {
+                        when (it) {
+                            Frame.Start -> state.ordinal < currentOrdinal
+                            else -> state.ordinal <= currentOrdinal
+                        }
+                    }
+
+                    val borderColor by frame.animateColor(
+                        transitionSpec = { tween(500, easing = EaseOut) },
+                    ) {
+                        val focus = when (it) {
+                            Frame.End -> currentOrdinal + 1 == state.ordinal
+                            else -> currentOrdinal == state.ordinal
+                        }
+                        if (focus) MaterialTheme.colors.secondary else MaterialTheme.colors.primary
+                    }
+
+                    CompilerStateBox(
+                        state,
+                        borderColor,
+                        boxVisible = boxVisible,
+                        contentVisible = contentVisible,
+                    )
+                }
+            }
+        }
+
+        SharedKodee {
+            DefaultReactionKodee()
+        }
+    }
+}
+
+@Composable
+context(sharedVisibilityScope: AnimatedVisibilityScope, _: SharedTransitionScope)
+private fun CompilerStateBox(
+    state: CompilerStage,
+    borderColor: Color,
+    boxVisible: Transition<Boolean>,
+    contentVisible: Transition<Boolean>,
+) {
+
+    Box(Modifier.size(156.dp, 69.dp)) {
+        boxVisible.AnimatedVisibility(
+            visible = { it },
+            enter = slideInVertically(slideInSpec()) { -it },
+            exit = slideOutVertically(slideOutSpec()) { -it },
+        ) {
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier
+                    .sharedElement(
+                        rememberSharedContentState("box:$state"),
+                        animatedVisibilityScope = sharedVisibilityScope,
+                        zIndexInOverlay = -1f,
+                        boundsTransform = BoxMovementSpec,
+                    )
+                    .fillMaxSize()
+                    .border(2.dp, borderColor, RoundedCornerShape(16.dp))
+            ) {
+                contentVisible.AnimatedVisibility(
+                    visible = { it },
+                    enter = fadeIn(fadeInSpec()),
+                    exit = fadeOut(fadeOutSpec()),
+                ) {
+                    Text(
+                        state.name,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+                    )
                 }
             }
         }
