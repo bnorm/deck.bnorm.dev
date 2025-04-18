@@ -42,19 +42,12 @@ import dev.bnorm.storyboard.toState
 import org.jetbrains.compose.resources.painterResource
 
 private const val THIRD = "Third"
-private const val FORTH = "Forth"
 
-fun StoryboardBuilder.Title(withTransition: Boolean = false) {
+fun StoryboardBuilder.Title() {
     scene(
-        stateCount = if (withTransition) 2 else 1,
-        enterTransition = enter(
-            start = SceneEnter(alignment = Alignment.CenterStart),
-            end = SceneEnter(alignment = Alignment.CenterEnd),
-        ),
-        exitTransition = exit(
-            start = SceneExit(alignment = Alignment.CenterStart),
-            end = SceneExit(alignment = Alignment.CenterEnd),
-        ),
+        stateCount = 1,
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         Box(Modifier.fillMaxSize()) {
             Image(
@@ -93,11 +86,7 @@ fun StoryboardBuilder.Title(withTransition: Boolean = false) {
                 Column(Modifier.padding(16.dp)) {
                     ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
                         // TODO maybe do something with https://github.com/saket/extended-spans?
-                        val index by frame.createChildTransition { it.toState() > 0 }
-                            .animateInt(transitionSpec = { tween((THIRD.length + FORTH.length) * 50, easing = LinearEasing) }) {
-                                if (it) FORTH.length else -THIRD.length
-                            }
-                        Text("Writing Your ${if (index < 0) THIRD.substring(0, -index) else FORTH.substring(0, index)}")
+                        Text("Writing Your Third")
                         Text("Kotlin Compiler Plugin")
                     }
                 }

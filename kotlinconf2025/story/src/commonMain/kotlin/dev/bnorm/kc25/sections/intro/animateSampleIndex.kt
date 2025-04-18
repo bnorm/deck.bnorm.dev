@@ -41,7 +41,7 @@ fun animateSampleIndex(
     SceneCaption {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Playing")
-            Spacer(Modifier.Companion.width(16.dp))
+            Spacer(Modifier.width(16.dp))
             Switch(playing, onCheckedChange = { playing = it })
             if (!playing) {
                 IconButton(onClick = {
@@ -50,7 +50,7 @@ fun animateSampleIndex(
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                         contentDescription = "Previous",
-                        modifier = Modifier.Companion.pointerHoverIcon(PointerIcon.Companion.Hand),
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
                     )
                 }
                 IconButton(onClick = {
@@ -59,7 +59,7 @@ fun animateSampleIndex(
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
                         contentDescription = "Next",
-                        modifier = Modifier.Companion.pointerHoverIcon(PointerIcon.Companion.Hand),
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
                     )
                 }
             }

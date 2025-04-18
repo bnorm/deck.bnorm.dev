@@ -2,9 +2,6 @@ package dev.bnorm.kc25.sections.write.transform
 
 import dev.bnorm.kc25.components.temp.SamplesScene
 import dev.bnorm.kc25.sections.stages.CompilerStage
-import dev.bnorm.kc25.sections.write.REGISTRATION_IR_CHECKPOINT
-import dev.bnorm.kc25.sections.write.PluginRegistrar
-import dev.bnorm.kc25.template.SectionAndTitle
 import dev.bnorm.storyboard.StoryboardBuilder
 
 val IrGenerationExtension = listOf(
@@ -31,10 +28,6 @@ val IrVisitorVoid = listOf(
 )
 
 fun StoryboardBuilder.IrExtensions() {
-    SectionAndTitle("IR Extensions") {
-        PluginRegistrar(start = REGISTRATION_IR_CHECKPOINT)
-
-        SamplesScene(CompilerStage.Transform, IrGenerationExtension)
-        SamplesScene(CompilerStage.Transform, IrVisitorVoid)
-    }
+    SamplesScene(CompilerStage.Transform, IrGenerationExtension)
+    SamplesScene(CompilerStage.Transform, IrVisitorVoid)
 }

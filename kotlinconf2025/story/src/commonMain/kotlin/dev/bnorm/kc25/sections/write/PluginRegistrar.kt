@@ -1,15 +1,14 @@
 package dev.bnorm.kc25.sections.write
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -60,7 +59,7 @@ private val SAMPLES = buildCodeSamples {
         .then { unfocus() }
 }
 
-const val REGISTRATION_IR_CHECKPOINT = 7
+const val REGISTRATION_FRONTEND_END = 7
 
 fun StoryboardBuilder.PluginRegistrar(start: Int = 0, endExclusive: Int = SAMPLES.size) {
     require(start < endExclusive) { "start=$start must be less than endExclusive=$endExclusive" }
@@ -72,7 +71,7 @@ fun StoryboardBuilder.PluginRegistrar(start: Int = 0, endExclusive: Int = SAMPLE
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        StageScaffold(updateTransition(null)) { padding ->
+        HeaderScaffold { padding ->
             Box(Modifier.padding(padding)) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = frame.createChildTransition {

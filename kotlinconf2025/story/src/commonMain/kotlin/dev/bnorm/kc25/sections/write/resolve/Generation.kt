@@ -3,13 +3,14 @@ package dev.bnorm.kc25.sections.write.resolve
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,7 +44,10 @@ private sealed class SampleData {
 
 }
 
-data object ShowBuilderClassKey
+class ShowPanel(
+    val sample: CodeSample,
+    val show: Boolean,
+)
 
 private val SAMPLES = buildCodeSamples {
     val clsSig by tag("class signature")
@@ -136,7 +140,8 @@ private val SAMPLES = buildCodeSamples {
             if (name != BUILDER_CLASS_NAME) return null${class1}
 
             ${class2}// ??? TODO should we be using owner.declarationSymbols instead?
-            val scope = owner.declaredMemberScope(session, memberRequiredPhase = null)
+            val scope: FirScope =
+              owner.declaredMemberScope(session, memberRequiredPhase = null)
             val provider = session.predicateBasedProvider
             val constructorSymbol = scope.getDeclaredConstructors()
               .singleOrNull { provider.matches(BUILDABLE_PREDICATE, it) }
@@ -250,9 +255,9 @@ private val SAMPLES = buildCodeSamples {
         .then { start.reveal(classp, nest_class, class_call).focus(classs) }
         .then { collapse(classp).reveal(classb).focus(class1) }
         .then { focus(class2) }
-        .then { focus(class3) }
-        .then { attach(ShowBuilderClassKey) }
-        .then { detach() }
+        .then { focus(class3).attach(ShowPanel(CodeSample(BuilderClassKey), show = false)) }
+        .then { attach(ShowPanel(CodeSample(BuilderClassKey), show = true)) }
+        .then { attach(ShowPanel(CodeSample(BuilderClassKey), show = false)) }
 
         .then { start.reveal(callp, class_call, call_ctor).focus(calls) }
         .then { collapse(callp).reveal(callb).focus(callb) }
@@ -293,12 +298,15 @@ fun StoryboardBuilder.Generation(start: Int = 0, endExclusive: Int = SAMPLES.siz
                 sample.MagicCodeSample(modifier = Modifier.padding(padding))
             }
 
+            val sidePanel = sample.createChildTransition { (it.data as? ShowPanel) }
             RightPanel(
-                show = sample.createChildTransition { it.data == ShowBuilderClassKey },
+                show = sidePanel.createChildTransition { it != null && it.show },
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
             ) {
-                Box(modifier = Modifier.padding(32.dp)) {
-                    Text(BuilderClassKey, style = MaterialTheme.typography.code1)
+                ProvideTextStyle(MaterialTheme.typography.code1) {
+                    Box(modifier = Modifier.padding(32.dp).width(500.dp).fillMaxHeight()) {
+                        MagicText(sidePanel.createChildTransition { it?.sample?.string?.splitByTags() ?: emptyList() })
+                    }
                 }
             }
         }

@@ -204,26 +204,26 @@ fun StoryboardBuilder.DataFrameExample() {
     require(SAMPLES.size == OUTPUT.size) { "Samples (${SAMPLES.size}) != Outputs (${OUTPUT.size})" }
 
     section("DataFrame") {
-        scene(
-            stateCount = 3,
-                    enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-            ) {
-            HeaderScaffold { padding ->
-                Column(
-                    modifier = Modifier.padding(padding),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    RevealEach(frame.createChildTransition { it.toState() }) {
-                        item { Text("$BULLET_1 DataFrame is an abstraction for working with structured data.") }
-                        item { Text("$BULLET_1 It is hierarchical, interoperable, generic, and immutable.") }
-                        item { Text("$BULLET_1 And now, thanks to a compiler-plugin, inferred.") }
-                        // item { Text("$BULLET_1 The DataFrame compiler-plugin infers the schema at each step,") }
-                        // item { Text("$BULLET_1 and generates synthetic extension properties for each schema.") }
-                    }
-                }
-            }
-        }
+//        scene(
+//            stateCount = 3,
+//                    enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+//            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+//            ) {
+//            HeaderScaffold { padding ->
+//                Column(
+//                    modifier = Modifier.padding(padding),
+//                    verticalArrangement = Arrangement.spacedBy(12.dp),
+//                ) {
+//                    RevealEach(frame.createChildTransition { it.toState() }) {
+//                        item { Text("$BULLET_1 DataFrame is an abstraction for working with structured data.") }
+//                        item { Text("$BULLET_1 It is hierarchical, interoperable, generic, and immutable.") }
+//                        item { Text("$BULLET_1 And now, thanks to a compiler plugin, inferred.") }
+//                        // item { Text("$BULLET_1 The DataFrame compiler plugin infers the schema at each step,") }
+//                        // item { Text("$BULLET_1 and generates synthetic extension properties for each schema.") }
+//                    }
+//                }
+//            }
+//        }
 
         scene(
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),

@@ -1,7 +1,6 @@
 package dev.bnorm.kc25
 
 import dev.bnorm.kc25.components.temp.BULLET_1
-import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
@@ -9,12 +8,11 @@ import dev.bnorm.kc25.sections.intro.ComposeExample
 import dev.bnorm.kc25.sections.intro.DataFrameExample
 import dev.bnorm.kc25.sections.intro.PowerAssertExample
 import dev.bnorm.kc25.sections.intro.ThirdPlugin
-import dev.bnorm.kc25.sections.write.BuildableIntro
-import dev.bnorm.kc25.sections.write.Repository
-import dev.bnorm.kc25.sections.write.resolve.FirExtensions
-import dev.bnorm.kc25.sections.write.transform.IrExtensions
 import dev.bnorm.kc25.sections.stages.Architecture
-import dev.bnorm.kc25.template.SectionAndTitle
+import dev.bnorm.kc25.sections.write.*
+import dev.bnorm.kc25.sections.write.analyze.Checkers
+import dev.bnorm.kc25.sections.write.resolve.Generation
+import dev.bnorm.kc25.sections.write.transform.IrExtensions
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.THEME_DECORATOR
 import dev.bnorm.storyboard.Storyboard
@@ -40,10 +38,6 @@ fun createStoryboard(): Storyboard {
         decorator = THEME_DECORATOR,
     ) {
         Title()
-//    Dont()
-//    Closing()
-//    Bueller()
-//    Title()
         Outline()
         Closing()
     }
@@ -55,25 +49,15 @@ private fun StoryboardBuilder.Outline() {
         ThirdPlugin()
     }
 
-//    Title(withTransition = true)
-
-    section("Compiler-Plugin?") {
+    section("Compiler Plugin?") {
         SectionTitle(animateToHeader = true)
 
-        // TODO need a section comparing it to KSP
-        // TODO specifically talk about it being a form of meta-programming
-
         RevealScene(
-            "$BULLET_1 An extension to the Kotlin compiler to achieve some language-level feature.",
-            "$BULLET_1 For example:",
-            "    $BULLET_2 Serialization - Generates serializers for classes at compile-time.",
-            "    $BULLET_2 Compose - Rewrites function declarations to inject tree node construction at runtime.",
-            "    $BULLET_2 DataFrame - Generates synthetic properties based on schema of data under analysis.",
-            "    $BULLET_2 Power-Assert - Rewrites function calls to include call-site information about parameters.",
-            "$BULLET_1 All of these compiler-plugins generate or transform Kotlin code as it is being compiled.",
+            "$BULLET_1 A form of meta-programming, integrated directly with the compiler.",
+            "$BULLET_1 Alternatives include KSP, reflection, or annotation processing (KAPT).",
+            "$BULLET_1 Experimental and unstable, usually breaks with each new Kotlin release.",
+            "$BULLET_1 Should only be used if the benefits outweigh the drawbacks.",
         )
-
-        // TODO it would be cool to leave the line in place as the titles change between examples
 
         // TODO Serialization
         ComposeExample()
@@ -82,13 +66,13 @@ private fun StoryboardBuilder.Outline() {
         PowerAssertExample()
 
         // TODO this section needs some kind of ender that helps transition into the next section
-
-        SectionTitle(animateFromHeader = true)
     }
 
     Architecture()
 
-    SectionAndTitle("Let's write one!") {
+    section("Let's write one!") {
+        SectionTitle(animateToHeader = true)
+
         // TODO reference template project for faster project setup
         RevealScene(
             "$BULLET_1 Let's focus on the easy task: boilerplate reduction.",
@@ -98,31 +82,34 @@ private fun StoryboardBuilder.Outline() {
     }
 
     // TODO put this at the beginning with the companion as a link instead?
-    Repository()
+    //    Repository()
 
-//    SectionAndTitle("FIR") {
-//        RevealScene(
-//            "$BULLET_1 Extensions",
-//            "    $BULLET_2 Multiple phases have extension points which can alter their behavior.",
-//            "    $BULLET_2 These extensions impact how code is resolved, while the code is being resolved.",
-//            "    $BULLET_2 This means extensions are extremely specific to their phase and purpose.",
-//            "    $BULLET_2 This also means accessible FIR elements may only be partially resolved.",
-//        )
-//    }
+    section("Setup") {
+        PluginRegistrar(endExclusive = REGISTRATION_FRONTEND_END)
+        FirRegistrar(endExclusive = FIR_REGISTRATION_RESOLVE_END)
 
-    // TODO split into resolve and analyze?
-    FirExtensions()
+        // TODO need a better transition between header and stages
+    }
 
-    // TODO something to break up between these 3 sections (resolve, analyze, and transform)?
+    // TODO show all the annotation predicate types and what each match?
+    // TODO need to show the @Buildable sample code and what the current generation looks like
+    //  - maybe include some example use so that we can show red code for names?
+    Generation()
 
     // TODO talk about FirSession/MPP between resolve and analyze
     //  - leads nicely into some MPP topics
 
-    // TODO testing between analyze and transform
-    //  - probably more important than covering IR anyways
+    section("Setup") {
+        FirRegistrar(start = FIR_REGISTRATION_RESOLVE_END)
+    }
+    Checkers()
 
-    // TODO name transform?
+    // TODO talk about IDE integration between analyze and transform
+    //  - good topic after completing the frontend
+
+    section("Setup") { PluginRegistrar(start = REGISTRATION_FRONTEND_END) }
     IrExtensions()
 
-    // TODO Future?
+    // TODO testing?
+    // TODO future?
 }

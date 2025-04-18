@@ -4,7 +4,6 @@ import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.section
 
-// TODO actually fill in details about stages
 fun StoryboardBuilder.Architecture() {
     section("Architecture") {
         SectionTitle()

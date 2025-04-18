@@ -22,18 +22,6 @@ import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.SceneSection
-import dev.bnorm.storyboard.easel.template.section
-
-fun StoryboardBuilder.SectionAndTitle(
-    header: String,
-    block: StoryboardBuilder.() -> Unit,
-) {
-    section(header) {
-        SectionTitle(animateToHeader = true)
-        block()
-        SectionTitle(animateFromHeader = true)
-    }
-}
 
 fun StoryboardBuilder.SectionTitle(
     animateFromHeader: Boolean = false,
@@ -71,15 +59,15 @@ fun SectionTitle(
     val lineDuration = 300
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
-        val textStyle = showAsHeader.createChildTransition { if (it) headerTextStyle else titleTextStyle }
-            .animateTextStyle(
+        val textStyle by showAsHeader.animateTextStyle(
                 transitionSpec = {
-                    when (targetState == headerTextStyle) {
+                    when (targetState) {
                         true -> tween(moveDuration, delayMillis = 0, EaseInOut)
                         false -> tween(moveDuration, lineDuration, EaseInOut)
                     }
                 },
-            )
+            targetValueByState = { if (it) headerTextStyle else titleTextStyle }
+        )
         val height by showAsHeader.animateDp(
             label = "header top padding",
             transitionSpec = {

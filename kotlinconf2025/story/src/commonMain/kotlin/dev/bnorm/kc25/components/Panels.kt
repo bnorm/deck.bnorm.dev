@@ -22,18 +22,16 @@ fun RightPanel(
     content: @Composable () -> Unit,
 ) {
     // TODO try again to get haze to work?
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd) {
         show.AnimatedVisibility(
             visible = { it },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .fillMaxHeight()
-                .offset(x = 16.dp),
             enter = slideInHorizontally(enterSpec) { it },
             exit = slideOutHorizontally(exitSpec) { it },
         ) {
             Box(
                 modifier = Modifier
+                    .fillMaxHeight()
+                    .offset(x = 16.dp)
                     .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colors.surface.copy(alpha = 0.9f))
                     .padding(end = 16.dp)
@@ -53,18 +51,16 @@ fun BottomPanel(
     content: @Composable () -> Unit,
 ) {
     // TODO try again to get haze to work?
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
         show.AnimatedVisibility(
             visible = { it },
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .offset(y = 16.dp),
             enter = slideInVertically(enterSpec) { it },
             exit = slideOutVertically(exitSpec) { it },
         ) {
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = 16.dp)
                     .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colors.surface.copy(alpha = 0.9f))
                     .padding(bottom = 16.dp)

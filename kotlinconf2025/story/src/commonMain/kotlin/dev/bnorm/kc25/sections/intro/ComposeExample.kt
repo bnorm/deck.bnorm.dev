@@ -31,7 +31,6 @@ private val SAMPLES = buildCodeSamples {
     val c4 by tag("check skip")
     val c5 by tag("update scope")
 
-    // TODO named parameters aren't highlighted correctly...
     val basic = """
         @Composable fun MyCounter(${c1}composer: Composer${c1}${c3}, changed: Int${c3}) {${c2}
           composer.startRestartGroup(123)${c2}
@@ -77,25 +76,25 @@ private val SAMPLES = buildCodeSamples {
 
 fun StoryboardBuilder.ComposeExample() {
     section("Compose") {
-        // TODO instead of 2 scenes for each existing compiler-plugin...
+        // TODO instead of 2 scenes for each existing compiler plugin...
         //  - could the animation start right away (or slightly delayed),
         //    and bullet points appear to the left or right (alternate in each sample?)
         //  - this would allow the animation to play longer while i talk through the points
         //  - also could have a cool haze over the sample code if it's too big
-        scene(
-            stateCount = 1,
-            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-        ) {
-            HeaderScaffold { padding ->
-                Column(
-                    modifier = Modifier.padding(padding),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    // TODO add some bullet points?
-                }
-            }
-        }
+//        scene(
+//            stateCount = 1,
+//            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+//            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+//        ) {
+//            HeaderScaffold { padding ->
+//                Column(
+//                    modifier = Modifier.padding(padding),
+//                    verticalArrangement = Arrangement.spacedBy(12.dp),
+//                ) {
+//                    // TODO add some bullet points?
+//                }
+//            }
+//        }
 
         scene(
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),

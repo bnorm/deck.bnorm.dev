@@ -182,20 +182,20 @@ private val SAMPLES = buildCodeSamples {
 
 fun StoryboardBuilder.PowerAssertExample() {
     section("Power-Assert") {
-        scene(
-            stateCount = 1,
-            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-        ) {
-            HeaderScaffold { padding ->
-                Column(
-                    modifier = Modifier.padding(padding),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    // TODO add some bullet points?
-                }
-            }
-        }
+//        scene(
+//            stateCount = 1,
+//            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+//            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+//        ) {
+//            HeaderScaffold { padding ->
+//                Column(
+//                    modifier = Modifier.padding(padding),
+//                    verticalArrangement = Arrangement.spacedBy(12.dp),
+//                ) {
+//                    // TODO add some bullet points?
+//                }
+//            }
+//        }
 
         scene(
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),

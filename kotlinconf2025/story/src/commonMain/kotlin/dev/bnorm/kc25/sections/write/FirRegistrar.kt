@@ -1,15 +1,14 @@
-package dev.bnorm.kc25.sections.write.resolve
+package dev.bnorm.kc25.sections.write
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -20,8 +19,7 @@ import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
 enum class SampleCheckpoint {
-    DeclarationGenerationExtension,
-    AdditionalCheckersExtension,
+    Resolve,
 }
 
 private val SAMPLES = buildCodeSamples {
@@ -47,12 +45,12 @@ private val SAMPLES = buildCodeSamples {
     baseSample.collapse(body).hide(dge, ace).focus(name)
         .then { focus(sup) }
         .then { reveal(body).focus(sig) }
-        .then { reveal(dge).focus(dge).attach(SampleCheckpoint.DeclarationGenerationExtension) }
-        .then { reveal(ace).focus(ace).attach(SampleCheckpoint.AdditionalCheckersExtension) }
+        .then { reveal(dge).focus(dge) }
+        .then { unfocus().attach(SampleCheckpoint.Resolve) }
+        .then { reveal(ace).focus(ace) }
 }
 
-val FIR_REGISTRATION_DGE_CHECKPOINT = 1 +
-        SAMPLES.indexOfFirst { it.data == SampleCheckpoint.DeclarationGenerationExtension }
+val FIR_REGISTRATION_RESOLVE_END = SAMPLES.indexOfFirst { it.data == SampleCheckpoint.Resolve }
 
 fun StoryboardBuilder.FirRegistrar(start: Int = 0, endExclusive: Int = SAMPLES.size) {
     require(start < endExclusive) { "start=$start must be less than endExclusive=$endExclusive" }
@@ -64,7 +62,7 @@ fun StoryboardBuilder.FirRegistrar(start: Int = 0, endExclusive: Int = SAMPLES.s
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        StageScaffold(updateTransition(null)) { padding ->
+        HeaderScaffold { padding ->
             Box(Modifier.padding(padding)) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = frame.createChildTransition {

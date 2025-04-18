@@ -24,78 +24,38 @@ fun KotlinConfBird(visible: Transition<Boolean>): VectorPainter = rememberVector
     // TODO the website uses a mask to create the logo highlight sweep
     //  vector painter doesn't seem to support masks? only clips?
 
+    fun specInHead(): TweenSpec<Float> = tween(durationMillis = 400, delayMillis = 0, easing = EaseIn)
+    fun specInBody(): TweenSpec<Float> = tween(durationMillis = 400, delayMillis = 100, easing = EaseIn)
+    fun specInPaths(): TweenSpec<Float> = tween(durationMillis = 1000, delayMillis = 400, easing = EaseInCubic)
+    fun specInKotlin(): TweenSpec<Float> = tween(durationMillis = 800, delayMillis = 1400, easing = EaseInCubic)
+
+    fun specOutKotlin(): TweenSpec<Float> = tween(durationMillis = 800, delayMillis = 0, easing = EaseOutCubic)
+    fun specOutPaths(): TweenSpec<Float> = tween(durationMillis = 1000, delayMillis = 800, easing = EaseOutCubic)
+    fun specOutBody(): TweenSpec<Float> = tween(durationMillis = 400, delayMillis = 1800, easing = EaseOut)
+    fun specOutHead(): TweenSpec<Float> = tween(durationMillis = 400, delayMillis = 1900, easing = EaseOut)
+
     val birdBodyTranslation by visible.animateFloat(
-        transitionSpec = {
-            when (targetState) {
-                true -> tween(durationMillis = 400, delayMillis = 80, easing = EaseOut)
-                false -> tween(durationMillis = 200, delayMillis = 900, easing = EaseIn)
-            }
-        },
-        targetValueByState = {
-            when (it) {
-                false -> 50f
-                true -> 0f
-            }
-        },
+        transitionSpec = { if (targetState) specInBody() else specOutBody() },
+        targetValueByState = { if (it) 0f else 50f },
     )
     val birdHeadTranslation by visible.animateFloat(
-        transitionSpec = {
-            when (targetState) {
-                true -> tween(durationMillis = 400, delayMillis = 0, easing = EaseOut)
-                false -> tween(durationMillis = 200, delayMillis = 940, easing = EaseIn)
-            }
-        },
-        targetValueByState = {
-            when (it) {
-                false -> 50f
-                true -> 0f
-            }
-        },
+        transitionSpec = { if (targetState) specInHead() else specOutHead() },
+        targetValueByState = { if (it) 0f else 50f },
     )
 
     val birdAlpha by visible.animateFloat(
-        transitionSpec = {
-            when (targetState) {
-                true -> tween(durationMillis = 400, delayMillis = 80, easing = EaseOut)
-                false -> tween(durationMillis = 200, delayMillis = 900, easing = EaseIn)
-            }
-        },
-        targetValueByState = {
-            when (it) {
-                false -> 0f
-                true -> 1f
-            }
-        },
+        transitionSpec = { if (targetState) specInBody() else specOutBody() },
+        targetValueByState = { if (it) 1f else 0f },
     )
 
     val animatePath by visible.animateFloat(
-        transitionSpec = {
-            when (targetState) {
-                true -> tween(durationMillis = 1000, delayMillis = 400, easing = EaseInCubic)
-                false -> tween(durationMillis = 500, delayMillis = 400, easing = EaseOutCubic)
-            }
-        },
-        targetValueByState = {
-            when (it) {
-                false -> 0f
-                true -> 1f
-            }
-        },
+        transitionSpec = { if (targetState) specInPaths() else specOutPaths() },
+        targetValueByState = { if (it) 1f else 0f },
     )
 
     val animatePathKotlin by visible.animateFloat(
-        transitionSpec = {
-            when (targetState) {
-                true -> tween(durationMillis = 800, delayMillis = 1400, easing = EaseInCubic)
-                false -> tween(durationMillis = 400, delayMillis = 0, easing = EaseOutCubic)
-            }
-        },
-        targetValueByState = {
-            when (it) {
-                false -> 0f
-                true -> 1f
-            }
-        },
+        transitionSpec = { if (targetState) specInKotlin() else specOutKotlin() },
+        targetValueByState = { if (it) 1f else 0f },
     )
 
     Group(name = "inside-paths") {
