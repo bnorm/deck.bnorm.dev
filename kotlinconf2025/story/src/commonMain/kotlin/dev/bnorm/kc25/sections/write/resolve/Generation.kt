@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.sections.write.resolve
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.components.MagicCodeSample
 import dev.bnorm.kc25.components.RightPanel
@@ -22,8 +26,6 @@ import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
 private sealed class SampleData {
@@ -39,12 +41,70 @@ class ShowPanel(
     val show: Boolean,
 )
 
-private val BuilderClassKey = """
-    data class BuilderClassKey(
-      val ownerClassSymbol: FirClassSymbol<*>,
-      val constructorSymbol: FirConstructorSymbol,
-    ) : GeneratedDeclarationKey()
-""".trimIndent().toCode(INTELLIJ_DARK_CODE_STYLE)
+private val BuilderClassKey = CodeSample(
+    """
+        data class BuilderClassKey(
+          val ownerClassSymbol: FirClassSymbol<*>,
+          val constructorSymbol: FirConstructorSymbol,
+        ) : GeneratedDeclarationKey()
+    """.trimIndent().toCode(INTELLIJ_DARK_CODE_STYLE)
+)
+
+private val BUILDABLE = buildCodeSamples {
+    val eClass by tag("")
+    val eProp by tag("")
+    val eCall by tag("")
+
+    val ctor by tag("book constructor")
+    val builder by tag("book builder")
+    val properties by tag("book builder properties")
+    val functions by tag("book builder functions")
+
+    val bookSample = """
+        fun main() {
+          val book = Book.${eClass}Builder${eClass}().apply {
+            ${eProp}title${eProp} = "The Fellowship of the Ring"
+            ${eProp}series${eProp} = "The Lord of the Rings"
+            ${eProp}author${eProp} = "J. R. R. Tolkien"
+            ${eProp}publication${eProp} = LocalDate(year = 1954, Month.JULY, dayOfMonth = 2)
+          }.${eCall}build${eCall}()
+        }
+        
+        class Book @Buildable constructor(${ctor}
+          val title: String,
+          val series: String? = null,
+          val author: String,
+          val publication: LocalDate,
+        ${ctor})${builder} {
+          class Builder${properties} {
+            var title: String
+            var series: String?
+            var author: String
+            var publication: LocalDate${functions}
+            fun build(): Book${functions}
+          }${properties}
+        }${builder}
+    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+
+    // TODO do this with squiggly lines https://github.com/saket/extended-spans
+    val noErrors = bookSample.hide(builder, properties, functions).collapse(ctor)
+    val callErrors = noErrors.styled(eProp, SpanStyle(color = Color.Red)).styled(eCall, SpanStyle(color = Color.Red))
+    val allErrors = callErrors.styled(eClass, SpanStyle(color = Color.Red))
+
+    allErrors
+        .then { styled(eClass, SpanStyle(color = Color.Yellow)) }
+        .then { callErrors.reveal(builder) }
+        .then {
+            styled(eProp, SpanStyle(color = Color.Yellow))
+                .styled(eCall, SpanStyle(color = Color.Yellow))
+        }
+        .then { this } // TODO fix constructor error
+        .then {
+            noErrors.styled(eCall, SpanStyle(color = Color.Yellow))
+                .reveal(builder, properties)
+        }
+        .then { noErrors.reveal(builder, properties, functions) }
+}
 
 private val SAMPLES = buildCodeSamples {
     val clsSig by tag("class signature")
@@ -241,32 +301,63 @@ private val SAMPLES = buildCodeSamples {
     start.focus(clsSig)
         .then { focus(funName, scroll = false) }
 
-        .then { reveal(cob, co_rp).focus(cob) }
+        .then { reveal(cob, co_rp).focus(cob, scroll = false) }
 
-        .then { start.reveal(co_rp, rp_nest).focus(rps) }
-        .then { reveal(rpb).focus(rpb) }
+        .then { start.reveal(co_rp, rp_nest).focus(rps, scroll = false) }
+        .then { reveal(rpb).focus(rpb, scroll = false) }
 
-        .then { start.reveal(nestp, rp_nest, nest_class).focus(nests) }
-        .then { collapse(nestp).reveal(nestb).focus(nestb) }
+        .then { start.reveal(nestp, rp_nest, nest_class).focus(nests, scroll = false) }
+        .then { reveal(nestb).focus(nestb).scroll(nests) }
 
-        .then { start.reveal(classp, nest_class, class_call).focus(classs) }
-        .then { collapse(classp).reveal(classb).focus(class1) }
+        .then { start.reveal(rp_nest, nest_class).focus(nests, scroll = false).attach(ShowPanel(BUILDABLE[0], show = false)) }
+        .then { attach(ShowPanel(BUILDABLE[0], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[1], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[1], show = false)) }
+
+        .then { start.reveal(classp, nest_class, class_call).focus(classs, scroll = false) }
+        .then { reveal(classb).focus(class1).scroll(classs) }
         .then { focus(class2) }
-        .then { focus(class3).attach(ShowPanel(CodeSample(BuilderClassKey), show = false)) }
-        .then { attach(ShowPanel(CodeSample(BuilderClassKey), show = true)) }
-        .then { attach(ShowPanel(CodeSample(BuilderClassKey), show = false)) }
+        .then { focus(class3).attach(ShowPanel(BuilderClassKey, show = false)) }
+        .then { attach(ShowPanel(BuilderClassKey, show = true)) }
+        .then { attach(ShowPanel(BuilderClassKey, show = false)) }
+        .then { focus(classs, scroll = false).scroll(classs) } // TODO also focus on body
 
-        .then { start.reveal(callp, class_call, call_ctor).focus(calls) }
-        .then { collapse(callp).reveal(callb).focus(callb) }
+        .then { start.reveal(nest_class, class_call).focus(classs, scroll = false).attach(ShowPanel(BUILDABLE[1], show = false)) }
+        .then { attach(ShowPanel(BUILDABLE[1], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[2], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[2], show = false)) }
 
-        .then { start.reveal(ctorp, call_ctor, ctor_props).focus(ctors) }
-        .then { collapse(ctorp).reveal(ctorb).focus(ctorb) }
+        .then { start.reveal(callp, class_call, call_ctor).focus(calls, scroll = false) }
+        .then { reveal(callb).focus(callb).scroll(calls) }
 
-        .then { start.reveal(propp, ctor_props, props_fun).focus(props) }
-        .then { collapse(propp).reveal(propb).focus(propb) }
+        .then { start.reveal(class_call, call_ctor).focus(calls, scroll = false).attach(ShowPanel(BUILDABLE[2], show = false)) }
+        .then { attach(ShowPanel(BUILDABLE[2], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[3], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[3], show = false)) }
 
-        .then { start.reveal(funp, props_fun).focus(funs) }
-        .then { collapse(funp).reveal(funb).focus(funb) }
+        .then { start.reveal(ctorp, call_ctor, ctor_props).focus(ctors, scroll = false) }
+        .then { reveal(ctorb).focus(ctorb).scroll(ctors) }
+
+        .then { start.reveal(call_ctor, ctor_props).focus(ctors, scroll = false).attach(ShowPanel(BUILDABLE[3], show = false)) }
+        .then { attach(ShowPanel(BUILDABLE[3], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[4], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[4], show = false)) }
+
+        .then { start.reveal(propp, ctor_props, props_fun).focus(props, scroll = false) }
+        .then { reveal(propb).focus(propb).scroll(props) }
+
+        .then { start.reveal(ctor_props, props_fun).focus(props, scroll = false).attach(ShowPanel(BUILDABLE[4], show = false)) }
+        .then { attach(ShowPanel(BUILDABLE[4], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[5], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[5], show = false)) }
+
+        .then { start.reveal(funp, props_fun).focus(funs, scroll = false) }
+        .then { reveal(funb).focus(funb).scroll(funs) }
+
+        .then { start.reveal(props_fun).focus(funs, scroll = false).attach(ShowPanel(BUILDABLE[5], show = false)) }
+        .then { attach(ShowPanel(BUILDABLE[5], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[6], show = true)) }
+        .then { attach(ShowPanel(BUILDABLE[6], show = false)) }
 
         .then { start }
 }
@@ -289,13 +380,17 @@ fun StoryboardBuilder.Generation(start: Int = 0, endExclusive: Int = SAMPLES.siz
             }
 
             val sidePanel = sample.createChildTransition { (it.data as? ShowPanel) }
+            val sidePanelVisible = sidePanel.createChildTransition { it != null && it.show }
+            val sidePanelSample = sidePanel.createChildTransition { it?.sample ?: CodeSample(AnnotatedString("")) }
             RightPanel(
-                show = sidePanel.createChildTransition { it != null && it.show },
+                show = sidePanelVisible,
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
-                    Box(modifier = Modifier.padding(32.dp).width(500.dp).fillMaxHeight()) {
-                        MagicText(sidePanel.createChildTransition { it?.sample?.string?.splitByTags() ?: emptyList() })
+                    Box(modifier = Modifier.padding(top = 32.dp, start = 32.dp).width(500.dp).fillMaxHeight()) {
+                        ProvideTextStyle(MaterialTheme.typography.code1) {
+                            sidePanelSample.MagicCodeSample()
+                        }
                     }
                 }
             }
