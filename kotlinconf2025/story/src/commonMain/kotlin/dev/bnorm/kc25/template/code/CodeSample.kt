@@ -87,7 +87,7 @@ class CodeSample private constructor(
     }
 
     fun focus(tag: TextTag, scroll: Boolean = true): CodeSample =
-        copy(focus = tag, scrollTag = if (scroll) tag else null)
+        copy(focus = tag, scrollTag = if (scroll) tag else scrollTag)
 
     fun unfocus(unscroll: Boolean = true): CodeSample =
         copy(focus = null, scrollTag = if (unscroll) null else scrollTag)
