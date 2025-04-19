@@ -1,6 +1,7 @@
 package dev.bnorm.kc25
 
 import dev.bnorm.kc25.components.temp.BULLET_1
+import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
@@ -54,6 +55,7 @@ private fun StoryboardBuilder.Outline() {
 
         RevealScene(
             "$BULLET_1 A form of meta-programming, integrated directly with the compiler.",
+            "$BULLET_1 Meta-programming is about write code that writes or manipulates code.",
             "$BULLET_1 Alternatives include KSP, reflection, or annotation processing (KAPT).",
             "$BULLET_1 Experimental and unstable, usually breaks with each new Kotlin release.",
             "$BULLET_1 Should only be used if the benefits outweigh the drawbacks.",
@@ -92,20 +94,38 @@ private fun StoryboardBuilder.Outline() {
     }
 
     // TODO show all the annotation predicate types and what each match?
-    // TODO need to show the @Buildable sample code and what the current generation looks like
-    //  - maybe include some example use so that we can show red code for names?
+    // TODO show more details about predicate based provider?
+    // TODO show more details about FirScope?
     Generation()
 
-    // TODO talk about FirSession/MPP between resolve and analyze
-    //  - leads nicely into some MPP topics
+    section("FirSession") {
+        // TODO talk about FirSession/MPP between resolve and analyze
+        //  - leads nicely into some MPP topics
+        // TODO is module the right term?
+        RevealScene(
+            "$BULLET_1 Holds all data and services for a single compilation unit.",
+            "$BULLET_1 Each common and platform module have their own compilation unit.",
+            "$BULLET_1 ...",
+            "$BULLET_1 ...",
+        )
+    }
 
     section("Setup") {
         FirRegistrar(start = FIR_REGISTRATION_RESOLVE_END)
     }
     Checkers()
 
-    // TODO talk about IDE integration between analyze and transform
-    //  - good topic after completing the frontend
+    section("Frontend") {
+        // TODO talk about IDE integration between analyze and transform
+        //  - good topic after completing the frontend
+        // TODO but is it worth covering in the talk itself?
+        RevealScene(
+            "$BULLET_1 Resolve and Analyze are part of the \"Frontend\" of the Kotlin compiler.",
+            "$BULLET_1 The frontend of the compiler is used by the new IntelliJ Kotlin plugin.",
+            "$BULLET_1 This means a compiler plugin is run as part of IntelliJ indexing.",
+            "    $BULLET_2 But by default this is disabled for third-party compiler plugins.",
+        )
+    }
 
     section("Setup") { PluginRegistrar(start = REGISTRATION_FRONTEND_END) }
     IrExtensions()

@@ -31,19 +31,13 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.layout.HorizontalTree
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
-import dev.bnorm.kc25.template.code1
-import dev.bnorm.storyboard.SceneMode
+import dev.bnorm.kc25.template.code2
 import dev.bnorm.storyboard.LocalSceneMode
-import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.SceneMode
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
-import dev.bnorm.storyboard.toState
-import kotlin.collections.iterator
 
 private abstract class FirNode(
     val name: String,
@@ -54,9 +48,9 @@ private abstract class FirNode(
     open fun Content(transition: Transition<Int>) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text(name, style = MaterialTheme.typography.code1)
+            Text(name, style = MaterialTheme.typography.code2)
         }
     }
 }
@@ -123,10 +117,10 @@ private class FirFunction : FirNode("FirFunction") {
     override fun Content(transition: Transition<Int>) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 .animateContentSize(tween(durationMillis = 300, delayMillis = 300))
         ) {
-            ProvideTextStyle(MaterialTheme.typography.code1) {
+            ProvideTextStyle(MaterialTheme.typography.code2) {
                 MagicText(
                     transition.createChildTransition {
                         codeSamples[it.coerceIn(codeSamples.indices)].string.splitByTags()
@@ -139,42 +133,27 @@ private class FirFunction : FirNode("FirFunction") {
     }
 }
 
-fun StoryboardBuilder.FirTree() {
-    val states = buildList {
-        val function = FirFunction()
-        val fClass = FirClass()
-        val file = FirFile()
-        val declaration = FirDeclaration(listOf(function, fClass, file))
-        val expression = FirExpression()
-        val element = FirElement(listOf(declaration, expression))
+private val states = buildList {
+    val function = FirFunction()
+    val fClass = FirClass()
+    val file = FirFile()
+    val declaration = FirDeclaration(listOf(function, fClass, file))
+    val expression = FirExpression()
+    val element = FirElement(listOf(declaration, expression))
 
-        repeat(9) { add(function) }
-        add(FirDeclaration(listOf(function)))
-        add(FirDeclaration(listOf(function, fClass)))
-        add(declaration)
+    repeat(9) { add(function) }
+    add(FirDeclaration(listOf(function)))
+    add(FirDeclaration(listOf(function, fClass)))
+    add(declaration)
 
-        add(FirElement(listOf(declaration)))
-        add(element)
-    }.withIndex().toList()
-
-    scene(
-        states,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    ) {
-        HeaderScaffold { padding ->
-            Box(Modifier.padding(padding).padding(bottom = 32.dp)) {
-                val root = frame.createChildTransition { it.toState() }
-                FirTree(root)
-            }
-        }
-    }
-}
+    add(FirElement(listOf(declaration)))
+    add(element)
+}.withIndex().toList()
 
 @Composable
-private fun FirTree(
-    transition: Transition<IndexedValue<FirNode>>,
-) {
+fun Transition<Int>.FirTree() {
+    val transition = createChildTransition { states[it.coerceIn(states.indices)] }
+
     SharedTransitionLayout {
         transition.createChildTransition { it.value }.AnimatedContent(
             transitionSpec = { fadeIn() togetherWith fadeOut() },

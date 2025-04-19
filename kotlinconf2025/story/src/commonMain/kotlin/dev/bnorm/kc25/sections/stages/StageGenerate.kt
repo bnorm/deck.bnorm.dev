@@ -20,6 +20,7 @@ fun StoryboardBuilder.StageGenerate() {
         "$BULLET_1 JavaScript",
         "$BULLET_1 LLVM IR",
         "$BULLET_1 Wasm",
+        "$BULLET_1 KLIB", // TODO should i include this?
     )
 
     StageDetail(stateCount = items.size + 1, stage = CompilerStage.Generate) {

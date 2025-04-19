@@ -17,13 +17,15 @@ fun StoryboardBuilder.StageResolve() {
     // TODO improve details about resolve stage
 
     val items = listOf(
-        "$BULLET_1 Phases",
-        "    $BULLET_2 Resolution is performed in a sequence of phases.",
-        "    $BULLET_2 Each phase is responsible for resolving a different part of the FIR structure.",
-        "    $BULLET_2 For example, the `FirResolvePhase.SUPER_TYPES` phase resolves super types of all classes.",
-        "    $BULLET_2 Order is extremely important, as phases build on each other to completely resolve Kotlin code.",
-        "    $BULLET_2 For example, function parameter types need to be resolved before call arguments types can be resolved.",
+        "$BULLET_1 FIR is resolved in a sequence of phases.",
+        "$BULLET_1 Each phase resolves a different part of the FIR structure.",
+        "$BULLET_1 Order is extremely important, as phases build on each other.",
     )
+
+    // TODO can we show an example of why types are resolved in a specific order?
+    //  - super-type
+    //  - return type and parameter types
+    //  - local variables
 
     StageDetail(stateCount = items.size + 1, stage = CompilerStage.Resolve) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {

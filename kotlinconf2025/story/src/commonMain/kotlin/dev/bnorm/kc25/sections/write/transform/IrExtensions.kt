@@ -28,6 +28,7 @@ val IrVisitorVoid = listOf(
 )
 
 fun StoryboardBuilder.IrExtensions() {
+    // TODO generateBuildFunction references the primary constructor instead of the annotated constructor
     SamplesScene(CompilerStage.Transform, IrGenerationExtension)
     SamplesScene(CompilerStage.Transform, IrVisitorVoid)
 }
