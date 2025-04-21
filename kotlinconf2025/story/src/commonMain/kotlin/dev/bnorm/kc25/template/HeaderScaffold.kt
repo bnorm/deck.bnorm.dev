@@ -63,7 +63,7 @@ fun Header(
         Spacer(
             Modifier
                 .fillMaxWidth(lineFraction).requiredHeight(2.dp)
-                .padding(horizontal = 64.dp)
+                .padding(horizontal = 32.dp)
                 .background(MaterialTheme.colors.primary)
         )
     }

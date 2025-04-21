@@ -85,6 +85,8 @@ private val BUILDABLE = buildCodeSamples {
 }
 
 private val SAMPLES = buildCodeSamples {
+    // TODO does removing the spacing make things too dense?
+
     val clsSig by tag("class signature")
     val funName by tag("function names")
 
