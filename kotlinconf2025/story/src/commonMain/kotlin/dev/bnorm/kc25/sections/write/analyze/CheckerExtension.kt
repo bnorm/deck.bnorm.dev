@@ -1,12 +1,14 @@
 package dev.bnorm.kc25.sections.write.analyze
 
+import androidx.compose.runtime.Composable
+import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageSampleScene
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 
-private val SAMPLES = buildCodeSamples {
+private val VALIDATE_SAMPLES = buildCodeSamples {
     val sup by tag("super class")
     val dec by tag("declaration checkers")
     val cls by tag("class checkers")
@@ -28,12 +30,23 @@ private val SAMPLES = buildCodeSamples {
         }${dec}
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    base.hide(dec, cls, chk)
+    base
+        .then { base.hide(dec, cls, chk) }
         .then { focus(sup, scroll = false) }
         .then { reveal(dec).focus(dec, scroll = false) }
         .then { reveal(cls).focus(cls, scroll = false) }
         .then { reveal(chk).focus(chk, scroll = false) }
 }
+
+@Composable
+internal fun validateCheckerExtensionSample() {
+    validateSample(
+        sample = VALIDATE_SAMPLES[0].string,
+        file = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirAdditionalCheckersExtension.kt@BuildableFirAdditionalCheckersExtension"
+    )
+}
+
+private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
 fun StoryboardBuilder.CheckerExtension(start: Int = 0, endExclusive: Int = SAMPLES.size) {
     StageSampleScene(SAMPLES, CompilerStage.Analyze, start, endExclusive)

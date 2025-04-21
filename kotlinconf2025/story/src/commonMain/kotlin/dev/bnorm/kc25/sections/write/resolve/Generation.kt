@@ -1,7 +1,9 @@
 package dev.bnorm.kc25.sections.write.resolve
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
+import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.ShowPanel
@@ -15,7 +17,6 @@ private sealed class SampleData {
     data object Signature : SampleData()
     data object Parameters : SampleData()
     data object Body : SampleData()
-    data object Spacing : SampleData()
 
 }
 
@@ -84,26 +85,18 @@ private val BUILDABLE = buildCodeSamples {
         .then { noErrors.reveal(builder, properties, functions) }
 }
 
-private val SAMPLES = buildCodeSamples {
-    // TODO does removing the spacing make things too dense?
-
+private val VALIDATE_SAMPLES = buildCodeSamples {
     val clsSig by tag("class signature")
     val funName by tag("function names")
 
     val cob by tag("companion object body", SampleData.Body)
 
-    val co_rp by tag("companion object <-> registerPredicates", SampleData.Spacing)
-
     val rpb by tag("registerPredicates body", SampleData.Body)
     val rps by tag("registerPredicates signature", SampleData.Signature)
-
-    val rp_nest by tag("registerPredicates <-> getNestedClassifiersNames", SampleData.Spacing)
 
     val nests by tag("getNestedClassifiersNames signature", SampleData.Signature)
     val nestp by tag("getNestedClassifiersNames param", SampleData.Parameters)
     val nestb by tag("getNestedClassifiersNames body", SampleData.Body)
-
-    val nest_class by tag("getNestedClassifiersNames <-> generateNestedClassLikeDeclaration", SampleData.Spacing)
 
     val classs by tag("generateNestedClassLikeDeclaration signature", SampleData.Signature)
     val classp by tag("generateNestedClassLikeDeclaration param", SampleData.Parameters)
@@ -112,25 +105,17 @@ private val SAMPLES = buildCodeSamples {
     val class2 by tag("generateNestedClassLikeDeclaration focus 2")
     val class3 by tag("generateNestedClassLikeDeclaration focus 3")
 
-    val class_call by tag("generateNestedClassLikeDeclaration <-> getCallableNamesForClass", SampleData.Spacing)
-
     val calls by tag("getCallableNamesForClass signature", SampleData.Signature)
     val callp by tag("getCallableNamesForClass param", SampleData.Parameters)
     val callb by tag("getCallableNamesForClass body", SampleData.Body)
-
-    val call_ctor by tag("getCallableNamesForClass <-> generateConstructors", SampleData.Spacing)
 
     val ctors by tag("generateConstructors signature", SampleData.Signature)
     val ctorp by tag("generateConstructors param", SampleData.Parameters)
     val ctorb by tag("generateConstructors body", SampleData.Body)
 
-    val ctor_props by tag("generateConstructors <-> generateProperties", SampleData.Spacing)
-
     val props by tag("generateProperties signature", SampleData.Signature)
     val propp by tag("generateProperties param", SampleData.Parameters)
     val propb by tag("generateProperties body", SampleData.Body)
-
-    val props_fun by tag("generateProperties <-> generateFunctions", SampleData.Spacing)
 
     val funs by tag("generateFunctions signature", SampleData.Signature)
     val funp by tag("generateFunctions param", SampleData.Parameters)
@@ -152,12 +137,12 @@ private val SAMPLES = buildCodeSamples {
               hasAnnotated(FqName("dev.bnorm.buildable.Buildable"))
             }
           ${cob}}
-          ${co_rp}
-          ${co_rp}${rps}override fun FirDeclarationPredicateRegistrar.${funName}registerPredicates${funName}()${rps} {${rpb}
+
+          ${rps}override fun FirDeclarationPredicateRegistrar.${funName}registerPredicates${funName}()${rps} {${rpb}
             register(BUILDABLE_PREDICATE)
             register(HAS_BUILDABLE_PREDICATE)
-          ${rpb}}${rp_nest}
-          ${rp_nest}
+          ${rpb}}
+
           ${nests}override fun ${funName}getNestedClassifiersNames${funName}(${nestp}
             classSymbol: FirClassSymbol<*>,
             context: NestedClassGenerationContext,
@@ -168,8 +153,8 @@ private val SAMPLES = buildCodeSamples {
 
             return setOf(BUILDER_CLASS_NAME)
           ${nestb}}
-          ${nest_class}
-          ${nest_class}${classs}override fun ${funName}generateNestedClassLikeDeclaration${funName}(${classp}
+
+          ${classs}override fun ${funName}generateNestedClassLikeDeclaration${funName}(${classp}
             owner: FirClassSymbol<*>,
             name: Name,
             context: NestedClassGenerationContext,
@@ -196,8 +181,8 @@ private val SAMPLES = buildCodeSamples {
 
             return builderClass.symbol${class3}
           ${classb}}
-          ${class_call}
-          ${class_call}${calls}override fun ${funName}getCallableNamesForClass${funName}(${callp}
+
+          ${calls}override fun ${funName}getCallableNamesForClass${funName}(${callp}
             classSymbol: FirClassSymbol<*>,
             context: MemberGenerationContext,
           ${callp}): Set<Name>${calls} {${callb}
@@ -210,8 +195,8 @@ private val SAMPLES = buildCodeSamples {
               add(BUILD_FUN_NAME)
             }
           ${callb}}
-          ${call_ctor}
-          ${call_ctor}${ctors}override fun ${funName}generateConstructors${funName}(${ctorp}
+
+          ${ctors}override fun ${funName}generateConstructors${funName}(${ctorp}
             context: MemberGenerationContext,
           ${ctorp}): List<FirConstructorSymbol>${ctors} {${ctorb}
             val builderClassSymbol = context.owner
@@ -226,8 +211,8 @@ private val SAMPLES = buildCodeSamples {
 
             return listOf(constructor.symbol)
           ${ctorb}}
-          ${ctor_props}
-          ${ctor_props}${props}override fun ${funName}generateProperties${funName}(${propp}
+
+          ${props}override fun ${funName}generateProperties${funName}(${propp}
             callableId: CallableId,
             context: MemberGenerationContext?,
           ${propp}): List<FirPropertySymbol>${props} {${propb}
@@ -250,8 +235,8 @@ private val SAMPLES = buildCodeSamples {
 
             return listOf(property.symbol)
           ${propb}}
-          ${props_fun}
-          ${props_fun}${funs}override fun ${funName}generateFunctions${funName}(${funp}
+
+          ${funs}override fun ${funName}generateFunctions${funName}(${funp}
             callableId: CallableId,
             context: MemberGenerationContext?,
           ${funp}): List<FirNamedFunctionSymbol>${funs} {${funb}
@@ -276,71 +261,85 @@ private val SAMPLES = buildCodeSamples {
 
     val start = base.collapse(SampleData.Body)
         .collapse(SampleData.Parameters)
-        .hide(SampleData.Spacing)
 
-    start.focus(clsSig)
+    base // Start with base for validation
+        .then { start.focus(clsSig) }
         .then { focus(funName, scroll = false) }
 
-        .then { reveal(cob, co_rp).focus(cob, scroll = false) }
+        .then { reveal(cob).focus(cob, scroll = false) }
 
-        .then { start.reveal(co_rp, rp_nest).focus(rps, scroll = false) }
+        .then { start.focus(rps, scroll = false) }
         .then { reveal(rpb).focus(rpb, scroll = false) }
 
-        .then { start.reveal(nestp, rp_nest, nest_class).focus(nests, scroll = false) }
+        .then { start.reveal(nestp).focus(nests) }
         .then { reveal(nestb).focus(nestb).scroll(nests) }
 
-        .then { start.reveal(rp_nest, nest_class).focus(nests, scroll = false).attach(ShowPanel(BUILDABLE[0], show = false)) }
+        .then { start.focus(nests).attach(ShowPanel(BUILDABLE[0], show = false)) }
         .then { attach(ShowPanel(BUILDABLE[0], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[1], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[1], show = false)) }
 
-        .then { start.reveal(classp, nest_class, class_call).focus(classs, scroll = false) }
+        .then { start.reveal(classp).focus(classs) }
         .then { reveal(classb).focus(class1).scroll(classs) }
         .then { focus(class2) }
         .then { focus(class3).attach(ShowPanel(BuilderClassKey, show = false)) }
         .then { attach(ShowPanel(BuilderClassKey, show = true)) }
         .then { attach(ShowPanel(BuilderClassKey, show = false)) }
-        .then { focus(classs, scroll = false).scroll(classs) } // TODO also focus on body
+        .then { focus(classs) } // TODO also focus on body
 
-        .then { start.reveal(nest_class, class_call).focus(classs, scroll = false).attach(ShowPanel(BUILDABLE[1], show = false)) }
+        .then { start.focus(classs).attach(ShowPanel(BUILDABLE[1], show = false)) }
         .then { attach(ShowPanel(BUILDABLE[1], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[2], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[2], show = false)) }
 
-        .then { start.reveal(callp, class_call, call_ctor).focus(calls, scroll = false) }
+        .then { start.reveal(callp).focus(calls) }
         .then { reveal(callb).focus(callb).scroll(calls) }
+        // TODO walk through body
 
-        .then { start.reveal(class_call, call_ctor).focus(calls, scroll = false).attach(ShowPanel(BUILDABLE[2], show = false)) }
+        .then { start.focus(calls).attach(ShowPanel(BUILDABLE[2], show = false)) }
         .then { attach(ShowPanel(BUILDABLE[2], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[3], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[3], show = false)) }
 
-        .then { start.reveal(ctorp, call_ctor, ctor_props).focus(ctors, scroll = false) }
+        .then { start.reveal(ctorp).focus(ctors) }
         .then { reveal(ctorb).focus(ctorb).scroll(ctors) }
+        // TODO walk through body
 
-        .then { start.reveal(call_ctor, ctor_props).focus(ctors, scroll = false).attach(ShowPanel(BUILDABLE[3], show = false)) }
+        .then { start.focus(ctors).attach(ShowPanel(BUILDABLE[3], show = false)) }
         .then { attach(ShowPanel(BUILDABLE[3], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[4], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[4], show = false)) }
 
-        .then { start.reveal(propp, ctor_props, props_fun).focus(props, scroll = false) }
+        .then { start.reveal(propp).focus(props) }
         .then { reveal(propb).focus(propb).scroll(props) }
+        // TODO walk through body
 
-        .then { start.reveal(ctor_props, props_fun).focus(props, scroll = false).attach(ShowPanel(BUILDABLE[4], show = false)) }
+        .then { start.focus(props).attach(ShowPanel(BUILDABLE[4], show = false)) }
         .then { attach(ShowPanel(BUILDABLE[4], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[5], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[5], show = false)) }
 
-        .then { start.reveal(funp, props_fun).focus(funs, scroll = false) }
+        .then { start.reveal(funp).focus(funs, scroll = false) }
         .then { reveal(funb).focus(funb).scroll(funs) }
+        // TODO walk through body
 
-        .then { start.reveal(props_fun).focus(funs, scroll = false).attach(ShowPanel(BUILDABLE[5], show = false)) }
+        .then { start.focus(funs).attach(ShowPanel(BUILDABLE[5], show = false)) }
         .then { attach(ShowPanel(BUILDABLE[5], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[6], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[6], show = false)) }
 
         .then { start }
 }
+
+@Composable
+internal fun validateFirGenerationSample() {
+    validateSample(
+        sample = VALIDATE_SAMPLES[0].string,
+        file = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableFirDeclarationGenerationExtension.kt@BuildableFirDeclarationGenerationExtension"
+    )
+}
+
+private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
 fun StoryboardBuilder.Generation(start: Int = 0, endExclusive: Int = SAMPLES.size) {
     StageSampleScene(SAMPLES, CompilerStage.Resolve, start, endExclusive)

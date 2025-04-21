@@ -1,5 +1,7 @@
 package dev.bnorm.kc25.sections.write.analyze
 
+import androidx.compose.runtime.Composable
+import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageSampleScene
@@ -55,6 +57,14 @@ private val SAMPLES = buildCodeSamples {
         .then { focus(sig, scroll = false) }
         .then { focus(find) }
         .then { focus(report) }
+}
+
+@Composable
+internal fun validateCheckerSample() {
+    validateSample(
+        sample = SAMPLES[0].string,
+        file = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableConstructorChecker.kt@BuildableConstructorChecker"
+    )
 }
 
 fun StoryboardBuilder.Checker(start: Int = 0, endExclusive: Int = SAMPLES.size) {

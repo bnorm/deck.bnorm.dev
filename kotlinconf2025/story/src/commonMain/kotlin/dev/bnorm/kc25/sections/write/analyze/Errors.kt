@@ -1,12 +1,14 @@
 package dev.bnorm.kc25.sections.write.analyze
 
+import androidx.compose.runtime.Composable
+import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageSampleScene
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 
-private val SAMPLES = buildCodeSamples {
+private val VALIDATE_SAMPLES = buildCodeSamples {
     val sup by tag("super class")
     val err by tag("")
     val map by tag("")
@@ -34,12 +36,23 @@ private val SAMPLES = buildCodeSamples {
         }
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    base.hide(err, map, init)
+    base
+        .then {base.hide(err, map, init) }
         .then { focus(sup, scroll = false) }
         .then { reveal(init).focus(init, scroll = false) }
         .then { reveal(err).focus(err, scroll = false) }
         .then { reveal(map).focus(map, scroll = false) }
 }
+
+@Composable
+internal fun validateErrorsSample() {
+    validateSample(
+        sample = VALIDATE_SAMPLES[0].string,
+        file = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableErrors.kt@BuildableErrors"
+    )
+}
+
+private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
 fun StoryboardBuilder.Errors(start: Int = 0, endExclusive: Int = SAMPLES.size) {
     StageSampleScene(SAMPLES, CompilerStage.Analyze, start, endExclusive)

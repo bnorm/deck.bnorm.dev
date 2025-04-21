@@ -1,5 +1,7 @@
 package dev.bnorm.kc25.sections.write.transform
 
+import androidx.compose.runtime.Composable
+import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageSampleScene
@@ -12,7 +14,7 @@ private sealed class SampleData {
     data object Helper : SampleData()
 }
 
-private val SAMPLES = buildCodeSamples {
+private val VALIDATE_SAMPLES = buildCodeSamples {
     // TODO include UnsafeDuringIrConstructionAPI opt-in annotation?
     // TODO generateBuildFunction references the primary constructor instead of the annotated constructor
     // TODO add side panels for generated code
@@ -331,7 +333,8 @@ private val SAMPLES = buildCodeSamples {
     val startPostCls = startPostCtor.reveal(gBack, uProp)
     val startPostFun = startPostCls.reveal(gFun, gArg)
 
-    start
+    base
+        .then { start }
         .then { focus(sup, scroll = false) }
         .then { focus(sig, scroll = false) }
 
@@ -387,6 +390,16 @@ private val SAMPLES = buildCodeSamples {
         // Final
         .then { startPostFun.unfocus(unscroll = true) }
 }
+
+@Composable
+internal fun validateVisitorSample() {
+    validateSample(
+        sample = VALIDATE_SAMPLES[0].string,
+        file = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/ir/BuildableIrVisitor.kt@BuildableIrVisitor"
+    )
+}
+
+private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
 fun StoryboardBuilder.Visitor() {
     StageSampleScene(SAMPLES, CompilerStage.Transform, 0, SAMPLES.size)
