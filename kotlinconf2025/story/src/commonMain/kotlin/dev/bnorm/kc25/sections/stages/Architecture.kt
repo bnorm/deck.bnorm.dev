@@ -9,24 +9,22 @@ fun StoryboardBuilder.Architecture() {
         SectionTitle()
 
         // TODO the stages should be more front and center
-        //  - center align them?
         //  - push them to the outside?
-        //  - other slides can still have them as a header
         //  - can move from center to the top
 
         // TODO are there other visuals we want to add here?
 
-        StageTimeline(null)
+        StageTimeline(null, CompilerStage.Parse)
         StageParse()
-        StageTimeline(CompilerStage.Parse)
+        StageTimeline(CompilerStage.Parse, CompilerStage.Resolve)
         StageResolve()
-        StageTimeline(CompilerStage.Resolve)
+        StageTimeline(CompilerStage.Resolve, CompilerStage.Analyze)
         StageAnalyze()
-        StageTimeline(CompilerStage.Analyze)
+        StageTimeline(CompilerStage.Analyze, CompilerStage.Transform)
         // TODO talk about frontend vs backend?
         StageTransform()
-        StageTimeline(CompilerStage.Transform)
+        StageTimeline(CompilerStage.Transform, CompilerStage.Generate)
         StageGenerate()
-        StageTimeline(CompilerStage.Generate)
+        StageTimeline(CompilerStage.Generate, null)
     }
 }

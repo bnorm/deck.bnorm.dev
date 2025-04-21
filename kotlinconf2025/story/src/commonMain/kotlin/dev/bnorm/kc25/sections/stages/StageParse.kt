@@ -13,6 +13,8 @@ import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.StageParse() {
+    // TODO improve details about parse stage
+
     val items = listOf(
         "$BULLET_1 When Kotlin code is parsed it is converted into FIR.",
         "$BULLET_1 FIR is a tree-based representation of the *structure* of Kotlin code.",
