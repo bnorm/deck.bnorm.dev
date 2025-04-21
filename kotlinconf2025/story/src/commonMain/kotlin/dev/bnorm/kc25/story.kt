@@ -11,9 +11,9 @@ import dev.bnorm.kc25.sections.intro.PowerAssertExample
 import dev.bnorm.kc25.sections.intro.ThirdPlugin
 import dev.bnorm.kc25.sections.stages.Architecture
 import dev.bnorm.kc25.sections.write.*
-import dev.bnorm.kc25.sections.write.analyze.Checkers
-import dev.bnorm.kc25.sections.write.resolve.Generation
-import dev.bnorm.kc25.sections.write.transform.IrExtensions
+import dev.bnorm.kc25.sections.write.analyze.Analyze
+import dev.bnorm.kc25.sections.write.resolve.Resolve
+import dev.bnorm.kc25.sections.write.transform.Transform
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.THEME_DECORATOR
 import dev.bnorm.storyboard.Storyboard
@@ -38,6 +38,8 @@ fun createStoryboard(): Storyboard {
         """.trimIndent(),
         decorator = THEME_DECORATOR,
     ) {
+        // TODO where to put the companion introduction?
+        //  - go "back" to the second slide?
         Title()
         Outline()
         Closing()
@@ -70,12 +72,16 @@ private fun StoryboardBuilder.Outline() {
         // TODO this section needs some kind of ender that helps transition into the next section
     }
 
+    // TODO in what order should these next two sections be?
+    //  - jumping into the plugin we're building might be nice coming right out of the other examples
+    //  - but the current order helps break up the dense part of the talk
     Architecture()
 
     section("Let's write one!") {
         SectionTitle(animateToHeader = true)
 
         // TODO reference template project for faster project setup
+        //  - should this actually be with all the other setup?
         RevealScene(
             "$BULLET_1 Let's focus on the easy task: boilerplate reduction.",
             "$BULLET_1 Generate a \"Builder\" class based on a class constructor.",
@@ -87,16 +93,16 @@ private fun StoryboardBuilder.Outline() {
     //    Repository()
 
     section("Setup") {
+        // TODO i don't like these "setup" sections
+        //  - they are a little distracting and have little context
+        //  - need some better way of describing the setup required
+
         PluginRegistrar(endExclusive = REGISTRATION_FRONTEND_END)
         FirRegistrar(endExclusive = FIR_REGISTRATION_RESOLVE_END)
 
         // TODO need a better transition between header and stages
     }
-
-    // TODO show all the annotation predicate types and what each match?
-    // TODO show more details about predicate based provider?
-    // TODO show more details about FirScope?
-    Generation()
+    Resolve()
 
     section("FirSession") {
         // TODO talk about FirSession/MPP between resolve and analyze
@@ -113,7 +119,7 @@ private fun StoryboardBuilder.Outline() {
     section("Setup") {
         FirRegistrar(start = FIR_REGISTRATION_RESOLVE_END)
     }
-    Checkers()
+    Analyze()
 
     section("Frontend") {
         // TODO talk about IDE integration between analyze and transform
@@ -127,8 +133,10 @@ private fun StoryboardBuilder.Outline() {
         )
     }
 
-    section("Setup") { PluginRegistrar(start = REGISTRATION_FRONTEND_END) }
-    IrExtensions()
+    section("Setup") {
+        PluginRegistrar(start = REGISTRATION_FRONTEND_END)
+    }
+    Transform()
 
     // TODO testing?
     // TODO future?
