@@ -37,6 +37,9 @@ private fun <T> fadeOutSpec(): TweenSpec<T> =
 //private fun <T> slideOutSpec(): TweenSpec<T> =
 //    tween(250, delayMillis = 250, easing = EaseOut)
 
+val BoxMovementSpec: BoundsTransform = BoundsTransform { _, _ -> tween(500, easing = EaseInOut) }
+val TextMovementSpec: BoundsTransform = BoxMovementSpec
+
 //private val BoxMovementSpec = BoundsTransform { initial, target ->
 //    if (initial.width < target.width) {
 //        keyframes {
@@ -61,7 +64,6 @@ private fun <T> fadeOutSpec(): TweenSpec<T> =
 private fun <T> fadeInSpec(): TweenSpec<T> =
     tween(250, delayMillis = 0, easing = EaseIn)
 
-
 fun StoryboardBuilder.StageDetail(
     stateCount: Int,
     stage: CompilerStage,
@@ -76,6 +78,7 @@ fun StoryboardBuilder.StageDetail(
                 .padding(32.dp)
                 .sharedElement(
                     rememberSharedContentState("box:$stage"),
+                    boundsTransform = BoxMovementSpec,
                     zIndexInOverlay = -1f,
                 )
                 .fillMaxSize()
@@ -92,6 +95,7 @@ fun StoryboardBuilder.StageDetail(
                     modifier = Modifier
                         .sharedBounds(
                             rememberSharedContentState("text:$stage"),
+                            boundsTransform = TextMovementSpec,
                             zIndexInOverlay = -1f,
                         )
                 )
@@ -190,6 +194,7 @@ private fun CompilerStageBox(
                     .sharedElement(
                         rememberSharedContentState("box:$stage"),
                         animatedVisibilityScope = sharedVisibilityScope,
+                        boundsTransform = BoxMovementSpec,
                         zIndexInOverlay = -1f,
                     )
                     .fillMaxWidth()
@@ -214,6 +219,7 @@ private fun CompilerStageBox(
                             .sharedBounds(
                                 rememberSharedContentState("text:$stage"),
                                 animatedVisibilityScope = sharedVisibilityScope,
+                                boundsTransform = TextMovementSpec,
                                 zIndexInOverlay = -1f,
                             )
                     )

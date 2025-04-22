@@ -1,4 +1,4 @@
-package dev.bnorm.kc25.sections.write
+package dev.bnorm.kc25.sections.register
 
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.Box
@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
+import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -19,6 +20,7 @@ import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
 enum class SampleCheckpoint {
+    Configure,
     Resolve,
 }
 
@@ -42,14 +44,16 @@ private val SAMPLES = buildCodeSamples {
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
     // TODO validate against plugin project
-    baseSample.collapse(body).hide(dge, ace).focus(name)
+    baseSample.collapse(body).hide(dge, ace)
         .then { focus(sup) }
         .then { reveal(body).focus(sig) }
+        .then { unfocus().attach(SampleCheckpoint.Configure) }
         .then { reveal(dge).focus(dge) }
         .then { unfocus().attach(SampleCheckpoint.Resolve) }
         .then { reveal(ace).focus(ace) }
 }
 
+val FIR_REGISTRATION_CONFIGURE_END = SAMPLES.indexOfFirst { it.data == SampleCheckpoint.Configure }
 val FIR_REGISTRATION_RESOLVE_END = SAMPLES.indexOfFirst { it.data == SampleCheckpoint.Resolve }
 
 fun StoryboardBuilder.FirRegistrar(start: Int = 0, endExclusive: Int = SAMPLES.size) {
@@ -62,7 +66,7 @@ fun StoryboardBuilder.FirRegistrar(start: Int = 0, endExclusive: Int = SAMPLES.s
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        HeaderScaffold { padding ->
+        StageScaffold { padding ->
             Box(Modifier.padding(padding)) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = frame.createChildTransition {

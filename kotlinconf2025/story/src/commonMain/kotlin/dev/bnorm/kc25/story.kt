@@ -9,8 +9,11 @@ import dev.bnorm.kc25.sections.intro.ComposeExample
 import dev.bnorm.kc25.sections.intro.DataFrameExample
 import dev.bnorm.kc25.sections.intro.PowerAssertExample
 import dev.bnorm.kc25.sections.intro.ThirdPlugin
+import dev.bnorm.kc25.sections.register.Component
+import dev.bnorm.kc25.sections.register.RegistrarComponentsFocus
+import dev.bnorm.kc25.sections.register.Registration
 import dev.bnorm.kc25.sections.stages.Architecture
-import dev.bnorm.kc25.sections.write.*
+import dev.bnorm.kc25.sections.write.BuildableIntro
 import dev.bnorm.kc25.sections.write.analyze.Analyze
 import dev.bnorm.kc25.sections.write.resolve.Resolve
 import dev.bnorm.kc25.sections.write.transform.Transform
@@ -21,6 +24,7 @@ import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.section
 
 // TODO review all slides for consistent code formatting!
+// TODO update all samples to 2.2.0?
 fun createStoryboard(): Storyboard {
     return Storyboard.build(
         title = "Writing Your Third Kotlin Compiler Plugin",
@@ -40,6 +44,7 @@ fun createStoryboard(): Storyboard {
     ) {
         // TODO where to put the companion introduction?
         //  - go "back" to the second slide?
+        //  - part of the title slide?
         Title()
         Outline()
         Closing()
@@ -55,53 +60,46 @@ private fun StoryboardBuilder.Outline() {
     section("Compiler Plugin?") {
         SectionTitle(animateToHeader = true)
 
+        // TODO revamp these bullet points
+        //  - are there some visuals which could help?
+        // TODO need to emphasize when you DON'T need a compiler plugin
         RevealScene(
-            "$BULLET_1 A form of meta-programming, integrated directly with the compiler.",
-            "$BULLET_1 Meta-programming is about write code that writes or manipulates code.",
+            "$BULLET_1 A form of metaprogramming, integrated directly with the compiler.",
+            "$BULLET_1 Metaprogramming is writing code that writes or manipulates code.",
             "$BULLET_1 Alternatives include KSP, reflection, or annotation processing (KAPT).",
             "$BULLET_1 Experimental and unstable, usually breaks with each new Kotlin release.",
-            "$BULLET_1 Should only be used if the benefits outweigh the drawbacks.",
+            "    $BULLET_2 Should only be used if the benefits outweigh the drawbacks.",
         )
 
+        // TODO Spring? (ramp into complexity?)
         // TODO Serialization
         ComposeExample()
-        // TODO Spring?
         DataFrameExample()
         PowerAssertExample()
 
-        // TODO this section needs some kind of ender that helps transition into the next section
+        section("Your Plugin") {
+            // TODO your plugin here slide
+
+            BuildableIntro()
+
+            // TODO does this section need some kind of ender that helps transition into the next section?
+        }
     }
 
-    // TODO in what order should these next two sections be?
-    //  - jumping into the plugin we're building might be nice coming right out of the other examples
-    //  - but the current order helps break up the dense part of the talk
     Architecture()
 
-    section("Let's write one!") {
-        SectionTitle(animateToHeader = true)
-
-        // TODO reference template project for faster project setup
-        //  - should this actually be with all the other setup?
-        RevealScene(
-            "$BULLET_1 Let's focus on the easy task: boilerplate reduction.",
-            "$BULLET_1 Generate a \"Builder\" class based on a class constructor.",
-        )
-        BuildableIntro()
-    }
+    // TODO just talked about compiler architecture, should we talk about plugin architecture?
+    //  - might help get the setup part out of the way earlier
+    //  - and show how people can find extensions
+    //  - can highlight the extensions we'll be using and talk about them specifically
+    // TODO plugin architecture first, and then compiler architecture?
 
     // TODO put this at the beginning with the companion as a link instead?
     //    Repository()
 
-    section("Setup") {
-        // TODO i don't like these "setup" sections
-        //  - they are a little distracting and have little context
-        //  - need some better way of describing the setup required
+    Registration()
 
-        PluginRegistrar(endExclusive = REGISTRATION_FRONTEND_END)
-        FirRegistrar(endExclusive = FIR_REGISTRATION_RESOLVE_END)
-
-        // TODO need a better transition between header and stages
-    }
+    RegistrarComponentsFocus(Component.IrGenerationExtension, Component.FirDeclarationGenerationExtension)
     Resolve()
 
     section("FirSession") {
@@ -116,9 +114,7 @@ private fun StoryboardBuilder.Outline() {
         )
     }
 
-    section("Setup") {
-        FirRegistrar(start = FIR_REGISTRATION_RESOLVE_END)
-    }
+    RegistrarComponentsFocus(Component.FirDeclarationGenerationExtension, Component.FirAdditionalCheckersExtension)
     Analyze()
 
     section("Frontend") {
@@ -133,9 +129,7 @@ private fun StoryboardBuilder.Outline() {
         )
     }
 
-    section("Setup") {
-        PluginRegistrar(start = REGISTRATION_FRONTEND_END)
-    }
+    RegistrarComponentsFocus(Component.FirAdditionalCheckersExtension, Component.IrGenerationExtension)
     Transform()
 
     // TODO testing?

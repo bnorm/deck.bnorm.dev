@@ -6,6 +6,7 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc25.sections.stages.BoxMovementSpec
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -24,7 +26,7 @@ import dev.bnorm.storyboard.easel.sharedElement
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun StageScaffold(
-    currentStage: Transition<CompilerStage?>,
+    currentStage: Transition<CompilerStage?> = updateTransition(null),
     modifier: Modifier = Modifier,
     kodee: @Composable () -> Unit = { DefaultReactionKodee() },
     body: @Composable BoxScope.(PaddingValues) -> Unit,
@@ -69,21 +71,28 @@ fun StageScaffold(
 }
 
 @Composable
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 private fun CompilerStateBox(
     state: CompilerStage,
     borderColor: Color,
 ) {
-    Box(Modifier.size(156.dp, 69.dp)) {
+    Box(Modifier.width(156.dp)) {
         Box(
-            contentAlignment = Alignment.TopCenter,
+            contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
-                .fillMaxSize()
+                .sharedElement(
+                    rememberSharedContentState("box:$state"),
+                    boundsTransform = BoxMovementSpec,
+                )
+                .fillMaxWidth()
                 .border(2.dp, borderColor, RoundedCornerShape(16.dp))
+                .padding(16.dp)
         ) {
             Text(
                 state.name,
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+                modifier = Modifier
+                    .padding(top = 8.dp)
             )
         }
     }

@@ -84,8 +84,18 @@ val Typography.code2: TextStyle
         fontFamily = JetBrainsMono,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 20.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.25.sp
+    )
+
+val Typography.code3: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = JetBrainsMono,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp
     )
 
 

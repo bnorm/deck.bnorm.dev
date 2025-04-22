@@ -1,6 +1,7 @@
-package dev.bnorm.kc25.sections.write
+package dev.bnorm.kc25.sections.register
 
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -9,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
+import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -25,6 +27,7 @@ private val SAMPLES = buildCodeSamples {
     val k2b by tag("supportsK2 property getter")
     val re by tag("registerExtensions function")
     val reb by tag("registerExtensions function body")
+    val fir by tag("FirExtensionRegistrarAdapter.registerExtension")
     val ir by tag("IrGenerationExtension.registerExtension")
 
     val baseSample = """
@@ -35,9 +38,9 @@ private val SAMPLES = buildCodeSamples {
           ${re}override fun ExtensionStorage.registerExtensions(
             configuration: CompilerConfiguration,
           )${reb} {
-            FirExtensionRegistrarAdapter.registerExtension(
+            ${fir}FirExtensionRegistrarAdapter.registerExtension(
               BuildableFirExtensionRegistrar()
-            )${ir}
+            )${fir}${ir}
             IrGenerationExtension.registerExtension(
               BuildableIrGenerationExtension()
             )${ir}
@@ -52,13 +55,12 @@ private val SAMPLES = buildCodeSamples {
         .then { focus(k2) }
         .then { reveal(k2b) }
         .then { focus(re) }
-        .then { reveal(reb) }
-        .then { unfocus() }
+        .then { reveal(reb).focus(fir) }
         .then { focus(re) }
-        .then { reveal(ir) }
-        .then { unfocus() }
+        .then { reveal(ir).focus(ir) }
 }
 
+const val REGISTRATION_START = 5
 const val REGISTRATION_FRONTEND_END = 7
 
 fun StoryboardBuilder.PluginRegistrar(start: Int = 0, endExclusive: Int = SAMPLES.size) {
@@ -71,7 +73,7 @@ fun StoryboardBuilder.PluginRegistrar(start: Int = 0, endExclusive: Int = SAMPLE
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        HeaderScaffold { padding ->
+        StageScaffold { padding ->
             Box(Modifier.padding(padding)) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = frame.createChildTransition {
