@@ -16,13 +16,14 @@ import dev.bnorm.kc25.sections.write.resolve.Resolve
 import dev.bnorm.kc25.sections.write.transform.Transform
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.THEME_DECORATOR
+import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.section
 
 // TODO review all slides for consistent code formatting!
 // TODO update all samples to 2.2.0?
-fun createStoryboard(): Storyboard {
+fun createStoryboard(decorator: SceneDecorator = THEME_DECORATOR): Storyboard {
     return Storyboard.build(
         title = "Writing Your Third Kotlin Compiler Plugin",
         description = """
@@ -37,7 +38,7 @@ fun createStoryboard(): Storyboard {
             written a compiler plugin from scratch which can navigate the project code, inspect annotations, generate
             boilerplate, and even report errors!
         """.trimIndent(),
-        decorator = THEME_DECORATOR,
+        decorator = decorator,
     ) {
         Title()
         Outline()
@@ -98,6 +99,10 @@ private fun StoryboardBuilder.Outline() {
 
     // TODO testing?
     //  - probably need to leave this to the companion :/
+
+    // TODO new slide
+    //  - explicitly mention the template project for people to use and write their own
+    //  - show buildable repository as a sample with all this code
 
     // TODO add KT ticket
     section("Future") {

@@ -9,12 +9,15 @@ import dev.bnorm.kc25.broadcast.*
 import dev.bnorm.kc25.components.validateAllSamples
 import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.kc25.template.LocalInfiniteTransition
+import dev.bnorm.deck.shared.SceneIndexDecorator
+import dev.bnorm.kc25.template.THEME_DECORATOR
 import dev.bnorm.storyboard.easel.DesktopStoryEasel
 import dev.bnorm.storyboard.easel.ExperimentalStoryStateApi
 import dev.bnorm.storyboard.easel.StoryState
 import dev.bnorm.storyboard.easel.assist.Caption
 import dev.bnorm.storyboard.easel.overlay.OverlayNavigation
 import dev.bnorm.storyboard.easel.overlay.StoryOverlayScope
+import dev.bnorm.storyboard.plus
 import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalStoryStateApi::class)
@@ -41,7 +44,10 @@ fun main() {
 
         Broadcast(state, storyBroadcaster)
 
-        remember { createStoryboard().also { state.updateStoryboard(it) } }
+        remember {
+            val decorator = THEME_DECORATOR + SceneIndexDecorator(state)
+            createStoryboard(decorator).also { state.updateStoryboard(it) }
+        }
 
         MaterialTheme(colors = darkColors()) {
             CompositionLocalProvider(
