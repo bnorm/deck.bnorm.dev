@@ -1,7 +1,5 @@
 package dev.bnorm.kc25.template
 
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,11 +47,9 @@ fun QrCodeKodee() {
     Column {
         val infiniteTransition = LocalInfiniteTransition.current
         if (LocalSceneMode.current == SceneMode.Story && infiniteTransition != null) {
-            // TODO animation blinks slightly when animating across scenes
-            //  - this is probably a compottie issue and not some thing we can fix :(
             KodeeWave(
                 infiniteTransition,
-                Modifier.width(50.dp).wrapContentWidth(unbounded = true).width(100.dp).height(50.dp)
+                Modifier.size(50.dp).wrapContentWidth(unbounded = true).width(100.dp)
             )
         }
 
@@ -63,32 +59,6 @@ fun QrCodeKodee() {
             modifier = Modifier.size(50.dp).background(Color.White),
         )
     }
-}
-
-@Composable
-context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
-fun DefaultReactionKodee(modifier: Modifier = Modifier) {
-//    var reaction by remember { mutableStateOf<ReactionMessage?>(null) }
-//
-//    Box(contentAlignment = Alignment.BottomEnd, modifier = modifier) {
-//        FloatingReactions()
-//
-//        AnimateKodee {
-//            default { QrCodeKodee() }
-//
-//            show(condition = { reaction != null }) {
-//                when (val reaction = reaction) {
-//                    null, is ReactionMessage.Ping -> {
-//                        QrCodeKodee()
-//                    }
-//
-//                    else -> {
-//                        reaction.Image(Modifier.size(100.dp))
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
 
 @Composable

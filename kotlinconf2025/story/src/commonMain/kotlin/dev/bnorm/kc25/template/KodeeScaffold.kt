@@ -16,13 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
-import dev.bnorm.deck.shared.SharedKodee
 import dev.chrisbanes.haze.*
 
 private enum class SceneContent {
     Header,
     Body,
-    Kodee,
 }
 
 @Composable
@@ -30,7 +28,6 @@ context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun KodeeScaffold(
     header: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
-    kodee: @Composable () -> Unit = { DefaultReactionKodee() },
     body: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
     val hazeState = remember { HazeState() }
@@ -75,17 +72,6 @@ fun KodeeScaffold(
 
         val headerHeight = headerPlaceables.fastMaxBy { it.height }?.height ?: 0
 
-        val kodeePlaceables = subcompose(SceneContent.Kodee) {
-            SharedKodee {
-                kodee()
-            }
-        }.fastMap { it.measure(looseConstraints) }
-
-        val kodeeWidth = kodeePlaceables.fastMaxBy { it.width }?.width ?: 0
-        val kodeeHeight = kodeePlaceables.fastMaxBy { it.height }?.height ?: 0
-        val kodeeLeftOffset = layoutWidth - kodeeWidth
-        val kodeeTopOffset = layoutHeight - kodeeHeight
-
         contentPadding.paddingHolder = PaddingValues(
             top = headerHeight.toDp(),
             bottom = 0.dp,
@@ -102,7 +88,6 @@ fun KodeeScaffold(
         layout(layoutWidth, layoutHeight) {
             bodyPlaceables.fastForEach { it.place(0, 0) }
             headerPlaceables.fastForEach { it.place(0, 0) }
-            kodeePlaceables.fastForEach { it.place(kodeeLeftOffset, kodeeTopOffset) }
         }
     }
 }

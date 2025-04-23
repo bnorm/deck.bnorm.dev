@@ -20,7 +20,6 @@ context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun HeaderScaffold(
     modifier: Modifier = Modifier,
     header: (@Composable () -> Unit)? = null,
-    kodee: @Composable () -> Unit = { DefaultReactionKodee() },
     body: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
     val section = when (header) {
@@ -41,7 +40,6 @@ fun HeaderScaffold(
                 }
             }
         },
-        kodee = kodee,
         body = body,
         modifier = modifier,
     )

@@ -13,8 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.shared.SharedKodee
-import dev.bnorm.kc25.template.DefaultReactionKodee
 import dev.bnorm.storyboard.*
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedBounds
@@ -112,10 +110,6 @@ fun StoryboardBuilder.StageDetail(
                 }
             }
         }
-
-        SharedKodee {
-            DefaultReactionKodee()
-        }
     }
 }
 
@@ -164,11 +158,6 @@ fun StoryboardBuilder.StageTimeline(startState: CompilerStage?, endState: Compil
                     )
                 }
             }
-        }
-
-        SharedKodee {
-            // TODO need to slide him in when transition from the title
-            DefaultReactionKodee()
         }
     }
 }

@@ -28,7 +28,6 @@ context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun StageScaffold(
     currentStage: Transition<CompilerStage?> = updateTransition(null),
     modifier: Modifier = Modifier,
-    kodee: @Composable () -> Unit = { DefaultReactionKodee() },
     body: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
     KodeeScaffold(
@@ -64,7 +63,6 @@ fun StageScaffold(
                 }
             }
         },
-        kodee = kodee,
         body = body,
         modifier = modifier,
     )

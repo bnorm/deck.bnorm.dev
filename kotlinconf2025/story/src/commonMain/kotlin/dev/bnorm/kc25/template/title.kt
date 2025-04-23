@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.template
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.shared.SharedKodee
 import dev.bnorm.kc25.components.animateTextStyle
 import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -105,18 +105,6 @@ fun SectionTitle(
                 lineFraction = lineFraction,
                 title = title,
             )
-        }
-    }
-
-    SharedKodee {
-        showAsHeader.AnimatedVisibility(
-            visible = { it },
-            enter = fadeIn(tween(lineDuration, moveDuration, EaseInOut)) +
-                    slideInHorizontally(tween(lineDuration, moveDuration, EaseInOut)) { it },
-            exit = fadeOut(tween(lineDuration, delayMillis = 0, EaseInOut)) +
-                    slideOutHorizontally(tween(lineDuration, delayMillis = 0, EaseInOut)) { it },
-        ) {
-            DefaultReactionKodee()
         }
     }
 }
