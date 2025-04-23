@@ -23,6 +23,9 @@ fun StoryboardBuilder.Registration() {
 
     // TODO similar to stages, zoom in and out of components to see changes which need to be made
     //  - remove header to focus on layout
+    //  - have a few bullet points to describe how the extension can be used
+
+    // TODO what to put in the backend versus the frontend
 
     RegistrarComponents(null, Component.CompilerPluginRegistrar)
     PluginRegistrar(endExclusive = REGISTRATION_START + 1)
@@ -37,7 +40,7 @@ fun StoryboardBuilder.Registration() {
     PluginRegistrar(start = REGISTRATION_FRONTEND_END)
 }
 
-fun StoryboardBuilder.RegistrarComponentsFocus(first: Component, second: Component) {
+fun StoryboardBuilder.RegistrarComponentsFocus(first: Component?, second: Component?) {
     scene(
         states = setOf(first, second).toList(),
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),

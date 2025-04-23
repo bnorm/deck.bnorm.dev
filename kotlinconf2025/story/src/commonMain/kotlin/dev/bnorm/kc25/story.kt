@@ -92,7 +92,6 @@ private fun StoryboardBuilder.Outline() {
     //  - might help get the setup part out of the way earlier
     //  - and show how people can find extensions
     //  - can highlight the extensions we'll be using and talk about them specifically
-    // TODO plugin architecture first, and then compiler architecture?
 
     // TODO put this at the beginning with the companion as a link instead?
     //    Repository()
@@ -100,38 +99,54 @@ private fun StoryboardBuilder.Outline() {
     Registration()
 
     RegistrarComponentsFocus(Component.IrGenerationExtension, Component.FirDeclarationGenerationExtension)
+
     Resolve()
 
-    section("FirSession") {
-        // TODO talk about FirSession/MPP between resolve and analyze
-        //  - leads nicely into some MPP topics
-        // TODO is module the right term?
-        RevealScene(
-            "$BULLET_1 Holds all data and services for a single compilation unit.",
-            "$BULLET_1 Each common and platform module have their own compilation unit.",
-            "$BULLET_1 ...",
-            "$BULLET_1 ...",
-        )
-    }
+//    section("FirSession") {
+//        // TODO talk about FirSession/MPP between resolve and analyze
+//        //  - leads nicely into some MPP topics
+//        // TODO is module the right term?
+//        RevealScene(
+//            "$BULLET_1 Holds all data and services for a single compilation unit.",
+//            "$BULLET_1 Each common and platform module have their own compilation unit.",
+//            "$BULLET_1 ...",
+//            "$BULLET_1 ...",
+//        )
+//    }
 
     RegistrarComponentsFocus(Component.FirDeclarationGenerationExtension, Component.FirAdditionalCheckersExtension)
+
     Analyze()
 
-    section("Frontend") {
-        // TODO talk about IDE integration between analyze and transform
-        //  - good topic after completing the frontend
-        // TODO but is it worth covering in the talk itself?
-        RevealScene(
-            "$BULLET_1 Resolve and Analyze are part of the \"Frontend\" of the Kotlin compiler.",
-            "$BULLET_1 The frontend of the compiler is used by the new IntelliJ Kotlin plugin.",
-            "$BULLET_1 This means a compiler plugin is run as part of IntelliJ indexing.",
-            "    $BULLET_2 But by default this is disabled for third-party compiler plugins.",
-        )
-    }
+//    section("Frontend") {
+//        // TODO talk about IDE integration between analyze and transform
+//        //  - good topic after completing the frontend
+//        // TODO but is it worth covering in the talk itself?
+//        RevealScene(
+//            "$BULLET_1 Resolve and Analyze are part of the \"Frontend\" of the Kotlin compiler.",
+//            "$BULLET_1 The frontend of the compiler is used by the new IntelliJ Kotlin plugin.",
+//            "$BULLET_1 This means a compiler plugin is run as part of IntelliJ indexing.",
+//            "    $BULLET_2 But by default this is disabled for third-party compiler plugins.",
+//        )
+//    }
 
     RegistrarComponentsFocus(Component.FirAdditionalCheckersExtension, Component.IrGenerationExtension)
+
     Transform()
 
+    RegistrarComponentsFocus(Component.IrGenerationExtension, null)
+
     // TODO testing?
+    //  - probably need to leave this to the companion :/
+
     // TODO future?
+
+    section("Future") {
+        RevealScene(
+            "$BULLET_1 Top question: when will the compiler plugin API be stable?.",
+            "$BULLET_1 The existing API will never be stable.",
+            "$BULLET_1 We working on (yet) another API which we plan to be stable (KT-X).",
+            "$BULLET_1 Some future KotlinConf: Writing Your Fourth Kotlin Compiler Plugin.",
+        )
+    }
 }
