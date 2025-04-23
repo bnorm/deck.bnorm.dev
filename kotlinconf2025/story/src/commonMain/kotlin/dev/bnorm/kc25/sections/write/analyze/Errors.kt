@@ -19,9 +19,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
     val base = """
         object BuildableErrors : ${sup}BaseDiagnosticRendererFactory()${sup} {${err}
-          val BUILDABLE_MULTIPLE_CONSTRUCTORS by error0<KtAnnotation>(
-            positioningStrategy = SourceElementPositioningStrategies.DEFAULT,
-          )${err}
+          val BUILDABLE_MULTIPLE_CONSTRUCTORS by error0<KtAnnotation>()${err}
 
           override val MAP = KtDiagnosticFactoryToRendererMap("Buildable").apply {${map}
             put(

@@ -128,11 +128,11 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             val BUILDER_CLASS_NAME = Name.identifier("Builder")
             val BUILD_FUN_NAME = Name.identifier("build")
 
-            private val BUILDABLE_PREDICATE = LookupPredicate.create {
+            private val BUILDABLE_PREDICATE = DeclarationPredicate.create {
               annotated(FqName("dev.bnorm.buildable.Buildable"))
             }
 
-            private val HAS_BUILDABLE_PREDICATE = LookupPredicate.create {
+            private val HAS_BUILDABLE_PREDICATE = DeclarationPredicate.create {
               hasAnnotated(FqName("dev.bnorm.buildable.Buildable"))
             }
           ${cob}}
