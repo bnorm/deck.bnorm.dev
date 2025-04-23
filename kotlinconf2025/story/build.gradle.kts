@@ -51,6 +51,7 @@ kotlin {
                 api("dev.bnorm.storyboard:storyboard-text")
 
                 implementation("dev.chrisbanes.haze:haze:1.5.2")
+                implementation("io.github.alexzhirkevich:compottie:2.0.0-rc04")
             }
         }
     }

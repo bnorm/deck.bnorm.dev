@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -33,6 +34,11 @@ val THEME_DECORATOR = SceneDecorator { content ->
                     .background(Brush.verticalGradient(listOf(Color(0xFF1D002E), Color.Black)))
             ) {
                 content()
+
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+                    FloatingReactions()
+                    QrCodeKodee()
+                }
             }
         }
     }

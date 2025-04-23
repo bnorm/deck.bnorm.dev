@@ -1,5 +1,6 @@
 package dev.bnorm.kc25.story.desktop
 
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.*
@@ -7,6 +8,7 @@ import androidx.compose.ui.window.application
 import dev.bnorm.kc25.broadcast.*
 import dev.bnorm.kc25.components.validateAllSamples
 import dev.bnorm.kc25.createStoryboard
+import dev.bnorm.kc25.template.LocalInfiniteTransition
 import dev.bnorm.storyboard.easel.DesktopStoryEasel
 import dev.bnorm.storyboard.easel.ExperimentalStoryStateApi
 import dev.bnorm.storyboard.easel.StoryState
@@ -35,13 +37,17 @@ fun main() {
 
     application {
         validateAllSamples()
+        val infiniteTransition = rememberInfiniteTransition()
 
         Broadcast(state, storyBroadcaster)
 
         remember { createStoryboard().also { state.updateStoryboard(it) } }
 
         MaterialTheme(colors = darkColors()) {
-            CompositionLocalProvider(LocalReactionListener provides reactionListener) {
+            CompositionLocalProvider(
+                LocalReactionListener provides reactionListener,
+                LocalInfiniteTransition provides infiniteTransition,
+            ) {
                 DesktopStoryEasel(
                     storyState = state,
                     overlay = { DesktopOverlay() },

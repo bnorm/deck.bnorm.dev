@@ -106,9 +106,9 @@ fun StoryboardBuilder.Title() {
                         modifier = Modifier.align(Alignment.CenterEnd)
                             .padding(16.dp),
                     ) {
-                        Bluesky(username = "@bnorm.dev")
-                        Spacer(Modifier.size(4.dp))
                         Mastodon(username = "bnorm@kotlin.social")
+                        Spacer(Modifier.size(4.dp))
+                        Bluesky(username = "@bnorm.dev")
                     }
                 }
             }
@@ -171,9 +171,9 @@ fun StoryboardBuilder.Closing() {
             DrawArc(arcFraction)
 
             Column(Modifier.align(Alignment.TopStart).padding(32.dp)) {
-                Bluesky(username = "@bnorm.dev")
-                Spacer(Modifier.size(4.dp))
                 Mastodon(username = "bnorm@kotlin.social")
+                Spacer(Modifier.size(4.dp))
+                Bluesky(username = "@bnorm.dev")
             }
             Column(Modifier.align(Alignment.BottomStart).padding(32.dp)) {
                 ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
