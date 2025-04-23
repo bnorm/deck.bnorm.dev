@@ -17,7 +17,6 @@ private sealed class SampleData {
     data object Signature : SampleData()
     data object Parameters : SampleData()
     data object Body : SampleData()
-
 }
 
 private val BuilderClassKey = CodeSample(
@@ -264,6 +263,11 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
     base // Start with base for validation
         .then { start.focus(clsSig) }
+
+        // TODO split focus
+        //  - first fucus on the name functions
+        //  - next focus on the generate functions
+        //  - finally, focus on the predicate function
         .then { focus(funName, scroll = false) }
 
         .then { reveal(cob).focus(cob, scroll = false) }
@@ -319,7 +323,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
         .then { attach(ShowPanel(BUILDABLE[5], show = true)) }
         .then { attach(ShowPanel(BUILDABLE[5], show = false)) }
 
-        .then { start.reveal(funp).focus(funs, scroll = false) }
+        .then { start.reveal(funp).focus(funs) }
         .then { reveal(funb).focus(funb).scroll(funs) }
         // TODO walk through body
 

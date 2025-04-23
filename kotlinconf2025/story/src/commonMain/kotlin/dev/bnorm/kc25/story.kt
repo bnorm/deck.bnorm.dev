@@ -5,10 +5,7 @@ import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
-import dev.bnorm.kc25.sections.intro.ComposeExample
-import dev.bnorm.kc25.sections.intro.DataFrameExample
-import dev.bnorm.kc25.sections.intro.PowerAssertExample
-import dev.bnorm.kc25.sections.intro.ThirdPlugin
+import dev.bnorm.kc25.sections.intro.*
 import dev.bnorm.kc25.sections.register.Component
 import dev.bnorm.kc25.sections.register.RegistrarComponentsFocus
 import dev.bnorm.kc25.sections.register.Registration
@@ -42,9 +39,6 @@ fun createStoryboard(): Storyboard {
         """.trimIndent(),
         decorator = THEME_DECORATOR,
     ) {
-        // TODO where to put the companion introduction?
-        //  - go "back" to the second slide?
-        //  - part of the title slide?
         Title()
         Outline()
         Closing()
@@ -63,6 +57,7 @@ private fun StoryboardBuilder.Outline() {
         // TODO revamp these bullet points
         //  - are there some visuals which could help?
         // TODO need to emphasize when you DON'T need a compiler plugin
+        // TODO really need to make this slide about KSP vs compiler plugins
         RevealScene(
             "$BULLET_1 A form of metaprogramming, integrated directly with the compiler.",
             "$BULLET_1 Metaprogramming is writing code that writes or manipulates code.",
@@ -71,30 +66,19 @@ private fun StoryboardBuilder.Outline() {
             "    $BULLET_2 Should only be used if the benefits outweigh the drawbacks.",
         )
 
-        // TODO Spring? (ramp into complexity?)
-        // TODO Serialization
+        SpringBoot()
+        SerializationExample()
         ComposeExample()
         DataFrameExample()
         PowerAssertExample()
 
+        // TODO Move section to just after registration slide?
         section("Your Plugin") {
-            // TODO your plugin here slide
-
             BuildableIntro()
-
-            // TODO does this section need some kind of ender that helps transition into the next section?
         }
     }
 
     Architecture()
-
-    // TODO just talked about compiler architecture, should we talk about plugin architecture?
-    //  - might help get the setup part out of the way earlier
-    //  - and show how people can find extensions
-    //  - can highlight the extensions we'll be using and talk about them specifically
-
-    // TODO put this at the beginning with the companion as a link instead?
-    //    Repository()
 
     Registration()
 
@@ -102,33 +86,9 @@ private fun StoryboardBuilder.Outline() {
 
     Resolve()
 
-//    section("FirSession") {
-//        // TODO talk about FirSession/MPP between resolve and analyze
-//        //  - leads nicely into some MPP topics
-//        // TODO is module the right term?
-//        RevealScene(
-//            "$BULLET_1 Holds all data and services for a single compilation unit.",
-//            "$BULLET_1 Each common and platform module have their own compilation unit.",
-//            "$BULLET_1 ...",
-//            "$BULLET_1 ...",
-//        )
-//    }
-
     RegistrarComponentsFocus(Component.FirDeclarationGenerationExtension, Component.FirAdditionalCheckersExtension)
 
     Analyze()
-
-//    section("Frontend") {
-//        // TODO talk about IDE integration between analyze and transform
-//        //  - good topic after completing the frontend
-//        // TODO but is it worth covering in the talk itself?
-//        RevealScene(
-//            "$BULLET_1 Resolve and Analyze are part of the \"Frontend\" of the Kotlin compiler.",
-//            "$BULLET_1 The frontend of the compiler is used by the new IntelliJ Kotlin plugin.",
-//            "$BULLET_1 This means a compiler plugin is run as part of IntelliJ indexing.",
-//            "    $BULLET_2 But by default this is disabled for third-party compiler plugins.",
-//        )
-//    }
 
     RegistrarComponentsFocus(Component.FirAdditionalCheckersExtension, Component.IrGenerationExtension)
 
@@ -139,11 +99,10 @@ private fun StoryboardBuilder.Outline() {
     // TODO testing?
     //  - probably need to leave this to the companion :/
 
-    // TODO future?
-
+    // TODO add KT ticket
     section("Future") {
         RevealScene(
-            "$BULLET_1 Top question: when will the compiler plugin API be stable?.",
+            "$BULLET_1 Top question: when will the compiler plugin API be stable?",
             "$BULLET_1 The existing API will never be stable.",
             "$BULLET_1 We working on (yet) another API which we plan to be stable (KT-X).",
             "$BULLET_1 Some future KotlinConf: Writing Your Fourth Kotlin Compiler Plugin.",

@@ -1,17 +1,14 @@
 package dev.bnorm.kc25.sections.intro
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.HeaderScaffold
+import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -76,26 +73,6 @@ private val SAMPLES = buildCodeSamples {
 
 fun StoryboardBuilder.ComposeExample() {
     section("Compose") {
-        // TODO instead of 2 scenes for each existing compiler plugin...
-        //  - could the animation start right away (or slightly delayed),
-        //    and bullet points appear to the left or right (alternate in each sample?)
-        //  - this would allow the animation to play longer while i talk through the points
-        //  - also could have a cool haze over the sample code if it's too big
-//        scene(
-//            stateCount = 1,
-//            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-//            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-//        ) {
-//            HeaderScaffold { padding ->
-//                Column(
-//                    modifier = Modifier.padding(padding),
-//                    verticalArrangement = Arrangement.spacedBy(12.dp),
-//                ) {
-//                    // TODO add some bullet points?
-//                }
-//            }
-//        }
-
         scene(
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),

@@ -21,7 +21,8 @@ fun StoryboardBuilder.Architecture() {
         StageTimeline(CompilerStage.Resolve, CompilerStage.Analyze)
         StageAnalyze()
         StageTimeline(CompilerStage.Analyze, CompilerStage.Transform)
-        // TODO talk about frontend vs backend?
+        // TODO talk about frontend vs backend
+        //  - put boxes around the frontend and the backend
         StageTransform()
         StageTimeline(CompilerStage.Transform, CompilerStage.Generate)
         StageGenerate()

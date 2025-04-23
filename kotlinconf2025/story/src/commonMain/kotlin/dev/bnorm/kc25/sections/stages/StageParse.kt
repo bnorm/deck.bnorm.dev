@@ -30,6 +30,7 @@ fun StoryboardBuilder.StageParse() {
             if (frame.currentState.toState() > items.size) {
                 frame.createChildTransition { it.toState() - items.size - 1 }.FirTree()
             }
+            // TODO also show a UML-like tree of element linking?
         }
     }
 }

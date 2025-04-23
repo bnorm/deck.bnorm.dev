@@ -1,17 +1,14 @@
 package dev.bnorm.kc25.sections.intro
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.HeaderScaffold
+import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
@@ -174,7 +171,6 @@ private val SAMPLES = buildCodeSamples {
             })
     }
 
-    // TODO formatting bug with `$` in a string
     samples.map { it.toCodeSample() }
         .then { finalExample.toCodeSample().attach(5.seconds) }
         .then { collapse(m).attach(3.seconds) }
@@ -182,21 +178,6 @@ private val SAMPLES = buildCodeSamples {
 
 fun StoryboardBuilder.PowerAssertExample() {
     section("Power-Assert") {
-//        scene(
-//            stateCount = 1,
-//            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-//            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-//        ) {
-//            HeaderScaffold { padding ->
-//                Column(
-//                    modifier = Modifier.padding(padding),
-//                    verticalArrangement = Arrangement.spacedBy(12.dp),
-//                ) {
-//                    // TODO add some bullet points?
-//                }
-//            }
-//        }
-
         scene(
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
