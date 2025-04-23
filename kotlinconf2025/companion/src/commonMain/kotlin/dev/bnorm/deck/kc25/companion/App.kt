@@ -43,11 +43,11 @@ fun App() {
     LaunchedEffect(Unit) {
         while (true) {
             broadcastListener.subscribe("story-kc25").collect {
-                val targetIndex = it.toStoryboard()
-                val i = storyState.storyboard.indices.binarySearch(targetIndex)
+                val index = it.toStoryboard()
+                val i = storyState.storyboard.indices.binarySearch(index)
                 if (i < 0) return@collect // TODO error?
 
-                val direction = when (targetIndex > storyState.currentIndex) {
+                val direction = when (index > storyState.currentIndex) {
                     true -> AdvanceDirection.Forward
                     false -> AdvanceDirection.Backward
                 }
@@ -58,10 +58,11 @@ fun App() {
 
                 // Jump to the index directly to the target state if we cannot gracefully advance to it.
                 if (storyState.currentIndex != previous) {
-                    storyState.jumpTo(targetIndex)
+                    storyState.jumpTo(index)
                 } else {
                     storyState.advance(direction)
                 }
+                targetIndex = index
             }
             delay(30.seconds)
         }
