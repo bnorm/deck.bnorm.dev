@@ -133,10 +133,14 @@ fun connectionPath(
     endRect: Rect,
     endPercent: Float,
 ): Path {
+    // TODO ideas
+    //  - can probably do this a bit more dynamically; determining closest edges?
+    //  - can we add an arrow support, to indicate direction?
+
     // TODO overload using alignment?
     require(startPercent in 0f..1f && endPercent in 0f..1f)
 
-    fun fromPercent(rect: Rect, percent: Float): Offset {
+    fun anchor(rect: Rect, percent: Float): Offset {
         return when {
             percent < 0.25f -> Offset(
                 x = rect.left + percent * (rect.right - rect.left) / 0.25f,
@@ -160,18 +164,46 @@ fun connectionPath(
         }
     }
 
-    // TODO ideas
-    //  - can probably do this a bit more dynamically; determining closest edges?
-    //  - can we add an arrow support, to indicate direction?
+    val startOffset = anchor(startRect, startPercent)
+    val endOffset = anchor(endRect, endPercent)
 
-    val startOffset = fromPercent(startRect, startPercent)
-    val endOffset = fromPercent(endRect, endPercent)
+    val middle = Offset((startOffset.x + endOffset.x) / 2, (startOffset.y + endOffset.y) / 2)
+    fun middle(rect: Rect, percent: Float): Offset {
+        return when {
+            percent < 0.25f -> Offset(
+                x = rect.left + percent * (rect.right - rect.left) / 0.25f,
+                y = middle.y
+            )
+
+            percent < 0.50f -> Offset(
+                x = middle.x,
+                y = rect.top + (percent - 0.25f) * (rect.bottom - rect.top) / 0.25f
+            )
+
+            percent < 0.75f -> Offset(
+                x = rect.right - (percent - 0.50f) * (rect.right - rect.left) / 0.25f,
+                y = middle.y
+            )
+
+            else -> Offset(
+                x = middle.x,
+                y = rect.bottom - (percent - 0.75f) * (rect.bottom - rect.top) / 0.25f
+            )
+        }
+    }
+
+    val startNormal = middle(startRect, startPercent)
+    val endNormal = middle(endRect, endPercent)
 
     val path = Path()
     path.moveTo(startOffset.x, startOffset.y)
-
-    // TODO support cubicTo by using the selected edge as a guide
-    path.lineTo(endOffset.x, endOffset.y)
-
+    path.cubicTo(
+        x1 = startNormal.x,
+        y1 = startNormal.y,
+        x2 = endNormal.x,
+        y2 = endNormal.y,
+        x3 = endOffset.x,
+        y3 = endOffset.y,
+    )
     return path
 }
