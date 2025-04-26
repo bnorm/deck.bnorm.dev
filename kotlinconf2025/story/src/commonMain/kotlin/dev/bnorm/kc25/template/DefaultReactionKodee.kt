@@ -41,13 +41,10 @@ private class FloatingKodee(
     }
 }
 
-val LocalInfiniteTransition = compositionLocalOf<InfiniteTransition?> { null }
-
 @Composable
-fun QrCodeKodee() {
+fun QrCodeKodee(infiniteTransition: InfiniteTransition) {
     Column {
-        val infiniteTransition = LocalInfiniteTransition.current
-        if (LocalSceneMode.current == SceneMode.Story && infiniteTransition != null) {
+        if (LocalSceneMode.current == SceneMode.Story) {
             KodeeWave(
                 infiniteTransition,
                 Modifier.size(50.dp).wrapContentWidth(unbounded = true).width(100.dp)

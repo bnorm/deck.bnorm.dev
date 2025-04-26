@@ -15,7 +15,7 @@ import dev.bnorm.kc25.sections.write.analyze.Analyze
 import dev.bnorm.kc25.sections.write.resolve.Resolve
 import dev.bnorm.kc25.sections.write.transform.Transform
 import dev.bnorm.kc25.template.SectionTitle
-import dev.bnorm.kc25.template.THEME_DECORATOR
+import dev.bnorm.kc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -23,7 +23,7 @@ import dev.bnorm.storyboard.easel.template.section
 
 // TODO review all slides for consistent code formatting!
 // TODO update all samples to 2.2.0?
-fun createStoryboard(decorator: SceneDecorator = THEME_DECORATOR): Storyboard {
+fun createStoryboard(decorator: SceneDecorator = storyDecorator()): Storyboard {
     return Storyboard.build(
         title = "Writing Your Third Kotlin Compiler Plugin",
         description = """
