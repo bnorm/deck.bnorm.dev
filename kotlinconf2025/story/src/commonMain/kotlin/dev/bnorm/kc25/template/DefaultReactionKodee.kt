@@ -13,10 +13,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.buildable_repo_qr
-import dev.bnorm.kc25.broadcast.LocalReactionListener
+import dev.bnorm.kc25.broadcast.ReactionListener
 import dev.bnorm.kc25.broadcast.ReactionMessage
 import dev.bnorm.kc25.components.KodeeWave
 import dev.bnorm.storyboard.LocalSceneMode
+import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.SceneMode
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.filter
@@ -61,13 +62,22 @@ fun QrCodeKodee() {
     }
 }
 
+fun KodeeReactionDecorator(
+    reactionListener: State<ReactionListener?>,
+): SceneDecorator = SceneDecorator { content ->
+    content()
+
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+        FloatingReactions(reactionListener.value)
+    }
+}
+
 @Composable
-fun FloatingReactions() {
+fun FloatingReactions(listener: ReactionListener?) {
     // Do not render floating reactions in anything but story mode!
     if (LocalSceneMode.current != SceneMode.Story) return
 
     val queue = remember { mutableStateSetOf<FloatingKodee>() }
-    val listener = LocalReactionListener.current
     LaunchedEffect(listener) {
         val reactions = listener?.listen() ?: return@LaunchedEffect
         reactions

@@ -1,6 +1,5 @@
 package dev.bnorm.kc25.broadcast
 
-import androidx.compose.runtime.staticCompositionLocalOf
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import io.ktor.http.*
 import io.ktor.util.date.*
@@ -31,5 +30,3 @@ class ReactionListener {
         }
     }
 }
-
-val LocalReactionListener = staticCompositionLocalOf<ReactionListener?> { null }

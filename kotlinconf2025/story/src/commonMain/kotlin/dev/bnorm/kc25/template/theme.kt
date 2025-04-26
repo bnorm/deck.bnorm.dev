@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
+import dev.bnorm.kc25.broadcast.ReactionListener
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.text.highlight.CodeStyle
 
@@ -36,7 +38,6 @@ val THEME_DECORATOR = SceneDecorator { content ->
                 content()
 
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-                    FloatingReactions()
                     QrCodeKodee()
                 }
             }
