@@ -9,7 +9,7 @@ import androidx.compose.ui.window.application
 import dev.bnorm.deck.shared.LaserCaption
 import dev.bnorm.deck.shared.LaserDecorator
 import dev.bnorm.deck.shared.LaserState
-import dev.bnorm.deck.shared.SceneIndexDecorator
+import dev.bnorm.storyboard.easel.template.SceneIndexDecorator
 import dev.bnorm.kc25.broadcast.BroadcastCaption
 import dev.bnorm.kc25.broadcast.ReactionListener
 import dev.bnorm.kc25.components.validateAllSamples
