@@ -4,30 +4,25 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.kc25.companion.cards.EmbeddedStory
+import dev.bnorm.deck.kc25.companion.cards.SendAReaction
+import dev.bnorm.deck.kc25.companion.cards.Title
 import dev.bnorm.deck.shared.broadcast.BroadcastClient
 import dev.bnorm.kc25.broadcast.BroadcastMessage
 import dev.bnorm.kc25.broadcast.ReactionMessage
-import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.storyboard.AdvanceDirection
 import dev.bnorm.storyboard.Storyboard
-import dev.bnorm.storyboard.easel.Story
 import dev.bnorm.storyboard.easel.StoryState
-import dev.bnorm.storyboard.easel.overlay.StoryOverlay
-import dev.bnorm.storyboard.easel.rememberStoryState
-import io.ktor.util.date.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 fun BroadcastMessage.toStoryboard(): Storyboard.Index {
@@ -37,8 +32,7 @@ fun BroadcastMessage.toStoryboard(): Storyboard.Index {
 // TODO doesn't seem to work on iOS Chrome: https://developer.chrome.com/blog/debugging-chrome-on-ios
 // TODO the app seems to become non-responsive on Android Chrome after the phone goes to sleep
 @Composable
-fun App() {
-    val storyState = rememberStoryState(remember { createStoryboard() })
+fun App(storyState: StoryState) {
     val broadcastListener = remember { BroadcastClient(bearerToken = null, BroadcastMessage.serializer()) }
     val broadcastReactor = remember { BroadcastClient(bearerToken = null, ReactionMessage.serializer()) }
 
@@ -94,21 +88,6 @@ fun App() {
     }
 }
 
-@Composable
-private fun LazyItemScope.ContentCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Card(
-        modifier = modifier
-            .animateItem()
-            .padding(8.dp)
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
-            content()
-        }
-    }
-}
-
 private fun LazyListScope.Content(
     latest: Storyboard.Index?,
     storyState: StoryState,
@@ -116,88 +95,28 @@ private fun LazyListScope.Content(
 ) {
     // TODO make some of these sticky?
     item("title") {
-        ContentCard {
-            Text("Writing Your Third", style = MaterialTheme.typography.h2)
-            Text("Kotlin Compiler Plugin", style = MaterialTheme.typography.h2)
-            Spacer(Modifier.height(16.dp))
-            Text("A Presentation Companion", style = MaterialTheme.typography.h4)
+        ContentCard(Modifier.animateItem()) {
+            Title()
         }
     }
 
-    item("slides") {
-        ContentCard {
-            Text("Slides", style = MaterialTheme.typography.h2)
-            Spacer(Modifier.height(16.dp))
-
-            // TODO force render the storyboard in preview mode?
-            //  - or at least while the navigation is synced?
-            // TODO do we need to disable key events? doesn't seem like it...
-            StoryOverlay(
-                overlay = {
-                    // TODO enable navigation when the story is complete?
-                    //  - or maybe custom navigation that only allows navigating before latest
-                }
-            ) {
-                Story(storyState)
-            }
+    item("story") {
+        ContentCard(Modifier.animateItem()) {
+            EmbeddedStory(storyState)
         }
     }
 
     item("Reactions") {
-        ContentCard {
-            Text("Send A Reaction!", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
-            Spacer(Modifier.height(16.dp))
-
-            val scope = rememberCoroutineScope()
-            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-                Reaction(
-                    scope = scope,
-                    broadcastReactor = broadcastReactor,
-                    onClick = { ReactionMessage.Heart(getTimeMillis()) },
-                )
-                Reaction(
-                    scope = scope,
-                    broadcastReactor = broadcastReactor,
-                    onClick = { ReactionMessage.Excited(getTimeMillis()) },
-                )
-                Reaction(
-                    scope = scope,
-                    broadcastReactor = broadcastReactor,
-                    onClick = { ReactionMessage.Electrified(getTimeMillis()) },
-                )
-                Reaction(
-                    scope = scope,
-                    broadcastReactor = broadcastReactor,
-                    onClick = { ReactionMessage.Lost(getTimeMillis()) },
-                )
-            }
+        ContentCard(Modifier.animateItem()) {
+            SendAReaction(broadcastReactor)
         }
     }
 
     repeat(latest?.sceneIndex ?: 0) {
         item(it) {
-            ContentCard {
+            ContentCard(Modifier.animateItem()) {
                 Text("Information ${it + 1}", style = MaterialTheme.typography.h2)
             }
         }
-    }
-}
-
-@Composable
-private fun Reaction(
-    scope: CoroutineScope,
-    broadcastReactor: BroadcastClient<ReactionMessage>,
-    onClick: () -> ReactionMessage,
-) {
-    val message = remember(onClick) { onClick() }
-    Button(
-        onClick = {
-            scope.launch {
-                broadcastReactor.broadcast("story-kc25-react", onClick())
-            }
-        },
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
-    ) {
-        message.Image(Modifier.size(64.dp))
     }
 }
