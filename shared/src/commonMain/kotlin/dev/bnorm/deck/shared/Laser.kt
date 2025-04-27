@@ -35,6 +35,14 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlin.time.ExperimentalTime
 
+class Laser {
+    private val state = LaserState()
+
+    val caption: Caption = LaserCaption(state)
+    // TODO add overlay controls?
+    val decorator: SceneDecorator = LaserDecorator(state)
+}
+
 internal class LaserPath(
     val points: ImmutableList<Offset>,
 )
