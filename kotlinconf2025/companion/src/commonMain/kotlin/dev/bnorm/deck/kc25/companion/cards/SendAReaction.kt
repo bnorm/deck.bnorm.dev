@@ -17,8 +17,10 @@ import dev.bnorm.kc25.broadcast.ReactionMessage
 import io.ktor.util.date.*
 import kotlinx.coroutines.launch
 
+val broadcastReactor = BroadcastClient(bearerToken = null, ReactionMessage.serializer())
+
 @Composable
-fun SendAReaction(broadcastReactor: BroadcastClient<ReactionMessage>) {
+fun SendAReaction() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Send A Reaction!", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
         Spacer(Modifier.height(16.dp))
