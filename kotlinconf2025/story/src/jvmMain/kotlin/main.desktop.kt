@@ -3,34 +3,32 @@ package dev.bnorm.kc25.story.desktop
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.application
-import dev.bnorm.deck.shared.LaserCaption
-import dev.bnorm.deck.shared.LaserDecorator
-import dev.bnorm.deck.shared.LaserState
-import dev.bnorm.storyboard.easel.template.SceneIndexDecorator
-import dev.bnorm.kc25.broadcast.BroadcastCaption
-import dev.bnorm.kc25.broadcast.ReactionListener
+import dev.bnorm.deck.shared.Laser
+import dev.bnorm.kc25.broadcast.Broadcast
 import dev.bnorm.kc25.components.validateAllSamples
 import dev.bnorm.kc25.createStoryboard
-import dev.bnorm.kc25.template.KodeeReactionDecorator
 import dev.bnorm.kc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.easel.DesktopStoryEasel
 import dev.bnorm.storyboard.easel.ExperimentalStoryStateApi
 import dev.bnorm.storyboard.easel.StoryState
+import dev.bnorm.storyboard.easel.template.SceneIndexDecorator
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 
-@OptIn(ExperimentalStoryStateApi::class)
+@OptIn(ExperimentalStoryStateApi::class, DelicateCoroutinesApi::class)
 fun main() {
     val state = StoryState()
-    val laser = LaserState()
-    val reactionListener = mutableStateOf<ReactionListener?>(null)
+    val broadcast = Broadcast(state, coroutineScope = CoroutineScope(Dispatchers.IO))
+    val laser = Laser()
 
     val captions = persistentListOf(
-        LaserCaption(laser),
-        BroadcastCaption(state, reactionListener),
+        laser.caption,
+        broadcast.caption,
     )
 
     application {
@@ -39,9 +37,9 @@ fun main() {
 
         remember {
             val decorator = SceneDecorator.from(
-                LaserDecorator(laser),
+                laser.decorator,
                 storyDecorator(infiniteTransition),
-                KodeeReactionDecorator(reactionListener),
+                broadcast.decorator,
                 SceneIndexDecorator(state),
             )
             createStoryboard(decorator).also { state.updateStoryboard(it) }
