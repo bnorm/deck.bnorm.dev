@@ -97,14 +97,9 @@ class CodeSample private constructor(
 
     fun scroll(tag: TextTag?): CodeSample = copy(scrollTag = tag)
 
-    fun attach(data: Any): CodeSample {
+    fun attach(data: Any?): CodeSample {
         if (this.data == data) return this
         return copy(data = data)
-    }
-
-    fun detach(): CodeSample {
-        if (data == null) return this
-        return copy(data = null)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -155,5 +150,9 @@ class CodeSamplesBuilder : TextTagScope.Default() {
 
     fun List<CodeSample>.then(transformer: CodeSample.() -> CodeSample): List<CodeSample> {
         return this + transformer(this.last())
+    }
+
+    fun List<CodeSample>.instead(transformer: CodeSample.() -> CodeSample): List<CodeSample> {
+        return this.subList(fromIndex = 0, toIndex = lastIndex) + transformer(this.last())
     }
 }

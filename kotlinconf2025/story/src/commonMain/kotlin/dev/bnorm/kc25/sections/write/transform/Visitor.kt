@@ -23,59 +23,37 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
     val co by tag("companion object")
     val sig by tag("signatures")
     val uninit by tag("") // TODO
+    val hide by tag("") // TODO
+    val collapse by tag("") // TODO
 
     val vEle by tag("visitElement", SampleData.Visitor)
     val vEleB by tag("visitElement body", SampleData.Body)
 
-    val aCtor by tag("", SampleData.Visitor)
+    val vCtor by tag("", SampleData.Visitor)
     val vCtorB by tag("visitConstructor body", SampleData.Body)
 
-    val gCtor by tag("generateConstructor", SampleData.Helper)
-    val gCtorS by tag("generateConstructor signature")
-    val gCtorB by tag("generateConstructor body", SampleData.Body)
-
-    val aCls by tag("", SampleData.Visitor)
+    val vCls by tag("", SampleData.Visitor)
     val vClsB by tag("visitClass body", SampleData.Body)
     // TODO focus on parts of function body
     // TODO side panel for irAttribute
 
-    val gBack by tag("generateBacking", SampleData.Helper)
-    val gBackS by tag("generateBacking signature")
-    val gBackB by tag("generateBacking body", SampleData.Body)
-    // TODO focus on parts of function body
-
-    val uProp by tag("updatePropertyAccessors", SampleData.Helper)
-    val uPropS by tag("updatePropertyAccessors signature")
-    val uPropB by tag("updatePropertyAccessors body", SampleData.Body)
-    // TODO focus on parts of function body
-
-    val aFun by tag("", SampleData.Visitor)
+    val vFun by tag("", SampleData.Visitor)
     val vFunB by tag("visitSimpleFunction body", SampleData.Body)
-
-    val gFun by tag("generateBuildFunction", SampleData.Helper)
-    val gFunS by tag("generateBuildFunction signature")
-    val gFunB by tag("generateBuildFunction body", SampleData.Body)
-    // TODO focus on parts of function body
-
-    val gArg by tag("generateConstructorArguments", SampleData.Helper)
-    val gArgS by tag("generateConstructorArguments signature")
-    val gArgB by tag("generateConstructorArguments body", SampleData.Body)
-    // TODO focus on parts of function body
 
     val base = """
         class BuildableIrVisitor(
           private val context: IrPluginContext,
         ) : ${sup}IrVisitorVoid()${sup} {
           companion object {${co}
-            private val BUILDABLE_ORIGIN = GeneratedByPlugin(BuildableKey)
+            private val BUILDABLE_ORIGIN = GeneratedByPlugin(BuildableKey)${hide}
 
             private val ILLEGAL_STATE_EXCEPTION_FQ_NAME =
               FqName("kotlin.IllegalStateException")
             private val ILLEGAL_STATE_EXCEPTION_CLASS_ID =
-              ClassId.topLevel(ILLEGAL_STATE_EXCEPTION_FQ_NAME)
-          ${co}}
+              ClassId.topLevel(ILLEGAL_STATE_EXCEPTION_FQ_NAME)${hide}
+          ${co}}${hide}
 
-          ${uninit}private val nullableStringType = context.irBuiltIns.stringType.makeNullable()
+          private val nullableStringType = context.irBuiltIns.stringType.makeNullable()
           private val illegalStateExceptionConstructor =
             context.referenceConstructors(ILLEGAL_STATE_EXCEPTION_CLASS_ID)
               .single { constructor ->
@@ -92,9 +70,9 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
                 0, irString("Uninitialized property '${'$'}{property.name}'.")
               )
             }
-          }
+          }${hide}
 
-          ${uninit}${vEle}${sig}override fun visitElement(element: IrElement)$sig {${vEleB}
+          ${vEle}${sig}override fun visitElement(element: IrElement)$sig {${vEleB}
             when (element) {
               is IrDeclaration,
               is IrFile,
@@ -105,13 +83,13 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             }
           ${vEleB}}${vEle}
 
-          ${aCtor}${sig}override fun visitConstructor(declaration: IrConstructor)${sig} {${vCtorB}
+          ${vCtor}${sig}override fun visitConstructor(declaration: IrConstructor)${sig} {${vCtorB}
             if (declaration.origin == BUILDABLE_ORIGIN && declaration.body == null) {
-              declaration.body = generateDefaultConstructor(declaration)
+              declaration.body =${collapse} generateDefaultConstructor(declaration)${collapse}
             }
-          ${vCtorB}}${gCtor}
+          ${vCtorB}}${vCtor}${hide}
 
-          ${gCtorS}private fun generateDefaultConstructor(declaration: IrConstructor): IrBody?${gCtorS} {${gCtorB}
+          private fun generateDefaultConstructor(declaration: IrConstructor): IrBody? {
             val parentClass = declaration.parent as? IrClass ?: return null
             val anyConstructor = context.irBuiltIns.anyClass.owner.primaryConstructor
               ?: return null
@@ -125,9 +103,9 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
                 type = context.irBuiltIns.unitType,
               )
             }
-          ${gCtorB}}${gCtor}${aCtor}
+          }${hide}
 
-          ${aCls}${sig}override fun visitClass(declaration: IrClass)$sig {${vClsB}
+          ${vCls}${sig}override fun visitClass(declaration: IrClass)$sig {${vClsB}
             val pluginKey = (declaration.origin as? GeneratedByPlugin)?.pluginKey
             if (pluginKey is BuilderClassKey) {
               val declarations = declaration.declarations
@@ -135,10 +113,10 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
               val fields = mutableListOf<IrField>()
               for (property in declarations) {
                 if (property !is IrProperty) continue
-                val backing = generateBacking(declaration, property)
-                updatePropertyAccessors(property, backing)
+                val backing =${collapse} generateBacking(declaration, property)${collapse}
+                updatePropertyAccessors(property, backing)${hide}
 
-                property.builderPropertyBacking = backing
+                property.builderPropertyBacking = backing${hide}
                 fields += backing.flag
                 fields += backing.holder
               }
@@ -147,12 +125,12 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             }
 
             declaration.acceptChildrenVoid(this)
-          ${vClsB}}${gBack}
+          ${vClsB}}${vCls}${hide}
 
-          ${gBackS}private fun generateBacking(
+          private fun generateBacking(
             klass: IrClass,
             property: IrProperty,
-          ): BuilderPropertyBacking${gBackS} {${gBackB}
+          ): BuilderPropertyBacking {
             val getter = property.getter!!
             property.backingField = null
 
@@ -195,12 +173,12 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             }
 
             return BuilderPropertyBacking(holderField, flagField)
-          ${gBackB}}${gBack}${uProp}
+          }
 
-          ${uPropS}private fun updatePropertyAccessors(
+          private fun updatePropertyAccessors(
             property: IrProperty,
             backing: BuilderPropertyBacking,
-          )${uPropS} {${uPropB}
+          ) {
             val getter = property.getter!!
             val setter = property.setter!!
             property.backingField = null
@@ -230,15 +208,15 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
                 value = true.toIrConst(context.irBuiltIns.booleanType)
               )
             }
-          ${uPropB}}${uProp}${aCls}
+          }${hide}
 
-          ${aFun}${sig}override fun visitSimpleFunction(declaration: IrSimpleFunction)$sig {${vFunB}
+          ${vFun}${sig}override fun visitSimpleFunction(declaration: IrSimpleFunction)$sig {${vFunB}
             if (declaration.origin == BUILDABLE_ORIGIN && declaration.body == null) {
-              declaration.body = generateBuildFunction(declaration)
+              declaration.body =${collapse} generateBuildFunction(declaration)${collapse}
             }
-          ${vFunB}}${gFun}
+          ${vFunB}}${vFun}${hide}
 
-          ${gFunS}private fun generateBuildFunction(function: IrSimpleFunction): IrBody?${gFunS} {${gFunB}
+          private fun generateBuildFunction(function: IrSimpleFunction): IrBody? {
             val builderClass = function.parent
               as? IrClass ?: return null
             val irClass = function.returnType.classifierOrNull?.owner
@@ -262,13 +240,13 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
               +irReturn(constructorCall)
             }
-          ${gFunB}}${gFun}${gArg}
+          }
 
-          ${gArgS}private fun IrBlockBodyBuilder.generateConstructorArguments(
+          private fun IrBlockBodyBuilder.generateConstructorArguments(
             constructorParameters: List<IrValueParameter>,
             builderProperties: List<IrProperty>,
             dispatchReceiverParameter: IrValueParameter,
-          ): List<IrVariable>${gArgS} {${gArgB}
+          ): List<IrVariable> {
             val variables = mutableListOf<IrVariable>()
 
             // Transformer to substitute references to previous constructor parameters
@@ -319,7 +297,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             }
 
             return variables
-          ${gArgB}}${gArg}${aFun}
+          }${hide}
         }
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
@@ -328,18 +306,14 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
         .hide(uninit)
         .collapse(SampleData.Body)
         .collapse(co)
+        .hide(hide)
+        .collapse(collapse)
 
-    val startPostCtor = start.reveal(gCtor)
-    val startPostCls = startPostCtor.reveal(gBack, uProp)
-    val startPostFun = startPostCls.reveal(gFun, gArg)
-
-    base
+    base // Start with base for validation
         .then { start }
         .then { focus(sup, scroll = false) }
         .then { focus(sig, scroll = false) }
-
         .then { reveal(co).focus(co, scroll = false) }
-        .then { reveal(uninit).focus(uninit) }
 
         // Element
         .then { start.focus(vEle) }
@@ -347,48 +321,22 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
         .then { start.focus(vEle) }
 
         // Constructor
-        .then { start.focus(aCtor) }
+        .then { start.focus(vCtor) }
         .then { reveal(vCtorB).focus(vCtorB) }
-
-        .then { reveal(gCtor).focus(gCtor).scroll(gCtorS) }
-        .then { reveal(gCtorB).focus(gCtorB) }
-
-        .then { focus(aCtor) }
-        .then { startPostCtor.focus(aCtor) }
+        .then { start.focus(vCtor) }
 
         // Class
-        .then { startPostCtor.focus(aCls) }
+        .then { start.focus(vCls) }
         .then { reveal(vClsB).focus(vClsB) }
-
-        .then { reveal(gBack).focus(gBack).scroll(gBackS) }
-        .then { reveal(gBackB).focus(gBackB) }
-
-        // TODO focus back on class body to continue there
-//        .then { collapse(gBackB).focus(vClsB) }
-
-        .then { reveal(uProp).focus(uProp).scroll(uPropS) }
-        .then { reveal(uPropB).focus(uPropB) }
-
-        .then { focus(aCls) }
-        .then { startPostCls.focus(aCls) }
+        .then { start.focus(vCls) }
 
         // Function
-        .then { startPostCls.focus(aFun) }
+        .then { start.focus(vFun) }
         .then { reveal(vFunB).focus(vFunB) }
-
-        .then { reveal(gFun).focus(gFun).scroll(gFunS) }
-        .then { reveal(gFunB).focus(gFunB) }
-
-        .then { reveal(gArg).focus(gArg).scroll(gArgS) }
-        .then { reveal(gArgB).focus(gArgB) }
-
-        // TODO focus back on gFunB
-
-        .then { focus(aFun) }
-        .then { startPostFun.focus(aFun) }
+        .then { start.focus(vFun) }
 
         // Final
-        .then { startPostFun.unfocus(unscroll = true) }
+        .then { start.unfocus(unscroll = true) }
 }
 
 @Composable

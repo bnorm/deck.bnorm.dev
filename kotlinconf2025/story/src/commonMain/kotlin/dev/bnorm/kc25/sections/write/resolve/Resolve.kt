@@ -7,5 +7,5 @@ fun StoryboardBuilder.Resolve() {
     // TODO show more details about predicate based provider?
     // TODO show more details about FirScope?
     
-    Generation()
+    FirGeneration()
 }

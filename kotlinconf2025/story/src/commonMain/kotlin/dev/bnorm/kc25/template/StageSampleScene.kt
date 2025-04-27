@@ -21,10 +21,15 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.toState
 
-class ShowPanel(
-    val sample: CodeSample,
+data class RightPanel(
+    val sampleIndex: Int,
+    val samples: List<CodeSample>,
     val show: Boolean,
-)
+) {
+    fun show(): RightPanel = copy(show = true)
+    fun showNext(): RightPanel = copy(sampleIndex = (sampleIndex + 1) % samples.size, show = true)
+    fun next(): RightPanel = copy(sampleIndex = (sampleIndex + 1) % samples.size)
+}
 
 fun StoryboardBuilder.StageSampleScene(
     samples: List<CodeSample>,
@@ -38,26 +43,27 @@ fun StoryboardBuilder.StageSampleScene(
 
     scene(
         stateCount = endExclusive - start,
-        enterTransition = SceneEnter(alignment = Alignment.Companion.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.Companion.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         val sample = frame.createChildTransition { samples[start + it.toState()] }
 
         StageScaffold(updateTransition(stage)) { padding ->
             ProvideTextStyle(MaterialTheme.typography.code1) {
-                sample.MagicCodeSample(modifier = Modifier.Companion.padding(padding))
+                sample.MagicCodeSample(modifier = Modifier.padding(padding))
             }
 
-            val sidePanel = sample.createChildTransition { (it.data as? ShowPanel) }
+            val sidePanel = sample.createChildTransition { (it.data as? RightPanel) }
             val sidePanelVisible = sidePanel.createChildTransition { it != null && it.show }
-            val sidePanelSample = sidePanel.createChildTransition { it?.sample ?: CodeSample(AnnotatedString("")) }
+            val sidePanelSample =
+                sidePanel.createChildTransition { it?.samples[it.sampleIndex] ?: CodeSample(AnnotatedString("")) }
             RightPanel(
                 show = sidePanelVisible,
-                modifier = Modifier.Companion.padding(top = padding.calculateTopPadding()),
+                modifier = Modifier.padding(top = padding.calculateTopPadding()),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     Box(
-                        modifier = Modifier.Companion.padding(top = 32.dp, start = 32.dp).width(500.dp).fillMaxHeight()
+                        modifier = Modifier.padding(top = 32.dp, start = 32.dp).width(500.dp).fillMaxHeight()
                     ) {
                         ProvideTextStyle(MaterialTheme.typography.code1) {
                             sidePanelSample.MagicCodeSample()

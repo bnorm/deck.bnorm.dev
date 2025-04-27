@@ -14,6 +14,7 @@ import dev.bnorm.kc25.sections.write.BuildableIntro
 import dev.bnorm.kc25.sections.write.analyze.Analyze
 import dev.bnorm.kc25.sections.write.resolve.Resolve
 import dev.bnorm.kc25.sections.write.transform.Transform
+import dev.bnorm.kc25.sections.write.transform.Visitor
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
@@ -89,6 +90,12 @@ private fun StoryboardBuilder.Outline() {
 
     RegistrarComponentsFocus(Component.FirDeclarationGenerationExtension, Component.FirAdditionalCheckersExtension)
 
+    // TODO do transform stage first and go back to analyze
+    //  - skip checker to focus on code generation
+    //  - can talk about why we generate bodies in IR
+    //    - move "performant" in the case of errors
+    //    - everything is resolved
+    // TODO could transition into IDE topics after analyze?
     Analyze()
 
     RegistrarComponentsFocus(Component.FirAdditionalCheckersExtension, Component.IrGenerationExtension)
@@ -97,12 +104,14 @@ private fun StoryboardBuilder.Outline() {
 
     RegistrarComponentsFocus(Component.IrGenerationExtension, null)
 
-    // TODO testing?
-    //  - probably need to leave this to the companion :/
+    section("Your Plugin") {
+        // TODO new slide
+        //  - explicitly mention the template project for people to use and write their own
+        //  - show buildable repository as a sample with all this code
 
-    // TODO new slide
-    //  - explicitly mention the template project for people to use and write their own
-    //  - show buildable repository as a sample with all this code
+        // TODO testing?
+        //  - probably need to leave this to the companion :/
+    }
 
     // TODO add KT ticket
     section("Future") {

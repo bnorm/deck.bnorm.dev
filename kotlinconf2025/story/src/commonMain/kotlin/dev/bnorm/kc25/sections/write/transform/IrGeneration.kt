@@ -27,7 +27,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
     val start = base.hide(body).collapse(gen)
 
-    base
+    base // Start with base for validation
         .then { start }
         .then { focus(sup) }
         .then { reveal(body).focus(body, scroll = false) }
@@ -45,6 +45,6 @@ internal fun validateIrGenerationSample() {
 
 private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
-fun StoryboardBuilder.Generation(start: Int = 0, endExclusive: Int = SAMPLES.size) {
+fun StoryboardBuilder.IrGeneration(start: Int = 0, endExclusive: Int = SAMPLES.size) {
     StageSampleScene(SAMPLES, CompilerStage.Transform, start, endExclusive)
 }

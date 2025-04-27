@@ -6,7 +6,7 @@ import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
-import dev.bnorm.kc25.template.ShowPanel
+import dev.bnorm.kc25.template.RightPanel
 import dev.bnorm.kc25.template.StageSampleScene
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
@@ -28,33 +28,38 @@ private val BuilderClassKey = CodeSample(
     """.trimIndent().toCode(INTELLIJ_DARK_CODE_STYLE)
 )
 
+private val BUILDER_CLASS_KEY_PANEL = RightPanel(0, listOf(BuilderClassKey), show = false)
+
 private val BUILDABLE = buildCodeSamples {
+    val sample by tag("")
     val eClass by tag("")
+    val eCtor by tag("")
     val eProp by tag("")
     val eCall by tag("")
 
     val ctor by tag("book constructor")
     val builder by tag("book builder")
+    val bctor by tag("book builder constructor")
     val properties by tag("book builder properties")
     val functions by tag("book builder functions")
 
     val bookSample = """
-        fun main() {
-          val book = Book.${eClass}Builder${eClass}().apply {
+        ${sample}fun main() {
+          val book = Book.${eClass}Builder${eClass}${eCtor}()${eCtor}.apply {
             ${eProp}title${eProp} = "The Fellowship of the Ring"
             ${eProp}series${eProp} = "The Lord of the Rings"
             ${eProp}author${eProp} = "J. R. R. Tolkien"
             ${eProp}publication${eProp} = LocalDate(year = 1954, Month.JULY, dayOfMonth = 2)
-          }.${eCall}build${eCall}()
+          }.${eCall}build()${eCall}
         }
         
-        class Book @Buildable constructor(${ctor}
+        ${sample}class Book @Buildable constructor(${ctor}
           val title: String,
           val series: String? = null,
           val author: String,
           val publication: LocalDate,
         ${ctor})${builder} {
-          class Builder${properties} {
+          class Builder${bctor} constructor()${bctor}${properties} {
             var title: String
             var series: String?
             var author: String
@@ -65,24 +70,54 @@ private val BUILDABLE = buildCodeSamples {
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
     // TODO do this with squiggly lines https://github.com/saket/extended-spans
-    val noErrors = bookSample.hide(builder, properties, functions).collapse(ctor)
-    val callErrors = noErrors.styled(eProp, SpanStyle(color = Color.Red)).styled(eCall, SpanStyle(color = Color.Red))
-    val allErrors = callErrors.styled(eClass, SpanStyle(color = Color.Red))
+    val noErrors = bookSample.hide(builder, bctor, properties, functions).collapse(ctor)
+    val callErrors = noErrors
+        .styled(eProp, SpanStyle(color = Color.Red))
+        .styled(eCall, SpanStyle(color = Color.Red))
+        .styled(eCtor, SpanStyle(color = Color.Red))
+    val allErrors = callErrors
+        .styled(eClass, SpanStyle(color = Color.Red))
 
-    allErrors
+    bookSample.hide(sample, builder)
+        .then { allErrors }
+
+        // Nested classes
         .then { styled(eClass, SpanStyle(color = Color.Yellow)) }
         .then { callErrors.reveal(builder) }
+
+        // Callables
         .then {
-            styled(eProp, SpanStyle(color = Color.Yellow))
+            // Callable names "yellow"
+            styled(eCtor, SpanStyle(color = Color.Yellow))
+                .styled(eProp, SpanStyle(color = Color.Yellow))
                 .styled(eCall, SpanStyle(color = Color.Yellow))
         }
-        .then { this } // TODO fix constructor error
         .then {
-            noErrors.styled(eCall, SpanStyle(color = Color.Yellow))
-                .reveal(builder, properties)
+            // Constructor "green"
+            noErrors
+                .styled(eProp, SpanStyle(color = Color.Yellow))
+                .styled(eCall, SpanStyle(color = Color.Yellow))
+                .reveal(builder, bctor)
         }
-        .then { noErrors.reveal(builder, properties, functions) }
+        .then {
+            // Constructor and properties "green"
+            noErrors
+                .styled(eCall, SpanStyle(color = Color.Yellow))
+                .reveal(builder, bctor, properties)
+        }
+        .then {
+            // Constructor, properties, and function "green"
+            noErrors.reveal(builder, bctor, properties, functions)
+        }
 }
+
+private val BOOK_PANEL = RightPanel(0, BUILDABLE, show = false)
+private val BUILDER_CLASS_NAME_PANEL = RightPanel(1, BUILDABLE, show = false)
+private val BUILDER_CLASS_SYMBOL_PANEL = RightPanel(2, BUILDABLE, show = false)
+private val BUILDER_CALL_NAME_PANEL = RightPanel(3, BUILDABLE, show = false)
+private val BUILDER_CONSTRUCTOR_PANEL = RightPanel(4, BUILDABLE, show = false)
+private val BUILDER_PROPERTY_PANEL = RightPanel(5, BUILDABLE, show = false)
+private val BUILDER_FUNCTION_PANEL = RightPanel(6, BUILDABLE, show = false)
 
 private val VALIDATE_SAMPLES = buildCodeSamples {
     val clsSig by tag("class signature")
@@ -93,10 +128,12 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
     val rpb by tag("registerPredicates body", SampleData.Body)
     val rps by tag("registerPredicates signature", SampleData.Signature)
 
+    val nesta by tag("getNestedClassifiersNames all")
     val nests by tag("getNestedClassifiersNames signature", SampleData.Signature)
     val nestp by tag("getNestedClassifiersNames param", SampleData.Parameters)
     val nestb by tag("getNestedClassifiersNames body", SampleData.Body)
 
+    val classa by tag("generateNestedClassLikeDeclaration all")
     val classs by tag("generateNestedClassLikeDeclaration signature", SampleData.Signature)
     val classp by tag("generateNestedClassLikeDeclaration param", SampleData.Parameters)
     val classb by tag("generateNestedClassLikeDeclaration body", SampleData.Body)
@@ -142,7 +179,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             register(HAS_BUILDABLE_PREDICATE)
           ${rpb}}
 
-          ${nests}override fun ${funName}getNestedClassifiersNames${funName}(${nestp}
+          ${nesta}${nests}override fun ${funName}getNestedClassifiersNames${funName}(${nestp}
             classSymbol: FirClassSymbol<*>,
             context: NestedClassGenerationContext,
           ${nestp}): Set<Name>${nests} {${nestb}
@@ -151,9 +188,9 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
               return emptySet()
 
             return setOf(BUILDER_CLASS_NAME)
-          ${nestb}}
+          ${nestb}}${nesta}
 
-          ${classs}override fun ${funName}generateNestedClassLikeDeclaration${funName}(${classp}
+          ${classa}${classs}override fun ${funName}generateNestedClassLikeDeclaration${funName}(${classp}
             owner: FirClassSymbol<*>,
             name: Name,
             context: NestedClassGenerationContext,
@@ -179,7 +216,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             }
 
             return builderClass.symbol${class3}
-          ${classb}}
+          ${classb}}${classa}
 
           ${calls}override fun ${funName}getCallableNamesForClass${funName}(${callp}
             classSymbol: FirClassSymbol<*>,
@@ -270,67 +307,72 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
         //  - finally, focus on the predicate function
         .then { focus(funName, scroll = false) }
 
-        .then { reveal(cob).focus(cob, scroll = false) }
+        // companion object
+        .then { reveal(cob).focus(cob, scroll = false).attach(BOOK_PANEL) }
+        .then { attach(BOOK_PANEL.show()) }
+        .then { attach(BOOK_PANEL) }
 
+        // registerPredicates
         .then { start.focus(rps, scroll = false) }
         .then { reveal(rpb).focus(rpb, scroll = false) }
 
+        // TODO do both name functions first?
+        // getNestedClassifiersNames
         .then { start.reveal(nestp).focus(nests) }
-        .then { reveal(nestb).focus(nestb).scroll(nests) }
+        .then { reveal(nestb).focus(nestb).scroll(nests).attach(BUILDER_CLASS_NAME_PANEL) }
+        .then { focus(nesta).attach(BUILDER_CLASS_NAME_PANEL.show()) }
+        .then { attach(BUILDER_CLASS_NAME_PANEL.showNext()) }
+        .then { attach(BUILDER_CLASS_NAME_PANEL.next()) }
+        .instead { start.focus(nests).attach(data) }
 
-        .then { start.focus(nests).attach(ShowPanel(BUILDABLE[0], show = false)) }
-        .then { attach(ShowPanel(BUILDABLE[0], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[1], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[1], show = false)) }
-
+        // generateNestedClassLikeDeclaration
         .then { start.reveal(classp).focus(classs) }
         .then { reveal(classb).focus(class1).scroll(classs) }
         .then { focus(class2) }
-        .then { focus(class3).attach(ShowPanel(BuilderClassKey, show = false)) }
-        .then { attach(ShowPanel(BuilderClassKey, show = true)) }
-        .then { attach(ShowPanel(BuilderClassKey, show = false)) }
-        .then { focus(classs) } // TODO also focus on body
+        .then { focus(class3).attach(BUILDER_CLASS_KEY_PANEL) }
+        .then { attach(BUILDER_CLASS_KEY_PANEL.show()) }
+        .then { attach(BUILDER_CLASS_KEY_PANEL) }
+        .then { focus(classa).attach(BUILDER_CLASS_SYMBOL_PANEL) }
+        .then { attach(BUILDER_CLASS_SYMBOL_PANEL.show()) }
+        .then { attach(BUILDER_CLASS_SYMBOL_PANEL.showNext()) }
+        .then { attach(BUILDER_CLASS_SYMBOL_PANEL.next()) }
+        .instead { start.focus(classs).attach(data) }
 
-        .then { start.focus(classs).attach(ShowPanel(BUILDABLE[1], show = false)) }
-        .then { attach(ShowPanel(BUILDABLE[1], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[2], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[2], show = false)) }
-
+        // getCallableNamesForClass
         .then { start.reveal(callp).focus(calls) }
-        .then { reveal(callb).focus(callb).scroll(calls) }
         // TODO walk through body
+        .then { reveal(callb).focus(callb).scroll(calls).attach(BUILDER_CALL_NAME_PANEL) }
+        .then { attach(BUILDER_CALL_NAME_PANEL.show()) }
+        .then { attach(BUILDER_CALL_NAME_PANEL.showNext()) }
+        .then { attach(BUILDER_CALL_NAME_PANEL.next()) }
+        .instead { start.focus(calls).attach(data) }
 
-        .then { start.focus(calls).attach(ShowPanel(BUILDABLE[2], show = false)) }
-        .then { attach(ShowPanel(BUILDABLE[2], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[3], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[3], show = false)) }
-
+        // generateConstructors
         .then { start.reveal(ctorp).focus(ctors) }
-        .then { reveal(ctorb).focus(ctorb).scroll(ctors) }
         // TODO walk through body
+        .then { reveal(ctorb).focus(ctorb).scroll(ctors).attach(BUILDER_CONSTRUCTOR_PANEL) }
+        .then { attach(BUILDER_CONSTRUCTOR_PANEL.show()) }
+        .then { attach(BUILDER_CONSTRUCTOR_PANEL.showNext()) }
+        .then { attach(BUILDER_CONSTRUCTOR_PANEL.next()) }
+        .instead { start.focus(ctors).attach(data) }
 
-        .then { start.focus(ctors).attach(ShowPanel(BUILDABLE[3], show = false)) }
-        .then { attach(ShowPanel(BUILDABLE[3], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[4], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[4], show = false)) }
-
+        // generateProperties
         .then { start.reveal(propp).focus(props) }
-        .then { reveal(propb).focus(propb).scroll(props) }
         // TODO walk through body
+        .then { reveal(propb).focus(propb).scroll(props).attach(BUILDER_PROPERTY_PANEL) }
+        .then { attach(BUILDER_PROPERTY_PANEL.show()) }
+        .then { attach(BUILDER_PROPERTY_PANEL.showNext()) }
+        .then { attach(BUILDER_PROPERTY_PANEL.next()) }
+        .instead { start.focus(props).attach(data) }
 
-        .then { start.focus(props).attach(ShowPanel(BUILDABLE[4], show = false)) }
-        .then { attach(ShowPanel(BUILDABLE[4], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[5], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[5], show = false)) }
-
+        // generateFunctions
         .then { start.reveal(funp).focus(funs) }
-        .then { reveal(funb).focus(funb).scroll(funs) }
         // TODO walk through body
-
-        .then { start.focus(funs).attach(ShowPanel(BUILDABLE[5], show = false)) }
-        .then { attach(ShowPanel(BUILDABLE[5], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[6], show = true)) }
-        .then { attach(ShowPanel(BUILDABLE[6], show = false)) }
+        .then { reveal(funb).focus(funb).scroll(funs).attach(BUILDER_FUNCTION_PANEL) }
+        .then { attach(BUILDER_FUNCTION_PANEL.show()) }
+        .then { attach(BUILDER_FUNCTION_PANEL.showNext()) }
+        .then { attach(BUILDER_FUNCTION_PANEL.next()) }
+        .instead { start.focus(funs).attach(data) }
 
         .then { start }
 }
@@ -345,6 +387,6 @@ internal fun validateFirGenerationSample() {
 
 private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
-fun StoryboardBuilder.Generation(start: Int = 0, endExclusive: Int = SAMPLES.size) {
+fun StoryboardBuilder.FirGeneration(start: Int = 0, endExclusive: Int = SAMPLES.size) {
     StageSampleScene(SAMPLES, CompilerStage.Resolve, start, endExclusive)
 }

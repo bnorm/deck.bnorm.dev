@@ -9,6 +9,6 @@ fun StoryboardBuilder.Transform() {
     //  - cut the details, keep the overview
     //  - still talk about IrAttribute?
 
-    Generation()
+    IrGeneration()
     Visitor()
 }
