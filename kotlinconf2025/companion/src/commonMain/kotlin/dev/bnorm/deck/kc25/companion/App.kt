@@ -1,9 +1,12 @@
 package dev.bnorm.deck.kc25.companion
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -69,11 +72,14 @@ fun App() {
     }
 
     MaterialTheme(colors = lightColors()) {
+        val state = rememberLazyListState()
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier.fillMaxSize()
+                .scrollable(state, orientation = Orientation.Vertical, reverseDirection = true)
         ) {
             LazyColumn(
+                state = state,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = PaddingValues(16.dp),
                 modifier = Modifier
@@ -174,10 +180,6 @@ private fun LazyListScope.Content(
                 Text("Information ${it + 1}", style = MaterialTheme.typography.h2)
             }
         }
-    }
-
-    item("End") {
-        Box(Modifier.height(32.dp))
     }
 }
 
