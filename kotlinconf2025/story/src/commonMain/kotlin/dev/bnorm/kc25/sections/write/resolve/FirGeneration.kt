@@ -387,6 +387,7 @@ internal fun validateFirGenerationSample() {
 
 private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
-fun StoryboardBuilder.FirGeneration(start: Int = 0, endExclusive: Int = SAMPLES.size) {
+fun StoryboardBuilder.FirGeneration(sink: MutableList<CodeSample>, start: Int = 0, endExclusive: Int = SAMPLES.size) {
+    sink.addAll(SAMPLES)
     StageSampleScene(SAMPLES, CompilerStage.Resolve, start, endExclusive)
 }

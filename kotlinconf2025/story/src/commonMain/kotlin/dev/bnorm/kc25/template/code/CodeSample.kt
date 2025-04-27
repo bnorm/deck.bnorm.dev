@@ -13,17 +13,18 @@ import dev.bnorm.storyboard.text.replaceAllByTag
 
 @Immutable
 class CodeSample private constructor(
-    private val base: AnnotatedString,
+    private val base: Lazy<AnnotatedString>,
     private val focus: TextTag?,
     private val replaced: Map<TextTag, AnnotatedString>,
     private val styled: Map<TextTag, SpanStyle>,
     private val scrollTag: TextTag?,
     val data: Any?,
 ) {
-    constructor(sample: AnnotatedString) : this(sample, null, emptyMap(), emptyMap(), null, null)
+    constructor(sample: AnnotatedString) : this(lazyOf(sample), null, emptyMap(), emptyMap(), null, null)
+    constructor(sample: Lazy<AnnotatedString>) : this(sample, null, emptyMap(), emptyMap(), null, null)
 
     val string: AnnotatedString by lazy {
-        var str = base
+        var str = base.value
         for ((tag, style) in styled) {
             str = str.addStyleByTag(tag, tagged = style)
         }
@@ -57,7 +58,7 @@ class CodeSample private constructor(
     }
 
     private fun copy(
-        base: AnnotatedString = this.base,
+        base: Lazy<AnnotatedString> = this.base,
         focus: TextTag? = this.focus,
         replaced: Map<TextTag, AnnotatedString> = this.replaced,
         styled: Map<TextTag, SpanStyle> = this.styled,
@@ -137,7 +138,7 @@ class CodeSamplesBuilder : TextTagScope.Default() {
         scope: CodeScope = CodeScope.File,
         identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
     ): CodeSample {
-        return CodeSample(extractTags(this).toCode(codeStyle, scope, identifierType))
+        return CodeSample(lazy { extractTags(this).toCode(codeStyle, scope, identifierType) })
     }
 
     fun CodeSample.collapse(data: Any?): CodeSample = collapse(tags.filter { data == it.data })

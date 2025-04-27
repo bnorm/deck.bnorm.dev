@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.components.MagicCodeSample
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -88,10 +89,11 @@ private val SAMPLES = buildCodeSamples {
         .then { reveal(ctor) }
 }
 
-fun StoryboardBuilder.BuildableIntro(start: Int = 0, endExclusive: Int = SAMPLES.size) {
+fun StoryboardBuilder.BuildableIntro(sink: MutableList<CodeSample>, start: Int = 0, endExclusive: Int = SAMPLES.size) {
     require(start < endExclusive) { "start=$start must be less than endExclusive=$endExclusive" }
     require(start >= 0) { "start=$start must be greater than or equal to 0" }
     require(endExclusive <= SAMPLES.size) { "end must be less than or equal to ${SAMPLES.size}" }
+    sink.addAll(SAMPLES)
 
     scene(
         stateCount = endExclusive - start,

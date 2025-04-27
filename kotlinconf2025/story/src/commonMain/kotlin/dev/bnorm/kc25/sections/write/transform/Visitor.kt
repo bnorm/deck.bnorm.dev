@@ -5,6 +5,7 @@ import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageSampleScene
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 
@@ -349,6 +350,7 @@ internal fun validateVisitorSample() {
 
 private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
-fun StoryboardBuilder.Visitor() {
+fun StoryboardBuilder.Visitor(sink: MutableList<CodeSample>) {
+    sink.addAll(SAMPLES)
     StageSampleScene(SAMPLES, CompilerStage.Transform, 0, SAMPLES.size)
 }

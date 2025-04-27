@@ -5,6 +5,7 @@ import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageSampleScene
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 
@@ -52,6 +53,7 @@ internal fun validateErrorsSample() {
 
 private val SAMPLES = VALIDATE_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATE_SAMPLES.size)
 
-fun StoryboardBuilder.Errors(start: Int = 0, endExclusive: Int = SAMPLES.size) {
+fun StoryboardBuilder.Errors(sink: MutableList<CodeSample>, start: Int = 0, endExclusive: Int = SAMPLES.size) {
+    sink.addAll(SAMPLES)
     StageSampleScene(SAMPLES, CompilerStage.Analyze, start, endExclusive)
 }

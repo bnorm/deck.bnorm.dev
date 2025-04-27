@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -71,7 +72,8 @@ private val SAMPLES = buildCodeSamples {
         .then { unfocus().attach(5.seconds) }
 }
 
-fun StoryboardBuilder.ComposeExample() {
+fun StoryboardBuilder.ComposeExample(sink: MutableList<CodeSample>) {
+    sink.addAll(SAMPLES)
     section("Compose") {
         scene(
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),

@@ -17,6 +17,7 @@ import dev.bnorm.kc25.components.BottomPanel
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code2
@@ -75,6 +76,7 @@ private val SAMPLES = buildCodeSamples {
         .then { unfocus().attach(5.seconds) }
 }
 
+// TODO how to make these lazy?
 private val OUTPUT = listOf(
     "\n".repeat(10),
     """
@@ -200,8 +202,9 @@ private val OUTPUT = listOf(
     }
 }
 
-fun StoryboardBuilder.DataFrameExample() {
+fun StoryboardBuilder.DataFrameExample(sink: MutableList<CodeSample>) {
     require(SAMPLES.size == OUTPUT.size) { "Samples (${SAMPLES.size}) != Outputs (${OUTPUT.size})" }
+    sink.addAll(SAMPLES)
 
     section("DataFrame") {
         scene(

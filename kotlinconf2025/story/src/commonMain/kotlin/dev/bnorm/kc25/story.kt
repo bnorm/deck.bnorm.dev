@@ -14,8 +14,8 @@ import dev.bnorm.kc25.sections.write.BuildableIntro
 import dev.bnorm.kc25.sections.write.analyze.Analyze
 import dev.bnorm.kc25.sections.write.resolve.Resolve
 import dev.bnorm.kc25.sections.write.transform.Transform
-import dev.bnorm.kc25.sections.write.transform.Visitor
 import dev.bnorm.kc25.template.SectionTitle
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
@@ -24,7 +24,10 @@ import dev.bnorm.storyboard.easel.template.section
 
 // TODO review all slides for consistent code formatting!
 // TODO update all samples to 2.2.0?
-fun createStoryboard(decorator: SceneDecorator = storyDecorator()): Storyboard {
+fun createStoryboard(
+    decorator: SceneDecorator = storyDecorator(),
+    sink: MutableList<CodeSample> = mutableListOf(),
+): Storyboard {
     return Storyboard.build(
         title = "Writing Your Third Kotlin Compiler Plugin",
         description = """
@@ -42,12 +45,12 @@ fun createStoryboard(decorator: SceneDecorator = storyDecorator()): Storyboard {
         decorator = decorator,
     ) {
         Title()
-        Outline()
+        Outline(sink)
         Closing()
     }
 }
 
-private fun StoryboardBuilder.Outline() {
+private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
     section("Third?") {
         SectionTitle(animateToHeader = true)
         ThirdPlugin()
@@ -68,25 +71,25 @@ private fun StoryboardBuilder.Outline() {
             "    $BULLET_2 Should only be used if the benefits outweigh the drawbacks.",
         )
 
-        SpringBoot()
-        SerializationExample()
-        ComposeExample()
-        DataFrameExample()
-        PowerAssertExample()
+        SpringBoot(sink)
+        SerializationExample(sink)
+        ComposeExample(sink)
+        DataFrameExample(sink)
+        PowerAssertExample(sink)
 
         // TODO Move section to just after registration slide?
         section("Your Plugin") {
-            BuildableIntro()
+            BuildableIntro(sink)
         }
     }
 
     Architecture()
 
-    Registration()
+    Registration(sink)
 
     RegistrarComponentsFocus(Component.IrGenerationExtension, Component.FirDeclarationGenerationExtension)
 
-    Resolve()
+    Resolve(sink)
 
     RegistrarComponentsFocus(Component.FirDeclarationGenerationExtension, Component.FirAdditionalCheckersExtension)
 
@@ -96,11 +99,11 @@ private fun StoryboardBuilder.Outline() {
     //    - move "performant" in the case of errors
     //    - everything is resolved
     // TODO could transition into IDE topics after analyze?
-    Analyze()
+    Analyze(sink)
 
     RegistrarComponentsFocus(Component.FirAdditionalCheckersExtension, Component.IrGenerationExtension)
 
-    Transform()
+    Transform(sink)
 
     RegistrarComponentsFocus(Component.IrGenerationExtension, null)
 

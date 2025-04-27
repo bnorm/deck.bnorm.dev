@@ -7,12 +7,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.StageScaffold
+import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.toState
 
-fun StoryboardBuilder.Registration() {
+fun StoryboardBuilder.Registration(sink: MutableList<CodeSample>) {
     // TODO talk about the layers?
     //  - like the first layer are Extensions
     //  - the second layer are FirExtensions
@@ -32,16 +33,16 @@ fun StoryboardBuilder.Registration() {
     // TODO example showing template project and how
 
     RegistrarComponents(null, Component.CompilerPluginRegistrar)
-    PluginRegistrar(endExclusive = REGISTRATION_START + 1)
+    PluginRegistrar(sink ,endExclusive = REGISTRATION_START + 1)
     RegistrarComponents(Component.CompilerPluginRegistrar, Component.FirExtensionRegistrar)
-    PluginRegistrar(start = REGISTRATION_START, endExclusive = REGISTRATION_FRONTEND_END)
-    FirRegistrar(endExclusive = FIR_REGISTRATION_CONFIGURE_END)
+    PluginRegistrar(sink ,start = REGISTRATION_START, endExclusive = REGISTRATION_FRONTEND_END)
+    FirRegistrar(sink, endExclusive = FIR_REGISTRATION_CONFIGURE_END)
     RegistrarComponents(Component.FirExtensionRegistrar, Component.FirDeclarationGenerationExtension)
-    FirRegistrar(start = FIR_REGISTRATION_CONFIGURE_END, endExclusive = FIR_REGISTRATION_RESOLVE_END)
+    FirRegistrar(sink, start = FIR_REGISTRATION_CONFIGURE_END, endExclusive = FIR_REGISTRATION_RESOLVE_END)
     RegistrarComponents(Component.FirDeclarationGenerationExtension, Component.FirAdditionalCheckersExtension)
-    FirRegistrar(start = FIR_REGISTRATION_RESOLVE_END)
+    FirRegistrar(sink, start = FIR_REGISTRATION_RESOLVE_END)
     RegistrarComponents(Component.FirAdditionalCheckersExtension, Component.IrGenerationExtension)
-    PluginRegistrar(start = REGISTRATION_FRONTEND_END)
+    PluginRegistrar(sink ,start = REGISTRATION_FRONTEND_END)
 }
 
 fun StoryboardBuilder.RegistrarComponentsFocus(first: Component?, second: Component?) {

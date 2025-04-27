@@ -176,7 +176,8 @@ private val SAMPLES = buildCodeSamples {
         .then { collapse(m).attach(3.seconds) }
 }
 
-fun StoryboardBuilder.PowerAssertExample() {
+fun StoryboardBuilder.PowerAssertExample(sink: MutableList<CodeSample>) {
+    sink.addAll(SAMPLES)
     section("Power-Assert") {
         scene(
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
