@@ -38,10 +38,8 @@ fun storyDecorator(
             ) {
                 content()
 
-                if (infiniteTransition != null) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-                        QrCodeKodee(infiniteTransition)
-                    }
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+                    QrCodeKodee(infiniteTransition)
                 }
             }
         }
