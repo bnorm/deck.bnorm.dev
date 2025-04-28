@@ -9,6 +9,7 @@ import dev.bnorm.deck.shared.Laser
 import dev.bnorm.kc25.broadcast.Broadcast
 import dev.bnorm.kc25.components.validateAllSamples
 import dev.bnorm.kc25.createStoryboard
+import dev.bnorm.kc25.template.DARK_COLORS
 import dev.bnorm.kc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.easel.DesktopStoryEasel
@@ -17,14 +18,13 @@ import dev.bnorm.storyboard.easel.StoryState
 import dev.bnorm.storyboard.easel.template.SceneIndexDecorator
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 
-@OptIn(ExperimentalStoryStateApi::class, DelicateCoroutinesApi::class)
+@OptIn(ExperimentalStoryStateApi::class)
 fun main() {
     val state = StoryState()
     val broadcast = Broadcast(state, coroutineScope = CoroutineScope(Dispatchers.IO))
-    val laser = Laser()
+    val laser = Laser(color = DARK_COLORS.secondary)
 
     val captions = persistentListOf(
         laser.caption,
@@ -38,9 +38,9 @@ fun main() {
         remember {
             val decorator = SceneDecorator.from(
                 laser.decorator,
+                SceneIndexDecorator(state),
                 storyDecorator(infiniteTransition),
                 broadcast.decorator,
-                SceneIndexDecorator(state),
             )
             createStoryboard(decorator).also { state.updateStoryboard(it) }
         }
