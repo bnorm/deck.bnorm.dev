@@ -197,8 +197,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
           ${classp}): FirClassLikeSymbol<*>?${classs} {${classb}${class1}
             if (name != BUILDER_CLASS_NAME) return null${class1}
 
-            ${class2}// ??? TODO should we be using owner.declarationSymbols instead?
-            val scope: FirScope =
+            ${class2}val scope: FirScope =
               owner.declaredMemberScope(session, memberRequiredPhase = null)
             val provider = session.predicateBasedProvider
             val constructorSymbol = scope.getDeclaredConstructors()
