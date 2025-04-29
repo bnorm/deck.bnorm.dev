@@ -1,6 +1,7 @@
 package dev.bnorm.kc25.sections.register
 
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.CodeSample
@@ -19,15 +21,15 @@ import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
-import dev.bnorm.storyboard.easel.sharedBounds
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.map
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
-private val SAMPLES = buildCodeSamples {
+private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
     val sc by tag("super class")
     val cb by tag("class body")
     val k2 by tag("supportsK2 property")
@@ -57,8 +59,8 @@ private val SAMPLES = buildCodeSamples {
 
     // TODO is there a better way to do this transition?
     //  - maybe similar to FIR tree where it's part of the diagram?
-    val name = CodeSample(AnnotatedString("CompilerPluginRegistrar"))
-    name
+    val blank = CodeSample(AnnotatedString(""))
+    blank
         .then { baseSample.collapse(cb).hide(k2b, reb, ir) }
         .then { reveal(cb).focus(cb) }
         .then { focus(k2) }
@@ -67,8 +69,10 @@ private val SAMPLES = buildCodeSamples {
         .then { reveal(reb).focus(fir) }
         .then { reveal(ir).focus(ir) }
         .then { focus(re) }
-        .then { name }
+        .then { blank }
 }
+
+private val SAMPLES = SAMPLES_WITH_TRANSITION.subList(fromIndex = 1, toIndex = SAMPLES_WITH_TRANSITION.size - 1)
 
 fun StoryboardBuilder.PluginRegistrar(sink: MutableList<CodeSample>, start: Int = 0, endExclusive: Int = SAMPLES.size) {
     require(start < endExclusive) { "start=$start must be less than endExclusive=$endExclusive" }
@@ -81,7 +85,9 @@ fun StoryboardBuilder.PluginRegistrar(sink: MutableList<CodeSample>, start: Int 
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        StageScaffold { padding ->
+        StageScaffold(
+            stages = updateTransition(setOf(CompilerStage.Resolve, CompilerStage.Analyze, CompilerStage.Transform)),
+        ) { padding ->
             Box(
                 Modifier.padding(padding)
                     .padding(bottom = 32.dp)
@@ -95,18 +101,11 @@ fun StoryboardBuilder.PluginRegistrar(sink: MutableList<CodeSample>, start: Int 
                     .padding(16.dp)
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
-                    val text = frame.createChildTransition {
-                        SAMPLES[start + it.toState()].string.splitByTags()
+                    val text = frame.createChildTransition { frame ->
+                        val index = frame.map { it + 1 }.toState(start = 0, end = SAMPLES_WITH_TRANSITION.lastIndex)
+                        SAMPLES_WITH_TRANSITION[start + index].string.splitByTags()
                     }
-                    MagicText(
-                        text,
-                        modifier = Modifier
-                            .sharedBounds(
-                                rememberSharedContentState("text:${Component.CompilerPluginRegistrar}"),
-                                boundsTransform = TextMovementSpec,
-                                zIndexInOverlay = -1f,
-                            )
-                    )
+                    MagicText(text)
                 }
             }
         }

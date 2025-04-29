@@ -26,7 +26,7 @@ import dev.bnorm.storyboard.easel.sharedElement
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 fun StageScaffold(
-    currentStage: Transition<CompilerStage?> = updateTransition(null),
+    stages: Transition<Set<CompilerStage>> = updateTransition(emptySet()),
     modifier: Modifier = Modifier,
     body: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
@@ -49,11 +49,11 @@ fun StageScaffold(
                     for (stage in CompilerStage.entries) {
                         // TODO how do we animate color across scenes?
                         //  - will it require a transition scene?
-                        val borderColor by currentStage.animateColor(
+                        val borderColor by stages.animateColor(
                             transitionSpec = { tween(500, easing = EaseOut) },
                         ) {
-                            when (it) {
-                                stage -> MaterialTheme.colors.secondary
+                            when (stage) {
+                                in it -> MaterialTheme.colors.secondary
                                 else -> MaterialTheme.colors.primary
                             }
                         }

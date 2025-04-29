@@ -22,13 +22,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.layout.Connected
 import dev.bnorm.deck.shared.layout.connectionPath
+import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code3
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.animateEnterExit
 import dev.bnorm.storyboard.easel.rememberSharedContentState
-import dev.bnorm.storyboard.easel.sharedBounds
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.toState
 
@@ -45,24 +46,27 @@ enum class Component {
 }
 
 class RegistrarComponentState(
-    val visible: Set<Component>,
+    val visible: Set<Component> = Component.entries.toSet(),
     val focus: Component? = null,
+    val stages: Set<CompilerStage> = emptySet(),
 )
 
-val BoxMovementSpec: BoundsTransform = BoundsTransform { _, _ -> tween(500, delayMillis = 250, easing = EaseInOut) }
-val TextMovementSpec: BoundsTransform = BoxMovementSpec
+private fun fadeInSpec(): EnterTransition = fadeIn(tween(300, easing = EaseIn))
+val BoxMovementSpec: BoundsTransform = BoundsTransform { _, _ -> tween(500, delayMillis = 300, easing = EaseInOut) }
+private fun fadeOutSpec(): ExitTransition = fadeOut(tween(300, easing = EaseOut))
 
 fun StoryboardBuilder.RegistrarComponent(
     vararg states: RegistrarComponentState,
 ) {
     scene(
         states = states.toList(),
-        enterTransition = { _ -> fadeIn(tween(250, delayMillis = 500, easing = EaseIn)) },
-        exitTransition = { _ -> fadeOut(tween(250, easing = EaseOut)) },
+        enterTransition = { _ -> fadeIn(tween(300, delayMillis = 800, easing = EaseIn)) },
+        exitTransition = { _ -> fadeOutSpec() },
     ) {
-        StageScaffold { padding ->
+        val state = frame.createChildTransition { it.toState() }
+        StageScaffold(state.createChildTransition { it.stages }) { padding ->
             RegistrarComponentTree(
-                state = frame.createChildTransition { it.toState() },
+                state = state,
                 modifier = Modifier.padding(top = padding.calculateTopPadding() + 32.dp),
             )
         }
@@ -85,43 +89,44 @@ fun RegistrarComponentTree(
     val start = (Storyboard.DEFAULT_SIZE.width - width) / 2
 
     @Composable
-    context(scope: AnimatedVisibilityScope, _: SharedTransitionScope)
+    fun Content(component: Component, style: TextStyle) {
+        val borderColor by state.animateColor(transitionSpec = { tween(300, easing = EaseIn) }) {
+            when (it.focus) {
+                component -> MaterialTheme.colors.secondary
+                else -> MaterialTheme.colors.primary
+            }
+        }
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+                .sharedElement(
+                    rememberSharedContentState("box:$component"),
+                    boundsTransform = BoxMovementSpec,
+                    zIndexInOverlay = -1f,
+                )
+                .border(2.dp, borderColor, RoundedCornerShape(8.dp))
+        ) {
+            Text(
+                text = component.name,
+                style = style,
+                modifier = Modifier
+                    .animateEnterExit(
+                        enter = fadeInSpec(),
+                        exit = fadeOutSpec(),
+                    )
+            )
+        }
+    }
+
+    @Composable
     fun Item(component: Component, style: TextStyle) {
         Box(Modifier.size(width = width, height = height)) {
             state.AnimatedVisibility(
                 visible = { component in it.visible },
-                enter = fadeIn(tween(300, easing = EaseIn)),
-                exit = fadeOut(tween(300, easing = EaseOut)),
+                enter = fadeInSpec(),
+                exit = fadeOutSpec(),
             ) {
-                val borderColor by state.animateColor(transitionSpec = { tween(300, easing = EaseIn) }) {
-                    when (it.focus) {
-                        component -> MaterialTheme.colors.secondary
-                        else -> MaterialTheme.colors.primary
-                    }
-                }
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                        .sharedElement(
-                            rememberSharedContentState("box:$component"),
-                            animatedVisibilityScope = scope,
-                            boundsTransform = BoxMovementSpec,
-                            zIndexInOverlay = -1f,
-                        )
-                        .border(2.dp, borderColor, RoundedCornerShape(8.dp))
-                ) {
-                    Text(
-                        text = component.name,
-                        style = style,
-                        modifier = Modifier
-                            .sharedBounds(
-                                rememberSharedContentState("text:$component"),
-                                animatedVisibilityScope = scope,
-                                boundsTransform = TextMovementSpec,
-                                zIndexInOverlay = -1f,
-                            )
-                    )
-                }
+                Content(component, style)
             }
         }
     }
@@ -135,8 +140,8 @@ fun RegistrarComponentTree(
             Box(Modifier.fillMaxSize()) {
                 state.AnimatedVisibility(
                     visible = { start in it.visible && end in it.visible },
-                    enter = fadeIn(tween(300, easing = EaseIn)),
-                    exit = fadeOut(tween(300, easing = EaseOut)),
+                    enter = fadeInSpec(),
+                    exit = fadeOutSpec(),
                 ) {
                     Canvas(Modifier.fillMaxSize()) {
                         val path = connectionPath(startRect, 0.625f, endRect, 0.125f)

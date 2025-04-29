@@ -7,9 +7,11 @@ import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
 import dev.bnorm.kc25.sections.intro.*
 import dev.bnorm.kc25.sections.register.Component
-import dev.bnorm.kc25.sections.register.RegistrarComponentsFocus
+import dev.bnorm.kc25.sections.register.RegistrarComponent
+import dev.bnorm.kc25.sections.register.RegistrarComponentState
 import dev.bnorm.kc25.sections.register.Registration
 import dev.bnorm.kc25.sections.stages.Architecture
+import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.sections.write.BuildableIntro
 import dev.bnorm.kc25.sections.write.analyze.Analyze
 import dev.bnorm.kc25.sections.write.resolve.Resolve
@@ -87,11 +89,31 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
 
     Registration(sink)
 
-    RegistrarComponentsFocus(Component.IrGenerationExtension, Component.FirDeclarationGenerationExtension)
-
     Resolve(sink)
 
-    RegistrarComponentsFocus(Component.FirDeclarationGenerationExtension, Component.FirAdditionalCheckersExtension)
+    RegistrarComponent(
+        RegistrarComponentState(
+            focus = Component.FirDeclarationGenerationExtension,
+            stages = setOf(CompilerStage.Resolve),
+        ),
+        RegistrarComponentState(
+            focus = Component.IrGenerationExtension,
+            stages = setOf(CompilerStage.Transform),
+        ),
+    )
+
+    Transform(sink)
+
+    RegistrarComponent(
+        RegistrarComponentState(
+            focus = Component.IrGenerationExtension,
+            stages = setOf(CompilerStage.Transform),
+        ),
+        RegistrarComponentState(
+            focus = Component.FirAdditionalCheckersExtension,
+            stages = setOf(CompilerStage.Analyze),
+        ),
+    )
 
     // TODO do transform stage first and go back to analyze
     //  - skip checker to focus on code generation
@@ -101,11 +123,13 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
     // TODO could transition into IDE topics after analyze?
     Analyze(sink)
 
-    RegistrarComponentsFocus(Component.FirAdditionalCheckersExtension, Component.IrGenerationExtension)
-
-    Transform(sink)
-
-    RegistrarComponentsFocus(Component.IrGenerationExtension, null)
+    RegistrarComponent(
+        RegistrarComponentState(
+            focus = Component.FirAdditionalCheckersExtension,
+            stages = setOf(CompilerStage.Analyze),
+        ),
+        RegistrarComponentState(),
+    )
 
     section("Your Plugin") {
         // TODO new slide

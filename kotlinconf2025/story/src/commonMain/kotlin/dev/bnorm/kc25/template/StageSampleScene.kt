@@ -48,7 +48,7 @@ fun StoryboardBuilder.StageSampleScene(
     ) {
         val sample = frame.createChildTransition { samples[start + it.toState()] }
 
-        StageScaffold(updateTransition(stage)) { padding ->
+        StageScaffold(updateTransition(setOfNotNull(stage))) { padding ->
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 sample.MagicCodeSample(modifier = Modifier.padding(padding))
             }

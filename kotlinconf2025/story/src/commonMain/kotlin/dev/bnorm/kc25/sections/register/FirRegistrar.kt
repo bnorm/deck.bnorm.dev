@@ -1,9 +1,6 @@
 package dev.bnorm.kc25.sections.register
 
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
@@ -16,6 +13,7 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.CodeSample
@@ -23,13 +21,13 @@ import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
-import dev.bnorm.storyboard.easel.sharedBounds
 import dev.bnorm.storyboard.easel.sharedElement
+import dev.bnorm.storyboard.map
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
-private val SAMPLES = buildCodeSamples {
+private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
     val sup by tag("super class")
     val body by tag("class body")
     val sig by tag("configurePlugin signature")
@@ -53,8 +51,8 @@ private val SAMPLES = buildCodeSamples {
 
     // TODO is there a better way to do this transition?
     //  - maybe similar to FIR tree where it's part of the diagram?
-    val name = CodeSample(AnnotatedString("FirExtensionRegistrar"))
-    name
+    val blank = CodeSample(AnnotatedString(""))
+    blank
         .then { baseSample.collapse(body).hide(dge, ace, sge, ste) }
         .then { reveal(body).focus(sig) }
         .then { reveal(dge).focus(dge) }
@@ -62,10 +60,16 @@ private val SAMPLES = buildCodeSamples {
         .then { reveal(ste).focus(ste) }
         .then { reveal(ace).focus(ace) }
         .then { unfocus() }
-        .then { name }
+        .then { blank }
 }
 
-fun StoryboardBuilder.FirRegistrar(sink: MutableList<CodeSample>, start: Int = 0, endExclusive: Int = SAMPLES.size) {
+private val SAMPLES = SAMPLES_WITH_TRANSITION.subList(fromIndex = 1, toIndex = SAMPLES_WITH_TRANSITION.size - 1)
+
+fun StoryboardBuilder.FirRegistrar(
+    sink: MutableList<CodeSample>,
+    start: Int = 0,
+    endExclusive: Int = SAMPLES.size,
+) {
     require(start < endExclusive) { "start=$start must be less than endExclusive=$endExclusive" }
     require(start >= 0) { "start=$start must be greater than or equal to 0" }
     require(endExclusive <= SAMPLES.size) { "end must be less than or equal to ${SAMPLES.size}" }
@@ -76,7 +80,9 @@ fun StoryboardBuilder.FirRegistrar(sink: MutableList<CodeSample>, start: Int = 0
         enterTransition = { _ -> fadeIn(tween(250, delayMillis = 500, easing = EaseIn)) },
         exitTransition = { _ -> fadeOut(tween(250, easing = EaseOut)) },
     ) {
-        StageScaffold { padding ->
+        StageScaffold(
+            stages = updateTransition(setOf(CompilerStage.Resolve, CompilerStage.Analyze)),
+        ) { padding ->
             Box(
                 Modifier.padding(padding)
                     .padding(bottom = 32.dp)
@@ -90,18 +96,11 @@ fun StoryboardBuilder.FirRegistrar(sink: MutableList<CodeSample>, start: Int = 0
                     .padding(16.dp)
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
-                    val text = frame.createChildTransition {
-                        SAMPLES[start + it.toState()].string.splitByTags()
+                    val text = frame.createChildTransition { frame ->
+                        val index = frame.map { it + 1 }.toState(start = 0, end = SAMPLES_WITH_TRANSITION.lastIndex)
+                        SAMPLES_WITH_TRANSITION[start + index].string.splitByTags()
                     }
-                    MagicText(
-                        text,
-                        modifier = Modifier
-                            .sharedBounds(
-                                rememberSharedContentState("text:${Component.FirExtensionRegistrar}"),
-                                boundsTransform = TextMovementSpec,
-                                zIndexInOverlay = -1f,
-                            )
-                    )
+                    MagicText(text, modifier = Modifier.fillMaxSize())
                 }
             }
         }

@@ -1,16 +1,8 @@
 package dev.bnorm.kc25.sections.register
 
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.template.StageScaffold
+import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.Registration(sink: MutableList<CodeSample>) {
     // TODO similar to stages, zoom in and out of components to see changes which need to be made
@@ -33,42 +25,77 @@ fun StoryboardBuilder.Registration(sink: MutableList<CodeSample>) {
 
     RegistrarComponent(
         RegistrarComponentState(visible = emptySet()),
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 1).toSet()),
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 2).toSet()),
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 3).toSet()),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 1).toSet(),
+            focus = Component.CompilerPluginRegistrar,
+            stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze, CompilerStage.Transform),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 2).toSet(),
+            focus = Component.FirExtensionRegistrar,
+            stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 3).toSet(),
+            focus = Component.IrGenerationExtension,
+            stages = setOf(CompilerStage.Transform),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 3).toSet(),
+            focus = Component.CompilerPluginRegistrar,
+            stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze, CompilerStage.Transform),
+        ),
     )
-
-    // TODO highlight stages and the extension to show frontend vs backend
 
     PluginRegistrar(sink)
 
     RegistrarComponent(
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 3).toSet()),
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 4).toSet()),
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 5).toSet()),
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 6).toSet()),
-        RegistrarComponentState(visible = revealOrder.subList(fromIndex = 0, toIndex = 7).toSet()),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 3).toSet(),
+            focus = Component.CompilerPluginRegistrar,
+            stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze, CompilerStage.Transform),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 4).toSet(),
+            focus = Component.FirDeclarationGenerationExtension,
+            stages = setOf(CompilerStage.Resolve),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 5).toSet(),
+            focus = Component.FirStatusTransformerExtension,
+            stages = setOf(CompilerStage.Resolve),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 6).toSet(),
+            focus = Component.FirSupertypeGenerationExtension,
+            stages = setOf(CompilerStage.Resolve),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 7).toSet(),
+            focus = Component.FirAdditionalCheckersExtension,
+            stages = setOf(CompilerStage.Analyze),
+        ),
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 7).toSet(),
+            focus = Component.FirExtensionRegistrar,
+            stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze),
+        ),
     )
 
-    // TODO highlight stages and the extension to show resolve vs analyze
-
     FirRegistrar(sink)
-}
 
-fun StoryboardBuilder.RegistrarComponentsFocus(first: Component?, second: Component?) {
-    scene(
-        states = listOf(
-            RegistrarComponentState(Component.entries.toSet(), focus = first),
-            RegistrarComponentState(Component.entries.toSet(), focus = second),
+    // TODO move IrGenerationExtension boiler plate here?
+
+    RegistrarComponent(
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 7).toSet(),
+            focus = Component.FirExtensionRegistrar,
+            stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze),
         ),
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    ) {
-        StageScaffold { padding ->
-            RegistrarComponentTree(
-                state = frame.createChildTransition { it.toState() },
-                modifier = Modifier.padding(top = padding.calculateTopPadding() + 32.dp),
-            )
-        }
-    }
+        RegistrarComponentState(
+            visible = revealOrder.subList(fromIndex = 0, toIndex = 7).toSet(),
+            focus = Component.FirDeclarationGenerationExtension,
+            stages = setOf(CompilerStage.Resolve),
+        ),
+    )
 }
