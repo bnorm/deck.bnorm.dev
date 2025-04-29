@@ -68,9 +68,6 @@ fun StoryboardBuilder.StageDetail(
     content: SceneContent<Int>,
 ) {
     scene(stateCount) {
-        // TODO display the other stages off the screen
-        //  - they are pushed out rather than fade?
-
         Box(
             modifier = Modifier
                 .padding(32.dp)
@@ -103,7 +100,6 @@ fun StoryboardBuilder.StageDetail(
                     enter = fadeIn(fadeInSpec()),
                     exit = fadeOut(fadeOutSpec()),
                 ) {
-                    // TODO horizontal line like with the header scaffold?
                     Box(Modifier.padding(16.dp)) {
                         Render(content)
                     }

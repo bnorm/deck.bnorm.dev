@@ -13,9 +13,12 @@ import dev.bnorm.kc25.sections.register.Registration
 import dev.bnorm.kc25.sections.stages.Architecture
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.sections.write.BuildableIntro
-import dev.bnorm.kc25.sections.write.analyze.Analyze
-import dev.bnorm.kc25.sections.write.resolve.Resolve
-import dev.bnorm.kc25.sections.write.transform.Transform
+import dev.bnorm.kc25.sections.write.analyze.Checker
+import dev.bnorm.kc25.sections.write.analyze.CheckerExtension
+import dev.bnorm.kc25.sections.write.analyze.Errors
+import dev.bnorm.kc25.sections.write.resolve.FirGeneration
+import dev.bnorm.kc25.sections.write.transform.IrGeneration
+import dev.bnorm.kc25.sections.write.transform.Visitor
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.storyDecorator
@@ -85,11 +88,59 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
         }
     }
 
+    // TODO the stages should be more front and center
+    //  - push them to the outside?
+    // TODO are there other visuals we want to add here?
+    // TODO talk about frontend vs backend
+    //  - put boxes around the frontend and the backend
+    // TODO improve details about analyze stage
+    // TODO improve details about parse stage
+    //  - also show a UML-like tree of element linking?
+    //  - save for resolve phase?
+    // TODO improve details about resolve stage
+    // TODO can we show an example of why types are resolved in a specific order?
+    //  - super-type
+    //  - return type and parameter types
+    //  - local variables
+    // TODO improve details about transform stage
+    // TODO improve details about generate stage
+    //  - should i actually include klib?
     Architecture()
 
+    // TODO similar to stages, zoom in and out of components to see changes which need to be made
+    //  - include a header and bullet points to describe how the extension can be used?
+    // TODO what to put in the backend versus the frontend
+    //  - put boxes around the frontend and the backend
+    // TODO example showing template project and how
+    // TODO move IrGenerationExtension boiler plate here?
+    // TODO start with the factory version in FirExtensionRegistrar and transform into the method reference version?
+    // TODO is there a better way to do detail transitions?
+    //  - maybe similar to FIR tree where it's part of the diagram?
     Registration(sink)
 
-    Resolve(sink)
+    RegistrarComponent(
+        RegistrarComponentState(
+            focus = Component.FirExtensionRegistrar,
+            stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze),
+        ),
+        RegistrarComponentState(
+            focus = Component.FirDeclarationGenerationExtension,
+            stages = setOf(CompilerStage.Resolve),
+        ),
+    )
+
+    section("Resolve") {
+        // TODO show all the annotation predicate types and what each match?
+        // TODO show more details about predicate based provider?
+        // TODO show more details about FirScope?
+        // TODO do both name functions first?
+        //  - first fucus on the name functions
+        //  - next focus on the generate functions
+        //  - finally, focus on the predicate function
+        // TODO walk through the body of callable names, generate constructor, properties, and functions
+        // TODO do code errors with squiggly lines https://github.com/saket/extended-spans
+        FirGeneration(sink)
+    }
 
     RegistrarComponent(
         RegistrarComponentState(
@@ -102,7 +153,14 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
         ),
     )
 
-    Transform(sink)
+    section("Transform") {
+        IrGeneration(sink)
+        // TODO still talk about IrAttribute?
+        // TODO add side panels for generated code
+        // TODO focus on parts of function body
+        // TODO side panel for irAttribute
+        Visitor(sink)
+    }
 
     RegistrarComponent(
         RegistrarComponentState(
@@ -115,13 +173,15 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
         ),
     )
 
-    // TODO do transform stage first and go back to analyze
-    //  - skip checker to focus on code generation
-    //  - can talk about why we generate bodies in IR
-    //    - move "performant" in the case of errors
-    //    - everything is resolved
-    // TODO could transition into IDE topics after analyze?
-    Analyze(sink)
+    section("Analyze") {
+        // TODO in what order should extension, checker and errors scenes be?
+        // TODO show example of other checker configuration?
+        CheckerExtension(sink)
+        Checker(sink)
+        // TODO show example of other multi-parameter errors?
+        Errors(sink)
+        // TODO could transition into IDE topics after analyze?
+    }
 
     RegistrarComponent(
         RegistrarComponentState(

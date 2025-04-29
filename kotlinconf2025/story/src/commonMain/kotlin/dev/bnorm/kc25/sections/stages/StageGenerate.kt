@@ -14,15 +14,13 @@ import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.StageGenerate() {
-    // TODO improve details about generate stage
-
     val items = listOf(
         "$BULLET_1 Converts IR into platform-specific representation.",
         "    $BULLET_2 JVM ByteCode",
         "    $BULLET_2 JavaScript",
         "    $BULLET_2 LLVM IR",
         "    $BULLET_2 Wasm",
-        "    $BULLET_2 KLIB", // TODO should i include this?
+        "    $BULLET_2 KLIB",
     )
 
     StageDetail(stateCount = items.size + 1, stage = CompilerStage.Generate) {

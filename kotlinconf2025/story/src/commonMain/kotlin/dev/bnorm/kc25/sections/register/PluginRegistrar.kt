@@ -57,8 +57,6 @@ private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
         ${cb}}
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    // TODO is there a better way to do this transition?
-    //  - maybe similar to FIR tree where it's part of the diagram?
     val blank = CodeSample(AnnotatedString(""))
     blank
         .then { baseSample.collapse(cb).hide(k2b, reb, ir) }

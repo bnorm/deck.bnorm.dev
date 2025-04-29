@@ -16,10 +16,6 @@ private sealed class SampleData {
 }
 
 private val VALIDATE_SAMPLES = buildCodeSamples {
-    // TODO include UnsafeDuringIrConstructionAPI opt-in annotation?
-    // TODO generateBuildFunction references the primary constructor instead of the annotated constructor
-    // TODO add side panels for generated code
-
     val sup by tag("super class")
     val co by tag("companion object")
     val sig by tag("signatures")
@@ -35,8 +31,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
     val vCls by tag("", SampleData.Visitor)
     val vClsB by tag("visitClass body", SampleData.Body)
-    // TODO focus on parts of function body
-    // TODO side panel for irAttribute
 
     val vFun by tag("", SampleData.Visitor)
     val vFunB by tag("visitSimpleFunction body", SampleData.Body)

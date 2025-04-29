@@ -125,8 +125,6 @@ private class FirFunction : FirNode("FirFunction") {
                     transition.createChildTransition {
                         codeSamples[it.coerceIn(codeSamples.indices)].string.splitByTags()
                     },
-                    moveDurationMillis = 300,
-                    fadeDurationMillis = 300,
                 )
             }
         }

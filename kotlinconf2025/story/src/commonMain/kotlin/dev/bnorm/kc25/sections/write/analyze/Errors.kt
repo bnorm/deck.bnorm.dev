@@ -15,9 +15,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
     val map by tag("")
     val init by tag("")
 
-    // TODO show example of other multi-parameter errors?
-    // TODO validate sample
-
     val base = """
         object BuildableErrors : ${sup}BaseDiagnosticRendererFactory()${sup} {${err}
           val BUILDABLE_MULTIPLE_CONSTRUCTORS by error0<KtAnnotation>()${err}

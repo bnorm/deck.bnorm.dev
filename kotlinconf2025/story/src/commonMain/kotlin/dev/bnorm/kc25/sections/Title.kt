@@ -85,7 +85,6 @@ fun StoryboardBuilder.Title() {
             ) {
                 Column(Modifier.padding(16.dp)) {
                     ProvideTextStyle(MaterialTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)) {
-                        // TODO maybe do something with https://github.com/saket/extended-spans?
                         Text("Writing Your Third")
                         Text("Kotlin Compiler Plugin")
                     }

@@ -13,8 +13,6 @@ import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.StageTransform() {
-    // TODO improve details about transform stage
-
     val items = listOf(
         "$BULLET_1 FIR is converted to IR.",
         "$BULLET_1 IR is a tree-based representation of the *semantics* of Kotlin code.",

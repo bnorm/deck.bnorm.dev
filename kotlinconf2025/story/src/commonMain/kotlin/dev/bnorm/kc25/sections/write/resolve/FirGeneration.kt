@@ -69,7 +69,6 @@ private val BUILDABLE = buildCodeSamples {
         }${builder}
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    // TODO do this with squiggly lines https://github.com/saket/extended-spans
     val noErrors = bookSample.hide(builder, bctor, properties, functions).collapse(ctor)
     val callErrors = noErrors
         .styled(eProp, SpanStyle(color = Color.Red))
@@ -300,10 +299,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
     base // Start with base for validation
         .then { start.focus(clsSig) }
 
-        // TODO split focus
-        //  - first fucus on the name functions
-        //  - next focus on the generate functions
-        //  - finally, focus on the predicate function
         .then { focus(funName, scroll = false) }
 
         // companion object
@@ -315,7 +310,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
         .then { start.focus(rps, scroll = false) }
         .then { reveal(rpb).focus(rpb, scroll = false) }
 
-        // TODO do both name functions first?
         // getNestedClassifiersNames
         .then { start.reveal(nestp).focus(nests) }
         .then { reveal(nestb).focus(nestb).scroll(nests).attach(BUILDER_CLASS_NAME_PANEL) }
@@ -339,7 +333,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // getCallableNamesForClass
         .then { start.reveal(callp).focus(calls) }
-        // TODO walk through body
         .then { reveal(callb).focus(callb).scroll(calls).attach(BUILDER_CALL_NAME_PANEL) }
         .then { attach(BUILDER_CALL_NAME_PANEL.show()) }
         .then { attach(BUILDER_CALL_NAME_PANEL.showNext()) }
@@ -348,7 +341,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // generateConstructors
         .then { start.reveal(ctorp).focus(ctors) }
-        // TODO walk through body
         .then { reveal(ctorb).focus(ctorb).scroll(ctors).attach(BUILDER_CONSTRUCTOR_PANEL) }
         .then { attach(BUILDER_CONSTRUCTOR_PANEL.show()) }
         .then { attach(BUILDER_CONSTRUCTOR_PANEL.showNext()) }
@@ -357,7 +349,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // generateProperties
         .then { start.reveal(propp).focus(props) }
-        // TODO walk through body
         .then { reveal(propb).focus(propb).scroll(props).attach(BUILDER_PROPERTY_PANEL) }
         .then { attach(BUILDER_PROPERTY_PANEL.show()) }
         .then { attach(BUILDER_PROPERTY_PANEL.showNext()) }
@@ -366,7 +357,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // generateFunctions
         .then { start.reveal(funp).focus(funs) }
-        // TODO walk through body
         .then { reveal(funb).focus(funb).scroll(funs).attach(BUILDER_FUNCTION_PANEL) }
         .then { attach(BUILDER_FUNCTION_PANEL.show()) }
         .then { attach(BUILDER_FUNCTION_PANEL.showNext()) }

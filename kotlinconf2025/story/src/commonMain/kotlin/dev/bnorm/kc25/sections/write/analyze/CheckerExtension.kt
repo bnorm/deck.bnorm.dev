@@ -15,9 +15,6 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
     val cls by tag("class checkers")
     val chk by tag("buildable constructor checker")
 
-    // TODO show example of other checker configuration?
-    // TODO validate sample
-
     val base = """
         class BuildableFirAdditionalCheckersExtension(
           session: FirSession,

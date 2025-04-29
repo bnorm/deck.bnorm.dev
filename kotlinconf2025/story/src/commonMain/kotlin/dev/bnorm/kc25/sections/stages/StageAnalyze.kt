@@ -13,8 +13,6 @@ import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.StageAnalyze() {
-    // TODO improve details about analyze stage
-
     val items = listOf(
         "$BULLET_1 Once resolved, FIR is analyzed to determine correctness.",
         "$BULLET_1 This allows checking for problems which do not impact resolution.",

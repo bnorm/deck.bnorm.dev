@@ -36,8 +36,6 @@ private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
     val sge by tag("supertype generation extension")
     val ste by tag("status transformer extension")
 
-    // TODO start with the factory version and transform into the method reference version?
-    // TODO talk about the different extensions available or just list them all?
     val baseSample = """
         class MyFirExtensionRegistrar : ${sup}FirExtensionRegistrar${sup}() {${body}
           ${sig}override fun ExtensionRegistrarContext.configurePlugin()${sig} {${dge}
@@ -49,8 +47,6 @@ private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
         ${body}}
     """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
 
-    // TODO is there a better way to do this transition?
-    //  - maybe similar to FIR tree where it's part of the diagram?
     val blank = CodeSample(AnnotatedString(""))
     blank
         .then { baseSample.collapse(body).hide(dge, ace, sge, ste) }
