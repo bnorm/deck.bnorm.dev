@@ -1,10 +1,7 @@
 package dev.bnorm.kc25.sections.register
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColor
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -30,31 +27,42 @@ import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code3
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedBounds
+import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.toState
 
 enum class Component {
     CompilerPluginRegistrar,
 
-    // TODO other FIR extensions?
     FirExtensionRegistrar,
-    FirDeclarationGenerationExtension,
-    FirAdditionalCheckersExtension,
-
-    // TODO other compiler extensions?
     IrGenerationExtension,
+
+    FirDeclarationGenerationExtension,
+    FirSupertypeGenerationExtension,
+    FirStatusTransformerExtension,
+    FirAdditionalCheckersExtension,
 }
 
-fun StoryboardBuilder.RegistrarComponents(first: Component?, second: Component) {
+class RegistrarComponentState(
+    val visible: Set<Component>,
+    val focus: Component? = null,
+)
+
+val BoxMovementSpec: BoundsTransform = BoundsTransform { _, _ -> tween(500, delayMillis = 250, easing = EaseInOut) }
+val TextMovementSpec: BoundsTransform = BoxMovementSpec
+
+fun StoryboardBuilder.RegistrarComponent(
+    vararg states: RegistrarComponentState,
+) {
     scene(
-        states = setOf(first, second).toList(),
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        states = states.toList(),
+        enterTransition = { _ -> fadeIn(tween(250, delayMillis = 500, easing = EaseIn)) },
+        exitTransition = { _ -> fadeOut(tween(250, easing = EaseOut)) },
     ) {
         StageScaffold { padding ->
-            RegistrarComponents(
-                visible = frame.createChildTransition { it.toState() },
+            RegistrarComponentTree(
+                state = frame.createChildTransition { it.toState() },
                 modifier = Modifier.padding(top = padding.calculateTopPadding() + 32.dp),
             )
         }
@@ -62,9 +70,9 @@ fun StoryboardBuilder.RegistrarComponents(first: Component?, second: Component) 
 }
 
 @Composable
-fun RegistrarComponents(
-    visible: Transition<Component?>,
-    focus: Transition<Component?> = visible,
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun RegistrarComponentTree(
+    state: Transition<RegistrarComponentState>,
     modifier: Modifier = Modifier,
 ) {
     val pad = 16.dp
@@ -77,15 +85,16 @@ fun RegistrarComponents(
     val start = (Storyboard.DEFAULT_SIZE.width - width) / 2
 
     @Composable
+    context(scope: AnimatedVisibilityScope, _: SharedTransitionScope)
     fun Item(component: Component, style: TextStyle) {
         Box(Modifier.size(width = width, height = height)) {
-            visible.AnimatedVisibility(
-                visible = { component.ordinal <= (it?.ordinal ?: -1) },
+            state.AnimatedVisibility(
+                visible = { component in it.visible },
                 enter = fadeIn(tween(300, easing = EaseIn)),
                 exit = fadeOut(tween(300, easing = EaseOut)),
             ) {
-                val borderColor by focus.animateColor(transitionSpec = { tween(300, easing = EaseIn) }) {
-                    when (it) {
+                val borderColor by state.animateColor(transitionSpec = { tween(300, easing = EaseIn) }) {
+                    when (it.focus) {
                         component -> MaterialTheme.colors.secondary
                         else -> MaterialTheme.colors.primary
                     }
@@ -93,9 +102,25 @@ fun RegistrarComponents(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
+                        .sharedElement(
+                            rememberSharedContentState("box:$component"),
+                            animatedVisibilityScope = scope,
+                            boundsTransform = BoxMovementSpec,
+                            zIndexInOverlay = -1f,
+                        )
                         .border(2.dp, borderColor, RoundedCornerShape(8.dp))
                 ) {
-                    Text(component.name, style = style)
+                    Text(
+                        text = component.name,
+                        style = style,
+                        modifier = Modifier
+                            .sharedBounds(
+                                rememberSharedContentState("text:$component"),
+                                animatedVisibilityScope = scope,
+                                boundsTransform = TextMovementSpec,
+                                zIndexInOverlay = -1f,
+                            )
+                    )
                 }
             }
         }
@@ -108,8 +133,8 @@ fun RegistrarComponents(
         modifier = modifier.fillMaxSize(),
         connection = { start, startRect, end, endRect ->
             Box(Modifier.fillMaxSize()) {
-                visible.AnimatedVisibility(
-                    visible = { end.ordinal <= (it?.ordinal ?: -1) },
+                state.AnimatedVisibility(
+                    visible = { start in it.visible && end in it.visible },
                     enter = fadeIn(tween(300, easing = EaseIn)),
                     exit = fadeOut(tween(300, easing = EaseOut)),
                 ) {
@@ -132,31 +157,18 @@ fun RegistrarComponents(
             Item(Component.CompilerPluginRegistrar, MaterialTheme.typography.code1)
         }
 
-        val startFir = start - width / 2 - pad
         val topFir = top + space
         item(
             value = Component.FirExtensionRegistrar,
-            x = startFir, y = topFir,
+            x = start - width / 2 - pad, y = topFir,
             connections = listOf(
                 Component.FirDeclarationGenerationExtension,
-                Component.FirAdditionalCheckersExtension
+                Component.FirSupertypeGenerationExtension,
+                Component.FirStatusTransformerExtension,
+                Component.FirAdditionalCheckersExtension,
             )
         ) {
             Item(Component.FirExtensionRegistrar, MaterialTheme.typography.code1)
-        }
-
-        item(
-            Component.FirDeclarationGenerationExtension,
-            x = startFir - width / 2 - pad, y = topFir + space,
-        ) {
-            Item(Component.FirDeclarationGenerationExtension, MaterialTheme.typography.code3)
-        }
-
-        item(
-            Component.FirAdditionalCheckersExtension,
-            x = startFir, y = topFir + space + height + pad,
-        ) {
-            Item(Component.FirAdditionalCheckersExtension, MaterialTheme.typography.code3)
         }
 
         item(
@@ -164,6 +176,34 @@ fun RegistrarComponents(
             x = start + width / 2 + pad, y = top + space,
         ) {
             Item(Component.IrGenerationExtension, MaterialTheme.typography.code1)
+        }
+
+        item(
+            Component.FirDeclarationGenerationExtension,
+            x = start - width - pad * 2, y = topFir + space,
+        ) {
+            Item(Component.FirDeclarationGenerationExtension, MaterialTheme.typography.code3)
+        }
+
+        item(
+            Component.FirStatusTransformerExtension,
+            x = start - width / 2 - pad, y = topFir + space + height + pad,
+        ) {
+            Item(Component.FirStatusTransformerExtension, MaterialTheme.typography.code3)
+        }
+
+        item(
+            Component.FirSupertypeGenerationExtension,
+            x = start + width / 2 + pad, y = topFir + space + height + pad,
+        ) {
+            Item(Component.FirSupertypeGenerationExtension, MaterialTheme.typography.code3)
+        }
+
+        item(
+            Component.FirAdditionalCheckersExtension,
+            x = start + width + pad * 2, y = topFir + space,
+        ) {
+            Item(Component.FirAdditionalCheckersExtension, MaterialTheme.typography.code3)
         }
     }
 }
