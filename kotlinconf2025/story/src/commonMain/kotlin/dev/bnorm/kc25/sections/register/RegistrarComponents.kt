@@ -63,7 +63,7 @@ fun StoryboardBuilder.RegistrarComponent(
         enterTransition = { _ -> fadeIn(tween(300, delayMillis = 800, easing = EaseIn)) },
         exitTransition = { _ -> fadeOutSpec() },
     ) {
-        val state = frame.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toState() }
         StageScaffold(state.createChildTransition { it.stages }) { padding ->
             RegistrarComponentTree(
                 state = state,

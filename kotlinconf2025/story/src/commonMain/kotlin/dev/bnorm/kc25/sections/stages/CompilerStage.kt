@@ -95,7 +95,7 @@ fun StoryboardBuilder.StageDetail(
                         )
                 )
 
-                frame.AnimatedVisibility(
+                transition.AnimatedVisibility(
                     visible = { it is Frame.State<*> },
                     enter = fadeIn(fadeInSpec()),
                     exit = fadeOut(fadeOutSpec()),
@@ -129,7 +129,7 @@ fun StoryboardBuilder.StageTimeline(startState: CompilerStage?, endState: Compil
                     .padding(horizontal = 32.dp)
             ) {
                 for (state in CompilerStage.entries) {
-                    val detailStage = frame.createChildTransition {
+                    val detailStage = transition.createChildTransition {
                         when (it) {
                             Frame.Start -> startState?.ordinal
                             is Frame.State<*> -> null // All visible.
@@ -137,9 +137,9 @@ fun StoryboardBuilder.StageTimeline(startState: CompilerStage?, endState: Compil
                         }
                     }
 
-                    val contentVisible = frame.createChildTransition { state.ordinal <= it.toState() }
+                    val contentVisible = transition.createChildTransition { state.ordinal <= it.toState() }
 
-                    val borderColor by frame.animateColor(
+                    val borderColor by transition.animateColor(
                         transitionSpec = { tween(500, easing = EaseOut) },
                     ) {
                         val focus = state.ordinal == it.toState()

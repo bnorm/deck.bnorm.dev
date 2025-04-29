@@ -100,7 +100,7 @@ fun StoryboardBuilder.BuildableIntro(sink: MutableList<CodeSample>, start: Int =
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        val sample = frame.createChildTransition { SAMPLES[start + it.toState()] }
+        val sample = transition.createChildTransition { SAMPLES[start + it.toState()] }
 
         HeaderScaffold { padding ->
             ProvideTextStyle(MaterialTheme.typography.code1) {

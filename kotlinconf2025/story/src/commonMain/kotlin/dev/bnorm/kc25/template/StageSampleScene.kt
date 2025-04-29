@@ -46,7 +46,7 @@ fun StoryboardBuilder.StageSampleScene(
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        val sample = frame.createChildTransition { samples[start + it.toState()] }
+        val sample = transition.createChildTransition { samples[start + it.toState()] }
 
         StageScaffold(updateTransition(setOfNotNull(stage))) { padding ->
             ProvideTextStyle(MaterialTheme.typography.code1) {

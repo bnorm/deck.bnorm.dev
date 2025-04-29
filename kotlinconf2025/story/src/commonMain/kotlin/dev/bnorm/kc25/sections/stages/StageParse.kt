@@ -20,13 +20,13 @@ fun StoryboardBuilder.StageParse() {
 
     StageDetail(stateCount = items.size + 1 + 14, stage = CompilerStage.Parse) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            RevealEach(frame.createChildTransition { it.toState() - 1 }) {
+            RevealEach(transition.createChildTransition { it.toState() - 1 }) {
                 for (value in items) {
                     item { Text(value) }
                 }
             }
-            if (frame.currentState.toState() > items.size) {
-                frame.createChildTransition { it.toState() - items.size - 1 }.FirTree()
+            if (transition.currentState.toState() > items.size) {
+                transition.createChildTransition { it.toState() - items.size - 1 }.FirTree()
             }
         }
     }

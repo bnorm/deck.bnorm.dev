@@ -22,7 +22,7 @@ fun StoryboardBuilder.StageTransform() {
 
     StageDetail(stateCount = items.size + 1, stage = CompilerStage.Transform) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            RevealEach(frame.createChildTransition { it.toState() - 1 }) {
+            RevealEach(transition.createChildTransition { it.toState() - 1 }) {
                 for (value in items) {
                     item { Text(value) }
                 }

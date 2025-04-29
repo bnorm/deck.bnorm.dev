@@ -34,7 +34,7 @@ fun StoryboardBuilder.SectionTitle(
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         SectionTitle(
-            showAsHeader = frame.createChildTransition {
+            showAsHeader = transition.createChildTransition {
                 when (it) {
                     Frame.Start -> animateFromHeader
                     Frame.End -> animateToHeader

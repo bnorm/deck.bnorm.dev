@@ -24,8 +24,6 @@ import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.toState
 
 private fun <T> tSpec(): @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<T> = { tween(300) }
@@ -39,7 +37,7 @@ fun StoryboardBuilder.ThirdPlugin() {
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        val state = frame.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toState() }
         HeaderScaffold { padding ->
             Box(
                 contentAlignment = Alignment.TopEnd,

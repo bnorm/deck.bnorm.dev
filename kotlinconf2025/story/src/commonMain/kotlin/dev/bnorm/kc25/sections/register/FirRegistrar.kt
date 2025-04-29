@@ -92,7 +92,7 @@ fun StoryboardBuilder.FirRegistrar(
                     .padding(16.dp)
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
-                    val text = frame.createChildTransition { frame ->
+                    val text = transition.createChildTransition { frame ->
                         val index = frame.map { it + 1 }.toState(start = 0, end = SAMPLES_WITH_TRANSITION.lastIndex)
                         SAMPLES_WITH_TRANSITION[start + index].string.splitByTags()
                     }

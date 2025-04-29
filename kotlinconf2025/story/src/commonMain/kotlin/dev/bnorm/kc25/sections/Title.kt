@@ -38,7 +38,6 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
-import dev.bnorm.storyboard.toState
 import org.jetbrains.compose.resources.painterResource
 
 private const val THIRD = "Third"
@@ -51,7 +50,7 @@ fun StoryboardBuilder.Title() {
     ) {
         Box(Modifier.fillMaxSize()) {
             Image(
-                painter = KotlinConfBird(frame.createChildTransition { it is Frame.State }),
+                painter = KotlinConfBird(transition.createChildTransition { it is Frame.State }),
                 contentDescription = "",
                 modifier = Modifier.size(548.dp).offset(416.dp, 0.dp),
             )
@@ -128,7 +127,7 @@ fun StoryboardBuilder.Closing() {
         ),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val visible = frame.createChildTransition { it is Frame.State }
+            val visible = transition.createChildTransition { it is Frame.State }
             val arcFraction by visible.animateFloat(
                 transitionSpec = {
                     when (targetState) {

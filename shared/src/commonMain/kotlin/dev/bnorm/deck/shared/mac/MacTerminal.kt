@@ -50,7 +50,7 @@ fun <T> SceneScope<T>.MacTerminalPopup(
     content: @Composable () -> Unit,
 ) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-        frame.AnimatedVisibility(
+        transition.AnimatedVisibility(
             visible = visible,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),

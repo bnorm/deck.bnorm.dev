@@ -30,7 +30,7 @@ fun StoryboardBuilder.RevealScene(vararg items: String) {
                 modifier = Modifier.padding(padding),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                RevealEach(frame.createChildTransition { it.toState() }) {
+                RevealEach(transition.createChildTransition { it.toState() }) {
                     for (value in items) {
                         item { Text(value) }
                     }
