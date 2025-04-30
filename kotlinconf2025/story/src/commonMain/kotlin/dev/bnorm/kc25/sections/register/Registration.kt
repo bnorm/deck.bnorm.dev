@@ -37,6 +37,8 @@ fun StoryboardBuilder.Registration(sink: MutableList<CodeSample>) {
             focus = Component.CompilerPluginRegistrar,
             stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze, CompilerStage.Transform),
         ),
+        enterTransition = DetailsEnterTransition,
+        exitTransition = DetailsExitTransition,
     )
 
     PluginRegistrar(sink)
@@ -70,6 +72,8 @@ fun StoryboardBuilder.Registration(sink: MutableList<CodeSample>) {
             focus = Component.FirExtensionRegistrar,
             stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze),
         ),
+        enterTransition = DetailsEnterTransition,
+        exitTransition = DetailsExitTransition,
     )
 
     FirRegistrar(sink)

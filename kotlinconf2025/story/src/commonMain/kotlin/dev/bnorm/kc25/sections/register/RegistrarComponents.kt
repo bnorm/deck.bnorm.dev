@@ -26,6 +26,7 @@ import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code3
+import dev.bnorm.storyboard.AdvanceDirection
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.animateEnterExit
@@ -55,13 +56,18 @@ private fun fadeInSpec(): EnterTransition = fadeIn(tween(300, easing = EaseIn))
 val BoxMovementSpec: BoundsTransform = BoundsTransform { _, _ -> tween(500, delayMillis = 300, easing = EaseInOut) }
 private fun fadeOutSpec(): ExitTransition = fadeOut(tween(300, easing = EaseOut))
 
+val DetailsEnterTransition: (AdvanceDirection) -> EnterTransition = { _ -> fadeIn(tween(300, delayMillis = 800, easing = EaseIn)) }
+val DetailsExitTransition: (AdvanceDirection) -> ExitTransition = { _ -> fadeOutSpec() }
+
 fun StoryboardBuilder.RegistrarComponent(
     vararg states: RegistrarComponentState,
+    enterTransition: (AdvanceDirection) -> EnterTransition,
+    exitTransition: (AdvanceDirection) -> ExitTransition,
 ) {
     scene(
         states = states.toList(),
-        enterTransition = { _ -> fadeIn(tween(300, delayMillis = 800, easing = EaseIn)) },
-        exitTransition = { _ -> fadeOutSpec() },
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
     ) {
         val state = transition.createChildTransition { it.toState() }
         StageScaffold(state.createChildTransition { it.stages }) { padding ->

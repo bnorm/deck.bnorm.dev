@@ -1,15 +1,13 @@
 package dev.bnorm.kc25
 
+import androidx.compose.ui.Alignment
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
 import dev.bnorm.kc25.sections.intro.*
-import dev.bnorm.kc25.sections.register.Component
-import dev.bnorm.kc25.sections.register.RegistrarComponent
-import dev.bnorm.kc25.sections.register.RegistrarComponentState
-import dev.bnorm.kc25.sections.register.Registration
+import dev.bnorm.kc25.sections.register.*
 import dev.bnorm.kc25.sections.stages.Architecture
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.sections.stages.StageTimelineTransition
@@ -26,7 +24,7 @@ import dev.bnorm.kc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.section
+import dev.bnorm.storyboard.easel.template.*
 
 // TODO review all slides for consistent code formatting!
 // TODO update all samples to 2.2.0?
@@ -121,6 +119,7 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
     //  - maybe similar to FIR tree where it's part of the diagram?
     Registration(sink)
 
+    // TODO the text fades out/in as it slides
     RegistrarComponent(
         RegistrarComponentState(
             focus = Component.FirExtensionRegistrar,
@@ -130,6 +129,8 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
             focus = Component.FirDeclarationGenerationExtension,
             stages = setOf(CompilerStage.Resolve),
         ),
+        enterTransition = enter(start = DetailsEnterTransition, end = SceneEnter(alignment = Alignment.CenterEnd)),
+        exitTransition = exit(start = DetailsExitTransition, end = SceneExit(alignment = Alignment.CenterEnd)),
     )
 
     section("Resolve") {
@@ -154,6 +155,8 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
             focus = Component.IrGenerationExtension,
             stages = setOf(CompilerStage.Transform),
         ),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     )
 
     section("Transform") {
@@ -174,6 +177,8 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
             focus = Component.FirAdditionalCheckersExtension,
             stages = setOf(CompilerStage.Analyze),
         ),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     )
 
     section("Analyze") {
@@ -192,6 +197,8 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
             stages = setOf(CompilerStage.Analyze),
         ),
         RegistrarComponentState(),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     )
 
     section("Your Plugin") {
