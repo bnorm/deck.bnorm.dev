@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc25.sections.stages.BoxMovementSpec
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -69,29 +68,22 @@ fun StageScaffold(
 }
 
 @Composable
-context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 private fun CompilerStateBox(
-    state: CompilerStage,
+    stage: CompilerStage,
     borderColor: Color,
 ) {
-    Box(Modifier.width(156.dp)) {
-        Box(
-            contentAlignment = Alignment.BottomCenter,
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = Modifier
+            .width(156.dp)
+            .border(2.dp, borderColor, RoundedCornerShape(16.dp))
+            .padding(16.dp)
+    ) {
+        Text(
+            stage.name,
+            style = MaterialTheme.typography.body1,
             modifier = Modifier
-                .sharedElement(
-                    rememberSharedContentState("box:$state"),
-                    boundsTransform = BoxMovementSpec,
-                )
-                .fillMaxWidth()
-                .border(2.dp, borderColor, RoundedCornerShape(16.dp))
-                .padding(16.dp)
-        ) {
-            Text(
-                state.name,
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier
-                    .padding(top = 8.dp)
-            )
-        }
+                .padding(top = 8.dp)
+        )
     }
 }

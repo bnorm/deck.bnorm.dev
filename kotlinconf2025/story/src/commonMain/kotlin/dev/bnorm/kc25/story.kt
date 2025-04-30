@@ -12,6 +12,7 @@ import dev.bnorm.kc25.sections.register.RegistrarComponentState
 import dev.bnorm.kc25.sections.register.Registration
 import dev.bnorm.kc25.sections.stages.Architecture
 import dev.bnorm.kc25.sections.stages.CompilerStage
+import dev.bnorm.kc25.sections.stages.StageTimelineTransition
 import dev.bnorm.kc25.sections.write.BuildableIntro
 import dev.bnorm.kc25.sections.write.analyze.Checker
 import dev.bnorm.kc25.sections.write.analyze.CheckerExtension
@@ -106,6 +107,8 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
     // TODO improve details about generate stage
     //  - should i actually include klib?
     Architecture()
+
+    StageTimelineTransition()
 
     // TODO similar to stages, zoom in and out of components to see changes which need to be made
     //  - include a header and bullet points to describe how the extension can be used?

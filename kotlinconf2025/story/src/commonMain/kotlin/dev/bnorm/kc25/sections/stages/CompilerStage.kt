@@ -74,7 +74,6 @@ fun StoryboardBuilder.StageDetail(
                 .sharedElement(
                     rememberSharedContentState("box:$stage"),
                     boundsTransform = BoxMovementSpec,
-                    zIndexInOverlay = -1f,
                 )
                 .fillMaxSize()
                 .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(16.dp))
@@ -91,7 +90,6 @@ fun StoryboardBuilder.StageDetail(
                         .sharedBounds(
                             rememberSharedContentState("text:$stage"),
                             boundsTransform = TextMovementSpec,
-                            zIndexInOverlay = -1f,
                         )
                 )
 
@@ -115,44 +113,40 @@ fun StoryboardBuilder.StageTimeline(startState: CompilerStage?, endState: Compil
 
     scene(
         states = listOf(startOrdinal, endOrdinal),
-        enterTransition = if (startState == null || endState == null) SceneEnter(alignment = Alignment.CenterEnd) else DefaultEnterTransition,
-        exitTransition = if (startState == null || endState == null) SceneExit(alignment = Alignment.CenterEnd) else DefaultExitTransition,
+        enterTransition = if (startState == null) SceneEnter(alignment = Alignment.CenterEnd) else DefaultEnterTransition,
+        exitTransition = if (startState == null) SceneExit(alignment = Alignment.CenterEnd) else DefaultExitTransition,
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 32.dp)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-            ) {
-                for (state in CompilerStage.entries) {
-                    val detailStage = transition.createChildTransition {
-                        when (it) {
-                            Frame.Start -> startState?.ordinal
-                            is Frame.State<*> -> null // All visible.
-                            Frame.End -> endState?.ordinal
-                        }
+            for (state in CompilerStage.entries) {
+                val detailStage = transition.createChildTransition {
+                    when (it) {
+                        Frame.Start -> startState?.ordinal
+                        is Frame.State<*> -> null // All visible.
+                        Frame.End -> endState?.ordinal
                     }
-
-                    val contentVisible = transition.createChildTransition { state.ordinal <= it.toState() }
-
-                    val borderColor by transition.animateColor(
-                        transitionSpec = { tween(500, easing = EaseOut) },
-                    ) {
-                        val focus = state.ordinal == it.toState()
-                        if (focus) MaterialTheme.colors.secondary else MaterialTheme.colors.primary
-                    }
-
-                    CompilerStageBox(
-                        state,
-                        borderColor,
-                        detailStage = detailStage,
-                        contentVisible = contentVisible,
-                    )
                 }
+
+                val contentVisible = transition.createChildTransition { state.ordinal <= it.toState() }
+
+                val borderColor by transition.animateColor(
+                    transitionSpec = { tween(500, easing = EaseOut) },
+                ) {
+                    val focus = state.ordinal == it.toState()
+                    if (focus) MaterialTheme.colors.secondary else MaterialTheme.colors.primary
+                }
+
+                CompilerStageBox(
+                    state,
+                    borderColor,
+                    detailStage = detailStage,
+                    contentVisible = contentVisible,
+                )
             }
         }
     }
@@ -180,14 +174,14 @@ private fun CompilerStageBox(
                         rememberSharedContentState("box:$stage"),
                         animatedVisibilityScope = sharedVisibilityScope,
                         boundsTransform = BoxMovementSpec,
-                        zIndexInOverlay = -1f,
                     )
                     .fillMaxWidth()
                     .border(2.dp, borderColor, RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
                 Text(
-                    "", style = MaterialTheme.typography.h5,
+                    text = "",
+                    style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
 
@@ -198,14 +192,13 @@ private fun CompilerStageBox(
                 ) {
                     Text(
                         stage.name,
-                        style = MaterialTheme.typography.h5,
+                        style = MaterialTheme.typography.body1,
                         modifier = Modifier
                             .padding(vertical = 16.dp)
                             .sharedBounds(
                                 rememberSharedContentState("text:$stage"),
                                 animatedVisibilityScope = sharedVisibilityScope,
                                 boundsTransform = TextMovementSpec,
-                                zIndexInOverlay = -1f,
                             )
                     )
                 }
