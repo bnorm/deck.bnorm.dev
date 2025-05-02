@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.template.HeaderScaffold
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
@@ -41,7 +40,7 @@ private val SAMPLES = buildCodeSamples {
           )${c2}
           composer.endRestartGroup()${c2}
         }
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     val restartable = """
         @Composable fun MyCounter($s${s}composer: Composer$s${s}, changed: Int$s${s}) {
@@ -61,7 +60,7 @@ private val SAMPLES = buildCodeSamples {
             it.updateScope { composer, _ -> MyCounter(composer, changed or 1) }
           }${c5}
         }
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     basic.hide(c1, c2, c3)
         .then { reveal(c1).focus(c1) }

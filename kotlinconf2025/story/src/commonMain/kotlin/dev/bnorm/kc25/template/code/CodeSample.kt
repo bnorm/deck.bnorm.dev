@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import dev.bnorm.deck.shared.INTELLIJ_DARK
 import dev.bnorm.storyboard.text.TextTag
 import dev.bnorm.storyboard.text.TextTagScope
 import dev.bnorm.storyboard.text.addStyleByTag
@@ -134,7 +135,7 @@ fun buildCodeSamples(builder: CodeSamplesBuilder.() -> List<CodeSample>): List<C
 
 class CodeSamplesBuilder : TextTagScope.Default() {
     fun String.toCodeSample(
-        codeStyle: CodeStyle,
+        codeStyle: CodeStyle = INTELLIJ_DARK,
         scope: CodeScope = CodeScope.File,
         identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
     ): CodeSample {

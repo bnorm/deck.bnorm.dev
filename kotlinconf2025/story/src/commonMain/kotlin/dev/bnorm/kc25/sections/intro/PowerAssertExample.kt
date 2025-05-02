@@ -7,8 +7,8 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.bnorm.deck.shared.INTELLIJ_DARK
 import dev.bnorm.kc25.template.HeaderScaffold
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
@@ -159,13 +159,12 @@ private val SAMPLES = buildCodeSamples {
 
     fun String.toCodeSample(): CodeSample {
         return toCodeSample(
-            INTELLIJ_DARK_CODE_STYLE,
             scope = CodeScope.Function,
             identifierType = { _, identifier ->
                 when (identifier) {
-                    "assert" -> INTELLIJ_DARK_CODE_STYLE.staticFunctionCall
-                    "trimIndent" -> INTELLIJ_DARK_CODE_STYLE.extensionFunctionCall
-                    "length" -> INTELLIJ_DARK_CODE_STYLE.property
+                    "assert" -> INTELLIJ_DARK.staticFunctionCall
+                    "trimIndent" -> INTELLIJ_DARK.extensionFunctionCall
+                    "length" -> INTELLIJ_DARK.property
                     else -> null
                 }
             })

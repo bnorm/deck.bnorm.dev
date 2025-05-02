@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.sections.stages.CompilerStage
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
@@ -55,7 +54,7 @@ private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
             )${ir}
           }${reb}${re}
         ${cb}}
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     val blank = CodeSample(AnnotatedString(""))
     blank

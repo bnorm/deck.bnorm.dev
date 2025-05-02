@@ -30,7 +30,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.layout.HorizontalTree
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code2
@@ -97,7 +96,7 @@ private class FirFunction : FirNode("FirFunction") {
               val returnTypeRef: FirTypeRef${p5}${p6}
               val body: FirBlock?${p6}
             }
-        """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+        """.trimIndent().toCodeSample()
 
         val node = CodeSample(AnnotatedString("FirFunction"))
         val baseCodeSample = base.hide(p1, p2, p3, p4, p5, p6)

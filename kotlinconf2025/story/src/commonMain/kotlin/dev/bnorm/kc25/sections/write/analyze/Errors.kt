@@ -3,7 +3,6 @@ package dev.bnorm.kc25.sections.write.analyze
 import androidx.compose.runtime.Composable
 import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.StageSampleScene
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
@@ -30,7 +29,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             RootDiagnosticRendererFactory.registerFactory(this)
           }${init}
         }
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     base
         .then {base.hide(err, map, init) }

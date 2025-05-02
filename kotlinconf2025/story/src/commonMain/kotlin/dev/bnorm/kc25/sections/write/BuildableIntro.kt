@@ -8,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.components.MagicCodeSample
 import dev.bnorm.kc25.template.HeaderScaffold
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
@@ -75,7 +74,7 @@ private val SAMPLES = buildCodeSamples {
             ${bImpl})${build}
           }${builder}
         }${body}
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     bookSample.hide(ctor, body, propImpl).collapse(bImpl, whens)
         .then { reveal(body).hide(defs).focus(builder, scroll = false) }

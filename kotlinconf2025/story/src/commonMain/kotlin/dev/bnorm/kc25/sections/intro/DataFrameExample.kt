@@ -4,7 +4,6 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -14,9 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.components.BottomPanel
-import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.template.HeaderScaffold
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
@@ -25,7 +22,6 @@ import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.*
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
-import dev.bnorm.storyboard.toState
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -53,7 +49,6 @@ private val SAMPLES = buildCodeSamples {
             .print()$p
     """.trimIndent()
         .toCodeSample(
-            codeStyle = INTELLIJ_DARK_CODE_STYLE,
             identifierType = { highlighting, string ->
                 when (string) {
                     "readCSV", "convert", "with", "removeSurrounding", "split", "sortBy", "addId", "add", "print", "desc", "from", "remove" -> highlighting.extensionFunctionCall

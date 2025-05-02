@@ -3,13 +3,14 @@ package dev.bnorm.kc25.template.code
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import dev.bnorm.deck.shared.INTELLIJ_DARK
 import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.highlight.CodeStyle
 import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight
 
 fun AnnotatedString.toCode(
-    codeStyle: CodeStyle,
+    codeStyle: CodeStyle = INTELLIJ_DARK,
     scope: CodeScope = CodeScope.File,
     identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
 ): AnnotatedString {
@@ -28,7 +29,7 @@ fun AnnotatedString.toCode(
 }
 
 fun String.toCode(
-    codeStyle: CodeStyle,
+    codeStyle: CodeStyle = INTELLIJ_DARK,
     scope: CodeScope = CodeScope.File,
     identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
 ): AnnotatedString {

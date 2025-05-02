@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.kc25.template.HeaderScaffold
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
@@ -69,7 +68,7 @@ private val SAMPLES = buildCodeSamples {
             ${deserb}}
           }${genb}${gen}
         ${body}}${cls}
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     base.hide(cls, genb).collapse(descb, serb, deserb)
         .then { reveal(cls).focus(body) }

@@ -5,7 +5,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import dev.bnorm.kc25.components.validateSample
 import dev.bnorm.kc25.sections.stages.CompilerStage
-import dev.bnorm.kc25.template.INTELLIJ_DARK_CODE_STYLE
 import dev.bnorm.kc25.template.RightPanel
 import dev.bnorm.kc25.template.StageSampleScene
 import dev.bnorm.kc25.template.code.CodeSample
@@ -25,7 +24,7 @@ private val BuilderClassKey = CodeSample(
           val ownerClassSymbol: FirClassSymbol<*>,
           val constructorSymbol: FirConstructorSymbol,
         ) : GeneratedDeclarationKey()
-    """.trimIndent().toCode(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCode()
 )
 
 private val BUILDER_CLASS_KEY_PANEL = RightPanel(0, listOf(BuilderClassKey), show = false)
@@ -67,7 +66,7 @@ private val BUILDABLE = buildCodeSamples {
             fun build(): Book${functions}
           }${properties}
         }${builder}
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     val noErrors = bookSample.hide(builder, bctor, properties, functions).collapse(ctor)
     val callErrors = noErrors
@@ -291,7 +290,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             return listOf(build.symbol)
           ${funb}}
         }
-    """.trimIndent().toCodeSample(INTELLIJ_DARK_CODE_STYLE)
+    """.trimIndent().toCodeSample()
 
     val start = base.collapse(SampleData.Body)
         .collapse(SampleData.Parameters)
