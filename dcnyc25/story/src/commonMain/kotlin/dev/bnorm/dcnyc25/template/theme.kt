@@ -6,15 +6,12 @@ import androidx.compose.material.Typography
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.SceneDecorator
-import dev.bnorm.storyboard.text.highlight.CodeStyle
 
 fun storyDecorator(): SceneDecorator = SceneDecorator { content ->
     MaterialTheme(
@@ -29,7 +26,9 @@ fun storyDecorator(): SceneDecorator = SceneDecorator { content ->
 
 val COLORS = lightColors(
     primary = Color(0xFFFF7156),
+    onPrimary = Color(0xFFF8F8F8),
     secondary = Color(0xFF050CEB),
+    onSecondary = Color(0xFFF8F8F8),
 )
 
 val Typography.code1: TextStyle
