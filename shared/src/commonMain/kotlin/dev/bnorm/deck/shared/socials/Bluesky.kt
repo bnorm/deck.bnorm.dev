@@ -20,7 +20,7 @@ fun Bluesky(username: String, modifier: Modifier = Modifier) {
         Image(
             painter = painterResource(Res.drawable.bluesky_logo),
             contentDescription = "",
-            modifier = modifier.size(24.dp),
+            modifier = modifier.size(20.dp),
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(text = username, style = MaterialTheme.typography.body2)

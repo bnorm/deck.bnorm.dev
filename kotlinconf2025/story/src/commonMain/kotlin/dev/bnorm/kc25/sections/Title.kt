@@ -5,6 +5,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -88,21 +89,23 @@ fun StoryboardBuilder.Title() {
                         Text("Kotlin Compiler Plugin")
                     }
                 }
-                Box(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Column(
                         horizontalAlignment = Alignment.Start,
-                        modifier = Modifier.align(Alignment.CenterStart)
-                            .padding(16.dp),
+                        modifier = Modifier.padding(16.dp),
                     ) {
                         JetBrainsEmployee(
                             name = "Brian Norman",
                             title = "Kotlin Compiler Developer",
                         )
                     }
+                    Spacer(Modifier.weight(1f))
                     Column(
                         horizontalAlignment = Alignment.Start,
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                            .padding(16.dp),
+                        modifier = Modifier.padding(16.dp),
                     ) {
                         Mastodon(username = "bnorm@kotlin.social")
                         Spacer(Modifier.size(4.dp))

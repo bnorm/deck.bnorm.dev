@@ -28,7 +28,7 @@ fun JetBrainsEmployee(
             contentDescription = "",
             modifier = Modifier.size(32.dp),
         )
-        Spacer(modifier = Modifier.size(12.dp))
+        Spacer(modifier = Modifier.size(8.dp))
         Column {
             Text(name, style = MaterialTheme.typography.h5)
             Text(title, style = MaterialTheme.typography.body2)
