@@ -130,7 +130,7 @@ class CodeSample private constructor(
     }
 }
 
-fun buildCodeSamples(builder: CodeSamplesBuilder.() -> List<CodeSample>): List<CodeSample> =
+fun <R> buildCodeSamples(builder: CodeSamplesBuilder.() -> R): R =
     CodeSamplesBuilder().builder()
 
 class CodeSamplesBuilder : TextTagScope.Default() {
@@ -140,6 +140,14 @@ class CodeSamplesBuilder : TextTagScope.Default() {
         identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
     ): CodeSample {
         return CodeSample(lazy { extractTags(this).toCode(codeStyle, scope, identifierType) })
+    }
+
+    fun AnnotatedString.toCodeSample(
+        codeStyle: CodeStyle = INTELLIJ_DARK,
+        scope: CodeScope = CodeScope.File,
+        identifierType: (CodeStyle, String) -> SpanStyle? = { _, _ -> null },
+    ): CodeSample {
+        return CodeSample(lazy { toCode(codeStyle, scope, identifierType) })
     }
 
     fun CodeSample.collapse(data: Any?): CodeSample = collapse(tags.filter { data == it.data })
