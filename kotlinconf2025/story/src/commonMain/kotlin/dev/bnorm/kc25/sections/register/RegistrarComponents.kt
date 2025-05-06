@@ -27,7 +27,7 @@ import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code3
 import dev.bnorm.storyboard.AdvanceDirection
-import dev.bnorm.storyboard.Storyboard
+import dev.bnorm.storyboard.LocalStoryboard
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.animateEnterExit
 import dev.bnorm.storyboard.easel.rememberSharedContentState
@@ -92,7 +92,7 @@ fun RegistrarComponentTree(
     val top = 0.dp
 
     val width = 288.dp
-    val start = (Storyboard.DEFAULT_SIZE.width - width) / 2
+    val start = (LocalStoryboard.current!!.size.width - width) / 2
 
     @Composable
     fun Content(component: Component, style: TextStyle) {

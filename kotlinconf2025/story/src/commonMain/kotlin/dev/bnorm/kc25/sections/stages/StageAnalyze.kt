@@ -56,16 +56,16 @@ private enum class TagType {
 }
 
 private val SAMPLES = buildCodeSamples {
-    val d1 by tag("", TagType.Warning)
-    val d2 by tag("", TagType.Error)
-    val d3 by tag("", TagType.Error)
-    val d4 by tag("", TagType.Warning)
-    val d5 by tag("", TagType.Error)
-    val c1 by tag("", TagType.Comment)
-    val c2 by tag("", TagType.Comment)
-    val c3 by tag("", TagType.Comment)
-    val c4 by tag("", TagType.Comment)
-    val c5 by tag("", TagType.Comment)
+    val d1 by tag("diagnostic DIVISION_BY_ZERO", TagType.Warning)
+    val d2 by tag("diagnostic RETURN_TYPE_MISMATCH", TagType.Error)
+    val d3 by tag("diagnostic THROWABLE_TYPE_MISMATCH", TagType.Error)
+    val d4 by tag("diagnostic UNNECESSARY_NOT_NULL_ASSERTION", TagType.Warning)
+    val d5 by tag("diagnostic NO_RETURN_IN_FUNCTION_WITH_BLOCK_BODY", TagType.Error)
+    val c1 by tag("comment DIVISION_BY_ZERO", TagType.Comment)
+    val c2 by tag("comment RETURN_TYPE_MISMATCH", TagType.Comment)
+    val c3 by tag("comment THROWABLE_TYPE_MISMATCH", TagType.Comment)
+    val c4 by tag("comment UNNECESSARY_NOT_NULL_ASSERTION", TagType.Comment)
+    val c5 by tag("comment NO_RETURN_IN_FUNCTION_WITH_BLOCK_BODY", TagType.Comment)
 
     val base = extractTags(
         """

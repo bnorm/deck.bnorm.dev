@@ -18,21 +18,13 @@ kotlin {
     }
 
     sourceSets {
-        all {
-            languageSettings {
-                optIn("androidx.compose.animation.core.ExperimentalTransitionApi")
-                optIn("androidx.compose.animation.ExperimentalAnimationApi")
-                optIn("androidx.compose.animation.ExperimentalSharedTransitionApi")
-                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-            }
-        }
-
         commonMain {
             dependencies {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
                 api(compose.components.resources)
+                api("org.jetbrains.compose.material:material-icons-core:1.7.3")
 
                 api("dev.bnorm.storyboard:storyboard")
                 api("dev.bnorm.storyboard:storyboard-easel")

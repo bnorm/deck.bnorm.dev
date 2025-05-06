@@ -42,8 +42,8 @@ private class FloatingKodee(
 }
 
 @Composable
-fun QrCodeKodee(infiniteTransition: InfiniteTransition?) {
-    Column {
+fun QrCodeKodee(infiniteTransition: InfiniteTransition?, modifier: Modifier = Modifier) {
+    Column(modifier) {
         if (LocalSceneMode.current == SceneMode.Story && infiniteTransition != null) {
             KodeeWave(
                 infiniteTransition,

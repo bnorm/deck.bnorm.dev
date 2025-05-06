@@ -13,15 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.SceneDecorator
-import dev.bnorm.storyboard.text.highlight.CodeStyle
 
 fun storyDecorator(
     infiniteTransition: InfiniteTransition? = null,
@@ -38,9 +35,7 @@ fun storyDecorator(
             ) {
                 content()
 
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-                    QrCodeKodee(infiniteTransition)
-                }
+                QrCodeKodee(infiniteTransition, modifier = Modifier.align(Alignment.BottomEnd))
             }
         }
     }

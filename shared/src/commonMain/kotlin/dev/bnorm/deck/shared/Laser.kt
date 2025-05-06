@@ -177,16 +177,24 @@ fun Laser(laserState: LaserState, laserColor: Color) {
         )
     }
 
+    fun Modifier.laserInputModifier(): Modifier {
+        // Don't cover scenes with clickable content if the laser isn't enabled.
+        // This allows other interactive content to still work.
+        if (!(laserState.enabled)) return this
+
+        return pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    laserState.onEvent(awaitPointerEvent(PointerEventPass.Main))
+                }
+            }
+        }
+    }
+
     Canvas(
         Modifier.fillMaxSize()
             .clipToBounds()
-            .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (true) {
-                        laserState.onEvent(awaitPointerEvent(PointerEventPass.Main))
-                    }
-                }
-            }
+            .laserInputModifier()
     ) {
         laserState.dot?.let { dot ->
             drawPoints(
