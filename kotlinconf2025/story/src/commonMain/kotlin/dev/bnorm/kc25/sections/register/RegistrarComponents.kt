@@ -32,6 +32,7 @@ import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.animateEnterExit
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
+import dev.bnorm.storyboard.toDpSize
 import dev.bnorm.storyboard.toState
 
 enum class Component {
@@ -92,7 +93,7 @@ fun RegistrarComponentTree(
     val top = 0.dp
 
     val width = 288.dp
-    val start = (LocalStoryboard.current!!.size.width - width) / 2
+    val start = (LocalStoryboard.current!!.format.toDpSize().width - width) / 2
 
     @Composable
     fun Content(component: Component, style: TextStyle) {

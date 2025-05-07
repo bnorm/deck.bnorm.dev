@@ -5,7 +5,6 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -20,7 +19,6 @@ import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
@@ -41,8 +39,6 @@ import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
 import org.jetbrains.compose.resources.painterResource
 
-private const val THIRD = "Third"
-
 fun StoryboardBuilder.Title() {
     scene(
         stateCount = 1,
@@ -56,21 +52,19 @@ fun StoryboardBuilder.Title() {
                 modifier = Modifier.size(548.dp).offset(416.dp, 0.dp),
             )
 
-            with(LocalDensity.current) {
-                val storyboard = LocalStoryboard.current!!
-                val xSize = storyboard.size.width.toPx()
-                val ySize = storyboard.size.height.toPx()
-                Box(
-                    Modifier.fillMaxSize()
-                        .background(
-                            Brush.linearGradient(
-                                colors = listOf(Color.Transparent, Color.Black),
-                                start = Offset(xSize * 0.9f, ySize * 0.5f),
-                                end = Offset(xSize, ySize),
-                            )
+            val storyboard = LocalStoryboard.current!!
+            val xSize = storyboard.format.size.width.toFloat()
+            val ySize = storyboard.format.size.height.toFloat()
+            Box(
+                Modifier.fillMaxSize()
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(Color.Transparent, Color.Black),
+                            start = Offset(xSize * 0.9f, ySize * 0.5f),
+                            end = Offset(xSize, ySize),
                         )
-                )
-            }
+                    )
+            )
 
             Image(
                 painter = painterResource(Res.drawable.start_conference),

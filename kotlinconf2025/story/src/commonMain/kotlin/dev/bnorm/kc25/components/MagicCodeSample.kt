@@ -19,6 +19,7 @@ import dev.bnorm.storyboard.text.magic.DefaultFadeDurationMillis
 import dev.bnorm.storyboard.text.magic.DefaultMoveDurationMillis
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
+import dev.bnorm.storyboard.toDpSize
 
 @Composable
 fun Transition<CodeSample>.MagicCodeSample(
@@ -32,7 +33,7 @@ fun Transition<CodeSample>.MagicCodeSample(
         Modifier.verticalScroll(state, enabled = false)
             .then(modifier)
             // Allow scrolling to the very bottom.
-            .padding(bottom = LocalStoryboard.current?.size?.height ?: 0.dp)
+            .padding(bottom = LocalStoryboard.current?.format?.toDpSize()?.height ?: 0.dp)
     ) {
         MagicText(createChildTransition { it.string.splitByTags() })
     }

@@ -19,9 +19,7 @@ import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.background_building
 import dev.bnorm.deck.story.generated.resources.droidcon_newyork
-import dev.bnorm.storyboard.SceneDecorator
-import dev.bnorm.storyboard.Storyboard
-import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.*
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import org.jetbrains.compose.resources.painterResource
@@ -45,6 +43,11 @@ fun createStoryboard(
     decorator = decorator,
 ) {
     Title()
+
+    // TODO diff algorithms
+    //  * https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
+    //  * https://blog.jcoglan.com/2017/09/19/the-patience-diff-algorithm/
+
 //    scene(
 //        enterTransition = enter(
 //            start = SceneEnter(alignment = Alignment.BottomCenter),
@@ -87,7 +90,7 @@ private fun StoryboardBuilder.Title() {
                     Image(
                         painter = painterResource(Res.drawable.droidcon_newyork),
                         contentDescription = "title",
-                        modifier = Modifier.width(Storyboard.DEFAULT_SIZE.width / 2).padding(32.dp)
+                        modifier = Modifier.width(LocalStoryboard.current!!.format.toDpSize().width / 2).padding(32.dp)
                     )
                     Spacer(Modifier.weight(1f))
                     Image(

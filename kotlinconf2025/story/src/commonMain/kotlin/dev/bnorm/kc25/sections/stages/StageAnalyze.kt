@@ -70,13 +70,13 @@ private val SAMPLES = buildCodeSamples {
     val base = extractTags(
         """
             fun foo(): Int {
-                try {
-                    println(${d1}1 / 0${d1})$c1    // w: DIVISION_BY_ZERO$c1
-                    return ${d2}""${d2}$c2         // e: RETURN_TYPE_MISMATCH$c2
-                } catch (${d3}s: String${d3}) {$c3 // e: THROWABLE_TYPE_MISMATCH$c3
-                    println(s${d4}!!${d4})$c4      // w: UNNECESSARY_NOT_NULL_ASSERTION$c4
-                }
-            ${d5}}${d5}$c5                         // e: NO_RETURN_IN_FUNCTION_WITH_BLOCK_BODY$c5
+              try {
+                println(${d1}1 / 0${d1})$c1      // w: DIVISION_BY_ZERO$c1
+                return ${d2}""${d2}$c2           // e: RETURN_TYPE_MISMATCH$c2
+              } catch (${d3}s: String${d3}) {$c3 // e: THROWABLE_TYPE_MISMATCH$c3
+                println(s${d4}!!${d4})$c4        // w: UNNECESSARY_NOT_NULL_ASSERTION$c4
+              }
+            ${d5}}${d5}$c5                       // e: NO_RETURN_IN_FUNCTION_WITH_BLOCK_BODY$c5
         """.trimIndent()
     )
 
