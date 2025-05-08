@@ -95,6 +95,10 @@ class CodeSample private constructor(
         copy(focus = null, scrollTag = if (unscroll) null else scrollTag)
 
     fun styled(tag: TextTag, style: SpanStyle): CodeSample = copy(styled = styled + (tag to style))
+    fun styled(vararg tags: TextTag, style: SpanStyle): CodeSample = styled(tags.asList(), style)
+    fun styled(tags: List<TextTag>, style: SpanStyle): CodeSample =
+        copy(styled = styled + tags.associateWith { style })
+
     fun unstyled(tag: TextTag): CodeSample = copy(styled = styled - tag)
 
     fun scroll(tag: TextTag?): CodeSample = copy(scrollTag = tag)

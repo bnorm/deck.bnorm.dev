@@ -1,7 +1,10 @@
 package dev.bnorm.kc25.sections.stages
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,16 +13,11 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.bnorm.deck.shared.spans.SquigglyUnderlineSpanPainter
-import dev.bnorm.deck.shared.spans.rememberSquigglyUnderlineAnimator
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code2
@@ -29,7 +27,6 @@ import dev.bnorm.storyboard.easel.template.RevealEach
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
-import kotlin.time.Duration.Companion.seconds
 
 fun StoryboardBuilder.StageResolve() {
     val items = listOf(
@@ -47,7 +44,10 @@ fun StoryboardBuilder.StageResolve() {
                     item { Text(value) }
                 }
                 item {
-                    Row(modifier = Modifier.padding(start = 36.dp, top = 12.dp)) {
+                    Row(
+                        modifier = Modifier.padding(start = 36.dp, top = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Phases(phases)
                         Example(phases)
                     }
@@ -61,6 +61,7 @@ private enum class ExamplePhase {
     SUPER_TYPES,
     TYPES,
     IMPLICIT_TYPES_BODY_RESOLVE,
+    BODY_RESOLVE,
     // TODO more phases?
 }
 
@@ -98,34 +99,38 @@ private fun Phases(
 private val SAMPLES = buildCodeSamples {
     val sup by tag("", ExamplePhase.SUPER_TYPES)
     val type by tag("", ExamplePhase.TYPES)
-    val impl by tag("", ExamplePhase.IMPLICIT_TYPES_BODY_RESOLVE)
+    val implt by tag("", ExamplePhase.IMPLICIT_TYPES_BODY_RESOLVE)
+    val implb by tag("", ExamplePhase.IMPLICIT_TYPES_BODY_RESOLVE)
+    val body by tag("", ExamplePhase.BODY_RESOLVE)
 
-    val base = extractTags(
+    val sample = extractTags(
         """
             class AsciiRandom : ${sup}Random${sup}() {
               override fun nextBits(bitCount: ${type}Int${type}): ${type}Int${type} {
-                return Default.nextBits(bitCount)
+                return ${body}Default${body}.${body}nextBits${body}(${body}bitCount${body})
               }
             
-              fun nextString(charCount: ${type}Int${type})${impl}: String${impl} = buildString {
-                repeat(charCount) {
-                  append(nextInt(from = 32, until = 127).toChar())
+              fun nextString(charCount: ${type}Int${type})${implt}: String${implt} = ${implb}buildString${implb} {
+                ${implb}repeat${implb}(${implb}charCount${implb}) {
+                  ${implb}append${implb}(${implb}nextInt${implb}(from = 32, until = 127).${implb}toChar${implb}())
                 }
               }
             }
         """.trimIndent()
-    )
+    ).toCodeSample()
 
-    val samples = base.toCodeSample().hide(impl) // all red
-        .then { attach(ExamplePhase.SUPER_TYPES) } // sup green
-        .then { attach(ExamplePhase.TYPES) } // types green
-        .then { reveal(impl).attach(ExamplePhase.IMPLICIT_TYPES_BODY_RESOLVE) } // impl green
 
-    samples to tags
+    val start = sample
+        .styled(sup, type, implb, body, style = SpanStyle(Color.Red))
+        .hide(implt)
+        .styled(implt, style = SpanStyle(Color.DarkGray))
+
+    start
+        .then { unstyled(sup).attach(ExamplePhase.SUPER_TYPES) }
+        .then { unstyled(type).attach(ExamplePhase.TYPES) }
+        .then { unstyled(implb).reveal(implt).attach(ExamplePhase.IMPLICIT_TYPES_BODY_RESOLVE) }
+        .then { sample.unstyled(body).attach(ExamplePhase.BODY_RESOLVE) }
 }
-
-private val samples = SAMPLES.first
-private val tags = SAMPLES.second
 
 @Composable
 private fun Example(
@@ -133,49 +138,9 @@ private fun Example(
     modifier: Modifier = Modifier,
 ) {
     val style = MaterialTheme.typography.code2
-    val measurer = rememberTextMeasurer()
-    val animator = rememberSquigglyUnderlineAnimator(2.seconds)
-    // TODO are squiggly lines the best way to indicate unresolved code?
-    //  - would this be better visually if the code itself was red?
-    val painter = remember(animator) {
-        SquigglyUnderlineSpanPainter(
-            width = 1.sp,
-            wavelength = 6.sp,
-            bottomOffset = 0.sp,
-            animator = animator
-        )
-    }
-
-    Box(modifier.padding(start = 32.dp, top = 16.dp)) {
-        transition.createChildTransition { it.coerceIn(samples.indices) }
-            .AnimatedContent(
-                transitionSpec = {
-                    fadeIn(tween(300, easing = LinearEasing)) togetherWith
-                            fadeOut(tween(300, delayMillis = 300, easing = LinearEasing))
-                }
-            ) { index ->
-                val sample = samples[index].string
-                val ranges = ExamplePhase.entries.subList(fromIndex = index, toIndex = ExamplePhase.entries.size)
-                    .flatMap { phase ->
-                        val tag = tags.single { it.data == phase }
-                        sample.getStringAnnotations(tag.annotationStringTag, 0, sample.length)
-                            .filter { phase != ExamplePhase.IMPLICIT_TYPES_BODY_RESOLVE && it.item == tag.id }
-                            .map { it.start..<it.end }
-                    }
-                    .associateWith { Color.Red }
-
-                val result = remember(sample) { measurer.measure(sample, style = style) }
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .drawBehind {
-                            with(painter.drawInstructionsFor(result, ranges)) { draw() }
-                        },
-                )
-            }
-
+    Box(modifier.padding(start = 32.dp)) {
         ProvideTextStyle(style) {
-            MagicText(transition.createChildTransition { samples[it.coerceIn(samples.indices)].string.splitByTags() })
+            MagicText(transition.createChildTransition { SAMPLES[it.coerceIn(SAMPLES.indices)].string.splitByTags() })
         }
     }
 }
