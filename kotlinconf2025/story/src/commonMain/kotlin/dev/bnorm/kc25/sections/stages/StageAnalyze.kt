@@ -32,8 +32,8 @@ import kotlin.time.Duration.Companion.seconds
 fun StoryboardBuilder.StageAnalyze() {
     val items = listOf(
         "$BULLET_1 Once resolved, FIR is analyzed to determine correctness.",
-        "$BULLET_1 This allows checking for problems which do not impact resolution.",
-        "$BULLET_1 Most warnings are reported during this stage.",
+        "$BULLET_1 Most error occurrences are due to resolution.",
+        "$BULLET_1 But most error and warning types are reported by analysis.",
     )
     StageDetail(stateCount = items.size + 1 + 6, stage = CompilerStage.Analyze) {
         val errorTransition = transition.createChildTransition { it.toState() - 1 - items.size }

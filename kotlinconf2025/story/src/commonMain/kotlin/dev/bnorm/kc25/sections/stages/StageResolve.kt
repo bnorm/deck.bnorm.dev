@@ -4,7 +4,6 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -134,7 +133,7 @@ private val SAMPLES = buildCodeSamples {
 
 @Composable
 private fun Example(
-    transition: Transition<Int> = updateTransition(-1),
+    transition: Transition<Int>,
     modifier: Modifier = Modifier,
 ) {
     val style = MaterialTheme.typography.code2
