@@ -29,35 +29,17 @@ enum class CompilerStage {
     ;
 }
 
+data class CompilerStageState(
+    val visible: Boolean = true,
+    val content: Boolean = false,
+    val focused: Boolean = false,
+)
+
 private fun <T> fadeOutSpec(): TweenSpec<T> =
     tween(250, easing = EaseOut)
 
-//private fun <T> slideOutSpec(): TweenSpec<T> =
-//    tween(250, delayMillis = 250, easing = EaseOut)
-
 val BoxMovementSpec: BoundsTransform = BoundsTransform { _, _ -> tween(500, easing = EaseInOut) }
 val TextMovementSpec: BoundsTransform = BoxMovementSpec
-
-//private val BoxMovementSpec = BoundsTransform { initial, target ->
-//    if (initial.width < target.width) {
-//        keyframes {
-//            durationMillis = 500
-//            initial at 0 using EaseIn
-//            Rect(initial.left, target.top, initial.right, target.bottom) at 250 using EaseIn
-//            target at 500
-//        }
-//    } else {
-//        keyframes {
-//            durationMillis = 500
-//            initial at 0 using EaseIn
-//            Rect(target.left, initial.top, target.right, initial.bottom) at 250 using EaseIn
-//            target at 500
-//        }
-//    }
-//}
-
-//private fun <T> slideInSpec(): TweenSpec<T> =
-//    tween(250, delayMillis = 0, easing = EaseIn)
 
 private fun <T> fadeInSpec(): TweenSpec<T> =
     tween(250, delayMillis = 0, easing = EaseIn)
@@ -107,14 +89,15 @@ fun StoryboardBuilder.StageDetail(
     }
 }
 
-fun StoryboardBuilder.StageTimeline(startState: CompilerStage?, endState: CompilerStage?) {
-    val startOrdinal = startState?.ordinal ?: -1
-    val endOrdinal = endState?.ordinal ?: CompilerStage.entries.size
-
+fun StoryboardBuilder.StageTimeline(
+    states: List<Map<CompilerStage, CompilerStageState>>,
+    start: Map<CompilerStage, CompilerStageState>? = null,
+    end: Map<CompilerStage, CompilerStageState>? = null,
+) {
     scene(
-        states = listOf(startOrdinal, endOrdinal),
-        enterTransition = if (startState == null) SceneEnter(alignment = Alignment.CenterEnd) else DefaultEnterTransition,
-        exitTransition = if (startState == null) SceneExit(alignment = Alignment.CenterEnd) else DefaultExitTransition,
+        states = states,
+        enterTransition = if (start == null) SceneEnter(alignment = Alignment.CenterEnd) else DefaultEnterTransition,
+        exitTransition = if (end == null) SceneExit(alignment = Alignment.CenterEnd) else DefaultExitTransition,
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -123,28 +106,26 @@ fun StoryboardBuilder.StageTimeline(startState: CompilerStage?, endState: Compil
                 .fillMaxSize()
                 .padding(horizontal = 32.dp)
         ) {
-            for (state in CompilerStage.entries) {
-                val detailStage = transition.createChildTransition {
-                    when (it) {
-                        Frame.Start -> startState?.ordinal
-                        is Frame.State<*> -> null // All visible.
-                        Frame.End -> endState?.ordinal
-                    }
+            for (stage in CompilerStage.entries) {
+                val boxVisible = transition.createChildTransition {
+                    it.toState(start, end)?.get(stage)?.visible ?: false
                 }
 
-                val contentVisible = transition.createChildTransition { state.ordinal <= it.toState() }
+                val contentVisible = transition.createChildTransition {
+                    it.toState(start, end)?.get(stage)?.content ?: false
+                }
 
                 val borderColor by transition.animateColor(
                     transitionSpec = { tween(500, easing = EaseOut) },
                 ) {
-                    val focus = state.ordinal == it.toState()
+                    val focus = it.toState(start, end)?.get(stage)?.focused ?: false
                     if (focus) MaterialTheme.colors.secondary else MaterialTheme.colors.primary
                 }
 
                 CompilerStageBox(
-                    state,
+                    stage,
                     borderColor,
-                    detailStage = detailStage,
+                    boxVisible = boxVisible,
                     contentVisible = contentVisible,
                 )
             }
@@ -157,13 +138,13 @@ context(sharedVisibilityScope: AnimatedVisibilityScope, _: SharedTransitionScope
 private fun CompilerStageBox(
     stage: CompilerStage,
     borderColor: Color,
-    detailStage: Transition<Int?>,
+    boxVisible: Transition<Boolean>,
     contentVisible: Transition<Boolean>,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier.width(156.dp)) {
-        detailStage.AnimatedVisibility(
-            visible = { it == null || it == stage.ordinal },
+        boxVisible.AnimatedVisibility(
+            visible = { it },
             enter = fadeIn(fadeInSpec()),
             exit = fadeOut(fadeOutSpec()),
         ) {
