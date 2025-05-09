@@ -32,11 +32,11 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
     """.trimIndent().toCodeSample()
 
     base
-        .then {base.hide(err, map, init) }
+        .then { base.hide(err, map, init) }
         .then { focus(sup, scroll = false) }
-        .then { reveal(init).focus(init, scroll = false) }
         .then { reveal(err).focus(err, scroll = false) }
         .then { reveal(map).focus(map, scroll = false) }
+        .then { reveal(init).focus(init, scroll = false) }
 }
 
 @Composable
