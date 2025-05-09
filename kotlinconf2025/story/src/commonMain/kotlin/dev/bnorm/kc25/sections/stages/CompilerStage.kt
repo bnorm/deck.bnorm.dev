@@ -19,6 +19,8 @@ import dev.bnorm.storyboard.easel.sharedBounds
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 
 enum class CompilerStage {
     Parse,
@@ -93,11 +95,19 @@ fun StoryboardBuilder.StageTimeline(
     states: List<Map<CompilerStage, CompilerStageState>>,
     start: Map<CompilerStage, CompilerStageState>? = null,
     end: Map<CompilerStage, CompilerStageState>? = null,
+    slideStart: Boolean = false,
+    slideEnd: Boolean = false,
 ) {
     scene(
         states = states,
-        enterTransition = if (start == null) SceneEnter(alignment = Alignment.CenterEnd) else DefaultEnterTransition,
-        exitTransition = if (end == null) SceneExit(alignment = Alignment.CenterEnd) else DefaultExitTransition,
+        enterTransition = enter(
+            start = if (slideStart) SceneEnter(alignment = Alignment.CenterEnd) else DefaultEnterTransition,
+            end = if (slideEnd) SceneEnter(alignment = Alignment.CenterEnd) else DefaultEnterTransition,
+        ),
+        exitTransition = exit(
+            start = if (slideStart) SceneExit(alignment = Alignment.CenterEnd) else DefaultExitTransition,
+            end = if (slideEnd) SceneExit(alignment = Alignment.CenterEnd) else DefaultExitTransition,
+        ),
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

@@ -53,7 +53,7 @@ fun StoryboardBuilder.Architecture() {
         }
 
         SectionTitle()
-        StageTimeline(listOf(visible, parseProgress), start = visible, end = parseDetail)
+        StageTimeline(listOf(visible, parseProgress), start = visible, end = parseDetail, slideStart = true)
         StageParse()
         StageTimeline(listOf(parseProgress, resolveProgress), start = parseDetail, end = resolveDetail)
         StageResolve()
