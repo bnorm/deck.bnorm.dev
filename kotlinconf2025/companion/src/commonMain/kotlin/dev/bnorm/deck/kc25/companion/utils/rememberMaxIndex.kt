@@ -1,4 +1,4 @@
-package dev.bnorm.deck.kc25.companion
+package dev.bnorm.deck.kc25.companion.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
