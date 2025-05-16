@@ -128,7 +128,7 @@ private val SAMPLES = buildCodeSamples {
         .then { unstyled(sup).attach(ExamplePhase.SUPER_TYPES) }
         .then { unstyled(type).attach(ExamplePhase.TYPES) }
         .then { unstyled(implb).reveal(implt).attach(ExamplePhase.IMPLICIT_TYPES_BODY_RESOLVE) }
-        .then { sample.unstyled(body).attach(ExamplePhase.BODY_RESOLVE) }
+        .then { unstyled(body).attach(ExamplePhase.BODY_RESOLVE) }
 }
 
 @Composable

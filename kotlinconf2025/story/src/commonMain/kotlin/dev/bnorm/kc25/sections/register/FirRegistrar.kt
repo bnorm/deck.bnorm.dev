@@ -88,7 +88,7 @@ fun StoryboardBuilder.FirRegistrar(
                     )
                     .fillMaxSize()
                     .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(8.dp))
-                    .padding(16.dp)
+                    .padding(32.dp)
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = transition.createChildTransition { frame ->

@@ -92,17 +92,7 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
     // TODO are there other visuals we want to add here?
     // TODO talk about frontend vs backend
     //  - put boxes around the frontend and the backend
-    // TODO improve details about analyze stage
-    // TODO improve details about parse stage
-    //  - also show a UML-like tree of element linking?
-    //  - save for resolve phase?
-    // TODO improve details about resolve stage
-    // TODO can we show an example of why types are resolved in a specific order?
-    //  - super-type
-    //  - return type and parameter types
-    //  - local variables
-    // TODO improve details about transform stage
-    // TODO improve details about generate stage
+    // TODO improve details about generate stage?
     //  - should i actually include klib?
     Architecture()
 

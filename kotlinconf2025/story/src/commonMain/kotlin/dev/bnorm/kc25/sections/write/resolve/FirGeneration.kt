@@ -143,17 +143,28 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
     val callp by tag("getCallableNamesForClass param", SampleData.Parameters)
     val callb by tag("getCallableNamesForClass body", SampleData.Body)
 
+    val ctora by tag("generateConstructors all")
     val ctors by tag("generateConstructors signature", SampleData.Signature)
     val ctorp by tag("generateConstructors param", SampleData.Parameters)
     val ctorb by tag("generateConstructors body", SampleData.Body)
+    val ctor1 by tag("generateConstructors focus 1")
+    val ctor2 by tag("generateConstructors focus 2")
 
+    val propa by tag("generateProperties all")
     val props by tag("generateProperties signature", SampleData.Signature)
     val propp by tag("generateProperties param", SampleData.Parameters)
     val propb by tag("generateProperties body", SampleData.Body)
+    val prop1 by tag("generateProperties focus 1")
+    val prop2 by tag("generateProperties focus 2")
+    val prop3 by tag("generateProperties focus 3")
 
+    val funa by tag("generateFunctions all")
     val funs by tag("generateFunctions signature", SampleData.Signature)
     val funp by tag("generateFunctions param", SampleData.Parameters)
     val funb by tag("generateFunctions body", SampleData.Body)
+    val fun1 by tag("generateFunctions focus 1")
+    val fun2 by tag("generateFunctions focus 2")
+    val fun3 by tag("generateFunctions focus 3")
 
     val base = """
         ${clsSig}class BuildableFirDeclarationGenerationExtension(
@@ -229,66 +240,66 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             }
           ${callb}}
 
-          ${ctors}override fun ${funName}generateConstructors${funName}(${ctorp}
+          ${ctora}${ctors}override fun ${funName}generateConstructors${funName}(${ctorp}
             context: MemberGenerationContext,
           ${ctorp}): List<FirConstructorSymbol>${ctors} {${ctorb}
-            val builderClassSymbol = context.owner
+            ${ctor1}val builderClassSymbol = context.owner
             val key = (builderClassSymbol.origin as? FirDeclarationOrigin.Plugin)?.key
-            if (key !is BuilderClassKey) return emptyList()
+            if (key !is BuilderClassKey) return emptyList()${ctor1}
 
-            val constructor = createConstructor(
+            ${ctor2}val constructor = createConstructor(
               owner = builderClassSymbol,
               key = BuildableKey,
               isPrimary = true,
-            )
+            )${ctor2}
 
             return listOf(constructor.symbol)
-          ${ctorb}}
+          ${ctorb}}${ctora}
 
-          ${props}override fun ${funName}generateProperties${funName}(${propp}
+          ${propa}${props}override fun ${funName}generateProperties${funName}(${propp}
             callableId: CallableId,
             context: MemberGenerationContext?,
           ${propp}): List<FirPropertySymbol>${props} {${propb}
-            val builderClassSymbol = context?.owner
+            ${prop1}val builderClassSymbol = context?.owner
             val key = (builderClassSymbol?.origin as? FirDeclarationOrigin.Plugin)?.key
-            if (key !is BuilderClassKey) return emptyList()
+            if (key !is BuilderClassKey) return emptyList()${prop1}
 
-            val parameterSymbol = key.constructorSymbol.valueParameterSymbols
+            ${prop2}val parameterSymbol = key.constructorSymbol.valueParameterSymbols
               .singleOrNull { it.name == callableId.callableName }
-              ?: return emptyList()
+              ?: return emptyList()${prop2}
 
-            val property = createMemberProperty(
+            ${prop3}val property = createMemberProperty(
               owner = builderClassSymbol,
               key = BuildableKey,
               name = parameterSymbol.name,
               returnType = parameterSymbol.resolvedReturnType,
               isVal = false,
               hasBackingField = false,
-            )
+            )${prop3}
 
             return listOf(property.symbol)
-          ${propb}}
+          ${propb}}${propa}
 
-          ${funs}override fun ${funName}generateFunctions${funName}(${funp}
+          ${funa}${funs}override fun ${funName}generateFunctions${funName}(${funp}
             callableId: CallableId,
             context: MemberGenerationContext?,
           ${funp}): List<FirNamedFunctionSymbol>${funs} {${funb}
-            if (callableId.callableName != BUILD_FUN_NAME)
-              return emptyList()
+            ${fun1}if (callableId.callableName != BUILD_FUN_NAME)
+              return emptyList()${fun1}
 
-            val builderClassSymbol = context?.owner
+            ${fun2}val builderClassSymbol = context?.owner
             val key = (builderClassSymbol?.origin as? FirDeclarationOrigin.Plugin)?.key
-            if (key !is BuilderClassKey) return emptyList()
+            if (key !is BuilderClassKey) return emptyList()${fun2}
 
-            val build = createMemberFunction(
+            ${fun3}val build = createMemberFunction(
               owner = builderClassSymbol,
               key = BuildableKey,
               name = callableId.callableName,
               returnType = key.ownerClassSymbol.constructType(),
-            )
+            )${fun3}
 
             return listOf(build.symbol)
-          ${funb}}
+          ${funb}}${funa}
         }
     """.trimIndent().toCodeSample()
 
@@ -340,7 +351,9 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // generateConstructors
         .then { start.reveal(ctorp).focus(ctors) }
-        .then { reveal(ctorb).focus(ctorb).scroll(ctors).attach(BUILDER_CONSTRUCTOR_PANEL) }
+        .then { reveal(ctorb).focus(ctor1).scroll(ctors) }
+        .then { focus(ctor2) }
+        .then { focus(ctora).attach(BUILDER_CONSTRUCTOR_PANEL) }
         .then { attach(BUILDER_CONSTRUCTOR_PANEL.show()) }
         .then { attach(BUILDER_CONSTRUCTOR_PANEL.showNext()) }
         .then { attach(BUILDER_CONSTRUCTOR_PANEL.next()) }
@@ -348,7 +361,10 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // generateProperties
         .then { start.reveal(propp).focus(props) }
-        .then { reveal(propb).focus(propb).scroll(props).attach(BUILDER_PROPERTY_PANEL) }
+        .then { reveal(propb).focus(prop1).scroll(props) }
+        .then { focus(prop2) }
+        .then { focus(prop3) }
+        .then { focus(propa).attach(BUILDER_PROPERTY_PANEL) }
         .then { attach(BUILDER_PROPERTY_PANEL.show()) }
         .then { attach(BUILDER_PROPERTY_PANEL.showNext()) }
         .then { attach(BUILDER_PROPERTY_PANEL.next()) }
@@ -356,7 +372,10 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // generateFunctions
         .then { start.reveal(funp).focus(funs) }
-        .then { reveal(funb).focus(funb).scroll(funs).attach(BUILDER_FUNCTION_PANEL) }
+        .then { reveal(funb).focus(fun1).scroll(funs) }
+        .then { focus(fun2) }
+        .then { focus(fun3) }
+        .then { focus(funa).attach(BUILDER_FUNCTION_PANEL) }
         .then { attach(BUILDER_FUNCTION_PANEL.show()) }
         .then { attach(BUILDER_FUNCTION_PANEL.showNext()) }
         .then { attach(BUILDER_FUNCTION_PANEL.next()) }
