@@ -58,7 +58,7 @@ kotlin {
 }
 
 val extractBuildableCompilerPluginSamples = tasks.register<SampleExtraction>("samplesBuildableCompilerPluginExtract") {
-    input = rootProject.layout.projectDirectory.dir("kotlinconf2025/buildable/compiler-plugin/src/main/kotlin")
+    input = rootProject.layout.projectDirectory.dir("kotlinconf2025/buildable/compiler-plugin/src")
     output = layout.projectDirectory.dir("src/commonMain/composeResources/files/samples/buildable/compiler-plugin")
 }
 
