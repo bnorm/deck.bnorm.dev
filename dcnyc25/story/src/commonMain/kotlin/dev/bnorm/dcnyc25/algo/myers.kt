@@ -8,10 +8,10 @@ import kotlin.math.abs
 typealias SearchPath = PersistentList<IntOffset>
 
 interface SearchCallbacks {
-    fun onHead(path: SearchPath) {}
-    fun onRight(path: SearchPath) {}
-    fun onDown(path: SearchPath) {}
-    fun onDiag(path: SearchPath) {}
+    suspend fun onHead(path: SearchPath) {}
+    suspend fun onRight(path: SearchPath) {}
+    suspend fun onDown(path: SearchPath) {}
+    suspend fun onDiag(path: SearchPath) {}
 
     object NoOp : SearchCallbacks
 }
@@ -20,13 +20,13 @@ private enum class SearchDirection {
     Right, Down, Diagonal
 }
 
-fun myers(
+suspend fun myers(
     start: String,
     end: String,
     callbacks: SearchCallbacks = SearchCallbacks.NoOp,
 ): SearchPath {
-    val target = IntOffset(start.length - 1, end.length - 1)
-    val initial = IntOffset(-1, -1)
+    val target = IntOffset(start.length, end.length)
+    val initial = IntOffset(0, 0)
 
     class SearchNode(
         val path: SearchPath,
@@ -41,7 +41,7 @@ fun myers(
 
         fun right(): SearchNode? {
             val last = path.last()
-            if (last.x + 1 == start.length) return null
+            if (last.x == start.length) return null
             val extra = if (direction == SearchDirection.Down) 1 else 0
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x + 1, it.y) }),
@@ -52,7 +52,7 @@ fun myers(
 
         fun down(): SearchNode? {
             val last = path.last()
-            if (last.y + 1 == end.length) return null
+            if (last.y == end.length) return null
             val extra = if (direction == SearchDirection.Right) 1 else 0
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x, it.y + 1) }),
@@ -63,11 +63,11 @@ fun myers(
 
         fun diag(): SearchNode? {
             val last = path.last()
-            if (last.x + 1 == start.length || last.y + 1 == end.length) return null
-            if (start[last.x + 1] != end[last.y + 1]) return null
+            if (last.x == start.length || last.y == end.length) return null
+            if (start[last.x] != end[last.y]) return null
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x + 1, it.y + 1) }),
-                cost = cost + 1,
+                cost = cost,
                 direction = SearchDirection.Diagonal
             )
         }
