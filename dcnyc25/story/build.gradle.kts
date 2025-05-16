@@ -46,9 +46,9 @@ kotlin {
                 implementation(compose.material)
                 api(compose.components.resources)
 
-                api("dev.bnorm.storyboard:storyboard")
-                api("dev.bnorm.storyboard:storyboard-easel")
-                api("dev.bnorm.storyboard:storyboard-text")
+                api("dev.bnorm.storyboard:storyboard:0.1.0-SNAPSHOT")
+                api("dev.bnorm.storyboard:storyboard-easel:0.1.0-SNAPSHOT")
+                api("dev.bnorm.storyboard:storyboard-text:0.1.0-SNAPSHOT")
 
                 implementation("dev.chrisbanes.haze:haze:1.5.2")
                 implementation("io.github.alexzhirkevich:compottie:2.0.0-rc04")
