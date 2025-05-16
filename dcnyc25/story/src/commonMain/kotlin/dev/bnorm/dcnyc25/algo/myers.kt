@@ -8,10 +8,10 @@ import kotlin.math.abs
 typealias SearchPath = PersistentList<IntOffset>
 
 interface SearchCallbacks {
-    suspend fun onHead(path: SearchPath) {}
-    suspend fun onRight(path: SearchPath) {}
-    suspend fun onDown(path: SearchPath) {}
-    suspend fun onDiag(path: SearchPath) {}
+    fun onHead(path: SearchPath) {}
+    fun onRight(path: SearchPath) {}
+    fun onDown(path: SearchPath) {}
+    fun onDiag(path: SearchPath) {}
 
     object NoOp : SearchCallbacks
 }
@@ -20,12 +20,12 @@ private enum class SearchDirection {
     Right, Down, Diagonal
 }
 
-suspend fun myers(
-    start: String,
-    end: String,
+fun <T> myers(
+    start: List<T>,
+    end: List<T>,
     callbacks: SearchCallbacks = SearchCallbacks.NoOp,
 ): SearchPath {
-    val target = IntOffset(start.length, end.length)
+    val target = IntOffset(start.size, end.size)
     val initial = IntOffset(0, 0)
 
     class SearchNode(
@@ -41,7 +41,7 @@ suspend fun myers(
 
         fun right(): SearchNode? {
             val last = path.last()
-            if (last.x == start.length) return null
+            if (last.x == start.size) return null
             val extra = if (direction == SearchDirection.Down) 1 else 0
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x + 1, it.y) }),
@@ -52,7 +52,7 @@ suspend fun myers(
 
         fun down(): SearchNode? {
             val last = path.last()
-            if (last.y == end.length) return null
+            if (last.y == end.size) return null
             val extra = if (direction == SearchDirection.Right) 1 else 0
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x, it.y + 1) }),
@@ -63,7 +63,7 @@ suspend fun myers(
 
         fun diag(): SearchNode? {
             val last = path.last()
-            if (last.x == start.length || last.y == end.length) return null
+            if (last.x == start.size || last.y == end.size) return null
             if (start[last.x] != end[last.y]) return null
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x + 1, it.y + 1) }),

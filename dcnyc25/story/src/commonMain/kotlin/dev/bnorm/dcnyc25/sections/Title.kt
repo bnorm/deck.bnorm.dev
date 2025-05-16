@@ -12,7 +12,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.dcnyc25.template.HorizontalPane
 import dev.bnorm.dcnyc25.template.Pane
 import dev.bnorm.dcnyc25.template.Panes
 import dev.bnorm.deck.shared.socials.Bluesky
@@ -30,7 +29,7 @@ import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Title() {
     val panes = listOf<Pane.Horizontal<Int>>(
-        HorizontalPane {
+        Pane.Horizontal {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
                 Row {
                     Image(
@@ -47,44 +46,50 @@ fun StoryboardBuilder.Title() {
                 }
             }
         },
-        HorizontalPane {
-            Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier.padding(24.dp)
-                ) {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(SpanStyle(fontWeight = FontWeight.ExtraLight)) {
-                                append("re")
-                                withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                    append("creating\nmagic")
+        Pane.Horizontal(
+            Pane.Quarter {
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
+                    Box(
+                        contentAlignment = Alignment.BottomStart,
+                        modifier = Modifier.fillMaxSize().padding(24.dp)
+                    ) {
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(SpanStyle(fontWeight = FontWeight.ExtraLight)) {
+                                    this.append("re")
+                                    withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                        this.append("creating\nmagic")
+                                    }
+                                    this.append("move\nwith compose")
                                 }
-                                append("move\nwith compose")
-                            }
-                        },
-                        style = MaterialTheme.typography.h2,
-                    )
-                    Spacer(Modifier.weight(1f))
-                    Column {
-                        JetBrainsEmployee(
-                            name = "Brian Norman",
-                            title = "Kotlin Compiler Developer",
+                            },
+                            style = MaterialTheme.typography.h2,
                         )
-                        Spacer(Modifier.size(4.dp))
-                        Column(Modifier.padding(start = 12.dp)) {
-                            Mastodon(username = "bnorm@kotlin.social")
+                    }
+                }
+            },
+            Pane.Quarter {
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
+                    Box(
+                        contentAlignment = Alignment.BottomEnd,
+                        modifier = Modifier.fillMaxSize().padding(24.dp),
+                    ) {
+                        Column {
+                            JetBrainsEmployee(
+                                name = "Brian Norman",
+                                title = "Kotlin Compiler Developer",
+                            )
                             Spacer(Modifier.size(4.dp))
-                            Bluesky(username = "@bnorm.dev")
+                            Column(Modifier.padding(start = 12.dp)) {
+                                Mastodon(username = "bnorm@kotlin.social")
+                                Spacer(Modifier.size(4.dp))
+                                Bluesky(username = "@bnorm.dev")
+                            }
                         }
                     }
                 }
             }
-        },
-//        HorizontalPane {
-//            Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
-//            }
-//        }
+        ),
     )
 
     scene(

@@ -7,7 +7,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,30 +15,40 @@ import androidx.compose.ui.unit.Dp
 import dev.bnorm.storyboard.*
 import kotlin.jvm.JvmName
 
-sealed class Pane<T>(
+sealed class Pane<T> protected constructor(
     val content: SceneContent<T>,
 ) {
-    class Horizontal<T>(content: SceneContent<T>) : Pane<T>(content)
-    class Vertical<T>(content: SceneContent<T>) : Pane<T>(content)
-    class Quarter<T>(content: SceneContent<T>) : Pane<T>(content)
-}
+    class Quarter<T>(content: SceneContent<T>) : Pane<T>(content = {
+        Box(Modifier.fillMaxHeight().width(SceneHalfWidth)) {
+            Render(content)
+        }
+    })
 
-fun <T> VerticalPane(
-    content: @Composable () -> Unit,
-): Pane.Vertical<T> = Pane.Vertical {
-    Box(Modifier.fillMaxHeight().width(SceneHalfWidth)) { content() }
-}
+    class Horizontal<T>(content: SceneContent<T>) : Pane<T>(content = {
+        Box(Modifier.fillMaxWidth().height(SceneHalfHeight)) {
+            Render(content)
+        }
+    }) {
+        constructor(first: Quarter<T>, second: Quarter<T>) : this(content = {
+            Row {
+                Render(first.content)
+                Render(second.content)
+            }
+        })
+    }
 
-fun <T> HorizontalPane(
-    content: @Composable () -> Unit,
-): Pane.Horizontal<T> = Pane.Horizontal {
-    Box(Modifier.fillMaxWidth().height(SceneHalfHeight)) { content() }
-}
-
-fun <T> QuarterPane(
-    content: @Composable () -> Unit,
-): Pane.Quarter<T> = Pane.Quarter {
-    Box(Modifier.size(SceneHalfWidth, SceneHalfHeight)) { content() }
+    class Vertical<T>(content: SceneContent<T>) : Pane<T>(content = {
+        Box(Modifier.fillMaxHeight().width(SceneHalfWidth)) {
+            Render(content)
+        }
+    }) {
+        constructor(first: Quarter<T>, second: Quarter<T>) : this(content = {
+            Column {
+                Render(first.content)
+                Render(second.content)
+            }
+        })
+    }
 }
 
 @JvmName("HorizontalPanes")
@@ -51,7 +60,7 @@ fun SceneScope<Int>.Panes(
 ) {
     val state = rememberScrollState()
     transition.animateScroll(state, transitionSpec = { tween(750, easing = EaseInOut) }) {
-        if (it.toState() == 0) 0 else with(LocalDensity.current) { SceneHalfWidth.roundToPx() }
+        it.toState() * with(LocalDensity.current) { SceneHalfWidth.roundToPx() }
     }
 
     Column(Modifier.fillMaxSize().verticalScroll(state, enabled = false).background(background)) {
@@ -70,7 +79,7 @@ fun SceneScope<Int>.Panes(
 ) {
     val state = rememberScrollState()
     transition.animateScroll(state, transitionSpec = { tween(750, easing = EaseInOut) }) {
-        if (it.toState() == 0) 0 else with(LocalDensity.current) { SceneHalfWidth.roundToPx() }
+        it.toState() * with(LocalDensity.current) { SceneHalfWidth.roundToPx() }
     }
 
     Row(Modifier.fillMaxSize().horizontalScroll(state, enabled = false).background(background)) {

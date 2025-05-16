@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.template.Pane
 import dev.bnorm.dcnyc25.template.Panes
-import dev.bnorm.dcnyc25.template.VerticalPane
 import dev.bnorm.dcnyc25.template.code1
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -24,7 +23,7 @@ import dev.bnorm.storyboard.text.highlight.highlight
 
 fun StoryboardBuilder.CodeExamples() {
     val panes = listOf<Pane.Vertical<Int>>(
-        VerticalPane {
+        Pane.Vertical {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
                 Column {
                     Box(Modifier.padding(32.dp)) {
@@ -46,7 +45,7 @@ fun StoryboardBuilder.CodeExamples() {
                 }
             }
         },
-        VerticalPane {
+        Pane.Vertical {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
                 Column {
                     Box(Modifier.padding(32.dp)) {
@@ -69,7 +68,7 @@ fun StoryboardBuilder.CodeExamples() {
                 }
             }
         },
-        VerticalPane {
+        Pane.Vertical {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
                 Column {
                     Box(Modifier.padding(32.dp)) {
