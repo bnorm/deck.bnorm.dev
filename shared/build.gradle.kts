@@ -26,9 +26,9 @@ kotlin {
                 api(compose.components.resources)
                 api("org.jetbrains.compose.material:material-icons-core:1.7.3")
 
-                api("dev.bnorm.storyboard:storyboard:0.1.0-SNAPSHOT")
-                api("dev.bnorm.storyboard:storyboard-easel:0.1.0-SNAPSHOT")
-                api("dev.bnorm.storyboard:storyboard-text:0.1.0-SNAPSHOT")
+                api("dev.bnorm.storyboard:storyboard:0.1.0-alpha01")
+                api("dev.bnorm.storyboard:storyboard-easel:0.1.0-alpha01")
+                api("dev.bnorm.storyboard:storyboard-text:0.1.0-alpha01")
 
                 api(dependencies.platform("io.ktor:ktor-bom:3.1.2"))
                 api(dependencies.platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2"))
