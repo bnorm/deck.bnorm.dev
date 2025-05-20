@@ -1,8 +1,21 @@
 package dev.bnorm.kc25
 
+import androidx.compose.animation.core.createChildTransition
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
+import dev.bnorm.kc25.components.temp.BULLET_3
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Title
@@ -18,6 +31,7 @@ import dev.bnorm.kc25.sections.write.analyze.Errors
 import dev.bnorm.kc25.sections.write.resolve.FirGeneration
 import dev.bnorm.kc25.sections.write.transform.IrGeneration
 import dev.bnorm.kc25.sections.write.transform.Visitor
+import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.storyDecorator
@@ -25,9 +39,9 @@ import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.*
+import dev.bnorm.storyboard.toState
 
 // TODO review all slides for consistent code formatting!
-// TODO update all samples to 2.2.0?
 fun createStoryboard(
     decorator: SceneDecorator = storyDecorator(),
     sink: MutableList<CodeSample> = mutableListOf(),
@@ -80,33 +94,13 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
         ComposeExample(sink)
         DataFrameExample(sink)
         PowerAssertExample(sink)
-
-        // TODO Move section to just after registration slide?
-        section("Your Plugin") {
-            BuildableIntro(sink)
-        }
     }
 
-    // TODO the stages should be more front and center
-    //  - push them to the outside?
-    // TODO are there other visuals we want to add here?
-    // TODO talk about frontend vs backend
-    //  - put boxes around the frontend and the backend
-    // TODO improve details about generate stage?
-    //  - should i actually include klib?
     Architecture()
 
     StageTimelineTransition()
 
-    // TODO similar to stages, zoom in and out of components to see changes which need to be made
-    //  - include a header and bullet points to describe how the extension can be used?
-    // TODO what to put in the backend versus the frontend
-    //  - put boxes around the frontend and the backend
-    // TODO example showing template project and how
     // TODO move IrGenerationExtension boiler plate here?
-    // TODO start with the factory version in FirExtensionRegistrar and transform into the method reference version?
-    // TODO is there a better way to do detail transitions?
-    //  - maybe similar to FIR tree where it's part of the diagram?
     Registration(sink)
 
     // TODO the text fades out/in as it slides
@@ -115,23 +109,31 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
             focus = Component.FirExtensionRegistrar,
             stages = setOf(CompilerStage.Resolve, CompilerStage.Analyze),
         ),
-        RegistrarComponentState(
-            focus = Component.FirDeclarationGenerationExtension,
-            stages = setOf(CompilerStage.Resolve),
-        ),
+        RegistrarComponentState(),
         enterTransition = enter(start = DetailsEnterTransition, end = SceneEnter(alignment = Alignment.CenterEnd)),
         exitTransition = exit(start = DetailsExitTransition, end = SceneExit(alignment = Alignment.CenterEnd)),
     )
 
+    section("Your Plugin") {
+        SectionTitle(animateToHeader = true)
+        BuildableIntro(sink)
+    }
+
+    RegistrarComponent(
+        RegistrarComponentState(),
+        RegistrarComponentState(
+            focus = Component.FirDeclarationGenerationExtension,
+            stages = setOf(CompilerStage.Resolve),
+        ),
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+    )
+
     section("Resolve") {
-        // TODO show all the annotation predicate types and what each match?
-        // TODO show more details about predicate based provider?
-        // TODO show more details about FirScope?
         // TODO do both name functions first?
         //  - first fucus on the name functions
         //  - next focus on the generate functions
         //  - finally, focus on the predicate function
-        // TODO walk through the body of callable names, generate constructor, properties, and functions
         // TODO do code errors with squiggly lines https://github.com/saket/extended-spans
         FirGeneration(sink)
     }
@@ -151,10 +153,7 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
 
     section("Transform") {
         IrGeneration(sink)
-        // TODO still talk about IrAttribute?
         // TODO add side panels for generated code
-        // TODO focus on parts of function body
-        // TODO side panel for irAttribute
         Visitor(sink)
     }
 
@@ -172,13 +171,9 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
     )
 
     section("Analyze") {
-        // TODO in what order should extension, checker and errors scenes be?
-        // TODO show example of other checker configuration?
         CheckerExtension(sink)
         Checker(sink)
-        // TODO show example of other multi-parameter errors?
         Errors(sink)
-        // TODO could transition into IDE topics after analyze?
     }
 
     RegistrarComponent(
@@ -191,21 +186,93 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     )
 
-    section("Your Plugin") {
-        // TODO new slide
-        //  - explicitly mention the template project for people to use and write their own
-        //  - show buildable repository as a sample with all this code
+    Summary()
+}
 
-        // TODO testing?
-        //  - probably need to leave this to the companion :/
+private fun StoryboardBuilder.Summary() {
+    section("Your Plugin") {
+        scene(
+            states = listOf(-1, 1, 3, 4),
+            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        ) {
+            val items = listOf(
+                AnnotatedString("$BULLET_1 For a complete example, checkout the project on GitHub:"),
+                buildAnnotatedString {
+                    append("    $BULLET_3 ")
+                    withStyle(SpanStyle(fontFamily = JetBrainsMono)) { append("bnorm/buildable") }
+                },
+                AnnotatedString("$BULLET_1 There's also a template available: "),
+                buildAnnotatedString {
+                    append("    $BULLET_3 ")
+                    withStyle(SpanStyle(fontFamily = JetBrainsMono)) { append("demiurg906/kotlin-compiler-plugin-template") }
+                },
+                AnnotatedString("$BULLET_1 We plan to update the template project more regularly."),
+            )
+
+            HeaderScaffold { padding ->
+                Column(
+                    modifier = Modifier.padding(padding),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    RevealEach(transition.createChildTransition { it.toState() }) {
+                        for (value in items) {
+                            item { Text(value) }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    // TODO add KT ticket
+    section("Other Plugins") {
+        scene(
+            states = listOf(-1, 1, 2, 4, 5, 7, 8),
+            enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+            exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        ) {
+            val items = listOf(
+                AnnotatedString("$BULLET_1 Multiplatform parameterized unit tests:"),
+                buildAnnotatedString {
+                    append("    $BULLET_3 ")
+                    withStyle(SpanStyle(fontFamily = JetBrainsMono)) { append("cashapp/burst") }
+                },
+                AnnotatedString("    $BULLET_3 Example of transformation with great documentation."),
+                AnnotatedString("$BULLET_1 API friendly values classes:"),
+                buildAnnotatedString {
+                    append("    $BULLET_3 ")
+                    withStyle(SpanStyle(fontFamily = JetBrainsMono)) { append("drewhamilton/Poko") }
+                },
+                AnnotatedString("    $BULLET_3 Great example of transformation and analysis."),
+                AnnotatedString("$BULLET_1 Compile-time, multiplatform dependency injection framework:"),
+                buildAnnotatedString {
+                    append("    $BULLET_3 ")
+                    withStyle(SpanStyle(fontFamily = JetBrainsMono)) { append("ZacSweers/metro") }
+                },
+                AnnotatedString("    $BULLET_3 Complex example of almost all compiler plugin extensions."),
+            )
+
+            HeaderScaffold { padding ->
+                Column(
+                    modifier = Modifier.padding(padding),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    RevealEach(transition.createChildTransition { it.toState() }) {
+                        for (value in items) {
+                            item { Text(value) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     section("Future") {
+        SectionTitle(animateToHeader = true)
         RevealScene(
             "$BULLET_1 Top question: when will the compiler plugin API be stable?",
             "$BULLET_1 The existing API will never be stable.",
-            "$BULLET_1 We working on (yet) another API which we plan to be stable (KT-X).",
+            "$BULLET_1 We working on (yet) another API which we plan to be stable (KT-49508).",
             "$BULLET_1 Some future KotlinConf: Writing Your Fourth Kotlin Compiler Plugin.",
         )
     }

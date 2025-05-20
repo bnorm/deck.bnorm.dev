@@ -30,16 +30,17 @@ private val PERSON_SAMPLES = buildCodeSamples {
 
     base.toCodeSample()
         .then { focus(ctors) }
-        .then { styled(ann, style = SpanStyle(Color.Red)) } // TODO squiggles instead?
+        .then { styled(ann, style = SpanStyle(Color.Red)) }
 }
 
 private val PERSON_GREEN_PANEL = RightPanel(0, PERSON_SAMPLES, show = false)
 private val PERSON_RED_PANEL = RightPanel(1, PERSON_SAMPLES, show = false)
 
-private val SAMPLES = buildCodeSamples {
+private val VALIDATION_SAMPLES = buildCodeSamples {
     val sup by tag("super class")
     val cid by tag("")
     val sig by tag("")
+    val body by tag("")
     val find by tag("")
     val report by tag("")
 
@@ -54,7 +55,7 @@ private val SAMPLES = buildCodeSamples {
             declaration: FirClass,
             context: CheckerContext,
             reporter: DiagnosticReporter,
-          )${sig} {
+          )${sig} {$body
             ${find}val annotations = buildList {
               val scope = declaration.symbol.declaredMemberScope(context)
               scope.processDeclaredConstructors { constructor ->
@@ -75,15 +76,16 @@ private val SAMPLES = buildCodeSamples {
                 )
               }
             }${report}
-          }
+          $body}
         }
     """.trimIndent().toCodeSample()
 
     base
+        .then { collapse(body) }
         .then { focus(sup) }
         .then { focus(cid, scroll = false) }
         .then { focus(sig, scroll = false) }
-        .then { focus(find).attach(PERSON_GREEN_PANEL) }
+        .then { reveal(body).focus(find).attach(PERSON_GREEN_PANEL) }
         .then { attach(PERSON_GREEN_PANEL.show()) }
         .then { attach(PERSON_GREEN_PANEL.showNext()) }
         .then { attach(PERSON_GREEN_PANEL.next()) }
@@ -96,10 +98,12 @@ private val SAMPLES = buildCodeSamples {
 @Composable
 internal fun validateCheckerSample() {
     validateSample(
-        sample = SAMPLES[0].string,
+        sample = VALIDATION_SAMPLES[0].string,
         file = "buildable/compiler-plugin/dev/bnorm/buildable/plugin/fir/BuildableConstructorChecker.kt@BuildableConstructorChecker"
     )
 }
+
+private val SAMPLES = VALIDATION_SAMPLES.subList(fromIndex = 1, toIndex = VALIDATION_SAMPLES.size)
 
 fun StoryboardBuilder.Checker(sink: MutableList<CodeSample>, start: Int = 0, endExclusive: Int = SAMPLES.size) {
     sink.addAll(SAMPLES)

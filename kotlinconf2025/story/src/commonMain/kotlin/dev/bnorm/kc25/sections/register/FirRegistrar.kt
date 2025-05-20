@@ -39,7 +39,7 @@ private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
         class MyFirExtensionRegistrar : ${sup}FirExtensionRegistrar${sup}() {${body}
           ${sig}override fun ExtensionRegistrarContext.configurePlugin()${sig} {${dge}
             +::MyFirDeclarationGenerationExtension${dge}${sge}
-            +MyFirSupertypeGenerationExtension.Factory(session)${sge}${ste}
+            +MyFirSupertypeGenerationExtension.Factory()${sge}${ste}
             +{ session: FirSession -> MyFirStatusTransformerExtension(session) }${ste}${ace}
             +::MyFirAdditionalCheckersExtension${ace}
           }

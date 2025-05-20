@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -20,6 +21,14 @@ const val BULLET_2 = " ◦ "
 const val BULLET_3 = " ‣ "
 
 fun StoryboardBuilder.RevealScene(vararg items: String) {
+    RevealScene(items.map { AnnotatedString(it) })
+}
+
+fun StoryboardBuilder.RevealScene(vararg items: AnnotatedString) {
+    RevealScene(items.asList())
+}
+
+fun StoryboardBuilder.RevealScene(items: List<AnnotatedString>) {
     scene(
         stateCount = items.size,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
