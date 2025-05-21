@@ -2,7 +2,7 @@ package dev.bnorm.kc25
 
 import androidx.compose.ui.Alignment
 import dev.bnorm.kc25.components.temp.BULLET_1
-import dev.bnorm.kc25.components.temp.BULLET_2
+import dev.bnorm.kc25.components.temp.BULLET_3
 import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.sections.Closing
 import dev.bnorm.kc25.sections.Summary
@@ -63,17 +63,28 @@ private fun StoryboardBuilder.Outline(sink: MutableList<CodeSample>) {
     section("Compiler Plugin?") {
         SectionTitle(animateToHeader = true)
 
-        // TODO revamp these bullet points
-        //  - are there some visuals which could help?
-        // TODO need to emphasize when you DON'T need a compiler plugin
-        // TODO really need to make this slide about KSP vs compiler plugins
         RevealScene(
-            "$BULLET_1 A form of metaprogramming, integrated directly with the compiler.",
-            "$BULLET_1 Metaprogramming is writing code that writes or manipulates code.",
-            "$BULLET_1 Alternatives include KSP, reflection, or annotation processing (KAPT).",
-            "$BULLET_1 Experimental and unstable, usually breaks with each new Kotlin release.",
-            "    $BULLET_2 Should only be used if the benefits outweigh the drawbacks.",
+            "$BULLET_1 Extension to the Kotlin compiler that allows changing language semantics.",
+            "$BULLET_1 Allows changing and/or generating code as it is compiled.",
+            "$BULLET_1 Can also be used to introduce new warnings or errors.",
+            "$BULLET_1 Extremely experimental and very unstable API.",
         )
+        RevealScene(
+            "$BULLET_1 Why a compiler plugin and not Kotlin Symbol Processing?",
+            "$BULLET_1 KSP is run before compilation and can only generate new code.",
+            "$BULLET_1 Generally slower because it needs to process source code itself.",
+            "$BULLET_1 But it has a stable API that maintains binary compatibility.",
+        )
+        RevealScene(
+            "$BULLET_1 Recommendations:",
+            "    $BULLET_3 Use KSP whenever possible.",
+            "    $BULLET_3 Consider a compiler plugin if you need the deeper integration.",
+            "    $BULLET_3 Be mindful of the significant increase in maintenance cost.",
+        )
+    }
+
+    section("What's Possible?") {
+        SectionTitle()
 
         SpringBoot(sink)
         SerializationExample(sink)
