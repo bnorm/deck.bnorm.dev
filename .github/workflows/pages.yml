@@ -50,6 +50,13 @@ jobs:
           extract: 'true'
           out-file-path: build/_site
 
+      - uses: robinraju/release-downloader@v1
+        with:
+          tag: 'kc25'
+          fileName: 'kc25.zip'
+          extract: 'true'
+          out-file-path: build/_site
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

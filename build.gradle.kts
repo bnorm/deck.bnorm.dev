@@ -48,13 +48,6 @@ tasks.register<Sync>("site") {
 
     from(project(":deck.bnorm.dev").tasks.named("jsBrowserDistribution"))
 
-    into("kc25") {
-        from(project(":kotlinconf2025:story").tasks.named("wasmJsBrowserDistribution"))
-        into("companion") {
-            from(project(":kotlinconf2025:companion").tasks.named("wasmJsBrowserDistribution"))
-        }
-    }
-
     into("dcnyc25") {
         from(project(":dcnyc25:story").tasks.named("wasmJsBrowserDistribution"))
     }
