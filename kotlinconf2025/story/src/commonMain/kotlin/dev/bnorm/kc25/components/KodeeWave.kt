@@ -33,12 +33,12 @@ fun KodeeWave(
     val c = composition ?: return
 
     // The animation duration is about 5 seconds.
-    // Animate about every 30 seconds.
+    // Animate about every 55 seconds.
     val durationMillis = (c.durationFrames / c.frameRate * 1_000).toInt()
     val spec = infiniteRepeatable<Float>(
         animation = tween(
             durationMillis = durationMillis,
-            delayMillis = durationMillis * 6,
+            delayMillis = durationMillis * 11,
             easing = LinearEasing
         ),
         repeatMode = RepeatMode.Restart,

@@ -120,6 +120,8 @@ private val BUILDER_FUNCTION_PANEL = RightPanel(6, BUILDABLE, show = false)
 private val VALIDATE_SAMPLES = buildCodeSamples {
     val clsSig by tag("class signature")
     val funName by tag("function names")
+    val nameNames by tag("get name function names")
+    val genNames by tag("gen symbol function names")
 
     val cob by tag("companion object body", SampleData.Body)
 
@@ -188,7 +190,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             register(HAS_BUILDABLE_PREDICATE)
           ${rpb}}
 
-          ${nesta}${nests}override fun ${funName}getNestedClassifiersNames${funName}(${nestp}
+          ${nesta}${nests}override fun ${funName}${nameNames}getNestedClassifiersNames${nameNames}${funName}(${nestp}
             classSymbol: FirClassSymbol<*>,
             context: NestedClassGenerationContext,
           ${nestp}): Set<Name>${nests} {${nestb}
@@ -199,7 +201,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             return setOf(BUILDER_CLASS_NAME)
           ${nestb}}${nesta}
 
-          ${classa}${classs}override fun ${funName}generateNestedClassLikeDeclaration${funName}(${classp}
+          ${classa}${classs}override fun ${funName}${genNames}generateNestedClassLikeDeclaration${genNames}${funName}(${classp}
             owner: FirClassSymbol<*>,
             name: Name,
             context: NestedClassGenerationContext,
@@ -226,7 +228,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             return builderClass.symbol${class3}
           ${classb}}${classa}
 
-          ${calls}override fun ${funName}getCallableNamesForClass${funName}(${callp}
+          ${calls}override fun ${funName}${nameNames}getCallableNamesForClass${nameNames}${funName}(${callp}
             classSymbol: FirClassSymbol<*>,
             context: MemberGenerationContext,
           ${callp}): Set<Name>${calls} {${callb}
@@ -240,7 +242,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             }
           ${callb}}
 
-          ${ctora}${ctors}override fun ${funName}generateConstructors${funName}(${ctorp}
+          ${ctora}${ctors}override fun ${funName}${genNames}generateConstructors${genNames}${funName}(${ctorp}
             context: MemberGenerationContext,
           ${ctorp}): List<FirConstructorSymbol>${ctors} {${ctorb}
             ${ctor1}val builderClassSymbol = context.owner
@@ -256,7 +258,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             return listOf(constructor.symbol)
           ${ctorb}}${ctora}
 
-          ${propa}${props}override fun ${funName}generateProperties${funName}(${propp}
+          ${propa}${props}override fun ${funName}${genNames}generateProperties${genNames}${funName}(${propp}
             callableId: CallableId,
             context: MemberGenerationContext?,
           ${propp}): List<FirPropertySymbol>${props} {${propb}
@@ -280,7 +282,7 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
             return listOf(property.symbol)
           ${propb}}${propa}
 
-          ${funa}${funs}override fun ${funName}generateFunctions${funName}(${funp}
+          ${funa}${funs}override fun ${funName}${genNames}generateFunctions${genNames}${funName}(${funp}
             callableId: CallableId,
             context: MemberGenerationContext?,
           ${funp}): List<FirNamedFunctionSymbol>${funs} {${funb}
@@ -310,6 +312,8 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
         .then { start.focus(clsSig) }
 
         .then { focus(funName, scroll = false) }
+        .then { focus(nameNames, scroll = false) }
+        .then { focus(genNames, scroll = false) }
 
         // companion object
         .then { reveal(cob).focus(cob, scroll = false).attach(BOOK_PANEL) }

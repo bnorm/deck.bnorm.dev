@@ -30,6 +30,10 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
     val vCls by tag("", SampleData.Visitor)
     val vClsB by tag("visitClass body", SampleData.Body)
+    val vClsB1 by tag("visitClass body 1")
+    val vClsB2 by tag("visitClass body 2")
+    val vClsB3 by tag("visitClass body 3")
+    val vClsB4 by tag("visitClass body 4")
 
     val vFun by tag("", SampleData.Visitor)
     val vFunB by tag("visitSimpleFunction body", SampleData.Body)
@@ -100,11 +104,11 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
           }${hide}
 
           ${vCls}${sig}override fun visitClass(declaration: IrClass)$sig {${vClsB}
-            val pluginKey = (declaration.origin as? GeneratedByPlugin)?.pluginKey
-            if (pluginKey is BuilderClassKey) {
+            ${vClsB1}val pluginKey = (declaration.origin as? GeneratedByPlugin)?.pluginKey
+            if (pluginKey is BuilderClassKey) {${vClsB1}
               val declarations = declaration.declarations
 
-              val fields = mutableListOf<IrField>()
+              ${vClsB2}val fields = mutableListOf<IrField>()
               for (property in declarations) {
                 if (property !is IrProperty) continue
                 val backing =${collapse} generateBacking(declaration, property)${collapse}
@@ -113,12 +117,12 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
                 property.builderPropertyBacking = backing${hide}
                 fields += backing.flag
                 fields += backing.holder
-              }
+              }${vClsB2}
 
-              declarations.addAll(0, fields)
+              ${vClsB3}declarations.addAll(0, fields)${vClsB3}
             }
 
-            declaration.acceptChildrenVoid(this)
+            ${vClsB4}declaration.acceptChildrenVoid(this)${vClsB4}
           ${vClsB}}${vCls}${hide}
 
           private fun generateBacking(
@@ -321,7 +325,10 @@ private val VALIDATE_SAMPLES = buildCodeSamples {
 
         // Class
         .then { start.focus(vCls) }
-        .then { reveal(vClsB).focus(vClsB) }
+        .then { reveal(vClsB).scroll(vClsB).focus(vClsB1, scroll = false) }
+        .then { focus(vClsB2, scroll = false) }
+        .then { focus(vClsB3, scroll = false) }
+        .then { focus(vClsB4, scroll = false) }
         .then { start.focus(vCls) }
 
         // Function
