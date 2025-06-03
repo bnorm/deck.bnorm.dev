@@ -19,10 +19,6 @@ allprojects {
                 publicResClass = true
             }
         }
-
-        extensions.configure<ComposeCompilerGradlePluginExtension> {
-            featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
-        }
     }
 
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
@@ -50,5 +46,8 @@ tasks.register<Sync>("site") {
 
     into("dcnyc25") {
         from(project(":dcnyc25:story").tasks.named("wasmJsBrowserDistribution"))
+        into("companion") {
+            from(project(":dcnyc25:companion").tasks.named("wasmJsBrowserDistribution"))
+        }
     }
 }
