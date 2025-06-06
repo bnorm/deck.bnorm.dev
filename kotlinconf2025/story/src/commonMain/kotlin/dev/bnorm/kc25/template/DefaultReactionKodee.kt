@@ -16,9 +16,9 @@ import dev.bnorm.deck.story.generated.resources.buildable_repo_qr
 import dev.bnorm.kc25.broadcast.ReactionListener
 import dev.bnorm.kc25.broadcast.ReactionMessage
 import dev.bnorm.kc25.components.KodeeWave
-import dev.bnorm.storyboard.LocalSceneMode
 import dev.bnorm.storyboard.SceneDecorator
-import dev.bnorm.storyboard.SceneMode
+import dev.bnorm.storyboard.easel.LocalSceneMode
+import dev.bnorm.storyboard.easel.SceneMode
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.filter
 import org.jetbrains.compose.resources.painterResource

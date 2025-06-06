@@ -9,7 +9,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -31,18 +30,34 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.algo.SearchCallbacks
 import dev.bnorm.dcnyc25.algo.SearchPath
 import dev.bnorm.dcnyc25.algo.myers
 import dev.bnorm.dcnyc25.template.COLORS
-import dev.bnorm.dcnyc25.template.animateScroll
-import dev.bnorm.storyboard.LocalStoryboard
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.LocalStoryboard
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.toState
+
+private sealed class EditGraphState(
+    val deleteVisible: Boolean = true,
+    val insertVisible: Boolean = true,
+    val graphVisible: Boolean = true,
+    val search: Boolean = false,
+) {
+    data object Blank : EditGraphState(deleteVisible = false, insertVisible = false, graphVisible = false)
+    data object Delete : EditGraphState(insertVisible = false, graphVisible = false)
+    data object Insert : EditGraphState(graphVisible = false)
+    data object Graph : EditGraphState()
+    data object Search : EditGraphState(search = true)
+    data object Solution : EditGraphState(search = true)
+    data class Path(val index: Int) : EditGraphState(search = true)
+    data object Complete : EditGraphState(search = true)
+}
 
 fun StoryboardBuilder.EditGraph() {
     val delete = "kotlinconf".toList()
@@ -56,8 +71,21 @@ fun StoryboardBuilder.EditGraph() {
     })
     val solution = paths.last()
 
+    val states = buildList {
+        add(EditGraphState.Blank)
+        add(EditGraphState.Delete)
+        add(EditGraphState.Insert)
+        add(EditGraphState.Graph)
+        add(EditGraphState.Search)
+        add(EditGraphState.Solution)
+        repeat(solution.size) {
+            add(EditGraphState.Path(it))
+        }
+        add(EditGraphState.Complete)
+    }
+
     scene(
-        stateCount = 3 + solution.size + 1,
+        states = states,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
@@ -76,70 +104,93 @@ fun StoryboardBuilder.EditGraph() {
                 }
                 Surface(Modifier.fillMaxHeight().width(height), color = MaterialTheme.colors.secondary) {
                     Box {
-                        val pathsColor by transition.animateColor(transitionSpec = { tween(300) }) {
-                            if (it.toState() < 2) Color.Black.copy(alpha = 0.75f) else Color.Transparent
+                        val deleteIndex by transition.animateInt(
+                            transitionSpec = { tween(50 * delete.size, easing = LinearEasing) }
+                        ) { if (it.toState().deleteVisible) delete.size else 0 }
+
+                        val insertIndex by transition.animateInt(
+                            transitionSpec = { tween(50 * insert.size, easing = LinearEasing) }
+                        ) { if (it.toState().insertVisible) insert.size else 0 }
+
+                        val graphColor by transition.animateColor(
+                            transitionSpec = { tween(300) }
+                        ) {
+                            if (it.toState().graphVisible) Color.White else Color.White.copy(alpha = 0.0f)
                         }
 
-                        val pathsIndex by transition.animateInt(transitionSpec = {
-                            if (targetState.toState() == 1 && initialState.toState() == 0) {
+                        val pathsColor by transition.animateColor(transitionSpec = { tween(300) }) {
+                            when (it.toState()) {
+                                is EditGraphState.Insert,
+                                is EditGraphState.Search,
+                                    -> Color.Black.copy(alpha = 0.75f)
+
+                                else -> Color.Black.copy(alpha = 0.0f)
+                            }
+                        }
+
+                        val searchIndex by transition.animateInt(transitionSpec = {
+                            if (!initialState.toState().search && targetState.toState().search) {
                                 tween(durationMillis = 250 * paths.size, easing = LinearEasing)
                             } else {
                                 tween(durationMillis = 0)
                             }
                         }) {
-                            if (it.toState() > 0) paths.size else 0
+                            if (it.toState().search) paths.size else 0
                         }
 
-                        val solutionIndex = transition.createChildTransition { it.toState() - 3 }
+                        val pathIndex = transition.createChildTransition {
+                            val state = it.toState()
+                            when (state) {
+                                is EditGraphState.Path -> state.index
+                                is EditGraphState.Complete -> solution.size + 1
+                                else -> -1
+                            }
+                        }
 
-                        val vScroll = rememberScrollState(size * insert.size / 2)
-                        solutionIndex.animateScroll(
-                            vScroll,
+                        val yOffset by pathIndex.animateInt(
                             transitionSpec = { tween(300, easing = EaseInOut) }
                         ) { index ->
                             size * if (index in solution.indices) solution[index].y else insert.size / 2
                         }
 
-                        val hScroll = rememberScrollState(size * delete.size / 2)
-                        solutionIndex.animateScroll(
-                            hScroll,
+                        val xOffset by pathIndex.animateInt(
                             transitionSpec = { tween(300, easing = EaseInOut) }
                         ) { index ->
                             size * if (index in solution.indices) solution[index].x else delete.size / 2
                         }
 
-                        val scale by solutionIndex.animateFloat(transitionSpec = {
-                            tween(300, easing = EaseInOut)
-                        }) { index ->
+                        val scale by pathIndex.animateFloat(
+                            transitionSpec = { tween(300, easing = EaseInOut) }
+                        ) { index ->
                             if (index in solution.indices) 1f / 5f else 1f / maxOf(insert.size + 1, delete.size + 1)
                         }
 
                         EditGraph(
                             size = height,
-                            insert = insert,
-                            delete = delete,
+                            insert = insert.subList(0, insertIndex),
+                            delete = delete.subList(0, deleteIndex),
+                            color = graphColor,
                             modifier = Modifier
+                                .fillMaxSize()
                                 .scale(scale)
                                 .wrapContentSize(align = Alignment.TopStart, unbounded = true)
-                                .offset(-hScroll.value.dp, -vScroll.value.dp)
+                                .offset(-xOffset.dp, -yOffset.dp)
                                 .drawWithContent {
                                     drawContent()
 
-                                    val paths = paths.subList(fromIndex = 0, toIndex = pathsIndex)
+                                    val paths = paths.subList(fromIndex = 0, toIndex = searchIndex)
                                     for ((i, path) in paths.withIndex()) {
                                         val draw = Path()
                                         for ((i, offset) in path.withIndex()) {
-                                            val x =
-                                                format.size.height / 2 + (offset.x * format.size.height).toFloat()
-                                            val y =
-                                                format.size.height / 2 + (offset.y * format.size.height).toFloat()
+                                            val x = (format.size.height / 2) + (offset.x * format.size.height).toFloat()
+                                            val y = (format.size.height / 2) + (offset.y * format.size.height).toFloat()
                                             if (i == 0) {
                                                 draw.moveTo(x, y)
                                             } else {
                                                 draw.lineTo(x, y)
                                             }
                                         }
-                                        if (i == paths.size - 1) {
+                                        if (i == paths.lastIndex) {
                                             drawPath(
                                                 path = draw,
                                                 color = COLORS.primary,
@@ -164,7 +215,7 @@ fun StoryboardBuilder.EditGraph() {
                                 }
                         )
 
-                        if (solutionIndex.currentState in solution.indices && solutionIndex.targetState in solution.indices) {
+                        if (pathIndex.currentState in solution.indices && pathIndex.targetState in solution.indices) {
                             Box(
                                 Modifier
                                     .align(Alignment.Center)
@@ -174,7 +225,7 @@ fun StoryboardBuilder.EditGraph() {
                             )
                         }
 
-                        solutionIndex.AnimatedVisibility(
+                        pathIndex.AnimatedVisibility(
                             visible = { it >= 0 },
                             enter = fadeIn(tween(300)),
                             exit = fadeOut(tween(300)),
@@ -189,7 +240,7 @@ fun StoryboardBuilder.EditGraph() {
                                 Text(
                                     textDiff(
                                         solution,
-                                        solutionIndex.currentState.coerceIn(solution.indices),
+                                        pathIndex.currentState.coerceIn(solution.indices),
                                         insert,
                                         delete
                                     ),
@@ -259,12 +310,16 @@ private fun <T> EditGraph(
     size: Dp,
     insert: List<T>,
     delete: List<T>,
+    color: Color,
     modifier: Modifier = Modifier,
     content: @Composable (T) -> Unit = {
         Text(it.toString())
     },
 ) {
-    val textStyle = TextStyle(fontSize = with(LocalDensity.current) { size.toSp() / 3 })
+    val textStyle = TextStyle(
+        fontSize = with(LocalDensity.current) { size.toSp() / 2.5 },
+        fontWeight = FontWeight.Bold,
+    )
     ProvideTextStyle(textStyle) {
         Row(modifier) {
             Column(Modifier.width(size / 2)) {
@@ -283,15 +338,15 @@ private fun <T> EditGraph(
                         }
                     }
                 }
-                Column(Modifier.border(16.dp, Color.White)) {
+                Column(Modifier.border(16.dp, color)) {
                     for (i in insert) {
                         Row {
                             for (d in delete) {
-                                Box(Modifier.size(size).border(8.dp, Color.White)) {
+                                Box(Modifier.size(size).border(8.dp, color)) {
                                     if (i == d) {
                                         Canvas(Modifier.fillMaxSize()) {
                                             drawLine(
-                                                color = Color.White,
+                                                color = color,
                                                 start = Offset(0f, 0f),
                                                 end = Offset(size.toPx(), size.toPx()),
                                                 strokeWidth = 16.dp.toPx()

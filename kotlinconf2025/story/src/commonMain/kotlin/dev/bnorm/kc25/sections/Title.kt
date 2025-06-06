@@ -1,6 +1,6 @@
 package dev.bnorm.kc25.sections
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,8 +21,8 @@ import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.start_conference
 import dev.bnorm.kc25.components.KotlinConfBird
 import dev.bnorm.storyboard.Frame
-import dev.bnorm.storyboard.LocalStoryboard
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.LocalStoryboard
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import org.jetbrains.compose.resources.painterResource

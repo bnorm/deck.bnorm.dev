@@ -20,7 +20,7 @@ import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.background_building
 import dev.bnorm.deck.story.generated.resources.droidcon_newyork
-import dev.bnorm.storyboard.LocalStoryboard
+import dev.bnorm.storyboard.easel.LocalStoryboard
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit

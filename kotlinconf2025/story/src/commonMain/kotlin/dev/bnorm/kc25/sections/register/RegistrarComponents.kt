@@ -27,8 +27,8 @@ import dev.bnorm.kc25.template.StageScaffold
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code3
 import dev.bnorm.storyboard.AdvanceDirection
-import dev.bnorm.storyboard.LocalStoryboard
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.LocalStoryboard
 import dev.bnorm.storyboard.easel.animateEnterExit
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement

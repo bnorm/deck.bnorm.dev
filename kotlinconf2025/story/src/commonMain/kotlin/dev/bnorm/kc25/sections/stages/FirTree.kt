@@ -33,8 +33,8 @@ import dev.bnorm.deck.shared.layout.HorizontalTree
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code2
-import dev.bnorm.storyboard.LocalSceneMode
-import dev.bnorm.storyboard.SceneMode
+import dev.bnorm.storyboard.easel.LocalSceneMode
+import dev.bnorm.storyboard.easel.SceneMode
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 

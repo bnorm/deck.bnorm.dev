@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import dev.bnorm.storyboard.*
+import dev.bnorm.storyboard.easel.LocalStoryboard
 import kotlin.jvm.JvmName
 
 sealed class Pane<T> protected constructor(
