@@ -1,10 +1,13 @@
 package dev.bnorm.dcnyc25.sections
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -20,8 +23,10 @@ import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.background_building
 import dev.bnorm.deck.story.generated.resources.droidcon_newyork
-import dev.bnorm.storyboard.easel.LocalStoryboard
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.LocalStoryboard
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.toDpSize
@@ -30,21 +35,7 @@ import org.jetbrains.compose.resources.painterResource
 fun StoryboardBuilder.Title() {
     val panes = listOf<Pane.Horizontal<Int>>(
         Pane.Horizontal {
-            Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
-                Row {
-                    Image(
-                        painter = painterResource(Res.drawable.droidcon_newyork),
-                        contentDescription = "title",
-                        modifier = Modifier.width(LocalStoryboard.current!!.format.toDpSize().width / 2)
-                            .padding(32.dp)
-                    )
-                    Spacer(Modifier.weight(1f))
-                    Image(
-                        painter = painterResource(Res.drawable.background_building),
-                        contentDescription = "building",
-                    )
-                }
-            }
+            TitleHeader()
         },
         Pane.Horizontal(
             Pane.Quarter {
@@ -56,11 +47,11 @@ fun StoryboardBuilder.Title() {
                         Text(
                             text = buildAnnotatedString {
                                 withStyle(SpanStyle(fontWeight = FontWeight.ExtraLight)) {
-                                    this.append("re")
+                                    append("re")
                                     withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                        this.append("creating\nmagic")
+                                        append("creating\nmagic")
                                     }
-                                    this.append("move\nwith compose")
+                                    append("move\nwith compose")
                                 }
                             },
                             style = MaterialTheme.typography.h2,
@@ -98,5 +89,28 @@ fun StoryboardBuilder.Title() {
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         Panes(panes)
+    }
+}
+
+@Composable
+context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
+fun TitleHeader() {
+    Horizontal(
+        MaterialTheme.colors.primary,
+        modifier = Modifier.sharedElement(rememberSharedContentState("title-header"))
+    ) {
+        Row {
+            Image(
+                painter = painterResource(Res.drawable.droidcon_newyork),
+                contentDescription = "title",
+                modifier = Modifier.width(LocalStoryboard.current!!.format.toDpSize().width / 2)
+                    .padding(32.dp)
+            )
+            Spacer(Modifier.weight(1f))
+            Image(
+                painter = painterResource(Res.drawable.background_building),
+                contentDescription = "building",
+            )
+        }
     }
 }

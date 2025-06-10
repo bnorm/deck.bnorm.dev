@@ -1,16 +1,16 @@
 package dev.bnorm.dcnyc25
 
-import dev.bnorm.dcnyc25.sections.CodeExamples
-import dev.bnorm.dcnyc25.sections.EditGraph
-import dev.bnorm.dcnyc25.sections.Title
+import dev.bnorm.dcnyc25.sections.*
 import dev.bnorm.dcnyc25.template.storyDecorator
-import dev.bnorm.storyboard.*
+import dev.bnorm.storyboard.SceneDecorator
+import dev.bnorm.storyboard.Storyboard
 
 /**
  * ### General Ideas
  * * lots of background color blocking with the primary and secondary colors
  *
  * ### Outline
+ * * code change
  * * (?)background
  * * line end diffing
  * * myers diffing
@@ -50,10 +50,16 @@ fun createStoryboard(
     """.trimIndent(),
     decorator = decorator,
 ) {
-    // TODO shrink pictures in title so it loads a little faster
+    // TODO shrink pictures in title even further so they load faster?
     Title()
+
+    VisualizingCodeChanges()
 
     CodeExamples()
 
     EditGraph()
+
+    Words()
+
+    LineEndDiff()
 }
