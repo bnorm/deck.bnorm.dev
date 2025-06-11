@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.bnorm.dcnyc25.template.Horizontal
+import dev.bnorm.dcnyc25.template.Quarter
 import dev.bnorm.dcnyc25.template.SceneHalfHeight
 import dev.bnorm.dcnyc25.template.code1
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT

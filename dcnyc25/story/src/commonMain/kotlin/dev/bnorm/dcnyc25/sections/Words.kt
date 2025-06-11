@@ -5,13 +5,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.bnorm.dcnyc25.template.SceneHalfHeight
-import dev.bnorm.dcnyc25.template.SceneHalfWidth
+import dev.bnorm.dcnyc25.template.Vertical
 import dev.bnorm.dcnyc25.template.code1
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -82,33 +79,5 @@ fun StoryboardBuilder.Words() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Full(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Surface(modifier = modifier.width(SceneHalfWidth * 2).height(SceneHalfHeight * 2), color = color) {
-        content()
-    }
-}
-
-@Composable
-fun Vertical(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Surface(modifier = modifier.width(SceneHalfWidth).height(SceneHalfHeight * 2), color = color) {
-        content()
-    }
-}
-
-@Composable
-fun Horizontal(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Surface(modifier = modifier.width(SceneHalfWidth * 2).height(SceneHalfHeight), color = color) {
-        content()
-    }
-}
-
-@Composable
-fun Quarter(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Surface(modifier = modifier.width(SceneHalfWidth).height(SceneHalfHeight), color = color) {
-        content()
     }
 }

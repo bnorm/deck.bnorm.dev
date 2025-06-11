@@ -1,5 +1,6 @@
 package dev.bnorm.dcnyc25
 
+import dev.bnorm.dcnyc25.sections.Opening
 import dev.bnorm.dcnyc25.sections.*
 import dev.bnorm.dcnyc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
@@ -50,12 +51,9 @@ fun createStoryboard(
     """.trimIndent(),
     decorator = decorator,
 ) {
-    // TODO shrink pictures in title even further so they load faster?
     Title()
 
-    VisualizingCodeChanges()
-
-    CodeExamples()
+    Opening()
 
     EditGraph()
 

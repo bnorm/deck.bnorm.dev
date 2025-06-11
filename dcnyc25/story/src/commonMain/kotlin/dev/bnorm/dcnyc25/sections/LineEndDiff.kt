@@ -1,7 +1,11 @@
 package dev.bnorm.dcnyc25.sections
 
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
@@ -12,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.old.kc24.animateList
 import dev.bnorm.dcnyc25.old.kc24.startAnimation
 import dev.bnorm.dcnyc25.old.kc24.thenLineEndDiff
+import dev.bnorm.dcnyc25.template.Quarter
 import dev.bnorm.dcnyc25.template.code1
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder

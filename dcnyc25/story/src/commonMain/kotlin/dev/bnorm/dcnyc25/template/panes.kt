@@ -6,14 +6,18 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import dev.bnorm.storyboard.*
+import dev.bnorm.storyboard.Render
+import dev.bnorm.storyboard.SceneContent
+import dev.bnorm.storyboard.SceneScope
 import dev.bnorm.storyboard.easel.LocalStoryboard
+import dev.bnorm.storyboard.toState
 import kotlin.jvm.JvmName
 
 sealed class Pane<T> protected constructor(
@@ -101,14 +105,48 @@ fun <T> Transition<T>.animateScroll(
     scrollState.dispatchRawDelta((scrollPosition - scrollState.value).toFloat())
 }
 
-inline val SceneHalfWidth: Dp
+@Composable
+fun Full(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Surface(modifier = modifier.width(SceneWidth).height(SceneHeight), color = color) {
+        content()
+    }
+}
+
+@Composable
+fun Vertical(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Surface(modifier = modifier.width(SceneHalfWidth).height(SceneHeight), color = color) {
+        content()
+    }
+}
+
+@Composable
+fun Horizontal(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Surface(modifier = modifier.width(SceneWidth).height(SceneHalfHeight), color = color) {
+        content()
+    }
+}
+
+@Composable
+fun Quarter(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Surface(modifier = modifier.width(SceneHalfWidth).height(SceneHalfHeight), color = color) {
+        content()
+    }
+}
+
+inline val SceneWidth: Dp
     @Composable get() {
         val format = LocalStoryboard.current!!.format
-        return with(format.density) { format.size.width.toDp() / 2 }
+        return with(format.density) { format.size.width.toDp() }
     }
 
-inline val SceneHalfHeight: Dp
+inline val SceneHeight: Dp
     @Composable get() {
         val format = LocalStoryboard.current!!.format
-        return with(format.density) { format.size.height.toDp() / 2 }
+        return with(format.density) { format.size.height.toDp() }
     }
+
+inline val SceneHalfWidth: Dp
+    @Composable get() = SceneWidth / 2f
+
+inline val SceneHalfHeight: Dp
+    @Composable get() = SceneHeight / 2f

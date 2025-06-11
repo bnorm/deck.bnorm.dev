@@ -15,6 +15,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.template.Horizontal
 import dev.bnorm.dcnyc25.template.Pane
 import dev.bnorm.dcnyc25.template.Panes
 import dev.bnorm.deck.shared.socials.Bluesky

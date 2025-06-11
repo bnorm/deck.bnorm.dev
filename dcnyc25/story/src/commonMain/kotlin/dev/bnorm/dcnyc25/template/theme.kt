@@ -66,11 +66,17 @@ val Typography.code3: TextStyle
 private fun dcnyc25Typography(): Typography {
     val typography = Typography(defaultFontFamily = Inter)
     return typography.copy(
+        h1 = typography.h1.copy(fontWeight = FontWeight.ExtraLight),
+        h2 = typography.h2.copy(fontWeight = FontWeight.ExtraLight),
+        h3 = typography.h3.copy(fontWeight = FontWeight.ExtraLight),
+        h4 = typography.h4.copy(fontWeight = FontWeight.ExtraLight),
+        h5 = typography.h5.copy(fontWeight = FontWeight.ExtraLight),
+        h6 = typography.h6.copy(fontWeight = FontWeight.ExtraLight),
         body1 = typography.body1.copy(
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.ExtraLight,
             fontSize = 24.sp,
             lineHeight = 24.sp,
             letterSpacing = 0.sp
-        )
+        ),
     )
 }
