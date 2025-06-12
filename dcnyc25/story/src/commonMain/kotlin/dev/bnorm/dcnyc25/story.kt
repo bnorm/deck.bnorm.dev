@@ -1,10 +1,19 @@
 package dev.bnorm.dcnyc25
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import dev.bnorm.dcnyc25.sections.Opening
 import dev.bnorm.dcnyc25.sections.*
+import dev.bnorm.dcnyc25.template.Full
 import dev.bnorm.dcnyc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
+import dev.bnorm.storyboard.easel.template.SceneEnter
+import dev.bnorm.storyboard.easel.template.SceneExit
 
 /**
  * ### General Ideas
@@ -64,4 +73,15 @@ fun createStoryboard(
     MyersDiffWords()
 
     Patience()
+
+    scene(
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+    ) {
+        Full(MaterialTheme.colors.primary) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Fin", style = MaterialTheme.typography.h1)
+            }
+        }
+    }
 }

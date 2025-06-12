@@ -1,20 +1,10 @@
 package dev.bnorm.dcnyc25.sections
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.BoundsTransform
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.*
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -24,17 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import dev.bnorm.dcnyc25.template.SceneHalfWidth
-import dev.bnorm.dcnyc25.template.TextSurface
-import dev.bnorm.dcnyc25.template.Vertical
-import dev.bnorm.dcnyc25.template.animateScroll
-import dev.bnorm.dcnyc25.template.code1
+import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.magic.MagicText
@@ -56,8 +44,14 @@ fun StoryboardBuilder.Patience() {
 
     scene(
         stateCount = 3,
-        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
-        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
+        enterTransition = enter(
+            start = SceneEnter(alignment = Alignment.BottomCenter),
+            end = SceneEnter(alignment = Alignment.CenterEnd),
+        ),
+        exitTransition = exit(
+            start = SceneExit(alignment = Alignment.BottomCenter),
+            end = SceneExit(alignment = Alignment.CenterEnd),
+        ),
     ) {
         val state = transition.createChildTransition { it.toState() }
 
