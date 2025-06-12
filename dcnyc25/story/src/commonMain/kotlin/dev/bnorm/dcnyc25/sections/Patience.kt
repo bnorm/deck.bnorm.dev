@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.old.magic.MagicTextMyers
+import dev.bnorm.dcnyc25.old.magic.toWords
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -25,7 +27,6 @@ import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight
-import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.toState
 
 fun StoryboardBuilder.Patience() {
@@ -73,8 +74,10 @@ fun StoryboardBuilder.Patience() {
                 }
                 TextSurface {
                     ProvideTextStyle(MaterialTheme.typography.code1) {
-                        MagicText(
-                            transition = state.createChildTransition { if (it >= 2) sampleEnd else sampleStart },
+                        MagicTextMyers(
+                            transition = state.createChildTransition {
+                                if (it >= 2) sampleEnd.toWords() else sampleStart.toWords()
+                            },
                             modifier = Modifier.padding(16.dp),
                         )
                     }

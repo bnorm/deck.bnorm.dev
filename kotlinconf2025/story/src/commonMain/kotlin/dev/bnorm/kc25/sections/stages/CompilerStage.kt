@@ -101,12 +101,12 @@ fun StoryboardBuilder.StageTimeline(
     scene(
         states = states,
         enterTransition = enter(
-            start = if (slideStart) SceneEnter(alignment = Alignment.CenterEnd) else SceneEnterTransition.Default,
-            end = if (slideEnd) SceneEnter(alignment = Alignment.CenterEnd) else SceneEnterTransition.Default,
+            start = if (slideStart) SceneEnter(alignment = Alignment.CenterEnd) else SceneEnterTransition.None,
+            end = if (slideEnd) SceneEnter(alignment = Alignment.CenterEnd) else SceneEnterTransition.None,
         ),
         exitTransition = exit(
-            start = if (slideStart) SceneExit(alignment = Alignment.CenterEnd) else SceneExitTransition.Default,
-            end = if (slideEnd) SceneExit(alignment = Alignment.CenterEnd) else SceneExitTransition.Default,
+            start = if (slideStart) SceneExit(alignment = Alignment.CenterEnd) else SceneExitTransition.None,
+            end = if (slideEnd) SceneExit(alignment = Alignment.CenterEnd) else SceneExitTransition.None,
         ),
     ) {
         Row(

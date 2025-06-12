@@ -1,6 +1,8 @@
 package dev.bnorm.dcnyc25.sections
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateRect
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.horizontalScroll
@@ -10,9 +12,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.old.kc24.animateList
 import dev.bnorm.dcnyc25.old.kc24.startAnimation
@@ -31,84 +43,60 @@ import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.toState
 
+private enum class LineEndingState(
+    val showHighlight: Boolean,
+    val infoProgress: Int,
+) {
+    Sample(
+        showHighlight = false,
+        infoProgress = -1,
+    ),
+    HighlightDiff(
+        showHighlight = true,
+        infoProgress = -1,
+    ),
+    HighlightLineEndDiff(
+        showHighlight = true,
+        infoProgress = -1,
+    ),
+    IntroAlgorithm(
+        showHighlight = false,
+        infoProgress = 0,
+    ),
+    SampleAlgorithm(
+        showHighlight = false,
+        infoProgress = 0,
+    ),
+    RevertAlgorithm(
+        showHighlight = false,
+        infoProgress = 0,
+    ),
+    Reset(
+        showHighlight = false,
+        infoProgress = 0,
+    ),
+}
+
 fun StoryboardBuilder.LineEnding() {
-    val sampleStart = """
-        fun main() {
-          println("Hello, KotlinConf!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
-    val sampleEnd = """
-        fun main() {
-          println("Hello, droidcon!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
-    val sampleAnimation =
-        startAnimation(sampleStart)
-            .thenLineEndDiff(sampleEnd)
-            .toList()
-
     scene(
-        stateCount = 4,
+        states = LineEndingState.entries.subList(fromIndex = 0, toIndex = LineEndingState.entries.size),
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
-            end = SceneEnterTransition.Default,
+            end = SceneEnterTransition.None,
         ),
         exitTransition = exit(
             start = SceneExit(alignment = Alignment.CenterEnd),
-            end = SceneExitTransition.Default,
+            end = SceneExitTransition.None,
         ),
     ) {
-        val state = transition.createChildTransition { it.toState(end = 4) }
+
+        val state = transition.createChildTransition {
+            it.toState(end = LineEndingState.Reset)
+        }
 
         val scrollState = rememberScrollState()
         state.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {
-            with(LocalDensity.current) {
-                (SceneHalfWidth * when (it) {
-                    in 1..3 -> 0
-                    else -> 1
-                }).roundToPx()
-            }
-        }
-
-        val sampleText by state.animateList(
-            values = sampleAnimation,
-            transitionSpec = { typing(sampleAnimation.size) }
-        ) {
-            if (it == 2) sampleAnimation.lastIndex else 0
-        }
-
-        @Composable
-        fun Before(modifier: Modifier = Modifier) {
-            Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("Before", style = MaterialTheme.typography.h2)
-                }
-                TextSurface {
-                    Text(
-                        text = sampleText,
-                        style = MaterialTheme.typography.code1,
-                        modifier = Modifier.padding(16.dp),
-                    )
-                }
-            }
-        }
-
-        @Composable
-        fun After(modifier: Modifier = Modifier) {
-            Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("After", style = MaterialTheme.typography.h2)
-                }
-                TextSurface {
-                    Text(
-                        text = sampleEnd,
-                        style = MaterialTheme.typography.code1,
-                        modifier = Modifier.padding(16.dp),
-                    )
-                }
-            }
+            with(LocalDensity.current) { (SceneHalfWidth * if (it.infoProgress >= 0) 0 else 1).roundToPx() }
         }
 
         Row(Modifier.horizontalScroll(scrollState, enabled = false)) {
@@ -119,47 +107,207 @@ fun StoryboardBuilder.LineEnding() {
                     }
                     TextSurface {
                         // TODO
+                        Column(Modifier.padding(16.dp)) {
+                            Text("• Find the common prefix of each line.")
+                            Text("• Create a sequence removing all non-prefix characters - one at a time - from the last line to the first.")
+                            Text("• Continue the sequence adding non-prefix characters from the first line to the last.")
+                            Text("• Use 'animateIntAsState' or similar to iterate through the sequence.")
+                        }
                     }
                 }
             }
-            SharedTransitionLayout {
-                state.AnimatedContent(transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }) {
-                    val shared = it in 1..3
-                    Row {
-                        Vertical(MaterialTheme.colors.secondary) {
-                            Column(Modifier.padding(16.dp)) {
-                                Before(
-                                    Modifier.weight(1f).sharedElement(
-                                        rememberSharedContentState("before"),
-                                        boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
-                                    )
-                                )
-                                if (shared) {
-                                    After(
-                                        Modifier.weight(1f).sharedElement(
-                                            rememberSharedContentState("after"),
-                                            boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
-                                        )
-                                    )
-                                }
-                            }
+            SampleDiff(state)
+        }
+    }
+}
+
+@Composable
+private fun SampleDiff(
+    state: Transition<LineEndingState>,
+) {
+    val sampleStart = remember {
+        """
+            fun main() {
+              println("Hello, KotlinConf!")
+            }
+        """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
+    }
+
+    val sampleEnd = remember {
+        """
+            fun main() {
+              println("Hello, droidcon!")
+            }
+        """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
+    }
+
+    val measurer = rememberTextMeasurer()
+    val sampleStyle = MaterialTheme.typography.code1
+
+    val startHighlight = remember {
+        val sub = "KotlinConf"
+        val index = sampleStart.text.indexOf(sub)
+        measurer.measure(sampleStart.text, style = sampleStyle)
+            .getBoundingBox(index, index + sub.length - 1)
+    }
+
+    val startLineHighlight = remember {
+        val sub = "KotlinConf!\")"
+        val index = sampleStart.text.indexOf(sub)
+        measurer.measure(sampleStart.text, style = sampleStyle)
+            .getBoundingBox(index, index + sub.length - 1)
+    }
+
+    val endHighlight = remember {
+        val sub = "droidcon"
+        val index = sampleEnd.text.indexOf(sub)
+        measurer.measure(sampleEnd.text, style = sampleStyle)
+            .getBoundingBox(index, index + sub.length - 1)
+    }
+
+    val endLineHighlight = remember {
+        val sub = "droidcon!\")"
+        val index = sampleEnd.text.indexOf(sub)
+        measurer.measure(sampleEnd.text, style = sampleStyle)
+            .getBoundingBox(index, index + sub.length - 1)
+    }
+
+    val sampleAnimation = remember {
+        startAnimation(sampleStart)
+            .thenLineEndDiff(sampleEnd)
+            .toList()
+    }
+
+    val sampleText by state.animateList(
+        values = sampleAnimation,
+        transitionSpec = { typing(sampleAnimation.size) }
+    ) {
+        if (it == LineEndingState.SampleAlgorithm) sampleAnimation.lastIndex else 0
+    }
+
+    SharedTransitionLayout {
+        state.AnimatedContent(transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }) {
+            Row {
+                @Composable
+                fun Before(modifier: Modifier = Modifier) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                            Text("Before", style = MaterialTheme.typography.h2)
                         }
-                        Vertical(MaterialTheme.colors.primary) {
-                            Box(Modifier.padding(16.dp)) {
-                                if (!shared) {
-                                    After(
-                                        Modifier.sharedElement(
-                                            rememberSharedContentState("after"),
-                                            boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
-                                        )
-                                    )
-                                }
+                        TextSurface {
+                            val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {
+                                if (it.showHighlight) Color.Red.copy(alpha = 0.5f) else Color.Red.copy(alpha = 0f)
                             }
+                            val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
+                                if (it == LineEndingState.HighlightLineEndDiff) startLineHighlight else startHighlight
+                            }
+                            Text(
+                                text = sampleText,
+                                style = sampleStyle,
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .highlight(rect, color, radius = 4.dp, padding = 2.dp)
+                            )
+                        }
+                    }
+                }
+
+                @Composable
+                fun After(modifier: Modifier = Modifier) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                            Text("After", style = MaterialTheme.typography.h2)
+                        }
+                        TextSurface {
+                            val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {
+                                if (it.showHighlight) Color.Green.copy(alpha = 0.5f) else Color.Green.copy(alpha = 0f)
+                            }
+                            val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
+                                if (it == LineEndingState.HighlightLineEndDiff) endLineHighlight else endHighlight
+                            }
+                            Text(
+                                text = sampleEnd,
+                                style = sampleStyle,
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .highlight(rect, color, radius = 4.dp, padding = 2.dp)
+                            )
+                        }
+                    }
+                }
+
+                Vertical(MaterialTheme.colors.secondary) {
+                    Column(Modifier.padding(16.dp)) {
+                        Before(
+                            Modifier.weight(1f).sharedElement(
+                                rememberSharedContentState("before"),
+                                boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
+                            )
+                        )
+                        if (it.infoProgress >= 0) {
+                            After(
+                                Modifier.weight(1f).sharedElement(
+                                    rememberSharedContentState("after"),
+                                    boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
+                                )
+                            )
+                        }
+                    }
+                }
+                Vertical(MaterialTheme.colors.primary) {
+                    Box(Modifier.padding(16.dp)) {
+                        if (it.infoProgress < 0) {
+                            After(
+                                Modifier.sharedElement(
+                                    rememberSharedContentState("after"),
+                                    boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
+                                )
+                            )
                         }
                     }
                 }
             }
         }
+    }
+}
+
+fun TextLayoutResult.getBoundingBox(from: Int, to: Int): Rect {
+    require(from <= to) { "from ($from) should be less than or equal to to ($to)" }
+    require(from >= 0) { "from ($from) should be greater than or equal to 0" }
+    require(to <= layoutInput.text.length) { "to ($to) should be less than or equal to length (${layoutInput.text.length})" }
+
+    val fromBox = getBoundingBox(from)
+    val toBox = if (from == to) fromBox else getBoundingBox(to)
+
+    return Rect(
+        left = minOf(fromBox.left, toBox.left),
+        top = minOf(fromBox.top, toBox.top),
+        right = maxOf(fromBox.right, toBox.right),
+        bottom = maxOf(fromBox.bottom, toBox.bottom),
+    )
+}
+
+// TODO could be cool to add a border
+fun Modifier.highlight(
+    rect: Rect,
+    color: Color,
+    radius: Dp = Dp.Hairline,
+    padding: Dp = Dp.Hairline,
+): Modifier {
+    return drawBehind {
+        val topLeft = rect.topLeft
+        val bottomRight = rect.bottomRight
+        val padding = padding.toPx()
+        val radius = radius.toPx()
+        drawRoundRect(
+            color = color,
+            topLeft = topLeft - Offset(padding, padding),
+            size = Size(
+                width = bottomRight.x - topLeft.x + 2 * padding,
+                height = bottomRight.y - topLeft.y + 2 * padding,
+            ),
+            cornerRadius = CornerRadius(radius, radius),
+        )
     }
 }
 

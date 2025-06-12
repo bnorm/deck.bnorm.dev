@@ -46,11 +46,11 @@ fun StoryboardBuilder.MyersDiffChars() {
     scene(
         stateCount = 3,
         enterTransition = enter(
-            start = SceneEnterTransition.Default,
+            start = SceneEnterTransition.None,
             end = SceneEnter(alignment = Alignment.BottomCenter),
         ),
         exitTransition = exit(
-            start = SceneExitTransition.Default,
+            start = SceneExitTransition.None,
             end = SceneExit(alignment = Alignment.BottomCenter),
         ),
     ) {

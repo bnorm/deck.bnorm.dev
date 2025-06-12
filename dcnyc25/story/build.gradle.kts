@@ -1,4 +1,3 @@
-import dev.bnorm.gradle.sample.extraction.SampleExtraction
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -50,8 +49,7 @@ kotlin {
                 api("dev.bnorm.storyboard:storyboard-easel:0.1.0-alpha01")
                 api("dev.bnorm.storyboard:storyboard-text:0.1.0-alpha01")
 
-                implementation("dev.chrisbanes.haze:haze:1.5.2")
-                implementation("io.github.alexzhirkevich:compottie:2.0.0-rc04")
+                implementation("io.github.petertrr:kotlin-multiplatform-diff:0.7.0")
             }
         }
     }
