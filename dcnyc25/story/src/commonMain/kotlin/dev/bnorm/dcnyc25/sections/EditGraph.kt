@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
@@ -33,12 +34,17 @@ import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import dev.bnorm.dcnyc25.algo.SearchCallbacks
 import dev.bnorm.dcnyc25.algo.SearchPath
 import dev.bnorm.dcnyc25.algo.myers
 import dev.bnorm.dcnyc25.template.COLORS
+import dev.bnorm.dcnyc25.template.SceneHalfWidth
+import dev.bnorm.dcnyc25.template.TextSurface
+import dev.bnorm.dcnyc25.template.Vertical
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.LocalStoryboard
+import dev.bnorm.storyboard.easel.rememberSharedContentState
+import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.toState
@@ -86,171 +92,184 @@ fun StoryboardBuilder.EditGraph() {
 
     scene(
         states = states,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
+        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
-        val format = LocalStoryboard.current!!.format
-        val width = with(format.density) { format.size.width.toDp() }
-        val height = with(format.density) { format.size.height.toDp() }
-        val size = height.value.toInt()
 
         Surface(color = MaterialTheme.colors.secondary) {
             Row {
-                Surface(
-                    Modifier.fillMaxHeight().width(width - height),
-                    color = MaterialTheme.colors.primary
-                ) {
-                    LeftPane()
+                Vertical(MaterialTheme.colors.primary) {
+                    MyersDiffInfo(Modifier.sharedElement(rememberSharedContentState("myers-diff")))
                 }
-                Surface(Modifier.fillMaxHeight().width(height), color = MaterialTheme.colors.secondary) {
-                    Box {
-                        val deleteIndex by transition.animateInt(
-                            transitionSpec = { tween(50 * delete.size, easing = LinearEasing) }
-                        ) { if (it.toState().deleteVisible) delete.size else 0 }
+                Vertical(MaterialTheme.colors.secondary) {
+                    EditGraph(
+                        delete = delete,
+                        insert = insert,
+                        paths = paths,
+                        solution = solution,
+                        size = SceneHalfWidth,
+                        transition = transition.createChildTransition { it.toState() })
+                }
+            }
+        }
+    }
+}
 
-                        val insertIndex by transition.animateInt(
-                            transitionSpec = { tween(50 * insert.size, easing = LinearEasing) }
-                        ) { if (it.toState().insertVisible) insert.size else 0 }
+@Composable
+private fun EditGraph(
+    delete: List<Char>,
+    insert: List<Char>,
+    paths: MutableList<SearchPath>,
+    solution: SearchPath,
+    size: Dp,
+    transition: Transition<out EditGraphState>,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        val deleteIndex by transition.animateInt(
+            transitionSpec = { tween(50 * delete.size, easing = LinearEasing) }
+        ) { if (it.deleteVisible) delete.size else 0 }
 
-                        val graphColor by transition.animateColor(
-                            transitionSpec = { tween(300) }
-                        ) {
-                            if (it.toState().graphVisible) Color.White else Color.White.copy(alpha = 0.0f)
-                        }
+        val insertIndex by transition.animateInt(
+            transitionSpec = { tween(50 * insert.size, easing = LinearEasing) }
+        ) { if (it.insertVisible) insert.size else 0 }
 
-                        val pathsColor by transition.animateColor(transitionSpec = { tween(300) }) {
-                            when (it.toState()) {
-                                is EditGraphState.Insert,
-                                is EditGraphState.Search,
-                                    -> Color.Black.copy(alpha = 0.75f)
+        val graphColor by transition.animateColor(
+            transitionSpec = { tween(300) }
+        ) {
+            if (it.graphVisible) Color.White else Color.White.copy(alpha = 0.0f)
+        }
 
-                                else -> Color.Black.copy(alpha = 0.0f)
-                            }
-                        }
+        val pathsColor by transition.animateColor(transitionSpec = { tween(300) }) {
+            when (it) {
+                is EditGraphState.Insert,
+                is EditGraphState.Search,
+                    -> Color.Black
 
-                        val searchIndex by transition.animateInt(transitionSpec = {
-                            if (!initialState.toState().search && targetState.toState().search) {
-                                tween(durationMillis = 250 * paths.size, easing = LinearEasing)
+                else -> Color.Black.copy(alpha = 0.0f)
+            }
+        }
+
+        val searchIndex by transition.animateInt(transitionSpec = {
+            if (!initialState.search && targetState.search) {
+                tween(durationMillis = 250 * paths.size, easing = LinearEasing)
+            } else {
+                tween(durationMillis = 0)
+            }
+        }) {
+            if (it.search) paths.size else 0
+        }
+
+        val pathIndex = transition.createChildTransition {
+            val state = it
+            when (state) {
+                is EditGraphState.Path -> state.index
+                is EditGraphState.Complete -> solution.size + 1
+                else -> -1
+            }
+        }
+
+        val yOffset by pathIndex.animateDp(
+            transitionSpec = { tween(300, easing = EaseInOut) }
+        ) { index ->
+            (if (index in solution.indices) solution[index].y else insert.size / 2) * size
+        }
+
+        val xOffset by pathIndex.animateDp(
+            transitionSpec = { tween(300, easing = EaseInOut) }
+        ) { index ->
+            (if (index in solution.indices) solution[index].x else delete.size / 2) * size
+        }
+
+        val scale by pathIndex.animateFloat(
+            transitionSpec = { tween(300, easing = EaseInOut) }
+        ) { index ->
+            if (index in solution.indices) 1f / 5f else 1f / maxOf(insert.size + 1, delete.size + 1)
+        }
+
+        EditGraph(
+            size = SceneHalfWidth,
+            insert = insert.subList(0, insertIndex),
+            delete = delete.subList(0, deleteIndex),
+            color = graphColor,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(size, size)
+                .scale(scale)
+                .wrapContentSize(align = Alignment.TopStart, unbounded = true)
+                .offset(-xOffset, -yOffset)
+                .drawWithContent {
+                    val size = size.toPx() / 2
+                    drawContent()
+
+                    val paths = paths.subList(fromIndex = 0, toIndex = searchIndex)
+                    for ((i, path) in paths.withIndex()) {
+                        val draw = Path()
+                        for ((i, offset) in path.withIndex()) {
+                            val x = size + (offset.x * 2 * size)
+                            val y = size + (offset.y * 2 * size)
+                            if (i == 0) {
+                                draw.moveTo(x, y)
                             } else {
-                                tween(durationMillis = 0)
-                            }
-                        }) {
-                            if (it.toState().search) paths.size else 0
-                        }
-
-                        val pathIndex = transition.createChildTransition {
-                            val state = it.toState()
-                            when (state) {
-                                is EditGraphState.Path -> state.index
-                                is EditGraphState.Complete -> solution.size + 1
-                                else -> -1
+                                draw.lineTo(x, y)
                             }
                         }
-
-                        val yOffset by pathIndex.animateInt(
-                            transitionSpec = { tween(300, easing = EaseInOut) }
-                        ) { index ->
-                            size * if (index in solution.indices) solution[index].y else insert.size / 2
-                        }
-
-                        val xOffset by pathIndex.animateInt(
-                            transitionSpec = { tween(300, easing = EaseInOut) }
-                        ) { index ->
-                            size * if (index in solution.indices) solution[index].x else delete.size / 2
-                        }
-
-                        val scale by pathIndex.animateFloat(
-                            transitionSpec = { tween(300, easing = EaseInOut) }
-                        ) { index ->
-                            if (index in solution.indices) 1f / 5f else 1f / maxOf(insert.size + 1, delete.size + 1)
-                        }
-
-                        EditGraph(
-                            size = height,
-                            insert = insert.subList(0, insertIndex),
-                            delete = delete.subList(0, deleteIndex),
-                            color = graphColor,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .scale(scale)
-                                .wrapContentSize(align = Alignment.TopStart, unbounded = true)
-                                .offset(-xOffset.dp, -yOffset.dp)
-                                .drawWithContent {
-                                    drawContent()
-
-                                    val paths = paths.subList(fromIndex = 0, toIndex = searchIndex)
-                                    for ((i, path) in paths.withIndex()) {
-                                        val draw = Path()
-                                        for ((i, offset) in path.withIndex()) {
-                                            val x = (format.size.height / 2) + (offset.x * format.size.height).toFloat()
-                                            val y = (format.size.height / 2) + (offset.y * format.size.height).toFloat()
-                                            if (i == 0) {
-                                                draw.moveTo(x, y)
-                                            } else {
-                                                draw.lineTo(x, y)
-                                            }
-                                        }
-                                        if (i == paths.lastIndex) {
-                                            drawPath(
-                                                path = draw,
-                                                color = COLORS.primary,
-                                                style = Stroke(
-                                                    width = 64.dp.toPx(),
-                                                    cap = StrokeCap.Round,
-                                                    join = StrokeJoin.Round,
-                                                ),
-                                            )
-                                        } else {
-                                            drawPath(
-                                                path = draw,
-                                                color = pathsColor,
-                                                style = Stroke(
-                                                    width = 32.dp.toPx(),
-                                                    cap = StrokeCap.Round,
-                                                    join = StrokeJoin.Round,
-                                                ),
-                                            )
-                                        }
-                                    }
-                                }
-                        )
-
-                        if (pathIndex.currentState in solution.indices && pathIndex.targetState in solution.indices) {
-                            Box(
-                                Modifier
-                                    .align(Alignment.Center)
-                                    .size(16.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.White)
+                        if (i == paths.lastIndex) {
+                            drawPath(
+                                path = draw,
+                                color = COLORS.primary,
+                                style = Stroke(
+                                    width = 64.dp.toPx(),
+                                    cap = StrokeCap.Round,
+                                    join = StrokeJoin.Round,
+                                ),
                             )
-                        }
-
-                        pathIndex.AnimatedVisibility(
-                            visible = { it >= 0 },
-                            enter = fadeIn(tween(300)),
-                            exit = fadeOut(tween(300)),
-                            modifier = Modifier.align(Alignment.BottomCenter)
-                        ) {
-                            Surface(
-                                color = Color.White.copy(alpha = 0.75f),
-                                contentColor = Color.Black,
-                                shape = RoundedCornerShape(16.dp),
-                                modifier = Modifier.padding(16.dp),
-                            ) {
-                                Text(
-                                    textDiff(
-                                        solution,
-                                        pathIndex.currentState.coerceIn(solution.indices),
-                                        insert,
-                                        delete
-                                    ),
-                                    modifier = Modifier.padding(12.dp),
-                                    style = MaterialTheme.typography.h3,
-                                )
-                            }
+                        } else {
+                            drawPath(
+                                path = draw,
+                                color = pathsColor,
+                                style = Stroke(
+                                    width = 32.dp.toPx(),
+                                    cap = StrokeCap.Round,
+                                    join = StrokeJoin.Round,
+                                ),
+                            )
                         }
                     }
                 }
+        )
+
+        if (pathIndex.currentState in solution.indices && pathIndex.targetState in solution.indices) {
+            Box(
+                Modifier
+                    .align(Alignment.Center)
+                    .size(16.dp)
+                    .clip(CircleShape)
+                    .background(Color.White)
+            )
+        }
+
+        pathIndex.AnimatedVisibility(
+            visible = { it >= 0 },
+            enter = fadeIn(tween(300)),
+            exit = fadeOut(tween(300)),
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            Surface(
+                color = Color.White.copy(alpha = 0.75f),
+                contentColor = Color.Black,
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(
+                    textDiff(
+                        solution,
+                        pathIndex.currentState.coerceIn(solution.indices),
+                        insert,
+                        delete
+                    ),
+                    modifier = Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.h3,
+                )
             }
         }
     }
@@ -284,18 +303,15 @@ fun textDiff(path: SearchPath, index: Int, insert: List<Char>, delete: List<Char
 }
 
 @Composable
-fun LeftPane() {
+fun MyersDiffInfo(modifier: Modifier = Modifier) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(32.dp)
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Myers Diff", style = MaterialTheme.typography.h3)
-        Spacer(Modifier.size(16.dp))
-        Surface(
-            color = Color.White,
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Text("Myers Diff", style = MaterialTheme.typography.h2)
+        }
+        TextSurface {
             Column(Modifier.padding(16.dp)) {
                 Text("• Computes the shortest edit script for transforming one sequence into another.")
 //                Text("• An O(N*D) algorithm.")
@@ -317,13 +333,12 @@ private fun <T> EditGraph(
     },
 ) {
     val textStyle = TextStyle(
-        fontSize = with(LocalDensity.current) { size.toSp() / 2.5 },
+        fontSize = with(LocalDensity.current) { size.toSp() / 3 },
         fontWeight = FontWeight.Bold,
     )
     ProvideTextStyle(textStyle) {
         Row(modifier) {
-            Column(Modifier.width(size / 2)) {
-                Spacer(Modifier.height(size / 2))
+            Column(Modifier.padding(top = size / 2).width(size / 2).rightBorder(8.dp, color)) {
                 for (i in insert) {
                     Box(Modifier.height(size).fillMaxWidth(), contentAlignment = Alignment.Center) {
                         content(i)
@@ -331,14 +346,14 @@ private fun <T> EditGraph(
                 }
             }
             Column {
-                Row(Modifier.height(size / 2)) {
+                Row(Modifier.height(size / 2).bottomBorder(8.dp, color)) {
                     for (d in delete) {
                         Box(Modifier.width(size).fillMaxHeight(), contentAlignment = Alignment.Center) {
                             content(d)
                         }
                     }
                 }
-                Column(Modifier.border(16.dp, color)) {
+                Column(Modifier.border(8.dp, color)) {
                     for (i in insert) {
                         Row {
                             for (d in delete) {
@@ -358,7 +373,65 @@ private fun <T> EditGraph(
                         }
                     }
                 }
+                Box(Modifier.size(delete.size * size, size / 2).topBorder(8.dp, color))
             }
+            Box(Modifier.padding(top = size / 2).size(size / 2, insert.size * size).leftBorder(8.dp, color))
         }
     }
+}
+
+fun Modifier.bottomBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+    val strokeWidthPx = strokeWidth.toPx()
+
+    val width = size.width
+    val height = size.height - strokeWidthPx / 2
+
+    drawLine(
+        color = color,
+        start = Offset(x = 0f, y = height),
+        end = Offset(x = width, y = height),
+        strokeWidth = strokeWidthPx
+    )
+}
+
+fun Modifier.topBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+    val strokeWidthPx = strokeWidth.toPx()
+
+    val width = size.width
+    val height = strokeWidthPx / 2
+
+    drawLine(
+        color = color,
+        start = Offset(x = 0f, y = height),
+        end = Offset(x = width, y = height),
+        strokeWidth = strokeWidthPx
+    )
+}
+
+fun Modifier.rightBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+    val strokeWidthPx = strokeWidth.toPx()
+
+    val width = size.width - strokeWidthPx / 2
+    val height = size.height
+
+    drawLine(
+        color = color,
+        start = Offset(x = width, y = 0f),
+        end = Offset(x = width, y = height),
+        strokeWidth = strokeWidthPx
+    )
+}
+
+fun Modifier.leftBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+    val strokeWidthPx = strokeWidth.toPx()
+
+    val width = strokeWidthPx / 2
+    val height = size.height
+
+    drawLine(
+        color = color,
+        start = Offset(x = width, y = 0f),
+        end = Offset(x = width, y = height),
+        strokeWidth = strokeWidthPx
+    )
 }

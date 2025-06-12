@@ -55,9 +55,13 @@ fun createStoryboard(
 
     Opening()
 
+    LineEnding()
+
+    MyersDiffChars()
+
     EditGraph()
 
-    Words()
+    MyersDiffWords()
 
-    LineEndDiff()
+    Patience()
 }

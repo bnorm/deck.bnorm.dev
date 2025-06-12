@@ -1,9 +1,7 @@
 package dev.bnorm.dcnyc25.sections
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -33,14 +31,13 @@ import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.github_review
 import dev.bnorm.deck.story.generated.resources.intellij
 import dev.bnorm.deck.story.generated.resources.keynote
-import dev.bnorm.storyboard.Frame
-import dev.bnorm.storyboard.SceneScope
-import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.*
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Opening() {
@@ -81,7 +78,7 @@ fun StoryboardBuilder.Opening() {
             ) {
                 Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxSize()) {
                     val padding = 16.dp
-                    val eachWidth = (SceneWidth - padding * 5f) / 3f
+                    val eachWidth = (SceneWidth - padding * 4f) / 3f
 
                     Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
                         transition.AnimatedVisibility(
@@ -133,7 +130,7 @@ fun StoryboardBuilder.Opening() {
     // TODO use MagicText to change header instead of carousel?
     // TODO add a summary for each question to each panel
     Question(buildAnnotatedString {
-        append("What has good ")
+        append("What has the most ")
         withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
             append("context")
         }
@@ -148,13 +145,24 @@ fun StoryboardBuilder.Opening() {
         append("?")
     }, editorPercent = 0.8f, reviewPercent = 0.2f, slidesPercent = 0.2f)
 
-    Question(buildAnnotatedString {
-        append("What has sufficient ")
-        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-            append("time")
-        }
-        append("?")
-    }, editorPercent = 0.8f, reviewPercent = 0.8f, slidesPercent = 0.2f)
+    Question(
+        question = buildAnnotatedString {
+            append("What has sufficient ")
+            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                append("time")
+            }
+            append("?")
+        },
+        editorPercent = 0.8f, reviewPercent = 0.8f, slidesPercent = 0.2f,
+        enterTransition = enter(
+            start = SceneEnter(alignment = Alignment.CenterEnd),
+            end = SceneEnter(alignment = Alignment.BottomCenter),
+        ),
+        exitTransition = exit(
+            start = SceneExit(alignment = Alignment.CenterEnd),
+            end = SceneExit(alignment = Alignment.BottomCenter),
+        ),
+    )
 
     // DIALOGUE
     //
@@ -164,21 +172,102 @@ fun StoryboardBuilder.Opening() {
     //
     // This is why I started coding my presentations,
     // to try and solve these exact problems.
+
+    scene(
+        stateCount = 4,
+        enterTransition = enter(
+            start = SceneEnter(alignment = Alignment.BottomCenter),
+            end = SceneEnter(alignment = Alignment.CenterEnd),
+        ),
+        exitTransition = exit(
+            start = SceneExit(alignment = Alignment.BottomCenter),
+            end = SceneExit(alignment = Alignment.CenterEnd),
+        ),
+    ) {
+        Surface(
+            color = MaterialTheme.colors.secondary,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val title = buildAnnotatedString {
+                        append("Presenting code is ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("hard") }
+                        append("!")
+                    }
+                    val familiar = buildAnnotatedString {
+                        append("Code needs to be ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("familiar") }
+                        append(".")
+                    }
+                    val pretty = buildAnnotatedString {
+                        append("Code needs to be ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("pretty") }
+                        append(".")
+                    }
+                    val read = buildAnnotatedString {
+                        append("Code needs to be ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("read") }
+                        append(".")
+                    }
+
+                    Text(title, style = MaterialTheme.typography.h2)
+                    Column {
+                        Conclusion(step = 1) {
+                            Text(familiar, style = MaterialTheme.typography.h4)
+                        }
+                        Conclusion(step = 2) {
+                            Text(pretty, style = MaterialTheme.typography.h4)
+                        }
+                        Conclusion(step = 3) {
+                            Text(read, style = MaterialTheme.typography.h4)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    scene(
+        stateCount = 3,
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+    ) {
+        Surface(
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val storyboard = buildAnnotatedString {
+                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("Storyboard") }
+                        append("!")
+                    }
+
+                    Text("This is why I created", style = MaterialTheme.typography.h2)
+                    Text(storyboard, style = MaterialTheme.typography.h2)
+
+                    Conclusion(step = 1) {
+                        Text("(not Storytale, JetBrains' Compose gallery generator)", style = MaterialTheme.typography.h5)
+                    }
+                    Conclusion(step = 2) {
+                        Text("(and not Storyboard, the XCode tool)", style = MaterialTheme.typography.h5)
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
 private fun SceneScope<*>.HowManyCode(questionHeight: Dp, yesPercent: Float? = null) {
-
     Surface(
         color = MaterialTheme.colors.secondary,
         modifier = Modifier.width(SceneWidth).height(questionHeight)
     ) {
         VoteRow(transition.createChildTransition { it is Frame.State }, yesPercent)
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text("How many of you look at code?", style = MaterialTheme.typography.h2)
         }
     }
@@ -189,26 +278,21 @@ private fun StoryboardBuilder.Question(
     editorPercent: Float? = null,
     reviewPercent: Float? = null,
     slidesPercent: Float? = null,
+    enterTransition: SceneEnterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+    exitTransition: SceneExitTransition = SceneExit(alignment = Alignment.CenterEnd),
 ) {
     scene(
         stateCount = 1,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
     ) {
         Column {
             Surface(
                 color = MaterialTheme.colors.secondary,
                 modifier = Modifier.width(SceneWidth).height(SceneHeight * 0.25f)
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        question,
-                        style = MaterialTheme.typography.h2,
-                    )
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                    Text(question, style = MaterialTheme.typography.h2)
                 }
             }
 
@@ -222,7 +306,7 @@ private fun StoryboardBuilder.Question(
                 // TODO backgrounds
                 Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxSize()) {
                     val padding = 16.dp
-                    val eachWidth = (SceneWidth - padding * 5f) / 3f
+                    val eachWidth = (SceneWidth - padding * 4f) / 3f
 
                     Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
                         IntelliJPanel {
@@ -382,5 +466,16 @@ private fun VoteColumn(visible: Transition<Boolean>, percent: Float?) {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SceneScope<Int>.Conclusion(step: Int, content: @Composable () -> Unit) {
+    transition.AnimatedVisibility(
+        visible = { it.toState() >= step },
+        enter = expandVertically(tween(300)) + fadeIn(tween(300, delayMillis = 300)),
+        exit = shrinkVertically(tween(300, delayMillis = 300)) + fadeOut(tween(300)),
+    ) {
+        content()
     }
 }

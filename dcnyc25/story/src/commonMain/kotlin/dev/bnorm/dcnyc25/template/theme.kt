@@ -36,9 +36,7 @@ val Typography.code1: TextStyle
     get() = TextStyle(
         fontFamily = JetBrainsMono,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 22.sp,
-        letterSpacing = 0.5.sp
+        fontSize = 18.sp,
     )
 
 val Typography.code2: TextStyle
@@ -46,9 +44,7 @@ val Typography.code2: TextStyle
     get() = TextStyle(
         fontFamily = JetBrainsMono,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 18.sp,
-        letterSpacing = 0.25.sp
+        fontSize = 16.sp,
     )
 
 val Typography.code3: TextStyle
@@ -56,9 +52,7 @@ val Typography.code3: TextStyle
     get() = TextStyle(
         fontFamily = JetBrainsMono,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
+        fontSize = 14.sp,
     )
 
 

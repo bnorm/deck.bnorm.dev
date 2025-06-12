@@ -2,10 +2,8 @@ package dev.bnorm.dcnyc25.sections
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import dev.bnorm.dcnyc25.template.Horizontal
 import dev.bnorm.dcnyc25.template.Quarter
 import dev.bnorm.dcnyc25.template.SceneHalfHeight
+import dev.bnorm.dcnyc25.template.TextSurface
 import dev.bnorm.dcnyc25.template.code1
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -229,12 +228,3 @@ private fun CodeDiff(
     }
 }
 
-@Composable
-fun TextSurface(content: @Composable () -> Unit) {
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier.fillMaxSize().padding(32.dp)
-    ) {
-        content()
-    }
-}

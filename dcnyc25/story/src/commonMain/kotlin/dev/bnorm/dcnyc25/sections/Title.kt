@@ -38,6 +38,9 @@ fun StoryboardBuilder.Title() {
         Pane.Horizontal {
             TitleHeader()
         },
+
+        // TODO add QR code for companion app voting somewhere in title
+        //  - add it to the bottom right corner again?
         Pane.Horizontal(
             Pane.Quarter {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
