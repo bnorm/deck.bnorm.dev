@@ -24,6 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.broadcast.LocalVoteTally
+import dev.bnorm.dcnyc25.broadcast.VoteMessage
+import dev.bnorm.dcnyc25.broadcast.VoteMessage.MultiVoteMessage
+import dev.bnorm.dcnyc25.broadcast.VoteTally
+import dev.bnorm.dcnyc25.broadcast.votes
 import dev.bnorm.dcnyc25.template.SceneHalfHeight
 import dev.bnorm.dcnyc25.template.SceneHeight
 import dev.bnorm.dcnyc25.template.SceneWidth
@@ -67,7 +72,8 @@ fun StoryboardBuilder.Opening() {
         ) {
             TitleHeader()
 
-            HowManyCode(questionHeight, yesPercent = 0.8f)
+            val yesPercent = LocalVoteTally.current?.toCodePercent() ?: 0.5f
+            HowManyCode(questionHeight, yesPercent)
 
             Surface(
                 color = MaterialTheme.colors.primary,
@@ -129,21 +135,27 @@ fun StoryboardBuilder.Opening() {
 
     // TODO use MagicText to change header instead of carousel?
     // TODO add a summary for each question to each panel
-    Question(buildAnnotatedString {
-        append("What has the most ")
-        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-            append("context")
-        }
-        append("?")
-    }, editorPercent = 0.8f, reviewPercent = 0.6f, slidesPercent = 0.2f)
+    Question(
+        buildAnnotatedString {
+            append("What has the most ")
+            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                append("context")
+            }
+            append("?")
+        },
+        votes = { votes<VoteMessage.Context>() },
+    )
 
-    Question(buildAnnotatedString {
-        append("What has good ")
-        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-            append("styling")
-        }
-        append("?")
-    }, editorPercent = 0.8f, reviewPercent = 0.2f, slidesPercent = 0.2f)
+    Question(
+        buildAnnotatedString {
+            append("What has good ")
+            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                append("styling")
+            }
+            append("?")
+        },
+        votes = { votes<VoteMessage.Style>() },
+    )
 
     Question(
         question = buildAnnotatedString {
@@ -153,7 +165,7 @@ fun StoryboardBuilder.Opening() {
             }
             append("?")
         },
-        editorPercent = 0.8f, reviewPercent = 0.8f, slidesPercent = 0.2f,
+        votes = { votes<VoteMessage.Time>() },
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnter(alignment = Alignment.BottomCenter),
@@ -260,6 +272,12 @@ fun StoryboardBuilder.Opening() {
     }
 }
 
+private fun VoteTally.toCodePercent(): Float {
+    val votes = votes<VoteMessage.Code>().filter { it.value != null }
+    if (votes.isEmpty()) return 0.5f
+    return votes.count { it.value == true } / votes.size.toFloat()
+}
+
 @Composable
 private fun SceneScope<*>.HowManyCode(questionHeight: Dp, yesPercent: Float? = null) {
     Surface(
@@ -275,17 +293,25 @@ private fun SceneScope<*>.HowManyCode(questionHeight: Dp, yesPercent: Float? = n
 
 private fun StoryboardBuilder.Question(
     question: AnnotatedString,
-    editorPercent: Float? = null,
-    reviewPercent: Float? = null,
-    slidesPercent: Float? = null,
+    votes: VoteTally.() -> List<MultiVoteMessage>,
     enterTransition: SceneEnterTransition = SceneEnter(alignment = Alignment.CenterEnd),
     exitTransition: SceneExitTransition = SceneExit(alignment = Alignment.CenterEnd),
 ) {
+
     scene(
         stateCount = 1,
         enterTransition = enterTransition,
         exitTransition = exitTransition,
     ) {
+        val tally = LocalVoteTally.current
+        val votes = tally?.votes() ?: emptyList()
+        val editorPercent = votes.count { it.editor != null }
+            .let { count -> if (count == 0) 0.5f else votes.count { it.editor == true } / count.toFloat() }
+        val reviewPercent = votes.count { it.review != null }
+            .let { count -> if (count == 0) 0.5f else votes.count { it.review == true } / count.toFloat() }
+        val slidesPercent = votes.count { it.slides != null }
+            .let { count -> if (count == 0) 0.5f else votes.count { it.slides == true } / count.toFloat() }
+
         Column {
             Surface(
                 color = MaterialTheme.colors.secondary,

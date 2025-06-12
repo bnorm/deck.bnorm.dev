@@ -45,41 +45,49 @@ import dev.bnorm.storyboard.toState
 
 private enum class LineEndingState(
     val showHighlight: Boolean,
+    val showInfo: Boolean,
     val infoProgress: Int,
 ) {
     Sample(
         showHighlight = false,
-        infoProgress = -1,
+        showInfo = false,
+        infoProgress = 0,
     ),
     HighlightDiff(
         showHighlight = true,
-        infoProgress = -1,
+        showInfo = false,
+        infoProgress = 0,
     ),
     HighlightLineEndDiff(
         showHighlight = true,
-        infoProgress = -1,
+        showInfo = false,
+        infoProgress = 0,
     ),
     IntroAlgorithm(
         showHighlight = false,
+        showInfo = true,
         infoProgress = 0,
     ),
     SampleAlgorithm(
         showHighlight = false,
+        showInfo = true,
         infoProgress = 0,
     ),
     RevertAlgorithm(
         showHighlight = false,
+        showInfo = true,
         infoProgress = 0,
     ),
     Reset(
         showHighlight = false,
+        showInfo = false,
         infoProgress = 0,
     ),
 }
 
 fun StoryboardBuilder.LineEnding() {
     scene(
-        states = LineEndingState.entries.subList(fromIndex = 0, toIndex = LineEndingState.entries.size),
+        states = LineEndingState.entries.subList(fromIndex = 0, toIndex = LineEndingState.entries.size - 1),
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnterTransition.None,
@@ -96,7 +104,7 @@ fun StoryboardBuilder.LineEnding() {
 
         val scrollState = rememberScrollState()
         state.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {
-            with(LocalDensity.current) { (SceneHalfWidth * if (it.infoProgress >= 0) 0 else 1).roundToPx() }
+            with(LocalDensity.current) { (SceneHalfWidth * if (it.showInfo) 0 else 1).roundToPx() }
         }
 
         Row(Modifier.horizontalScroll(scrollState, enabled = false)) {
@@ -244,7 +252,7 @@ private fun SampleDiff(
                                 boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
                             )
                         )
-                        if (it.infoProgress >= 0) {
+                        if (it.showInfo) {
                             After(
                                 Modifier.weight(1f).sharedElement(
                                     rememberSharedContentState("after"),
@@ -256,7 +264,7 @@ private fun SampleDiff(
                 }
                 Vertical(MaterialTheme.colors.primary) {
                     Box(Modifier.padding(16.dp)) {
-                        if (it.infoProgress < 0) {
+                        if (!it.showInfo) {
                             After(
                                 Modifier.sharedElement(
                                     rememberSharedContentState("after"),

@@ -5,21 +5,26 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Typography
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import dev.bnorm.dcnyc25.broadcast.LocalVoteTally
+import dev.bnorm.dcnyc25.broadcast.VoteTally
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.SceneDecorator
 
-fun storyDecorator(): SceneDecorator = SceneDecorator { content ->
+fun storyDecorator(tally: VoteTally? = null): SceneDecorator = SceneDecorator { content ->
     MaterialTheme(
         colors = COLORS,
         typography = dcnyc25Typography(),
     ) {
-        Surface {
-            content()
+        CompositionLocalProvider(LocalVoteTally provides tally) {
+            Surface {
+                content()
+            }
         }
     }
 }

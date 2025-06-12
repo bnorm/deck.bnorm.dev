@@ -1,0 +1,12 @@
+###
+GET https://broadcast.bnorm.dev/channels/story-dcnyc25-vote/subscribe
+Accept: text/event-stream
+
+###
+GET https://broadcast.bnorm.dev/channels
+Authorization: Bearer {{$env.BROADCAST_TOKEN}}
+Accept: application/json
+
+###
+DELETE https://broadcast.bnorm.dev/channels/story-dcnyc25-vote
+Authorization: Bearer {{$env.BROADCAST_TOKEN}}
