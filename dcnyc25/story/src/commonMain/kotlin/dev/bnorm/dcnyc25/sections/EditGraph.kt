@@ -1,10 +1,7 @@
 package dev.bnorm.dcnyc25.sections
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColor
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,6 +44,8 @@ import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.easel.template.enter
+import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.toState
 
 private sealed class EditGraphState(
@@ -92,14 +91,24 @@ fun StoryboardBuilder.EditGraph() {
 
     scene(
         states = states,
-        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
-        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
+        enterTransition = enter(
+            start = SceneEnter(alignment = Alignment.BottomCenter),
+            end = SceneEnter(alignment = Alignment.TopCenter),
+        ),
+        exitTransition = exit(
+            start = SceneExit(alignment = Alignment.BottomCenter),
+            end = SceneExit(alignment = Alignment.TopCenter),
+        ),
     ) {
 
         Surface(color = MaterialTheme.colors.secondary) {
             Row {
                 Vertical(MaterialTheme.colors.primary) {
-                    MyersDiffInfo(Modifier.sharedElement(rememberSharedContentState("myers-diff")))
+                    MyersDiffInfo(
+                        updateTransition(true),
+                        updateTransition(4),
+                        Modifier.sharedElement(rememberSharedContentState("myers-diff"))
+                    )
                 }
                 Vertical(MaterialTheme.colors.secondary) {
                     EditGraph(
@@ -303,19 +312,42 @@ fun textDiff(path: SearchPath, index: Int, insert: List<Char>, delete: List<Char
 }
 
 @Composable
-fun MyersDiffInfo(modifier: Modifier = Modifier) {
+fun MyersDiffInfo(title: Transition<Boolean>, progress: Transition<Int>, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Text("Myers Diff", style = MaterialTheme.typography.h2)
+            Row {
+                title.AnimatedVisibility(
+                    visible = { it },
+                    enter = fadeIn(tween(750)) +
+                            expandHorizontally(tween(750), clip = false, expandFrom = Alignment.End),
+                    exit = fadeOut(tween(750)) +
+                            shrinkHorizontally(tween(750), clip = false, shrinkTowards = Alignment.End),
+                ) {
+                    Text("Myers ", style = MaterialTheme.typography.h2)
+                }
+                Text("Diff", style = MaterialTheme.typography.h2)
+            }
         }
         TextSurface {
-            Column(Modifier.padding(16.dp)) {
-                Text("• Computes the shortest edit script for transforming one sequence into another.")
-//                Text("• An O(N*D) algorithm.")
-                Text("• Published in 1986 by Eugene Myers.")
+            @Composable
+            fun Bullet(step: Int, text: String) {
+                progress.AnimatedVisibility(
+                    visible = { it >= step },
+                    enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
+                ) {
+                    Text("• $text")
+                }
+            }
+
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Bullet(step = 1, text = "Most common algorithm published in 1986 by Eugene Myers.")
+                Bullet(step = 2, text = "Compute the shortest edit script for transforming one string into another.")
+                Bullet(step = 3, text = "Each edit will get a unique key used by shared element 'Modifier'.")
+                Bullet(step = 4, text = "Transform edit script into columns and rows of 'Text' Composables.")
+                Bullet(step = 5, text = "Instead of characters, use 'words' to break up code into elements.")
             }
         }
     }

@@ -54,6 +54,7 @@ fun createStoryboard(
 
     Opening()
 
+    // TODO highlight common prefix of each line
     LineEnding()
 
     MyersDiffChars()

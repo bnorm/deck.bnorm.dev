@@ -499,8 +499,8 @@ private fun VoteColumn(visible: Transition<Boolean>, percent: Float?) {
 fun SceneScope<Int>.Conclusion(step: Int, content: @Composable () -> Unit) {
     transition.AnimatedVisibility(
         visible = { it.toState() >= step },
-        enter = expandVertically(tween(300)) + fadeIn(tween(300, delayMillis = 300)),
-        exit = shrinkVertically(tween(300, delayMillis = 300)) + fadeOut(tween(300)),
+        enter = expandVertically(tween(750), clip = false, expandFrom = Alignment.Top) + fadeIn(tween(750)),
+        exit = shrinkVertically(tween(750), clip = false, shrinkTowards = Alignment.Top) + fadeOut(tween(750)),
     ) {
         content()
     }

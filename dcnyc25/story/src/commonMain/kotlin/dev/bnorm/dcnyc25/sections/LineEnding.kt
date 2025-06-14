@@ -1,10 +1,7 @@
 package dev.bnorm.dcnyc25.sections
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.animateRect
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -29,11 +26,12 @@ import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.old.kc24.animateList
 import dev.bnorm.dcnyc25.old.kc24.startAnimation
 import dev.bnorm.dcnyc25.old.kc24.thenLineEndDiff
+import dev.bnorm.dcnyc25.sections.LineEndingState.HighlightLineEndDiff
+import dev.bnorm.dcnyc25.sections.LineEndingState.SampleAlgorithm
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
-import dev.bnorm.storyboard.SceneEnterTransition
-import dev.bnorm.storyboard.SceneExitTransition
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
@@ -58,30 +56,55 @@ private enum class LineEndingState(
         showInfo = false,
         infoProgress = 0,
     ),
-    HighlightLineEndDiff(
-        showHighlight = true,
-        showInfo = false,
-        infoProgress = 0,
-    ),
     IntroAlgorithm(
-        showHighlight = false,
+        showHighlight = true,
         showInfo = true,
         infoProgress = 0,
+    ),
+    HighlightLineEndDiff(
+        showHighlight = true,
+        showInfo = true,
+        infoProgress = 0,
+    ),
+    Algorithm1(
+        showHighlight = false,
+        showInfo = true,
+        infoProgress = 1,
+    ),
+    Algorithm2(
+        showHighlight = false,
+        showInfo = true,
+        infoProgress = 2,
+    ),
+    Algorithm3(
+        showHighlight = false,
+        showInfo = true,
+        infoProgress = 3,
+    ),
+    Algorithm4(
+        showHighlight = false,
+        showInfo = true,
+        infoProgress = 4,
+    ),
+    Algorithm5(
+        showHighlight = false,
+        showInfo = true,
+        infoProgress = 5,
     ),
     SampleAlgorithm(
         showHighlight = false,
         showInfo = true,
-        infoProgress = 0,
+        infoProgress = 5,
     ),
     RevertAlgorithm(
         showHighlight = false,
         showInfo = true,
-        infoProgress = 0,
+        infoProgress = 5,
     ),
-    Reset(
+    Algorithm6(
         showHighlight = false,
-        showInfo = false,
-        infoProgress = 0,
+        showInfo = true,
+        infoProgress = 6,
     ),
 }
 
@@ -90,16 +113,16 @@ fun StoryboardBuilder.LineEnding() {
         states = LineEndingState.entries.subList(fromIndex = 0, toIndex = LineEndingState.entries.size - 1),
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
-            end = SceneEnterTransition.None,
+            end = SceneEnter(alignment = Alignment.BottomCenter),
         ),
         exitTransition = exit(
             start = SceneExit(alignment = Alignment.CenterEnd),
-            end = SceneExitTransition.None,
+            end = SceneExit(alignment = Alignment.BottomCenter),
         ),
     ) {
 
         val state = transition.createChildTransition {
-            it.toState(end = LineEndingState.Reset)
+            it.toState()
         }
 
         val scrollState = rememberScrollState()
@@ -114,17 +137,41 @@ fun StoryboardBuilder.LineEnding() {
                         Text("Line Ending", style = MaterialTheme.typography.h2)
                     }
                     TextSurface {
-                        // TODO
-                        Column(Modifier.padding(16.dp)) {
-                            Text("• Find the common prefix of each line.")
-                            Text("• Create a sequence removing all non-prefix characters - one at a time - from the last line to the first.")
-                            Text("• Continue the sequence adding non-prefix characters from the first line to the last.")
-                            Text("• Use 'animateIntAsState' or similar to iterate through the sequence.")
+                        @Composable
+                        fun Bullet(step: Int, text: String) {
+                            state.AnimatedVisibility(
+                                visible = { it.infoProgress >= step },
+                                enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
+                            ) {
+                                Text("• $text")
+                            }
+                        }
+
+                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Bullet(step = 1, text = "Find the common prefix of each line.")
+                            Bullet(
+                                step = 2,
+                                text = "Create a sequence removing all non-prefix characters - one at a time - from the last line to the first."
+                            )
+                            Bullet(
+                                step = 3,
+                                text = "Continue the sequence adding non-prefix characters from the first line to the last."
+                            )
+                            Bullet(
+                                step = 4,
+                                text = "Use 'animateIntAsState' or similar to iterate through the sequence."
+                            )
+                            Bullet(step = 5, text = "Combine with 'LinearEasing' to get a cursor like animation!")
+                            Bullet(step = 6, text = "TODO: animate an actual cursor.")
                         }
                     }
                 }
             }
-            SampleDiff(state)
+
+            SampleDiff(
+                state,
+                modifier = Modifier.sharedElement(rememberSharedContentState("diff-example"),),
+            )
         }
     }
 }
@@ -132,6 +179,7 @@ fun StoryboardBuilder.LineEnding() {
 @Composable
 private fun SampleDiff(
     state: Transition<LineEndingState>,
+    modifier: Modifier = Modifier,
 ) {
     val sampleStart = remember {
         """
@@ -190,10 +238,10 @@ private fun SampleDiff(
         values = sampleAnimation,
         transitionSpec = { typing(sampleAnimation.size) }
     ) {
-        if (it == LineEndingState.SampleAlgorithm) sampleAnimation.lastIndex else 0
+        if (it == SampleAlgorithm) sampleAnimation.lastIndex else 0
     }
 
-    SharedTransitionLayout {
+    SharedTransitionLayout(modifier) {
         state.AnimatedContent(transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }) {
             Row {
                 @Composable
@@ -207,14 +255,14 @@ private fun SampleDiff(
                                 if (it.showHighlight) Color.Red.copy(alpha = 0.5f) else Color.Red.copy(alpha = 0f)
                             }
                             val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it == LineEndingState.HighlightLineEndDiff) startLineHighlight else startHighlight
+                                if (it >= HighlightLineEndDiff) startLineHighlight else startHighlight
                             }
                             Text(
                                 text = sampleText,
                                 style = sampleStyle,
                                 modifier = Modifier
                                     .padding(16.dp)
-                                    .highlight(rect, color, radius = 4.dp, padding = 2.dp)
+                                    .highlight(rect, color, radius = 8.dp, padding = 2.dp)
                             )
                         }
                     }
@@ -231,21 +279,21 @@ private fun SampleDiff(
                                 if (it.showHighlight) Color.Green.copy(alpha = 0.5f) else Color.Green.copy(alpha = 0f)
                             }
                             val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it == LineEndingState.HighlightLineEndDiff) endLineHighlight else endHighlight
+                                if (it >= HighlightLineEndDiff) endLineHighlight else endHighlight
                             }
                             Text(
                                 text = sampleEnd,
                                 style = sampleStyle,
                                 modifier = Modifier
                                     .padding(16.dp)
-                                    .highlight(rect, color, radius = 4.dp, padding = 2.dp)
+                                    .highlight(rect, color, radius = 8.dp, padding = 2.dp)
                             )
                         }
                     }
                 }
 
                 Vertical(MaterialTheme.colors.secondary) {
-                    Column(Modifier.padding(16.dp)) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         Before(
                             Modifier.weight(1f).sharedElement(
                                 rememberSharedContentState("before"),
@@ -263,8 +311,8 @@ private fun SampleDiff(
                     }
                 }
                 Vertical(MaterialTheme.colors.primary) {
-                    Box(Modifier.padding(16.dp)) {
-                        if (!it.showInfo) {
+                    if (!it.showInfo) {
+                        Box(Modifier.padding(16.dp)) {
                             After(
                                 Modifier.sharedElement(
                                     rememberSharedContentState("after"),
@@ -295,7 +343,6 @@ fun TextLayoutResult.getBoundingBox(from: Int, to: Int): Rect {
     )
 }
 
-// TODO could be cool to add a border
 fun Modifier.highlight(
     rect: Rect,
     color: Color,
