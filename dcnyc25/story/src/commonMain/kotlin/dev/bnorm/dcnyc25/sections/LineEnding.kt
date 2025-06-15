@@ -19,6 +19,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
@@ -29,7 +30,6 @@ import dev.bnorm.dcnyc25.old.kc24.thenLineEndDiff
 import dev.bnorm.dcnyc25.sections.LineEndingState.HighlightLineEndDiff
 import dev.bnorm.dcnyc25.sections.LineEndingState.SampleAlgorithm
 import dev.bnorm.dcnyc25.template.*
-import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -37,8 +37,6 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.toState
 
 private enum class LineEndingState(
@@ -108,7 +106,7 @@ private enum class LineEndingState(
     ),
 }
 
-fun StoryboardBuilder.LineEnding() {
+fun StoryboardBuilder.LineEnding(sampleStart: AnnotatedString, sampleEnd: AnnotatedString) {
     scene(
         states = LineEndingState.entries.subList(fromIndex = 0, toIndex = LineEndingState.entries.size - 1),
         enterTransition = enter(
@@ -134,7 +132,7 @@ fun StoryboardBuilder.LineEnding() {
             Vertical(MaterialTheme.colors.primary) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Text("Line Ending", style = MaterialTheme.typography.h2)
+                        OutlinedText("Line Ending", style = MaterialTheme.typography.h2)
                     }
                     TextSurface {
                         @Composable
@@ -171,6 +169,8 @@ fun StoryboardBuilder.LineEnding() {
             SampleDiff(
                 state,
                 modifier = Modifier.sharedElement(rememberSharedContentState("diff-example"),),
+                sampleStart,
+                sampleEnd,
             )
         }
     }
@@ -180,23 +180,9 @@ fun StoryboardBuilder.LineEnding() {
 private fun SampleDiff(
     state: Transition<LineEndingState>,
     modifier: Modifier = Modifier,
+    sampleStart: AnnotatedString,
+    sampleEnd: AnnotatedString,
 ) {
-    val sampleStart = remember {
-        """
-            fun main() {
-              println("Hello, KotlinConf!")
-            }
-        """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-    }
-
-    val sampleEnd = remember {
-        """
-            fun main() {
-              println("Hello, droidcon!")
-            }
-        """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-    }
-
     val measurer = rememberTextMeasurer()
     val sampleStyle = MaterialTheme.typography.code1
 
@@ -248,7 +234,7 @@ private fun SampleDiff(
                 fun Before(modifier: Modifier = Modifier) {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
                         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                            Text("Before", style = MaterialTheme.typography.h2)
+                            OutlinedText("Before", style = MaterialTheme.typography.h2)
                         }
                         TextSurface {
                             val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {
@@ -272,7 +258,7 @@ private fun SampleDiff(
                 fun After(modifier: Modifier = Modifier) {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
                         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                            Text("After", style = MaterialTheme.typography.h2)
+                            OutlinedText("After", style = MaterialTheme.typography.h2)
                         }
                         TextSurface {
                             val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {

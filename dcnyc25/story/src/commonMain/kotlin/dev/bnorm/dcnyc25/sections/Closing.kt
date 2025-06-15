@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.dcnyc25.template.Full
+import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.template.SceneEnter
@@ -22,10 +22,10 @@ fun StoryboardBuilder.Closing() {
         Full(MaterialTheme.colors.primary) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Fin", style = MaterialTheme.typography.h1)
+                    OutlinedText("Fin", style = MaterialTheme.typography.h1)
 
                     Conclusion(step = 1) {
-                        Text(
+                        OutlinedText(
                             text = "(github.com/bnorm/storyboard)",
                             style = MaterialTheme.typography.h5.copy(fontFamily = JetBrainsMono)
                         )

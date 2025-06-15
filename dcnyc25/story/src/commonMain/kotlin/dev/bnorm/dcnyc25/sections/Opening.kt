@@ -29,6 +29,7 @@ import dev.bnorm.dcnyc25.broadcast.VoteMessage
 import dev.bnorm.dcnyc25.broadcast.VoteMessage.MultiVoteMessage
 import dev.bnorm.dcnyc25.broadcast.VoteTally
 import dev.bnorm.dcnyc25.broadcast.votes
+import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.dcnyc25.template.SceneHalfHeight
 import dev.bnorm.dcnyc25.template.SceneHeight
 import dev.bnorm.dcnyc25.template.SceneWidth
@@ -224,16 +225,16 @@ fun StoryboardBuilder.Opening() {
                         append(".")
                     }
 
-                    Text(title, style = MaterialTheme.typography.h2)
+                    OutlinedText(title, style = MaterialTheme.typography.h2)
                     Column {
                         Conclusion(step = 1) {
-                            Text(familiar, style = MaterialTheme.typography.h4)
+                            OutlinedText(familiar, style = MaterialTheme.typography.h4)
                         }
                         Conclusion(step = 2) {
-                            Text(pretty, style = MaterialTheme.typography.h4)
+                            OutlinedText(pretty, style = MaterialTheme.typography.h4)
                         }
                         Conclusion(step = 3) {
-                            Text(read, style = MaterialTheme.typography.h4)
+                            OutlinedText(read, style = MaterialTheme.typography.h4)
                         }
                     }
                 }
@@ -257,14 +258,17 @@ fun StoryboardBuilder.Opening() {
                         append("!")
                     }
 
-                    Text("This is why I created", style = MaterialTheme.typography.h2)
-                    Text(storyboard, style = MaterialTheme.typography.h2)
+                    OutlinedText("This is why I created", style = MaterialTheme.typography.h2)
+                    OutlinedText(storyboard, style = MaterialTheme.typography.h2)
 
                     Conclusion(step = 1) {
-                        Text("(not Storytale, JetBrains' Compose gallery generator)", style = MaterialTheme.typography.h5)
+                        OutlinedText(
+                            "(not Storytale, JetBrains' Compose gallery generator)",
+                            style = MaterialTheme.typography.h5
+                        )
                     }
                     Conclusion(step = 2) {
-                        Text("(and not Storyboard, the XCode tool)", style = MaterialTheme.typography.h5)
+                        OutlinedText("(and not Storyboard, the XCode tool)", style = MaterialTheme.typography.h5)
                     }
                 }
             }
@@ -286,7 +290,7 @@ private fun SceneScope<*>.HowManyCode(questionHeight: Dp, yesPercent: Float? = n
     ) {
         VoteRow(transition.createChildTransition { it is Frame.State }, yesPercent)
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Text("How many of you look at code?", style = MaterialTheme.typography.h2)
+            OutlinedText("How many of you look at code?", style = MaterialTheme.typography.h2)
         }
     }
 }
@@ -318,7 +322,7 @@ private fun StoryboardBuilder.Question(
                 modifier = Modifier.width(SceneWidth).height(SceneHeight * 0.25f)
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text(question, style = MaterialTheme.typography.h2)
+                    OutlinedText(question, style = MaterialTheme.typography.h2)
                 }
             }
 

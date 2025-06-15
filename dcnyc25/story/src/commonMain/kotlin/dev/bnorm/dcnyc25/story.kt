@@ -2,8 +2,11 @@ package dev.bnorm.dcnyc25
 
 import dev.bnorm.dcnyc25.sections.*
 import dev.bnorm.dcnyc25.template.storyDecorator
+import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
+import dev.bnorm.storyboard.text.highlight.Language
+import dev.bnorm.storyboard.text.highlight.highlight
 
 /**
  * ### General Ideas
@@ -50,20 +53,57 @@ fun createStoryboard(
     """.trimIndent(),
     decorator = decorator,
 ) {
+    // TODO make examples truly dynamic so i could completely change them... live?!
+    //  - pull these out into a caption that allows edits
+    val first = """
+        fun main() {
+          println("Hello, KotlinConf!")
+        }
+    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
+
+    val second = """
+        fun main() {
+          println("Hello, droidcon!")
+        }
+    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
+
+    val third = $$"""
+        fun main() {
+          val greeting = "Hello"
+          println("$greeting, droidcon!")
+        }
+    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
+
+
+    // TODO show code for each algorithm?
     Title()
 
     Opening()
 
-    // TODO highlight common prefix of each line
-    LineEnding()
+    // TODO highlight common prefix of each line during algorithm explanation
+    // TODO make highlighting truly dynamic based on sample
+    LineEnding(first, second)
 
-    MyersDiffChars()
+    MyersDiffChars(first, second)
 
-    EditGraph()
+    // TODO use keyframes to compress navigation to single advancement
+    EditGraph(start = "KotlinConf", end = "droidcon")
 
-    MyersDiffWords()
+    MyersDiffWords(first, second, third)
 
-    Patience()
+    Patience(second, third)
+
+    // TODO add some show-off slides
+    //  - power-assert example from compiler plugin talk
+    //  - Compose example from compiler plugin talk
+    //  - if samples are dynamic, redo the entire talk with different examples?!
+
+    // TODO talk about improvements to MagicText
+    //  - make it generic (not text specific)
+    //  - check out DiffUtil for an alternative idea
+    //  - benchmarks and optimizations
+
+    // TODO add reference to other talks using Storyboard
 
     Closing()
 }

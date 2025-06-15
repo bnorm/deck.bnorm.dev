@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.template.Horizontal
+import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.dcnyc25.template.Pane
 import dev.bnorm.dcnyc25.template.Panes
 import dev.bnorm.deck.shared.socials.Bluesky
@@ -48,7 +48,7 @@ fun StoryboardBuilder.Title() {
                         contentAlignment = Alignment.BottomStart,
                         modifier = Modifier.fillMaxSize().padding(24.dp)
                     ) {
-                        Text(
+                        OutlinedText(
                             text = buildAnnotatedString {
                                 withStyle(SpanStyle(fontWeight = FontWeight.ExtraLight)) {
                                     append("re")

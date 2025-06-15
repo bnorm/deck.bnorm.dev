@@ -14,6 +14,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +37,7 @@ import dev.bnorm.dcnyc25.algo.SearchCallbacks
 import dev.bnorm.dcnyc25.algo.SearchPath
 import dev.bnorm.dcnyc25.algo.myers
 import dev.bnorm.dcnyc25.template.COLORS
+import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.dcnyc25.template.SceneHalfWidth
 import dev.bnorm.dcnyc25.template.TextSurface
 import dev.bnorm.dcnyc25.template.Vertical
@@ -64,9 +66,9 @@ private sealed class EditGraphState(
     data object Complete : EditGraphState(search = true)
 }
 
-fun StoryboardBuilder.EditGraph() {
-    val delete = "kotlinconf".toList()
-    val insert = "droidcon".toList()
+fun StoryboardBuilder.EditGraph(start: String, end: String) {
+    val delete = start.toList()
+    val insert = end.toList()
 
     val paths = mutableListOf<SearchPath>()
     myers(delete, insert, callbacks = object : SearchCallbacks {
@@ -117,7 +119,8 @@ fun StoryboardBuilder.EditGraph() {
                         paths = paths,
                         solution = solution,
                         size = SceneHalfWidth,
-                        transition = transition.createChildTransition { it.toState() })
+                        transition = transition.createChildTransition { it.toState() },
+                    )
                 }
             }
         }
@@ -257,6 +260,8 @@ private fun EditGraph(
             )
         }
 
+        val patch = remember { textDiff(solution, solution.lastIndex, insert, delete).toChars() }
+
         pathIndex.AnimatedVisibility(
             visible = { it >= 0 },
             enter = fadeIn(tween(300)),
@@ -269,16 +274,28 @@ private fun EditGraph(
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.padding(16.dp),
             ) {
-                Text(
-                    textDiff(
-                        solution,
-                        pathIndex.currentState.coerceIn(solution.indices),
-                        insert,
-                        delete
-                    ),
-                    modifier = Modifier.padding(12.dp),
-                    style = MaterialTheme.typography.h3,
-                )
+                Row(Modifier.padding(12.dp)) {
+                    Text("", style = MaterialTheme.typography.h3) // Reserve surface height
+                    for ((index, value) in patch.withIndex()) {
+                        pathIndex.AnimatedVisibility(
+                            visible = { it > index },
+                            enter = fadeIn(tween(300)) +
+                                    expandHorizontally(
+                                        tween(100),
+                                        clip = false,
+                                        expandFrom = Alignment.Start,
+                                    ),
+                            exit = fadeOut(tween(300)) +
+                                    shrinkHorizontally(
+                                        tween(100, delayMillis = 200),
+                                        clip = false,
+                                        shrinkTowards = Alignment.Start,
+                                    ),
+                        ) {
+                            Text(value, style = MaterialTheme.typography.h3)
+                        }
+                    }
+                }
             }
         }
     }
@@ -326,9 +343,9 @@ fun MyersDiffInfo(title: Transition<Boolean>, progress: Transition<Int>, modifie
                     exit = fadeOut(tween(750)) +
                             shrinkHorizontally(tween(750), clip = false, shrinkTowards = Alignment.End),
                 ) {
-                    Text("Myers ", style = MaterialTheme.typography.h2)
+                    OutlinedText("Myers ", style = MaterialTheme.typography.h2)
                 }
-                Text("Diff", style = MaterialTheme.typography.h2)
+                OutlinedText("Diff", style = MaterialTheme.typography.h2)
             }
         }
         TextSurface {
@@ -346,7 +363,7 @@ fun MyersDiffInfo(title: Transition<Boolean>, progress: Transition<Int>, modifie
                 Bullet(step = 1, text = "Most common algorithm published in 1986 by Eugene Myers.")
                 Bullet(step = 2, text = "Compute the shortest edit script for transforming one string into another.")
                 Bullet(step = 3, text = "Each edit will get a unique key used by shared element 'Modifier'.")
-                Bullet(step = 4, text = "Transform edit script into columns and rows of 'Text' Composables.")
+                Bullet(step = 4, text = "Transform edit script into a column of rows of 'Text' Composables.")
                 Bullet(step = 5, text = "Instead of characters, use 'words' to break up code into elements.")
             }
         }
@@ -412,7 +429,7 @@ private fun <T> EditGraph(
     }
 }
 
-fun Modifier.bottomBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+private fun Modifier.bottomBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
     val strokeWidthPx = strokeWidth.toPx()
 
     val width = size.width
@@ -426,7 +443,7 @@ fun Modifier.bottomBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind 
     )
 }
 
-fun Modifier.topBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+private fun Modifier.topBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
     val strokeWidthPx = strokeWidth.toPx()
 
     val width = size.width
@@ -440,7 +457,7 @@ fun Modifier.topBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
     )
 }
 
-fun Modifier.rightBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+private fun Modifier.rightBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
     val strokeWidthPx = strokeWidth.toPx()
 
     val width = size.width - strokeWidthPx / 2
@@ -454,7 +471,7 @@ fun Modifier.rightBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
     )
 }
 
-fun Modifier.leftBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
+private fun Modifier.leftBorder(strokeWidth: Dp, color: Color): Modifier = drawBehind {
     val strokeWidthPx = strokeWidth.toPx()
 
     val width = strokeWidthPx / 2

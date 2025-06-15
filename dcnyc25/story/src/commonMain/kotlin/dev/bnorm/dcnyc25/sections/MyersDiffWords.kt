@@ -26,10 +26,10 @@ import dev.bnorm.dcnyc25.old.magic.MagicTextDiff
 import dev.bnorm.dcnyc25.old.magic.MagicTextMyers
 import dev.bnorm.dcnyc25.old.magic.diff
 import dev.bnorm.dcnyc25.sections.MyersDiffWordsState.*
+import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.dcnyc25.template.TextSurface
 import dev.bnorm.dcnyc25.template.Vertical
 import dev.bnorm.dcnyc25.template.code1
-import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -37,8 +37,6 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.magic.toWords
 import dev.bnorm.storyboard.toState
 
@@ -82,13 +80,12 @@ private enum class MyersDiffWordsState(
         showNewColor = false,
         infoProgress = 5
     ),
-    RemoveHighlighting(
+    RemoveWordHighlighting(
         showCharColor = false,
         showWordColor = false,
         showNewColor = false,
         infoProgress = 5,
     ),
-
     AnimateSample(
         showCharColor = false,
         showWordColor = false,
@@ -119,28 +116,15 @@ private enum class MyersDiffWordsState(
         showNewColor = true,
         infoProgress = 5,
     ),
+    RemoveNewHighlighting(
+        showCharColor = false,
+        showWordColor = false,
+        showNewColor = false,
+        infoProgress = 5,
+    ),
 }
 
-fun StoryboardBuilder.MyersDiffWords() {
-    val sampleStart = """
-        fun main() {
-          println("Hello, KotlinConf!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
-    val sampleEnd = """
-        fun main() {
-          println("Hello, droidcon!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
-    val sampleEndNew = $$"""
-        fun main() {
-          val greeting = "Hello"
-          println("$greeting, droidcon!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
+fun StoryboardBuilder.MyersDiffWords(sampleStart: AnnotatedString, sampleEnd: AnnotatedString, sampleEndNew: AnnotatedString) {
     scene(
         states = MyersDiffWordsState.entries.toList(),
         enterTransition = enter(
@@ -163,7 +147,13 @@ fun StoryboardBuilder.MyersDiffWords() {
                 )
             }
 
-            Sample(state, sampleStart, sampleEnd, sampleEndNew)
+            Sample(
+                state,
+                sampleStart,
+                sampleEnd,
+                sampleEndNew,
+                Modifier.sharedElement(rememberSharedContentState("diff-example"))
+            )
         }
     }
 }
@@ -174,6 +164,7 @@ private fun Sample(
     sampleStart: AnnotatedString,
     sampleEnd: AnnotatedString,
     sampleNew: AnnotatedString,
+    modifier: Modifier = Modifier,
 ) {
     val measurer = rememberTextMeasurer()
 
@@ -230,7 +221,7 @@ private fun Sample(
     fun Before(modifier: Modifier = Modifier) {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text("Before", style = MaterialTheme.typography.h2)
+                OutlinedText("Before", style = MaterialTheme.typography.h2)
             }
             TextSurface {
                 ProvideTextStyle(style) {
@@ -257,7 +248,7 @@ private fun Sample(
     fun After(modifier: Modifier = Modifier) {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text("After", style = MaterialTheme.typography.h2)
+                OutlinedText("After", style = MaterialTheme.typography.h2)
             }
             TextSurface {
                 Text(
@@ -290,7 +281,7 @@ private fun Sample(
         }
     }
 
-    Vertical(MaterialTheme.colors.secondary) {
+    Vertical(MaterialTheme.colors.secondary, modifier = modifier) {
         Column(Modifier.padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Before(Modifier.weight(1f).padding(horizontal = 16.dp))
             state.createChildTransition { it.ordinal >= IntroduceNewAfter.ordinal }.AnimatedContent(

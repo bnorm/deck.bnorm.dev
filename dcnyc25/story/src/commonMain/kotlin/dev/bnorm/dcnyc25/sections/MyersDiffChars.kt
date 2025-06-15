@@ -16,17 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.sections.MyersDiffState.SampleAlgorithm
+import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.dcnyc25.template.TextSurface
 import dev.bnorm.dcnyc25.template.Vertical
 import dev.bnorm.dcnyc25.template.code1
-import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.toState
 
@@ -64,19 +62,7 @@ enum class MyersDiffState(
     ),
 }
 
-fun StoryboardBuilder.MyersDiffChars() {
-    val sampleStart = """
-        fun main() {
-          println("Hello, KotlinConf!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
-    val sampleEnd = """
-        fun main() {
-          println("Hello, droidcon!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
+fun StoryboardBuilder.MyersDiffChars(sampleStart: AnnotatedString, sampleEnd: AnnotatedString) {
     scene(
         states = MyersDiffState.entries.toList(),
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
@@ -113,7 +99,7 @@ private fun MyersDiffCharsExample(
     fun Before(modifier: Modifier = Modifier) {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text("Before", style = MaterialTheme.typography.h2)
+                OutlinedText("Before", style = MaterialTheme.typography.h2)
             }
             TextSurface {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
@@ -132,7 +118,7 @@ private fun MyersDiffCharsExample(
     fun After(modifier: Modifier = Modifier) {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text("After", style = MaterialTheme.typography.h2)
+                OutlinedText("After", style = MaterialTheme.typography.h2)
             }
             TextSurface {
                 Text(
