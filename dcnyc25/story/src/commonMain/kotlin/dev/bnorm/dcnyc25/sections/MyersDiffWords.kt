@@ -10,7 +10,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,10 +25,7 @@ import dev.bnorm.dcnyc25.old.magic.MagicTextDiff
 import dev.bnorm.dcnyc25.old.magic.MagicTextMyers
 import dev.bnorm.dcnyc25.old.magic.diff
 import dev.bnorm.dcnyc25.sections.MyersDiffWordsState.*
-import dev.bnorm.dcnyc25.template.OutlinedText
-import dev.bnorm.dcnyc25.template.TextSurface
-import dev.bnorm.dcnyc25.template.Vertical
-import dev.bnorm.dcnyc25.template.code1
+import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -124,7 +120,7 @@ private enum class MyersDiffWordsState(
     ),
 }
 
-fun StoryboardBuilder.MyersDiffWords(sampleStart: AnnotatedString, sampleEnd: AnnotatedString, sampleEndNew: AnnotatedString) {
+fun StoryboardBuilder.MyersDiffWords(before: AnnotatedString, after: AnnotatedString, problem: AnnotatedString) {
     scene(
         states = MyersDiffWordsState.entries.toList(),
         enterTransition = enter(
@@ -141,18 +137,18 @@ fun StoryboardBuilder.MyersDiffWords(sampleStart: AnnotatedString, sampleEnd: An
         Row {
             Vertical(MaterialTheme.colors.primary) {
                 MyersDiffInfo(
-                    updateTransition(true),
+                    updateTransition(targetState = true),
                     state.createChildTransition { it.infoProgress },
                     Modifier.sharedElement(rememberSharedContentState("myers-diff"))
                 )
             }
 
             Sample(
-                state,
-                sampleStart,
-                sampleEnd,
-                sampleEndNew,
-                Modifier.sharedElement(rememberSharedContentState("diff-example"))
+                state = state,
+                before = before,
+                after = after,
+                problem = problem,
+                modifier = Modifier.sharedElement(rememberSharedContentState("diff-example"))
             )
         }
     }
@@ -161,60 +157,53 @@ fun StoryboardBuilder.MyersDiffWords(sampleStart: AnnotatedString, sampleEnd: An
 @Composable
 private fun Sample(
     state: Transition<MyersDiffWordsState>,
-    sampleStart: AnnotatedString,
-    sampleEnd: AnnotatedString,
-    sampleNew: AnnotatedString,
+    before: AnnotatedString,
+    after: AnnotatedString,
+    problem: AnnotatedString,
     modifier: Modifier = Modifier,
 ) {
     val measurer = rememberTextMeasurer()
 
-    val style = MaterialTheme.typography.code1
-    val measuredSampleStart = remember(sampleStart) { measurer.measure(sampleStart, style) }
-    val measuredSampleEnd = remember(sampleEnd) { measurer.measure(sampleEnd, style) }
-    val measuredSampleNew = remember(sampleNew) { measurer.measure(sampleNew, style) }
+    val codeStyle = MaterialTheme.typography.code1
+    val measuredBefore = remember(before, codeStyle) { measurer.measure(before, codeStyle) }
+    val measuredAfter = remember(after, codeStyle) { measurer.measure(after, codeStyle) }
 
-    // TODO instead of always adding the drawBehind, could this be an AnimateVisibility with a Box?
+    val charDiff = remember(before, after) { diff(before.toChars(), after.toChars()) }
+    val wordDiff = remember(before, after) { diff(before.toWords(), after.toWords()) }
+    val problemDiff = remember(after, problem) { diff(after.toWords(), problem.toWords()) }
 
-    val charDiff = remember(sampleStart, sampleEnd) { diff(sampleStart.toChars(), sampleEnd.toChars()) }
-    val charMatchColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showCharColor) Color.Blue.copy(alpha = 0.5f)
-        else Color.Blue.copy(alpha = 0f)
-    }
-    val charAddColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showCharColor) Color.Green.copy(alpha = 0.5f)
-        else Color.Green.copy(alpha = 0f)
-    }
-    val charDeleteColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showCharColor) Color.Red.copy(alpha = 0.5f)
-        else Color.Red.copy(alpha = 0f)
-    }
-
-    val wordDiff = remember(sampleStart, sampleEnd) { diff(sampleStart.toWords(), sampleEnd.toWords()) }
-    val wordMatchColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showWordColor) Color.Blue.copy(alpha = 0.5f)
-        else Color.Blue.copy(alpha = 0f)
-    }
-    val wordAddColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showWordColor) Color.Green.copy(alpha = 0.5f)
-        else Color.Green.copy(alpha = 0f)
-    }
-    val wordDeleteColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showWordColor) Color.Red.copy(alpha = 0.5f)
-        else Color.Red.copy(alpha = 0f)
+    @Composable
+    fun BoxScope.BeforeHighlighting(
+        visible: (MyersDiffWordsState) -> Boolean,
+        diffs: List<MagicTextDiff>,
+        measured: TextLayoutResult,
+        modifier: Modifier = Modifier,
+    ) {
+        state.AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(tween(750)),
+            exit = fadeOut(tween(750)),
+            modifier = modifier.matchParentSize()
+        ) {
+            Box(Modifier.beforeHighlighting(diffs, DeleteColor, MatchColor, measured))
+        }
     }
 
-    val newDiff = remember(sampleEnd, sampleNew) { diff(sampleEnd.toWords(), sampleNew.toWords()) }
-    val newMatchColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showNewColor) Color.Blue.copy(alpha = 0.5f)
-        else Color.Blue.copy(alpha = 0f)
-    }
-    val newAddColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showNewColor) Color.Green.copy(alpha = 0.5f)
-        else Color.Green.copy(alpha = 0f)
-    }
-    val newDeleteColor by state.animateColor(transitionSpec = { tween(750) }) {
-        if (it.showNewColor) Color.Red.copy(alpha = 0.5f)
-        else Color.Red.copy(alpha = 0f)
+    @Composable
+    fun BoxScope.AfterHighlighting(
+        visible: (MyersDiffWordsState) -> Boolean,
+        diffs: List<MagicTextDiff>,
+        measured: List<TextLayoutResult?>,
+        modifier: Modifier = Modifier,
+    ) {
+        state.AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(tween(750)),
+            exit = fadeOut(tween(750)),
+            modifier = modifier.matchParentSize()
+        ) {
+            Box(Modifier.afterHighlighting(diffs, AddColor, MatchColor, measured))
+        }
     }
 
     @Composable
@@ -224,21 +213,21 @@ private fun Sample(
                 OutlinedText("Before", style = MaterialTheme.typography.h2)
             }
             TextSurface {
-                ProvideTextStyle(style) {
-                    MagicTextMyers(
-                        transition = state.createChildTransition {
-                            when {
-                                it.ordinal == AnimationFail.ordinal -> sampleNew.toWords()
-                                it.ordinal >= AnimateSample.ordinal -> sampleEnd.toWords()
-                                else -> sampleStart.toWords()
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .beforeCharHighlighting(charDiff, charDeleteColor, charMatchColor, measuredSampleStart)
-                            .beforeCharHighlighting(wordDiff, wordDeleteColor, wordMatchColor, measuredSampleStart)
-                            .beforeCharHighlighting(newDiff, newDeleteColor, newMatchColor, measuredSampleEnd),
-                    )
+                ProvideTextStyle(codeStyle) {
+                    Box(Modifier.padding(16.dp)) {
+                        BeforeHighlighting(visible = { it.showCharColor }, charDiff, measuredBefore)
+                        BeforeHighlighting(visible = { it.showWordColor }, wordDiff, measuredBefore)
+                        BeforeHighlighting(visible = { it.showNewColor }, problemDiff, measuredAfter)
+                        MagicTextMyers(
+                            transition = state.createChildTransition {
+                                when {
+                                    it.ordinal == AnimationFail.ordinal -> problem.toWords()
+                                    it.ordinal >= AnimateSample.ordinal -> after.toWords()
+                                    else -> before.toWords()
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -246,37 +235,45 @@ private fun Sample(
 
     @Composable
     fun After(modifier: Modifier = Modifier) {
+        // TODO something better than mutable list...
+        val measuredText = remember { mutableListOf<TextLayoutResult?>(null) }
+
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 OutlinedText("After", style = MaterialTheme.typography.h2)
             }
             TextSurface {
-                Text(
-                    text = sampleEnd,
-                    style = style,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .afterCharHighlighting(charDiff, charAddColor, charMatchColor, measuredSampleEnd)
-                        .afterCharHighlighting(wordDiff, wordAddColor, wordMatchColor, measuredSampleEnd),
-                )
+                Box(Modifier.padding(16.dp)) {
+                    AfterHighlighting(visible = { it.showCharColor }, charDiff, measuredText)
+                    AfterHighlighting(visible = { it.showWordColor }, wordDiff, measuredText)
+                    Text(
+                        text = after,
+                        style = codeStyle,
+                        onTextLayout = { measured -> measuredText[0] = measured },
+                    )
+                }
             }
         }
     }
 
     @Composable
-    fun NewAfter(modifier: Modifier = Modifier) {
+    fun Problem(modifier: Modifier = Modifier) {
+        // TODO something better than mutable list...
+        val measuredText = remember { mutableListOf<TextLayoutResult?>(null) }
+
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text("After", style = MaterialTheme.typography.h2)
             }
             TextSurface {
-                Text(
-                    text = sampleNew,
-                    style = style,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .afterCharHighlighting(newDiff, newAddColor, newMatchColor, measuredSampleNew),
-                )
+                Box(Modifier.padding(16.dp)) {
+                    AfterHighlighting(visible = { it.showNewColor }, problemDiff, measuredText)
+                    Text(
+                        text = problem,
+                        style = codeStyle,
+                        onTextLayout = { measured -> measuredText[0] = measured },
+                    )
+                }
             }
         }
     }
@@ -295,7 +292,7 @@ private fun Sample(
                 }
             ) {
                 if (it) {
-                    NewAfter(Modifier.padding(horizontal = 16.dp))
+                    Problem(Modifier.padding(horizontal = 16.dp))
                 } else {
                     After(Modifier.padding(horizontal = 16.dp))
                 }
@@ -304,20 +301,22 @@ private fun Sample(
     }
 }
 
-private fun Modifier.afterCharHighlighting(
+private fun Modifier.afterHighlighting(
     charDiff: List<MagicTextDiff>,
     addColor: Color,
     matchColor: Color,
-    measuredSampleEnd: TextLayoutResult,
+    measuredSampleEnd: List<TextLayoutResult?>,
 ): Modifier = drawBehind {
+    val measured = measuredSampleEnd[0]!!
+
     var index = 0
     for (diff in charDiff) {
         val length = diff.after.length
         if (length == 0) continue
 
         val color = if (diff.before.text != diff.after.text) addColor else matchColor
-        val box = measuredSampleEnd.getBoundingBox(index, index + length - 1)
-        this.drawRoundRect(
+        val box = measured.getBoundingBox(index, index + length - 1)
+        drawRoundRect(
             color = color,
             topLeft = box.topLeft,
             size = box.size,
@@ -327,7 +326,7 @@ private fun Modifier.afterCharHighlighting(
     }
 }
 
-private fun Modifier.beforeCharHighlighting(
+private fun Modifier.beforeHighlighting(
     charDiff: List<MagicTextDiff>,
     deleteColor: Color,
     matchColor: Color,

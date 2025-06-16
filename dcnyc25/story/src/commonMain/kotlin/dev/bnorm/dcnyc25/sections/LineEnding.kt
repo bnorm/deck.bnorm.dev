@@ -1,7 +1,10 @@
 package dev.bnorm.dcnyc25.sections
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateRect
+import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -84,31 +87,21 @@ private enum class LineEndingState(
         showInfo = true,
         infoProgress = 4,
     ),
-    Algorithm5(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 5,
-    ),
     SampleAlgorithm(
         showHighlight = false,
         showInfo = true,
-        infoProgress = 5,
+        infoProgress = 4,
     ),
     RevertAlgorithm(
         showHighlight = false,
         showInfo = true,
-        infoProgress = 5,
-    ),
-    Algorithm6(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 6,
+        infoProgress = 4,
     ),
 }
 
-fun StoryboardBuilder.LineEnding(sampleStart: AnnotatedString, sampleEnd: AnnotatedString) {
+fun StoryboardBuilder.LineEnding(before: AnnotatedString, after: AnnotatedString) {
     scene(
-        states = LineEndingState.entries.subList(fromIndex = 0, toIndex = LineEndingState.entries.size - 1),
+        states = LineEndingState.entries,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnter(alignment = Alignment.BottomCenter),
@@ -130,93 +123,87 @@ fun StoryboardBuilder.LineEnding(sampleStart: AnnotatedString, sampleEnd: Annota
 
         Row(Modifier.horizontalScroll(scrollState, enabled = false)) {
             Vertical(MaterialTheme.colors.primary) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        OutlinedText("Line Ending", style = MaterialTheme.typography.h2)
-                    }
-                    TextSurface {
-                        @Composable
-                        fun Bullet(step: Int, text: String) {
-                            state.AnimatedVisibility(
-                                visible = { it.infoProgress >= step },
-                                enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
-                            ) {
-                                Text("• $text")
-                            }
-                        }
-
-                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Bullet(step = 1, text = "Find the common prefix of each line.")
-                            Bullet(
-                                step = 2,
-                                text = "Create a sequence removing all non-prefix characters - one at a time - from the last line to the first."
-                            )
-                            Bullet(
-                                step = 3,
-                                text = "Continue the sequence adding non-prefix characters from the first line to the last."
-                            )
-                            Bullet(
-                                step = 4,
-                                text = "Use 'animateIntAsState' or similar to iterate through the sequence."
-                            )
-                            Bullet(step = 5, text = "Combine with 'LinearEasing' to get a cursor like animation!")
-                            Bullet(step = 6, text = "TODO: animate an actual cursor.")
-                        }
-                    }
-                }
+                LineEndingInfo(state)
             }
 
-            SampleDiff(
+            LineEndingSample(
                 state,
-                modifier = Modifier.sharedElement(rememberSharedContentState("diff-example"),),
-                sampleStart,
-                sampleEnd,
+                before,
+                after,
+                modifier = Modifier.sharedElement(rememberSharedContentState("diff-example")),
             )
         }
     }
 }
 
 @Composable
-private fun SampleDiff(
+private fun LineEndingInfo(state: Transition<LineEndingState>) {
+    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            OutlinedText("Line Ending", style = MaterialTheme.typography.h2)
+        }
+        TextSurface {
+            @Composable
+            fun Bullet(step: Int, text: String) {
+                state.AnimatedVisibility(
+                    visible = { it.infoProgress >= step },
+                    enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
+                ) {
+                    Text("• $text")
+                }
+            }
+
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(BulletSpacing)) {
+                Bullet(step = 1, text = "Find the common prefix of each line.")
+                Bullet(step = 2, text = "Create a sequence of removing characters from the last line to the first.")
+                Bullet(step = 3, text = "Continue the sequence by adding characters from the first line to the last.")
+                Bullet(step = 4, text = "Use 'animateIntAsState' with 'LinearEasing' to iterate through the sequence.")
+            }
+        }
+    }
+}
+
+@Composable
+private fun LineEndingSample(
     state: Transition<LineEndingState>,
+    before: AnnotatedString,
+    after: AnnotatedString,
     modifier: Modifier = Modifier,
-    sampleStart: AnnotatedString,
-    sampleEnd: AnnotatedString,
 ) {
     val measurer = rememberTextMeasurer()
     val sampleStyle = MaterialTheme.typography.code1
 
-    val startHighlight = remember {
+    val beforeHighlight = remember(sampleStyle) {
         val sub = "KotlinConf"
-        val index = sampleStart.text.indexOf(sub)
-        measurer.measure(sampleStart.text, style = sampleStyle)
+        val index = before.text.indexOf(sub)
+        measurer.measure(before.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
-    val startLineHighlight = remember {
+    val beforeLineHighlight = remember(sampleStyle) {
         val sub = "KotlinConf!\")"
-        val index = sampleStart.text.indexOf(sub)
-        measurer.measure(sampleStart.text, style = sampleStyle)
+        val index = before.text.indexOf(sub)
+        measurer.measure(before.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
-    val endHighlight = remember {
+    val afterHighlight = remember(sampleStyle) {
         val sub = "droidcon"
-        val index = sampleEnd.text.indexOf(sub)
-        measurer.measure(sampleEnd.text, style = sampleStyle)
+        val index = after.text.indexOf(sub)
+        measurer.measure(after.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
-    val endLineHighlight = remember {
+    val afterLineHighlight = remember(sampleStyle) {
         val sub = "droidcon!\")"
-        val index = sampleEnd.text.indexOf(sub)
-        measurer.measure(sampleEnd.text, style = sampleStyle)
+        val index = after.text.indexOf(sub)
+        measurer.measure(after.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
     val sampleAnimation = remember {
-        startAnimation(sampleStart)
-            .thenLineEndDiff(sampleEnd)
+        startAnimation(before)
+            .thenLineEndDiff(after)
             .toList()
     }
 
@@ -238,10 +225,10 @@ private fun SampleDiff(
                         }
                         TextSurface {
                             val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it.showHighlight) Color.Red.copy(alpha = 0.5f) else Color.Red.copy(alpha = 0f)
+                                if (it.showHighlight) DeleteColor.copy(alpha = 0.5f) else DeleteColor.copy(alpha = 0f)
                             }
                             val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it >= HighlightLineEndDiff) startLineHighlight else startHighlight
+                                if (it >= HighlightLineEndDiff) beforeLineHighlight else beforeHighlight
                             }
                             Text(
                                 text = sampleText,
@@ -262,13 +249,13 @@ private fun SampleDiff(
                         }
                         TextSurface {
                             val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it.showHighlight) Color.Green.copy(alpha = 0.5f) else Color.Green.copy(alpha = 0f)
+                                if (it.showHighlight) AddColor else AddColor.copy(alpha = 0f)
                             }
                             val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it >= HighlightLineEndDiff) endLineHighlight else endHighlight
+                                if (it >= HighlightLineEndDiff) afterLineHighlight else afterHighlight
                             }
                             Text(
-                                text = sampleEnd,
+                                text = after,
                                 style = sampleStyle,
                                 modifier = Modifier
                                     .padding(16.dp)

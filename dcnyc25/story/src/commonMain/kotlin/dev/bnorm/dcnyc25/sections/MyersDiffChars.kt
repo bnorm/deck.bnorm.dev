@@ -1,8 +1,6 @@
 package dev.bnorm.dcnyc25.sections
 
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.BoundsTransform
-import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.*
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
@@ -16,10 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.sections.MyersDiffState.SampleAlgorithm
-import dev.bnorm.dcnyc25.template.OutlinedText
-import dev.bnorm.dcnyc25.template.TextSurface
-import dev.bnorm.dcnyc25.template.Vertical
-import dev.bnorm.dcnyc25.template.code1
+import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -62,7 +57,7 @@ enum class MyersDiffState(
     ),
 }
 
-fun StoryboardBuilder.MyersDiffChars(sampleStart: AnnotatedString, sampleEnd: AnnotatedString) {
+fun StoryboardBuilder.MyersDiffChars(before: AnnotatedString, after: AnnotatedString) {
     scene(
         states = MyersDiffState.entries.toList(),
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
@@ -73,14 +68,16 @@ fun StoryboardBuilder.MyersDiffChars(sampleStart: AnnotatedString, sampleEnd: An
         Row {
             Vertical(MaterialTheme.colors.primary) {
                 MyersDiffInfo(
-                    state.createChildTransition { it.showName },
-                    state.createChildTransition { it.infoProgress },
+                    title = state.createChildTransition { it.showName },
+                    progress = state.createChildTransition { it.infoProgress },
                     modifier = Modifier.sharedElement(rememberSharedContentState("myers-diff")),
                 )
             }
 
             MyersDiffCharsExample(
-                state, sampleEnd, sampleStart,
+                showAfter = state.createChildTransition { it == SampleAlgorithm },
+                before = before,
+                after = after,
                 modifier = Modifier.sharedElement(rememberSharedContentState("diff-example")),
             )
         }
@@ -88,11 +85,53 @@ fun StoryboardBuilder.MyersDiffChars(sampleStart: AnnotatedString, sampleEnd: An
 }
 
 @Composable
+fun MyersDiffInfo(title: Transition<Boolean>, progress: Transition<Int>, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Row {
+                title.AnimatedVisibility(
+                    visible = { it },
+                    enter = fadeIn(tween(750)) +
+                            expandHorizontally(tween(750), clip = false, expandFrom = Alignment.End),
+                    exit = fadeOut(tween(750)) +
+                            shrinkHorizontally(tween(750), clip = false, shrinkTowards = Alignment.End),
+                ) {
+                    OutlinedText("Myers ", style = MaterialTheme.typography.h2)
+                }
+                OutlinedText("Diff", style = MaterialTheme.typography.h2)
+            }
+        }
+        TextSurface {
+            @Composable
+            fun Bullet(step: Int, text: String) {
+                progress.AnimatedVisibility(
+                    visible = { it >= step },
+                    enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
+                ) {
+                    Text("• $text")
+                }
+            }
+
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(BulletSpacing)) {
+                Bullet(step = 1, text = "Most common algorithm published in 1986 by Eugene Myers.")
+                Bullet(step = 2, text = "Computes the shortest edit script for transforming one string into another.")
+                Bullet(step = 3, text = "Each edit will get a unique key used by shared element 'Modifier'.")
+                Bullet(step = 4, text = "Transform edit script into a column of rows of 'Text' Composables.")
+                Bullet(step = 5, text = "Instead of characters, use 'words' to break up code into elements.")
+            }
+        }
+    }
+}
+
+@Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 private fun MyersDiffCharsExample(
-    state: Transition<MyersDiffState>,
-    sampleEnd: AnnotatedString,
-    sampleStart: AnnotatedString,
+    showAfter: Transition<Boolean>,
+    before: AnnotatedString,
+    after: AnnotatedString,
     modifier: Modifier = Modifier,
 ) {
     @Composable
@@ -104,8 +143,8 @@ private fun MyersDiffCharsExample(
             TextSurface {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     MagicText(
-                        transition = state.createChildTransition {
-                            if (it == SampleAlgorithm) sampleEnd.toChars() else sampleStart.toChars()
+                        transition = showAfter.createChildTransition {
+                            if (it) after.toChars() else before.toChars()
                         },
                         modifier = Modifier.padding(16.dp),
                     )
@@ -122,7 +161,7 @@ private fun MyersDiffCharsExample(
             }
             TextSurface {
                 Text(
-                    text = sampleEnd,
+                    text = after,
                     style = MaterialTheme.typography.code1,
                     modifier = Modifier.padding(16.dp),
                 )

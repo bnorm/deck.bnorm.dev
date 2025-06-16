@@ -15,12 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -29,10 +27,7 @@ import dev.bnorm.dcnyc25.broadcast.VoteMessage
 import dev.bnorm.dcnyc25.broadcast.VoteMessage.MultiVoteMessage
 import dev.bnorm.dcnyc25.broadcast.VoteTally
 import dev.bnorm.dcnyc25.broadcast.votes
-import dev.bnorm.dcnyc25.template.OutlinedText
-import dev.bnorm.dcnyc25.template.SceneHalfHeight
-import dev.bnorm.dcnyc25.template.SceneHeight
-import dev.bnorm.dcnyc25.template.SceneWidth
+import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.github_review
 import dev.bnorm.deck.story.generated.resources.intellij
@@ -116,7 +111,6 @@ fun StoryboardBuilder.Opening() {
                             visible = { it.toState() >= 4 },
                             enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
                         ) {
-                            // TODO backgrounds
                             KeynotePanel {
                                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                     Text("Slides", style = MaterialTheme.typography.h2)
@@ -129,17 +123,10 @@ fun StoryboardBuilder.Opening() {
         }
     }
 
-    // fade each to talk about pros and cons:
-    // - context : familiar code for editor and review / unfamiliar for presentations
-    // - format : can adjust code style for editor and review / no choice for presentations
-    // - flow : have time to review for editor and review / no time to review for presentations
-
-    // TODO use MagicText to change header instead of carousel?
-    // TODO add a summary for each question to each panel
     Question(
         buildAnnotatedString {
             append("What has the most ")
-            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+            withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
                 append("context")
             }
             append("?")
@@ -150,7 +137,7 @@ fun StoryboardBuilder.Opening() {
     Question(
         buildAnnotatedString {
             append("What has good ")
-            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+            withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
                 append("styling")
             }
             append("?")
@@ -161,7 +148,7 @@ fun StoryboardBuilder.Opening() {
     Question(
         question = buildAnnotatedString {
             append("What has sufficient ")
-            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+            withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
                 append("time")
             }
             append("?")
@@ -176,15 +163,6 @@ fun StoryboardBuilder.Opening() {
             end = SceneExit(alignment = Alignment.BottomCenter),
         ),
     )
-
-    // DIALOGUE
-    //
-    // Presentations are hard
-    // because they need to show code
-    // and often how it changes.
-    //
-    // This is why I started coding my presentations,
-    // to try and solve these exact problems.
 
     scene(
         stateCount = 4,
@@ -206,22 +184,22 @@ fun StoryboardBuilder.Opening() {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val title = buildAnnotatedString {
                         append("Presenting code is ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("hard") }
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("hard") }
                         append("!")
                     }
                     val familiar = buildAnnotatedString {
                         append("Code needs to be ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("familiar") }
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("familiar") }
                         append(".")
                     }
                     val pretty = buildAnnotatedString {
                         append("Code needs to be ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("pretty") }
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("pretty") }
                         append(".")
                     }
                     val read = buildAnnotatedString {
                         append("Code needs to be ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("read") }
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("read") }
                         append(".")
                     }
 
@@ -254,7 +232,7 @@ fun StoryboardBuilder.Opening() {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val storyboard = buildAnnotatedString {
-                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("Storyboard") }
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Storyboard") }
                         append("!")
                     }
 
@@ -290,7 +268,7 @@ private fun SceneScope<*>.HowManyCode(questionHeight: Dp, yesPercent: Float? = n
     ) {
         VoteRow(transition.createChildTransition { it is Frame.State }, yesPercent)
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            OutlinedText("How many of you look at code?", style = MaterialTheme.typography.h2)
+            OutlinedText("How many of you read code?", style = MaterialTheme.typography.h2)
         }
     }
 }
@@ -333,7 +311,6 @@ private fun StoryboardBuilder.Question(
                     .height(SceneHeight * 0.75f)
                     .sharedElement(rememberSharedContentState("opening-panels"))
             ) {
-                // TODO backgrounds
                 Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxSize()) {
                     val padding = 16.dp
                     val eachWidth = (SceneWidth - padding * 4f) / 3f
@@ -409,9 +386,6 @@ private fun KeynotePanel(content: @Composable () -> Unit) {
         content()
     }
 }
-
-private val YesColor = Color.White
-private val NoColor = Color.Black
 
 @Composable
 private fun VoteRow(visible: Transition<Boolean>, percent: Float?) {

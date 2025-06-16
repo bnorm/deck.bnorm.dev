@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.times
 import dev.bnorm.dcnyc25.algo.SearchCallbacks
 import dev.bnorm.dcnyc25.algo.SearchPath
 import dev.bnorm.dcnyc25.algo.myers
+import dev.bnorm.dcnyc25.template.AddColor
 import dev.bnorm.dcnyc25.template.COLORS
+import dev.bnorm.dcnyc25.template.DeleteColor
 import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.dcnyc25.template.SceneHalfWidth
 import dev.bnorm.dcnyc25.template.TextSurface
@@ -163,9 +165,9 @@ private fun EditGraph(
 
         val searchIndex by transition.animateInt(transitionSpec = {
             if (!initialState.search && targetState.search) {
-                tween(durationMillis = 250 * paths.size, easing = LinearEasing)
+                tween(durationMillis = 8_000, easing = LinearEasing)
             } else {
-                tween(durationMillis = 0)
+                snap()
             }
         }) {
             if (it.search) paths.size else 0
@@ -314,58 +316,16 @@ fun textDiff(path: SearchPath, index: Int, insert: List<Char>, delete: List<Char
                 append(insert[next.y - 1])
             } else if (last.x + 1 == next.x) {
                 // Right
-                withStyle(SpanStyle(background = Color.Red.copy(alpha = 0.5f))) {
+                withStyle(SpanStyle(background = DeleteColor)) {
                     append(delete[next.x - 1])
                 }
             } else {
                 // Down
-                withStyle(SpanStyle(background = Color.Green.copy(alpha = 0.5f))) {
+                withStyle(SpanStyle(background = AddColor)) {
                     append(insert[next.y - 1])
                 }
             }
             last = next
-        }
-    }
-}
-
-@Composable
-fun MyersDiffInfo(title: Transition<Boolean>, progress: Transition<Int>, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Row {
-                title.AnimatedVisibility(
-                    visible = { it },
-                    enter = fadeIn(tween(750)) +
-                            expandHorizontally(tween(750), clip = false, expandFrom = Alignment.End),
-                    exit = fadeOut(tween(750)) +
-                            shrinkHorizontally(tween(750), clip = false, shrinkTowards = Alignment.End),
-                ) {
-                    OutlinedText("Myers ", style = MaterialTheme.typography.h2)
-                }
-                OutlinedText("Diff", style = MaterialTheme.typography.h2)
-            }
-        }
-        TextSurface {
-            @Composable
-            fun Bullet(step: Int, text: String) {
-                progress.AnimatedVisibility(
-                    visible = { it >= step },
-                    enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
-                ) {
-                    Text("• $text")
-                }
-            }
-
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Bullet(step = 1, text = "Most common algorithm published in 1986 by Eugene Myers.")
-                Bullet(step = 2, text = "Compute the shortest edit script for transforming one string into another.")
-                Bullet(step = 3, text = "Each edit will get a unique key used by shared element 'Modifier'.")
-                Bullet(step = 4, text = "Transform edit script into a column of rows of 'Text' Composables.")
-                Bullet(step = 5, text = "Instead of characters, use 'words' to break up code into elements.")
-            }
         }
     }
 }

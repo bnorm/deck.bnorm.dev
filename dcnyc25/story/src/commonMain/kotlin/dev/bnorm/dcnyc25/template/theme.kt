@@ -9,6 +9,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.dcnyc25.broadcast.LocalVoteTally
 import dev.bnorm.dcnyc25.broadcast.VoteTally
@@ -36,45 +37,39 @@ val COLORS = lightColors(
     onSecondary = Color(0xFFF8F8F8),
 )
 
+val YesColor = Color.White
+val NoColor = Color.Black
+
+val MatchColor = Color.Blue.copy(alpha = 0.5f)
+val AddColor = Color.Green.copy(alpha = 0.5f)
+val DeleteColor = Color.Red.copy(alpha = 0.5f)
+
 val Typography.code1: TextStyle
     @Composable
     get() = TextStyle(
         fontFamily = JetBrainsMono,
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
+        lineHeight = 24.sp,
     )
 
-val Typography.code2: TextStyle
-    @Composable
-    get() = TextStyle(
-        fontFamily = JetBrainsMono,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-    )
-
-val Typography.code3: TextStyle
-    @Composable
-    get() = TextStyle(
-        fontFamily = JetBrainsMono,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-    )
-
+val EmphasisWeight = FontWeight.ExtraBold
+val BulletSpacing = 16.dp
 
 @Composable
 private fun dcnyc25Typography(): Typography {
     val typography = Typography(defaultFontFamily = Inter)
     return typography.copy(
-        h1 = typography.h1.copy(fontWeight = FontWeight.ExtraLight),
-        h2 = typography.h2.copy(fontWeight = FontWeight.ExtraLight),
-        h3 = typography.h3.copy(fontWeight = FontWeight.ExtraLight),
-        h4 = typography.h4.copy(fontWeight = FontWeight.ExtraLight),
-        h5 = typography.h5.copy(fontWeight = FontWeight.ExtraLight),
-        h6 = typography.h6.copy(fontWeight = FontWeight.ExtraLight),
+        h1 = typography.h1.copy(fontWeight = FontWeight.Light),
+        h2 = typography.h2.copy(fontWeight = FontWeight.Light),
+        h3 = typography.h3.copy(fontWeight = FontWeight.Light),
+        h4 = typography.h4.copy(fontWeight = FontWeight.Light),
+        h5 = typography.h5.copy(fontWeight = FontWeight.Light),
+        h6 = typography.h6.copy(fontWeight = FontWeight.Light),
         body1 = typography.body1.copy(
-            fontWeight = FontWeight.ExtraLight,
-            fontSize = 24.sp,
-            lineHeight = 24.sp,
+            fontWeight = FontWeight.Light,
+            fontSize = 22.sp,
+            lineHeight = 26.sp,
             letterSpacing = 0.sp
         ),
     )

@@ -78,20 +78,47 @@ fun createStoryboard(
     // TODO show code for each algorithm?
     Title()
 
+    // TODO add QR code for companion app voting somewhere in title
+    //  - add it to the bottom right corner again?
+
+    // fade each to talk about pros and cons:
+    // - context : familiar code for editor and review / unfamiliar for presentations
+    // - format : can adjust code style for editor and review / no choice for presentations
+    // - flow : have time to review for editor and review / no time to review for presentations
+
+    // TODO use MagicText to change header instead of carousel?
+
+    // TODO need an actual explanation of Storyboard when first introduced
     Opening()
 
     // TODO highlight common prefix of each line during algorithm explanation
     // TODO make highlighting truly dynamic based on sample
+    // TODO use mono font for function names
     LineEnding(first, second)
 
+    // TODO joke about myers-briggs?
+    //  daughter: Isabel Briggs Myers
+    //  mother: Katharine Cook Briggs
     MyersDiffChars(first, second)
 
     // TODO use keyframes to compress navigation to single advancement
+    // TODO actually implement the algorithm to get the true search path visualization
     EditGraph(start = "KotlinConf", end = "droidcon")
 
     MyersDiffWords(first, second, third)
 
+    // TODO talk about Hunt-Szymanski algorithm (LCS) first?
+    //  - https://www.raygard.net/2025/01/28/how-histogram-diff-works/
+    //  - or jump straight to patience sorting: https://en.wikipedia.org/wiki/Patience_sorting#Algorithm_for_finding_a_longest_increasing_subsequence
+
     Patience(second, third)
+
+    Idea(second, third)
+
+    // TODO return to Patience and explain LCS
+    // TODO idea: expand LCS elements first before other elements
+    // TODO maybe better idea: use patience but always perform step 3 globally?
+    //  - https://bramcohen.livejournal.com/73318.html
 
     // TODO add some show-off slides
     //  - power-assert example from compiler plugin talk

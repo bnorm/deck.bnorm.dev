@@ -11,13 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import dev.bnorm.dcnyc25.template.Horizontal
-import dev.bnorm.dcnyc25.template.OutlinedText
-import dev.bnorm.dcnyc25.template.Pane
-import dev.bnorm.dcnyc25.template.Panes
+import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.deck.shared.socials.Bluesky
 import dev.bnorm.deck.shared.socials.JetBrainsEmployee
 import dev.bnorm.deck.shared.socials.Mastodon
@@ -39,8 +35,6 @@ fun StoryboardBuilder.Title() {
             TitleHeader()
         },
 
-        // TODO add QR code for companion app voting somewhere in title
-        //  - add it to the bottom right corner again?
         Pane.Horizontal(
             Pane.Quarter {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
@@ -50,13 +44,11 @@ fun StoryboardBuilder.Title() {
                     ) {
                         OutlinedText(
                             text = buildAnnotatedString {
-                                withStyle(SpanStyle(fontWeight = FontWeight.ExtraLight)) {
-                                    append("re")
-                                    withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                        append("creating\nmagic")
-                                    }
-                                    append("move\nwith compose")
+                                append("re")
+                                withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
+                                    append("creating\nmagic")
                                 }
+                                append("move\nwith compose")
                             },
                             style = MaterialTheme.typography.h2,
                         )
