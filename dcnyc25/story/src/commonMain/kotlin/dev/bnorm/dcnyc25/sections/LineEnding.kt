@@ -111,10 +111,7 @@ fun StoryboardBuilder.LineEnding(before: AnnotatedString, after: AnnotatedString
             end = SceneExit(alignment = Alignment.BottomCenter),
         ),
     ) {
-
-        val state = transition.createChildTransition {
-            it.toState()
-        }
+        val state = transition.createChildTransition { it.toState() }
 
         val scrollState = rememberScrollState()
         state.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {

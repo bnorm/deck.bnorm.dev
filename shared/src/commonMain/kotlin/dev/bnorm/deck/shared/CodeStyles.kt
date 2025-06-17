@@ -17,7 +17,7 @@ val INTELLIJ_LIGHT = CodeStyle.build {
     staticProperty = property + SpanStyle(fontStyle = FontStyle.Italic)
     functionDeclaration = simple + SpanStyle(color = Color(0xFF00627A))
     extensionFunctionCall = simple + SpanStyle(color = Color(0xFF00627A), fontStyle = FontStyle.Italic)
-    staticFunctionCall = simple + SpanStyle(fontStyle = FontStyle.Italic)
+    staticFunctionCall = functionDeclaration + SpanStyle(fontStyle = FontStyle.Italic)
     typeParameters = simple + SpanStyle(color = Color(0xFF007E8A))
     namedArgument = simple + SpanStyle(color = Color(0xFF4A86E8))
     label = simple + SpanStyle(color = Color(0xFF4A86E8))

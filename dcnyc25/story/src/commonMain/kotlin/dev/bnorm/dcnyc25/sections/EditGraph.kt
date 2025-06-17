@@ -336,8 +336,8 @@ private fun <T> EditGraph(
     },
 ) {
     val textStyle = TextStyle(
-        fontSize = with(LocalDensity.current) { size.toSp() / 3 },
-        fontWeight = FontWeight.Bold,
+        fontSize = with(LocalDensity.current) { size.toSp() / 2.3 },
+        fontWeight = FontWeight.SemiBold,
     )
     ProvideTextStyle(textStyle) {
         Row(modifier) {

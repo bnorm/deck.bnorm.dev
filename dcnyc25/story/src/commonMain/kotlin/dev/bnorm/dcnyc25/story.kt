@@ -74,8 +74,9 @@ fun createStoryboard(
         }
     """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
 
-
     // TODO show code for each algorithm?
+    // TODO do i need to show some pseudo code for MagicMove?
+
     Title()
 
     // TODO add QR code for companion app voting somewhere in title
@@ -114,6 +115,9 @@ fun createStoryboard(
     PatienceStart(second, third)
 
     // TODO make dynamic?
+    // TODO i don't like that the stack goes LTR
+    // TODO should explain better why this demo is important to patience diff
+    //  - index unique elements from before, sort based on after, find longest increasing subsequence
     PatienceSort(
         cards = listOf(
             Card.Nine, Card.Four, Card.Six, Card.Queen,
@@ -126,6 +130,7 @@ fun createStoryboard(
     // TODO bold the unique elements part of the info
     PatienceEnd(second, third)
 
+    // TODO need to actually show matches and regions expanding
     Idea(second, third)
 
     // TODO idea: expand LCS elements first before other elements
@@ -136,6 +141,10 @@ fun createStoryboard(
     //  - power-assert example from compiler plugin talk
     //  - Compose example from compiler plugin talk
     //  - if samples are dynamic, redo the entire talk with different examples?!
+
+    Samples()
+
+    // TODO do i need to show some code examples of MagicMove use?
 
     // TODO talk about improvements to MagicText
     //  - make it generic (not text specific)

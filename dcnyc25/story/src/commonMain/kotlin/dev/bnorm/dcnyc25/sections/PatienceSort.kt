@@ -11,9 +11,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.boundsInParent
@@ -33,7 +36,9 @@ import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.toState
-import kotlinx.collections.immutable.*
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.imageResource
 
@@ -92,16 +97,12 @@ private class StackItem(
 )
 
 private data class SortState(
-    val zIndex: PersistentMap<Card, Float>,
     val queue: PersistentList<Card>,
     val stacks: PersistentList<PersistentList<StackItem>>,
     val solution: PersistentList<Card> = persistentListOf(),
 )
 
 private fun computeStates(elements: List<Card>): List<SortState> = sequence {
-    val queue = ArrayDeque(elements)
-    val count = elements.size
-
     fun SortState.addToStacks(card: Card): PersistentList<PersistentList<StackItem>> {
         val index = stacks.indexOfFirst { it.last().card > card }
         if (index == -1) {
@@ -113,23 +114,18 @@ private fun computeStates(elements: List<Card>): List<SortState> = sequence {
         }
     }
 
-    val zIndex = queue.mapIndexed { index, item ->
-        item to (count - index).toFloat()
-    }.toMap().toMutableMap()
-
-    var current = SortState(
-        zIndex = zIndex.toPersistentMap(),
-        queue = queue.toPersistentList(),
+    val first = SortState(
+        queue = elements.toPersistentList(),
         stacks = persistentListOf()
     )
+    var current = first
     yield(current)
 
+    val queue = ArrayDeque(elements)
     while (queue.isNotEmpty()) {
         val next = queue.removeFirst()
 
-        zIndex[next] = 2 * count - zIndex.getValue(next)
         current = SortState(
-            zIndex = zIndex.toPersistentMap(),
             queue = queue.toPersistentList(),
             stacks = current.addToStacks(next)
         )
@@ -140,6 +136,7 @@ private fun computeStates(elements: List<Card>): List<SortState> = sequence {
         .map { it.card }
         .toList().asReversed().toPersistentList()
     yield(current.copy(solution = solution))
+    yield(first.copy(solution = solution))
 }.toList()
 
 @Composable
@@ -152,20 +149,40 @@ private fun PatienceSort(transition: Transition<SortState>, modifier: Modifier =
 
     SharedTransitionLayout(modifier) {
         transition.AnimatedContent(transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }) { state ->
+            @Composable
+            fun CardImage(card: Card, modifier: Modifier = Modifier) {
+                val color by transition.animateColor(transitionSpec = { tween(750) }) {
+                    val color = MaterialTheme.colors.primary
+                    when {
+                        card in it.solution -> color
+                        else -> color.copy(alpha = 0f)
+                    }
+                }
+                val alpha by transition.animateColor(transitionSpec = { tween(750) }) {
+                    when {
+                        card !in it.solution && it.solution.isNotEmpty() -> Color.Gray.copy(alpha = 0.5f)
+                        else -> Color.White
+                    }
+                }
+
+                Image(
+                    imageResource(card.image),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(alpha, BlendMode.Darken),
+                    modifier = modifier
+                        .sharedElement(
+                            rememberSharedContentState(card),
+                            boundsTransform = { _, _ -> boundsSpec() },
+                        )
+                        .border(4.dp, color)
+                        .height(cardHeight)
+                )
+            }
+
             Column(verticalArrangement = Arrangement.spacedBy(48.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy((-32).dp), modifier = Modifier.height(cardHeight)) {
-                    for (card in state.queue.asReversed()) {
-                        Image(
-                            imageResource(card.image),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .sharedElement(
-                                    rememberSharedContentState(card),
-                                    zIndexInOverlay = state.zIndex.getValue(card),
-                                    boundsTransform = { _, _ -> boundsSpec() },
-                                )
-                                .height(cardHeight)
-                        )
+                    for (card in state.queue) {
+                        CardImage(card)
                     }
                 }
 
@@ -188,45 +205,16 @@ private fun PatienceSort(transition: Transition<SortState>, modifier: Modifier =
                                 }
                             ) {
                                 for (item in stack) {
-                                    key(item) {
-                                        val color by transition.animateColor(transitionSpec = { tween(750) }) {
-                                            val color = MaterialTheme.colors.primary
-                                            when {
-                                                item.card in it.solution -> color
-                                                else -> color.copy(alpha = 0f)
-                                            }
+                                    CardImage(item.card, Modifier.onPlaced {
+                                        try {
+                                            placements[item.card] = it.boundsInParent()
+                                                .translate(offsets.getValue(index))
+                                        } catch (_: IllegalStateException) {
+                                            // TODO there seems to be a possible internal error
+                                            //  which can be caused by navigating the overview quickly.
+                                            //  - just ignore it?
                                         }
-                                        val alpha by transition.animateFloat(transitionSpec = { tween(750) }) {
-                                            when {
-                                                item.card !in it.solution && it.solution.isNotEmpty() -> 0.75f
-                                                else -> 1f
-                                            }
-                                        }
-
-                                        Image(
-                                            imageResource(item.card.image),
-                                            alpha = alpha,
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .sharedElement(
-                                                    rememberSharedContentState(item.card),
-                                                    zIndexInOverlay = state.zIndex.getValue(item.card),
-                                                    boundsTransform = { _, _ -> boundsSpec() },
-                                                )
-                                                .border(4.dp, color, RoundedCornerShape(4.dp))
-                                                .onPlaced {
-                                                    try {
-                                                        placements[item.card] = it.boundsInParent()
-                                                            .translate(offsets.getValue(index))
-                                                    } catch (_: IllegalStateException) {
-                                                        // TODO there seems to be a possible internal error
-                                                        //  which can be caused by navigating the overview quickly.
-                                                        //  - just ignore it?
-                                                    }
-                                                }
-                                                .height(cardHeight)
-                                        )
-                                    }
+                                    })
                                 }
                             }
                         }
@@ -239,7 +227,7 @@ private fun PatienceSort(transition: Transition<SortState>, modifier: Modifier =
                                 val color by transition.animateColor(transitionSpec = { tween(750) }) {
                                     when {
                                         item.card in it.solution -> MaterialTheme.colors.primary
-                                        it.solution.isNotEmpty() -> Color.LightGray
+                                        it.solution.isNotEmpty() -> Color.Gray
                                         else -> Color.White
                                     }
                                 }
