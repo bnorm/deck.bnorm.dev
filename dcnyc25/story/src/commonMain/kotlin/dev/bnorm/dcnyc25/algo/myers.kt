@@ -36,7 +36,9 @@ fun <T> myers(
         val distance = (target - path.last()).let { abs(it.x) + abs(it.y) }
 
         override fun compareTo(other: SearchNode): Int {
-            return compareValues(cost, other.cost)
+            val c = compareValues(cost, other.cost)
+            if (c != 0) return c
+            return -compareValues(direction, other.direction) // Reverse order.
         }
 
         fun right(): SearchNode? {
@@ -87,32 +89,28 @@ fun <T> myers(
         callbacks.onHead(head.path)
         if (head.path.last() == target) return head.path
 
+        fun queueNode(node: SearchNode) {
+            val last = node.path.last()
+            val old = best[last]
+            if (old == null || node < old) {
+                best[last] = node
+                queue.add(node)
+            }
+        }
 
         head.diag()?.also { diag ->
             callbacks.onDiag(diag.path)
-            val last = diag.path.last()
-            if (diag.cost < (best[last]?.cost ?: Int.MAX_VALUE)) {
-                best[last] = diag
-                queue.add(diag)
-            }
+            queueNode(diag)
         }
 
         head.right()?.also { right ->
             callbacks.onRight(right.path)
-            val last = right.path.last()
-            if (right.cost < (best[last]?.cost ?: Int.MAX_VALUE)) {
-                best[last] = right
-                queue.add(right)
-            }
+            queueNode(right)
         }
 
         head.down()?.also { down ->
             callbacks.onDown(down.path)
-            val last = down.path.last()
-            if (down.cost < (best[last]?.cost ?: Int.MAX_VALUE)) {
-                best[last] = down
-                queue.add(down)
-            }
+            queueNode(down)
         }
     }
 }
