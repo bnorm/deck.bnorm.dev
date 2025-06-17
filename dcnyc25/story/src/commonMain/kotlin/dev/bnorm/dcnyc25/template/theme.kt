@@ -37,8 +37,8 @@ val COLORS = lightColors(
     onSecondary = Color(0xFFF8F8F8),
 )
 
-val YesColor = Color.White
-val NoColor = Color.Black
+val YesColor = Color.LightGray
+val NoColor = Color.DarkGray
 
 val MatchColor = Color.Blue.copy(alpha = 0.5f)
 val AddColor = Color.Green.copy(alpha = 0.5f)

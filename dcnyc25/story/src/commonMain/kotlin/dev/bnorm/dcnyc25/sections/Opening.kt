@@ -32,6 +32,7 @@ import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.github_review
 import dev.bnorm.deck.story.generated.resources.intellij
 import dev.bnorm.deck.story.generated.resources.keynote
+import dev.bnorm.deck.story.generated.resources.qr
 import dev.bnorm.storyboard.*
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -39,9 +40,29 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
+import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Opening() {
+    scene(
+        stateCount = 1,
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+    ) {
+        Column {
+            TitleHeader()
+
+            Horizontal(MaterialTheme.colors.secondary) {
+                Box(Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
+                    Image(
+                        imageResource(Res.drawable.qr),
+                        contentDescription = null,
+                    )
+                }
+            }
+        }
+    }
+
     scene(
         stateCount = 5,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
@@ -125,7 +146,7 @@ fun StoryboardBuilder.Opening() {
 
     Question(
         buildAnnotatedString {
-            append("What has the most ")
+            append("Does it provide good ")
             withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
                 append("context")
             }
@@ -136,7 +157,7 @@ fun StoryboardBuilder.Opening() {
 
     Question(
         buildAnnotatedString {
-            append("What has good ")
+            append("Does it have good ")
             withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
                 append("styling")
             }
@@ -147,7 +168,7 @@ fun StoryboardBuilder.Opening() {
 
     Question(
         question = buildAnnotatedString {
-            append("What has sufficient ")
+            append("Does it provide enough ")
             withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
                 append("time")
             }
@@ -175,10 +196,7 @@ fun StoryboardBuilder.Opening() {
             end = SceneExit(alignment = Alignment.CenterEnd),
         ),
     ) {
-        Surface(
-            color = MaterialTheme.colors.secondary,
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Full(MaterialTheme.colors.secondary) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -225,10 +243,7 @@ fun StoryboardBuilder.Opening() {
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        Surface(
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Full(MaterialTheme.colors.primary) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val storyboard = buildAnnotatedString {
@@ -247,6 +262,78 @@ fun StoryboardBuilder.Opening() {
                     }
                     Conclusion(step = 2) {
                         OutlinedText("(and not Storyboard, the XCode tool)", style = MaterialTheme.typography.h5)
+                    }
+                }
+            }
+        }
+    }
+
+    scene(
+        stateCount = 4,
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+    ) {
+        Full(MaterialTheme.colors.secondary) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val framework = buildAnnotatedString {
+                        append("Storyboard is a ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("framework") }
+                    }
+                    val presentations = buildAnnotatedString {
+                        append("for writing ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("presentations") }
+                    }
+                    val compose = buildAnnotatedString {
+                        append("with ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Compose Multiplatform") }
+                        append(".")
+                    }
+
+                    Conclusion(step = 0) {
+                        OutlinedText(framework, style = MaterialTheme.typography.h2)
+                    }
+                    Conclusion(step = 1) {
+                        OutlinedText(presentations, style = MaterialTheme.typography.h2)
+                    }
+                    Conclusion(step = 2) {
+                        OutlinedText(compose, style = MaterialTheme.typography.h2)
+                    }
+                    Conclusion(step = 3) {
+                        OutlinedText("(It's actually not that interesting)", style = MaterialTheme.typography.h5)
+                    }
+                }
+            }
+        }
+    }
+
+    scene(
+        stateCount = 3,
+        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
+        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+    ) {
+        Full(MaterialTheme.colors.primary) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val interesting = buildAnnotatedString {
+                        append("But what ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("is") }
+                        append(" interesting")
+                    }
+                    val code = buildAnnotatedString {
+                        append("are the tools for ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("code") }
+                        append("!")
+                    }
+
+                    Conclusion(step = 0) {
+                        OutlinedText(interesting, style = MaterialTheme.typography.h2)
+                    }
+                    Conclusion(step = 1) {
+                        OutlinedText(code, style = MaterialTheme.typography.h2)
+                    }
+                    Conclusion(step = 2) {
+                        OutlinedText("(Specifically, code changes)", style = MaterialTheme.typography.h5)
                     }
                 }
             }
@@ -279,7 +366,6 @@ private fun StoryboardBuilder.Question(
     enterTransition: SceneEnterTransition = SceneEnter(alignment = Alignment.CenterEnd),
     exitTransition: SceneExitTransition = SceneExit(alignment = Alignment.CenterEnd),
 ) {
-
     scene(
         stateCount = 1,
         enterTransition = enterTransition,
@@ -389,7 +475,7 @@ private fun KeynotePanel(content: @Composable () -> Unit) {
 
 @Composable
 private fun VoteRow(visible: Transition<Boolean>, percent: Float?) {
-    Box(Modifier.fillMaxSize().alpha(0.5f)) {
+    Box(Modifier.fillMaxSize().alpha(0.75f)) {
         visible.AnimatedVisibility(
             visible = { it && percent != null },
             enter = fadeIn(tween(750)),
@@ -432,7 +518,7 @@ private fun VoteRow(visible: Transition<Boolean>, percent: Float?) {
 
 @Composable
 private fun VoteColumn(visible: Transition<Boolean>, percent: Float?) {
-    Box(Modifier.fillMaxSize().alpha(0.5f)) {
+    Box(Modifier.fillMaxSize().alpha(0.75f)) {
         visible.AnimatedVisibility(
             visible = { it && percent != null },
             enter = fadeIn(tween(750)),

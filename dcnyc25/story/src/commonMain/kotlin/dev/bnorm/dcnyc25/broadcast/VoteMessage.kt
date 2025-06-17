@@ -23,6 +23,12 @@ sealed class VoteMessage {
         abstract val editor: Boolean?
         abstract val review: Boolean?
         abstract val slides: Boolean?
+
+        abstract fun copy(
+            editor: Boolean? = this.editor,
+            review: Boolean? = this.review,
+            slides: Boolean? = this.slides,
+        ): MultiVoteMessage
     }
 
     @Serializable
@@ -32,7 +38,11 @@ sealed class VoteMessage {
         override val editor: Boolean? = null,
         override val review: Boolean? = null,
         override val slides: Boolean? = null,
-    ) : MultiVoteMessage()
+    ) : MultiVoteMessage() {
+        override fun copy(editor: Boolean?, review: Boolean?, slides: Boolean?): Context {
+            return copy(userId = userId, editor = editor, review = review, slides = slides)
+        }
+    }
 
     @Serializable
     @SerialName("style")
@@ -41,7 +51,11 @@ sealed class VoteMessage {
         override val editor: Boolean? = null,
         override val review: Boolean? = null,
         override val slides: Boolean? = null,
-    ) : MultiVoteMessage()
+    ) : MultiVoteMessage() {
+        override fun copy(editor: Boolean?, review: Boolean?, slides: Boolean?): Style {
+            return copy(userId = userId, editor = editor, review = review, slides = slides)
+        }
+    }
 
     @Serializable
     @SerialName("Time")
@@ -50,5 +64,9 @@ sealed class VoteMessage {
         override val editor: Boolean? = null,
         override val review: Boolean? = null,
         override val slides: Boolean? = null,
-    ) : MultiVoteMessage()
+    ) : MultiVoteMessage() {
+        override fun copy(editor: Boolean?, review: Boolean?, slides: Boolean?): Time {
+            return copy(userId = userId, editor = editor, review = review, slides = slides)
+        }
+    }
 }

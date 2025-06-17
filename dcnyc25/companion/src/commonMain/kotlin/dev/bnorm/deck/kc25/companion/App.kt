@@ -55,6 +55,38 @@ fun Vote(current: Boolean?, onClick: (Boolean) -> VoteMessage) {
 }
 
 @Composable
+private fun MultiVote(question: String, initial: VoteMessage.MultiVoteMessage) {
+    var vote by remember { mutableStateOf(initial) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text(
+            question,
+            style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light)
+        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Code Editor", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
+                Vote(vote.editor) { vote.copy(editor = it).also { vote = it } }
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Code Review", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
+                Vote(vote.review) { vote.copy(review = it).also { vote = it } }
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Presentation Slides", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
+                Vote(vote.slides) { vote.copy(slides = it).also { vote = it } }
+            }
+        }
+    }
+}
+
+@Composable
 fun SendCodeVote() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -67,75 +99,13 @@ fun SendCodeVote() {
         ) {
             var vote by remember { mutableStateOf(VoteMessage.Code(userId = id)) }
 
-            Text("Do you code?", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
+            Text("Do you read code?", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
             Vote(vote.value) { vote.copy(value = it).also { vote = it } }
         }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            var vote by remember { mutableStateOf(VoteMessage.Context(userId = id)) }
 
-            Text("Good context?", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
-            Column {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Editor", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.editor) { vote.copy(editor = it).also { vote = it } }
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Review", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.review) { vote.copy(review = it).also { vote = it } }
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Slides", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.slides) { vote.copy(slides = it).also { vote = it } }
-                }
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            var vote by remember { mutableStateOf(VoteMessage.Style(userId = id)) }
-
-            Text("Good style?", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
-            Column {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Editor", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.editor) { vote.copy(editor = it).also { vote = it } }
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Review", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.review) { vote.copy(review = it).also { vote = it } }
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Slides", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.slides) { vote.copy(slides = it).also { vote = it } }
-                }
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            var vote by remember { mutableStateOf(VoteMessage.Time(userId = id)) }
-
-            Text("Good time?", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Light))
-            Column {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Editor", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.editor) { vote.copy(editor = it).also { vote = it } }
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Review", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.review) { vote.copy(review = it).also { vote = it } }
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Slides", style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Light))
-                    Vote(vote.slides) { vote.copy(slides = it).also { vote = it } }
-                }
-            }
-        }
+        MultiVote("Does it provide good context?", VoteMessage.Context(userId = id))
+        MultiVote("Does it have good style?", VoteMessage.Style(userId = id))
+        MultiVote("Good provide enough time?", VoteMessage.Time(userId = id))
     }
 }
 

@@ -89,7 +89,8 @@ fun createStoryboard(
 
     // TODO use MagicText to change header instead of carousel?
 
-    // TODO need an actual explanation of Storyboard when first introduced
+    // TODO are the labels backwards?
+    //  -
     Opening()
 
     // TODO highlight common prefix of each line during algorithm explanation
@@ -138,10 +139,7 @@ fun createStoryboard(
     //  - https://bramcohen.livejournal.com/73318.html
 
     // TODO add some show-off slides
-    //  - power-assert example from compiler plugin talk
-    //  - Compose example from compiler plugin talk
     //  - if samples are dynamic, redo the entire talk with different examples?!
-
     Samples()
 
     // TODO do i need to show some code examples of MagicMove use?
