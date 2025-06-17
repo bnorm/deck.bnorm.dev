@@ -7,6 +7,7 @@ import androidx.compose.ui.window.application
 import dev.bnorm.dcnyc25.broadcast.VoteTally
 import dev.bnorm.dcnyc25.createStoryboard
 import dev.bnorm.dcnyc25.template.COLORS
+import dev.bnorm.dcnyc25.template.SampleCaption
 import dev.bnorm.dcnyc25.template.storyDecorator
 import dev.bnorm.deck.shared.Laser
 import dev.bnorm.storyboard.SceneDecorator
@@ -27,6 +28,7 @@ fun main() {
     val captions = persistentListOf(
         laser.caption,
         tally.caption,
+        SampleCaption()
     )
 
     application {

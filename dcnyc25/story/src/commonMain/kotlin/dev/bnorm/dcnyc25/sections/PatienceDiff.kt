@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
@@ -22,7 +23,7 @@ import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.toState
 
-fun StoryboardBuilder.PatienceStart(before: AnnotatedString, after: AnnotatedString) {
+fun StoryboardBuilder.PatienceStart(before: CodeString, after: CodeString) {
     scene(
         stateCount = 4,
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
@@ -34,7 +35,7 @@ fun StoryboardBuilder.PatienceStart(before: AnnotatedString, after: AnnotatedStr
     }
 }
 
-fun StoryboardBuilder.PatienceEnd(before: AnnotatedString, after: AnnotatedString) {
+fun StoryboardBuilder.PatienceEnd(before: CodeString, after: CodeString) {
     scene(
         stateCount = 3,
         enterTransition = enter(
@@ -56,8 +57,8 @@ fun StoryboardBuilder.PatienceEnd(before: AnnotatedString, after: AnnotatedStrin
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 private fun Patience(
     state: Transition<Int>,
-    before: AnnotatedString,
-    after: AnnotatedString,
+    before: CodeString,
+    after: CodeString,
 ) {
     Row {
         Vertical(MaterialTheme.colors.primary) {
@@ -117,8 +118,8 @@ fun PatienceInfo(progress: Transition<Int>, modifier: Modifier = Modifier) {
 
 @Composable
 private fun PatienceSample(
-    before: AnnotatedString,
-    after: AnnotatedString,
+    before: CodeString,
+    after: CodeString,
     modifier: Modifier = Modifier,
 ) {
     @Composable
@@ -129,7 +130,7 @@ private fun PatienceSample(
             }
             TextSurface {
                 Text(
-                    text = before,
+                    text = before.text,
                     style = MaterialTheme.typography.code1,
                     modifier = Modifier.padding(16.dp),
                 )
@@ -145,7 +146,7 @@ private fun PatienceSample(
             }
             TextSurface {
                 Text(
-                    text = after,
+                    text = after.text,
                     style = MaterialTheme.typography.code1,
                     modifier = Modifier.padding(16.dp),
                 )

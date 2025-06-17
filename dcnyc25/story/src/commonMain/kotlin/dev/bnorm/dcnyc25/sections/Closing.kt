@@ -16,8 +16,8 @@ import dev.bnorm.storyboard.easel.template.SceneExit
 fun StoryboardBuilder.Closing() {
     scene(
         stateCount = 2,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
+        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
         Full(MaterialTheme.colors.primary) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {

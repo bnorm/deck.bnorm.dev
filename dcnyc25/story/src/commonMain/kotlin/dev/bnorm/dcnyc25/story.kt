@@ -1,12 +1,12 @@
 package dev.bnorm.dcnyc25
 
 import dev.bnorm.dcnyc25.sections.*
+import dev.bnorm.dcnyc25.template.FirstSample
+import dev.bnorm.dcnyc25.template.SecondSample
 import dev.bnorm.dcnyc25.template.storyDecorator
-import dev.bnorm.deck.shared.INTELLIJ_LIGHT
+import dev.bnorm.dcnyc25.template.ThirdSample
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
 
 /**
  * ### General Ideas
@@ -53,67 +53,41 @@ fun createStoryboard(
     """.trimIndent(),
     decorator = decorator,
 ) {
-    // TODO make examples truly dynamic so i could completely change them... live?!
-    //  - pull these out into a caption that allows edits
-    val first = """
-        fun main() {
-          println("Hello, KotlinConf!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
-    val second = """
-        fun main() {
-          println("Hello, droidcon!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
-    val third = $$"""
-        fun main() {
-          val greeting = "Hello"
-          println("$greeting, droidcon!")
-        }
-    """.trimIndent().highlight(INTELLIJ_LIGHT, language = Language.Kotlin)
-
     // TODO show code for each algorithm?
-    // TODO do i need to show some pseudo code for MagicMove?
+    // TODO do i need to show some pseudo code for MagicText?
 
     Title()
 
-    // TODO add QR code for companion app voting somewhere in title
-    //  - add it to the bottom right corner again?
-
-    // fade each to talk about pros and cons:
-    // - context : familiar code for editor and review / unfamiliar for presentations
-    // - format : can adjust code style for editor and review / no choice for presentations
-    // - flow : have time to review for editor and review / no time to review for presentations
-
-    // TODO use MagicText to change header instead of carousel?
-
-    // TODO are the labels backwards?
-    //  -
+    // TODO don't plan on using the companion, again... :-(
+    //  - just ate too much time from the rehearsal time
+    //  - i'd rather spend that time on ore diff details
+    //  - or looking at compose code?
+    // TODO !!! rework the opening to present the same ideas but faster
     Opening()
 
     // TODO highlight common prefix of each line during algorithm explanation
     // TODO make highlighting truly dynamic based on sample
     // TODO use mono font for function names
-    LineEnding(first, second)
+    // TODO update the description to go line-by-line from top-to-bottom
+    //  - i.e., what the implementation actually does
+    LineEnding(FirstSample, SecondSample)
 
     // TODO joke about myers-briggs?
     //  daughter: Isabel Briggs Myers
     //  mother: Katharine Cook Briggs
-    MyersDiffChars(first, second)
+    MyersDiffChars(FirstSample, SecondSample)
 
     // TODO use keyframes to compress navigation to single advancement
     // TODO actually implement the algorithm to get the true search path visualization
     EditGraph(start = "KotlinConf", end = "droidcon")
 
-    MyersDiffWords(first, second, third)
+    MyersDiffWords(FirstSample, SecondSample, ThirdSample)
 
     // TODO talk about Hunt-Szymanski algorithm (LCS)?
     //  - https://www.raygard.net/2025/01/28/how-histogram-diff-works/
     //  - or jump straight to patience sorting: https://en.wikipedia.org/wiki/Patience_sorting#Algorithm_for_finding_a_longest_increasing_subsequence
 
-    PatienceStart(second, third)
+    PatienceStart(SecondSample, ThirdSample)
 
     // TODO make dynamic?
     // TODO i don't like that the stack goes LTR
@@ -129,10 +103,10 @@ fun createStoryboard(
     )
 
     // TODO bold the unique elements part of the info
-    PatienceEnd(second, third)
+    PatienceEnd(SecondSample, ThirdSample)
 
     // TODO need to actually show matches and regions expanding
-    Idea(second, third)
+    Idea(SecondSample, ThirdSample)
 
     // TODO idea: expand LCS elements first before other elements
     // TODO maybe better idea: use patience but always perform step 3 globally?
@@ -140,6 +114,7 @@ fun createStoryboard(
 
     // TODO add some show-off slides
     //  - if samples are dynamic, redo the entire talk with different examples?!
+
     Samples()
 
     // TODO do i need to show some code examples of MagicMove use?
@@ -149,7 +124,7 @@ fun createStoryboard(
     //  - check out DiffUtil for an alternative idea
     //  - benchmarks and optimizations
 
-    // TODO add reference to other talks using Storyboard
+    Others()
 
     Closing()
 }

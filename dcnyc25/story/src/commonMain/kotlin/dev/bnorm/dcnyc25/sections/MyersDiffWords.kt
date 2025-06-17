@@ -21,6 +21,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.old.magic.MagicTextDiff
 import dev.bnorm.dcnyc25.old.magic.MagicTextMyers
 import dev.bnorm.dcnyc25.old.magic.diff
@@ -120,7 +121,7 @@ private enum class MyersDiffWordsState(
     ),
 }
 
-fun StoryboardBuilder.MyersDiffWords(before: AnnotatedString, after: AnnotatedString, problem: AnnotatedString) {
+fun StoryboardBuilder.MyersDiffWords(before: CodeString, after: CodeString, problem: CodeString) {
     scene(
         states = MyersDiffWordsState.entries.toList(),
         enterTransition = enter(
@@ -157,20 +158,20 @@ fun StoryboardBuilder.MyersDiffWords(before: AnnotatedString, after: AnnotatedSt
 @Composable
 private fun Sample(
     state: Transition<MyersDiffWordsState>,
-    before: AnnotatedString,
-    after: AnnotatedString,
-    problem: AnnotatedString,
+    before: CodeString,
+    after: CodeString,
+    problem: CodeString,
     modifier: Modifier = Modifier,
 ) {
     val measurer = rememberTextMeasurer()
 
     val codeStyle = MaterialTheme.typography.code1
-    val measuredBefore = remember(before, codeStyle) { measurer.measure(before, codeStyle) }
-    val measuredAfter = remember(after, codeStyle) { measurer.measure(after, codeStyle) }
+    val measuredBefore = remember(before.text, codeStyle) { measurer.measure(before.text, codeStyle) }
+    val measuredAfter = remember(after.text, codeStyle) { measurer.measure(after.text, codeStyle) }
 
-    val charDiff = remember(before, after) { diff(before.toChars(), after.toChars()) }
-    val wordDiff = remember(before, after) { diff(before.toWords(), after.toWords()) }
-    val problemDiff = remember(after, problem) { diff(after.toWords(), problem.toWords()) }
+    val charDiff = remember(before.text, after.text) { diff(before.text.toChars(), after.text.toChars()) }
+    val wordDiff = remember(before.text, after.text) { diff(before.text.toWords(), after.text.toWords()) }
+    val problemDiff = remember(after.text, problem.text) { diff(after.text.toWords(), problem.text.toWords()) }
 
     @Composable
     fun BoxScope.BeforeHighlighting(
@@ -221,9 +222,9 @@ private fun Sample(
                         MagicTextMyers(
                             transition = state.createChildTransition {
                                 when {
-                                    it.ordinal == AnimationFail.ordinal -> problem.toWords()
-                                    it.ordinal >= AnimateSample.ordinal -> after.toWords()
-                                    else -> before.toWords()
+                                    it.ordinal == AnimationFail.ordinal -> problem.text.toWords()
+                                    it.ordinal >= AnimateSample.ordinal -> after.text.toWords()
+                                    else -> before.text.toWords()
                                 }
                             },
                         )
@@ -247,7 +248,7 @@ private fun Sample(
                     AfterHighlighting(visible = { it.showCharColor }, charDiff, measuredText)
                     AfterHighlighting(visible = { it.showWordColor }, wordDiff, measuredText)
                     Text(
-                        text = after,
+                        text = after.text,
                         style = codeStyle,
                         onTextLayout = { measured -> measuredText[0] = measured },
                     )
@@ -269,7 +270,7 @@ private fun Sample(
                 Box(Modifier.padding(16.dp)) {
                     AfterHighlighting(visible = { it.showNewColor }, problemDiff, measuredText)
                     Text(
-                        text = problem,
+                        text = problem.text,
                         style = codeStyle,
                         onTextLayout = { measured -> measuredText[0] = measured },
                     )

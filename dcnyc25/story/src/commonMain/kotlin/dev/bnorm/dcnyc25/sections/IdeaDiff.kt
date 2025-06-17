@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.old.magic.toWords
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -27,7 +28,7 @@ import dev.bnorm.storyboard.easel.template.exit
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.toState
 
-fun StoryboardBuilder.Idea(sampleStart: AnnotatedString, sampleEnd: AnnotatedString) {
+fun StoryboardBuilder.Idea(sampleStart: CodeString, sampleEnd: CodeString) {
     scene(
         stateCount = 5,
         enterTransition = enter(
@@ -90,8 +91,8 @@ fun IdeaInfo(progress: Transition<Int>, modifier: Modifier = Modifier) {
 @Composable
 private fun IdeaSample(
     showAfter: Transition<Boolean>,
-    before: AnnotatedString,
-    after: AnnotatedString,
+    before: CodeString,
+    after: CodeString,
     modifier: Modifier = Modifier,
 ) {
     @Composable
@@ -104,7 +105,7 @@ private fun IdeaSample(
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     MagicText(
                         transition = showAfter.createChildTransition {
-                            if (it) before.toWords() else after.toWords()
+                            if (it) before.text.toWords() else after.text.toWords()
                         },
                         modifier = Modifier.padding(16.dp),
                     )
@@ -121,7 +122,7 @@ private fun IdeaSample(
             }
             TextSurface {
                 Text(
-                    text = before,
+                    text = before.text,
                     style = MaterialTheme.typography.code1,
                     modifier = Modifier.padding(16.dp),
                 )

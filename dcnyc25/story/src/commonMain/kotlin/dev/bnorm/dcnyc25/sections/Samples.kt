@@ -26,9 +26,7 @@ import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.LocalSceneMode
 import dev.bnorm.storyboard.easel.SceneMode
 import dev.bnorm.storyboard.easel.assist.SceneCaption
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.StoryEffect
+import dev.bnorm.storyboard.easel.template.*
 import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.highlight.CodeStyle
 import dev.bnorm.storyboard.text.highlight.Language
@@ -66,8 +64,14 @@ fun StoryboardBuilder.Samples() {
     }
     scene(
         stateCount = 1,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        enterTransition = enter(
+            start = SceneEnter(alignment = Alignment.CenterEnd),
+            end = SceneEnter(alignment = Alignment.BottomCenter),
+        ),
+        exitTransition = exit(
+            start = SceneExit(alignment = Alignment.CenterEnd),
+            end = SceneExit(alignment = Alignment.BottomCenter),
+        )
     ) {
         Full(MaterialTheme.colors.secondary) {
             val index by animateSampleIndex(

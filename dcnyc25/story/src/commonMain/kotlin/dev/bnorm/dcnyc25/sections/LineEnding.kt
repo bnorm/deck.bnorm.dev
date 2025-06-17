@@ -22,11 +22,11 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.old.kc24.animateList
 import dev.bnorm.dcnyc25.old.kc24.startAnimation
 import dev.bnorm.dcnyc25.old.kc24.thenLineEndDiff
@@ -99,7 +99,7 @@ private enum class LineEndingState(
     ),
 }
 
-fun StoryboardBuilder.LineEnding(before: AnnotatedString, after: AnnotatedString) {
+fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
     scene(
         states = LineEndingState.entries,
         enterTransition = enter(
@@ -163,44 +163,44 @@ private fun LineEndingInfo(state: Transition<LineEndingState>) {
 @Composable
 private fun LineEndingSample(
     state: Transition<LineEndingState>,
-    before: AnnotatedString,
-    after: AnnotatedString,
+    before: CodeString,
+    after: CodeString,
     modifier: Modifier = Modifier,
 ) {
     val measurer = rememberTextMeasurer()
     val sampleStyle = MaterialTheme.typography.code1
 
-    val beforeHighlight = remember(sampleStyle) {
+    val beforeHighlight = remember(sampleStyle, before.text) {
         val sub = "KotlinConf"
         val index = before.text.indexOf(sub)
         measurer.measure(before.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
-    val beforeLineHighlight = remember(sampleStyle) {
+    val beforeLineHighlight = remember(sampleStyle, before.text) {
         val sub = "KotlinConf!\")"
         val index = before.text.indexOf(sub)
         measurer.measure(before.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
-    val afterHighlight = remember(sampleStyle) {
+    val afterHighlight = remember(sampleStyle, after.text) {
         val sub = "droidcon"
         val index = after.text.indexOf(sub)
         measurer.measure(after.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
-    val afterLineHighlight = remember(sampleStyle) {
+    val afterLineHighlight = remember(sampleStyle, after.text) {
         val sub = "droidcon!\")"
         val index = after.text.indexOf(sub)
         measurer.measure(after.text, style = sampleStyle)
             .getBoundingBox(index, index + sub.length - 1)
     }
 
-    val sampleAnimation = remember {
-        startAnimation(before)
-            .thenLineEndDiff(after)
+    val sampleAnimation = remember(before.text, after.text) {
+        startAnimation(before.text)
+            .thenLineEndDiff(after.text)
             .toList()
     }
 
@@ -252,7 +252,7 @@ private fun LineEndingSample(
                                 if (it >= HighlightLineEndDiff) afterLineHighlight else afterHighlight
                             }
                             Text(
-                                text = after,
+                                text = after.text,
                                 style = sampleStyle,
                                 modifier = Modifier
                                     .padding(16.dp)

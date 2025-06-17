@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.sections.MyersDiffState.SampleAlgorithm
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -57,7 +58,7 @@ enum class MyersDiffState(
     ),
 }
 
-fun StoryboardBuilder.MyersDiffChars(before: AnnotatedString, after: AnnotatedString) {
+fun StoryboardBuilder.MyersDiffChars(before: CodeString, after: CodeString) {
     scene(
         states = MyersDiffState.entries.toList(),
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
@@ -130,8 +131,8 @@ fun MyersDiffInfo(title: Transition<Boolean>, progress: Transition<Int>, modifie
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
 private fun MyersDiffCharsExample(
     showAfter: Transition<Boolean>,
-    before: AnnotatedString,
-    after: AnnotatedString,
+    before: CodeString,
+    after: CodeString,
     modifier: Modifier = Modifier,
 ) {
     @Composable
@@ -144,7 +145,7 @@ private fun MyersDiffCharsExample(
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     MagicText(
                         transition = showAfter.createChildTransition {
-                            if (it) after.toChars() else before.toChars()
+                            if (it) after.text.toChars() else before.text.toChars()
                         },
                         modifier = Modifier.padding(16.dp),
                     )
@@ -161,7 +162,7 @@ private fun MyersDiffCharsExample(
             }
             TextSurface {
                 Text(
-                    text = after,
+                    text = after.text,
                     style = MaterialTheme.typography.code1,
                     modifier = Modifier.padding(16.dp),
                 )
