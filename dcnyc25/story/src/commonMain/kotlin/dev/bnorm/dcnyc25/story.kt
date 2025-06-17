@@ -107,15 +107,27 @@ fun createStoryboard(
 
     MyersDiffWords(first, second, third)
 
-    // TODO talk about Hunt-Szymanski algorithm (LCS) first?
+    // TODO talk about Hunt-Szymanski algorithm (LCS)?
     //  - https://www.raygard.net/2025/01/28/how-histogram-diff-works/
     //  - or jump straight to patience sorting: https://en.wikipedia.org/wiki/Patience_sorting#Algorithm_for_finding_a_longest_increasing_subsequence
 
-    Patience(second, third)
+    PatienceStart(second, third)
+
+    // TODO make dynamic?
+    PatienceSort(
+        cards = listOf(
+            Card.Nine, Card.Four, Card.Six, Card.Queen,
+            Card.Eight, Card.Seven, Card.Ace, Card.Five,
+            Card.Ten, Card.Jack, Card.Three, Card.Two,
+            Card.King,
+        )
+    )
+
+    // TODO bold the unique elements part of the info
+    PatienceEnd(second, third)
 
     Idea(second, third)
 
-    // TODO return to Patience and explain LCS
     // TODO idea: expand LCS elements first before other elements
     // TODO maybe better idea: use patience but always perform step 3 globally?
     //  - https://bramcohen.livejournal.com/73318.html

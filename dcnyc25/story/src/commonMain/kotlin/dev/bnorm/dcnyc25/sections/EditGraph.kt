@@ -36,13 +36,7 @@ import androidx.compose.ui.unit.times
 import dev.bnorm.dcnyc25.algo.SearchCallbacks
 import dev.bnorm.dcnyc25.algo.SearchPath
 import dev.bnorm.dcnyc25.algo.myers
-import dev.bnorm.dcnyc25.template.AddColor
-import dev.bnorm.dcnyc25.template.COLORS
-import dev.bnorm.dcnyc25.template.DeleteColor
-import dev.bnorm.dcnyc25.template.OutlinedText
-import dev.bnorm.dcnyc25.template.SceneHalfWidth
-import dev.bnorm.dcnyc25.template.TextSurface
-import dev.bnorm.dcnyc25.template.Vertical
+import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
