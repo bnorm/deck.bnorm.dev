@@ -2,7 +2,6 @@ package dev.bnorm.dcnyc25.sections
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.animateRect
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.horizontalScroll
@@ -10,9 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -23,15 +20,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.old.kc24.animateList
 import dev.bnorm.dcnyc25.old.kc24.startAnimation
 import dev.bnorm.dcnyc25.old.kc24.thenLineEndDiff
-import dev.bnorm.dcnyc25.sections.LineEndingState.HighlightLineEndDiff
-import dev.bnorm.dcnyc25.sections.LineEndingState.SampleAlgorithm
+import dev.bnorm.dcnyc25.sections.LineEndingState.*
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
@@ -58,12 +53,7 @@ private enum class LineEndingState(
         infoProgress = 0,
     ),
     IntroAlgorithm(
-        showHighlight = true,
-        showInfo = true,
-        infoProgress = 0,
-    ),
-    HighlightLineEndDiff(
-        showHighlight = true,
+        showHighlight = false,
         showInfo = true,
         infoProgress = 0,
     ),
@@ -87,15 +77,20 @@ private enum class LineEndingState(
         showInfo = true,
         infoProgress = 4,
     ),
+    Algorithm5(
+        showHighlight = false,
+        showInfo = true,
+        infoProgress = 5,
+    ),
     SampleAlgorithm(
         showHighlight = false,
         showInfo = true,
-        infoProgress = 4,
+        infoProgress = 5,
     ),
     RevertAlgorithm(
         showHighlight = false,
         showInfo = true,
-        infoProgress = 4,
+        infoProgress = 5,
     ),
 }
 
@@ -152,9 +147,10 @@ private fun LineEndingInfo(state: Transition<LineEndingState>) {
 
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(BulletSpacing)) {
                 Bullet(step = 1, text = "Find the common prefix of each line.")
-                Bullet(step = 2, text = "Create a sequence of removing characters from the last line to the first.")
-                Bullet(step = 3, text = "Continue the sequence by adding characters from the first line to the last.")
-                Bullet(step = 4, text = "Use 'animateIntAsState' with 'LinearEasing' to iterate through the sequence.")
+                Bullet(step = 2, text = "Create a sequence which iterates from the first line to the last.")
+                Bullet(step = 3, text = "Create substrings of the line by removing each non-prefix character.")
+                Bullet(step = 4, text = "Continue creating substrings by adding each non-prefix character.")
+                Bullet(step = 5, text = "Use 'animateIntAsState' with 'LinearEasing' to iterate through the sequence.")
             }
         }
     }
@@ -167,35 +163,18 @@ private fun LineEndingSample(
     after: CodeString,
     modifier: Modifier = Modifier,
 ) {
-    val measurer = rememberTextMeasurer()
-    val sampleStyle = MaterialTheme.typography.code1
+    val highlightDiff = state.createChildTransition { it.showHighlight }
+    val highlightPrefix = state.createChildTransition { it == Algorithm1 || it == Algorithm2 || it == Algorithm3 || it == Algorithm4 }
+    val highlightDelete = state.createChildTransition { it == Algorithm3 || it == Algorithm4 }
+    val highlightAdd = state.createChildTransition { it == Algorithm4 }
 
-    val beforeHighlight = remember(sampleStyle, before.text) {
-        val sub = "KotlinConf"
-        val index = before.text.indexOf(sub)
-        measurer.measure(before.text, style = sampleStyle)
-            .getBoundingBox(index, index + sub.length - 1)
-    }
-
-    val beforeLineHighlight = remember(sampleStyle, before.text) {
-        val sub = "KotlinConf!\")"
-        val index = before.text.indexOf(sub)
-        measurer.measure(before.text, style = sampleStyle)
-            .getBoundingBox(index, index + sub.length - 1)
-    }
-
-    val afterHighlight = remember(sampleStyle, after.text) {
-        val sub = "droidcon"
-        val index = after.text.indexOf(sub)
-        measurer.measure(after.text, style = sampleStyle)
-            .getBoundingBox(index, index + sub.length - 1)
-    }
-
-    val afterLineHighlight = remember(sampleStyle, after.text) {
-        val sub = "droidcon!\")"
-        val index = after.text.indexOf(sub)
-        measurer.measure(after.text, style = sampleStyle)
-            .getBoundingBox(index, index + sub.length - 1)
+    val commonPrefix = remember {
+        // TODO ew
+        listOf(
+            "fun main() {",
+            "  println(\"Hello, ",
+            "}",
+        )
     }
 
     val sampleAnimation = remember(before.text, after.text) {
@@ -211,57 +190,85 @@ private fun LineEndingSample(
         if (it == SampleAlgorithm) sampleAnimation.lastIndex else 0
     }
 
+    @Composable
+    fun Before(modifier: Modifier = Modifier) {
+        var textLayout by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                OutlinedText("Before", style = MaterialTheme.typography.h2)
+            }
+            TextSurface {
+                Box(Modifier.padding(16.dp)) {
+                    HighlightStrings(
+                        visible = highlightDiff,
+                        strings = listOf("KotlinConf"),
+                        color = DeleteColor,
+                        textLayout = { textLayout!! },
+                    )
+                    HighlightStrings(
+                        visible = highlightPrefix,
+                        strings = commonPrefix,
+                        color = MatchColor,
+                        textLayout = { textLayout!! },
+                    )
+                    HighlightCharacters(
+                        visible = highlightDelete,
+                        strings = listOf("KotlinConf!\")"),
+                        color = DeleteColor,
+                        textLayout = { textLayout!! },
+                    )
+                    Text(
+                        text = sampleText,
+                        style = MaterialTheme.typography.code1,
+                        onTextLayout = { textLayout = it },
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun After(modifier: Modifier = Modifier) {
+        var textLayout by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                OutlinedText("After", style = MaterialTheme.typography.h2)
+            }
+            TextSurface {
+                Box(Modifier.padding(16.dp)) {
+                    HighlightStrings(
+                        visible = highlightDiff,
+                        strings = listOf("droidcon"),
+                        color = AddColor,
+                        textLayout = { textLayout!! },
+                    )
+                    HighlightStrings(
+                        visible = highlightPrefix,
+                        strings = commonPrefix,
+                        color = MatchColor,
+                        textLayout = { textLayout!! },
+                    )
+                    HighlightCharacters(
+                        visible = highlightAdd,
+                        strings = listOf("droidcon!\")"),
+                        color = AddColor,
+                        textLayout = { textLayout!! },
+                    )
+                    Text(
+                        text = after.text,
+                        style = MaterialTheme.typography.code1,
+                        onTextLayout = { textLayout = it },
+                    )
+                }
+            }
+        }
+    }
+
     SharedTransitionLayout(modifier) {
         state.AnimatedContent(transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }) {
             Row {
-                @Composable
-                fun Before(modifier: Modifier = Modifier) {
-                    Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                            OutlinedText("Before", style = MaterialTheme.typography.h2)
-                        }
-                        TextSurface {
-                            val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it.showHighlight) DeleteColor.copy(alpha = 0.5f) else DeleteColor.copy(alpha = 0f)
-                            }
-                            val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it >= HighlightLineEndDiff) beforeLineHighlight else beforeHighlight
-                            }
-                            Text(
-                                text = sampleText,
-                                style = sampleStyle,
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .highlight(rect, color, radius = 8.dp, padding = 2.dp)
-                            )
-                        }
-                    }
-                }
-
-                @Composable
-                fun After(modifier: Modifier = Modifier) {
-                    Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                            OutlinedText("After", style = MaterialTheme.typography.h2)
-                        }
-                        TextSurface {
-                            val color by state.animateColor(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it.showHighlight) AddColor else AddColor.copy(alpha = 0f)
-                            }
-                            val rect by state.animateRect(transitionSpec = { tween(durationMillis = 750) }) {
-                                if (it >= HighlightLineEndDiff) afterLineHighlight else afterHighlight
-                            }
-                            Text(
-                                text = after.text,
-                                style = sampleStyle,
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .highlight(rect, color, radius = 8.dp, padding = 2.dp)
-                            )
-                        }
-                    }
-                }
-
                 Vertical(MaterialTheme.colors.secondary) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         Before(

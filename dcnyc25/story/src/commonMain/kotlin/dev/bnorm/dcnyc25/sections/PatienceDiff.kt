@@ -7,12 +7,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.CodeString
+import dev.bnorm.dcnyc25.old.magic.toWords
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
@@ -72,7 +73,7 @@ private fun Patience(
             MaterialTheme.colors.secondary,
             modifier = Modifier.sharedElement(rememberSharedContentState("diff-example")),
         ) {
-            PatienceSample(before, after)
+            PatienceSample(before, after, state.createChildTransition { it >= 2 })
         }
     }
 }
@@ -100,7 +101,7 @@ fun PatienceInfo(progress: Transition<Int>, modifier: Modifier = Modifier) {
             }
 
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(BulletSpacing)) {
-                Bullet(step = 1, text = "Created by Bram Cohen of BitTorrent fame.")
+                Bullet(step = 1, text = "Created by Bram Cohen and named after the Patience card game.")
                 Bullet(step = 2, text = "Finds a shared set of unique elements from each sequence.")
                 Bullet(
                     step = 3,
@@ -120,36 +121,69 @@ fun PatienceInfo(progress: Transition<Int>, modifier: Modifier = Modifier) {
 private fun PatienceSample(
     before: CodeString,
     after: CodeString,
+    showHighlighting: Transition<Boolean>,
     modifier: Modifier = Modifier,
 ) {
+    val unique = remember(after.text) {
+        val beforeUnique = before.text.toWords().map { it.text }
+            .groupingBy { it }.eachCount()
+            .filter { it.value == 1 }.keys
+
+        val afterUnique = after.text.toWords().map { it.text }
+            .groupingBy { it }.eachCount()
+            .filter { it.value == 1 }.keys
+
+        (beforeUnique intersect afterUnique).toList()
+    }
+
     @Composable
     fun Before(modifier: Modifier = Modifier) {
+        var textLayout by remember { mutableStateOf<TextLayoutResult?>(null) }
+
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 OutlinedText("Before", style = MaterialTheme.typography.h2)
             }
             TextSurface {
-                Text(
-                    text = before.text,
-                    style = MaterialTheme.typography.code1,
-                    modifier = Modifier.padding(16.dp),
-                )
+                Box(Modifier.padding(16.dp)) {
+                    HighlightStrings(
+                        visible = showHighlighting,
+                        strings = unique,
+                        color = MatchColor,
+                        textLayout = { textLayout!! },
+                    )
+                    Text(
+                        text = before.text,
+                        style = MaterialTheme.typography.code1,
+                        onTextLayout = { textLayout = it },
+                    )
+                }
             }
         }
     }
 
     @Composable
     fun After(modifier: Modifier = Modifier) {
+        var textLayout by remember { mutableStateOf<TextLayoutResult?>(null) }
+
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 OutlinedText("After", style = MaterialTheme.typography.h2)
             }
             TextSurface {
-                Text(
-                    text = after.text,
-                    style = MaterialTheme.typography.code1,
-                    modifier = Modifier.padding(16.dp),
-                )
+                Box(Modifier.padding(16.dp)) {
+                    HighlightStrings(
+                        visible = showHighlighting,
+                        strings = unique,
+                        color = MatchColor,
+                        textLayout = { textLayout!! },
+                    )
+                    Text(
+                        text = after.text,
+                        style = MaterialTheme.typography.code1,
+                        onTextLayout = { textLayout = it },
+                    )
+                }
             }
         }
     }

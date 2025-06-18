@@ -9,15 +9,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
@@ -194,7 +192,7 @@ private fun Sample(
     fun BoxScope.AfterHighlighting(
         visible: (MyersDiffWordsState) -> Boolean,
         diffs: List<MagicTextDiff>,
-        measured: List<TextLayoutResult?>,
+        textLayout: () -> TextLayoutResult,
         modifier: Modifier = Modifier,
     ) {
         state.AnimatedVisibility(
@@ -203,7 +201,7 @@ private fun Sample(
             exit = fadeOut(tween(750)),
             modifier = modifier.matchParentSize()
         ) {
-            Box(Modifier.afterHighlighting(diffs, AddColor, MatchColor, measured))
+            Box(Modifier.afterHighlighting(diffs, AddColor, MatchColor, textLayout))
         }
     }
 
@@ -236,8 +234,7 @@ private fun Sample(
 
     @Composable
     fun After(modifier: Modifier = Modifier) {
-        // TODO something better than mutable list...
-        val measuredText = remember { mutableListOf<TextLayoutResult?>(null) }
+        var textLayout by remember { mutableStateOf<TextLayoutResult?>(null) }
 
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -245,12 +242,12 @@ private fun Sample(
             }
             TextSurface {
                 Box(Modifier.padding(16.dp)) {
-                    AfterHighlighting(visible = { it.showCharColor }, charDiff, measuredText)
-                    AfterHighlighting(visible = { it.showWordColor }, wordDiff, measuredText)
+                    AfterHighlighting(visible = { it.showCharColor }, charDiff, { textLayout!! })
+                    AfterHighlighting(visible = { it.showWordColor }, wordDiff, { textLayout!! })
                     Text(
                         text = after.text,
                         style = codeStyle,
-                        onTextLayout = { measured -> measuredText[0] = measured },
+                        onTextLayout = { textLayout = it },
                     )
                 }
             }
@@ -259,8 +256,7 @@ private fun Sample(
 
     @Composable
     fun Problem(modifier: Modifier = Modifier) {
-        // TODO something better than mutable list...
-        val measuredText = remember { mutableListOf<TextLayoutResult?>(null) }
+        var textLayout by remember { mutableStateOf<TextLayoutResult?>(null) }
 
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -268,11 +264,11 @@ private fun Sample(
             }
             TextSurface {
                 Box(Modifier.padding(16.dp)) {
-                    AfterHighlighting(visible = { it.showNewColor }, problemDiff, measuredText)
+                    AfterHighlighting(visible = { it.showNewColor }, problemDiff, { textLayout!! })
                     Text(
                         text = problem.text,
                         style = codeStyle,
-                        onTextLayout = { measured -> measuredText[0] = measured },
+                        onTextLayout = { textLayout = it },
                     )
                 }
             }
@@ -306,9 +302,9 @@ private fun Modifier.afterHighlighting(
     charDiff: List<MagicTextDiff>,
     addColor: Color,
     matchColor: Color,
-    measuredSampleEnd: List<TextLayoutResult?>,
+    textLayout: () -> TextLayoutResult,
 ): Modifier = drawBehind {
-    val measured = measuredSampleEnd[0]!!
+    val textLayout = textLayout()
 
     var index = 0
     for (diff in charDiff) {
@@ -316,7 +312,7 @@ private fun Modifier.afterHighlighting(
         if (length == 0) continue
 
         val color = if (diff.before.text != diff.after.text) addColor else matchColor
-        val box = measured.getBoundingBox(index, index + length - 1)
+        val box = textLayout.getBoundingBox(index, index + length - 1)
         drawRoundRect(
             color = color,
             topLeft = box.topLeft,
@@ -331,7 +327,7 @@ private fun Modifier.beforeHighlighting(
     charDiff: List<MagicTextDiff>,
     deleteColor: Color,
     matchColor: Color,
-    measuredSampleStart: TextLayoutResult,
+    textLayout: TextLayoutResult,
 ): Modifier = drawBehind {
     // !!!
     // There's an every so subtle difference between Text and Row { Text() }.
@@ -352,7 +348,7 @@ private fun Modifier.beforeHighlighting(
         }
 
         val color = if (diff.before.text != diff.after.text) deleteColor else matchColor
-        val box = measuredSampleStart.getBoundingBox(index, index + length - 1)
+        val box = textLayout.getBoundingBox(index, index + length - 1)
         drawRoundRect(
             color = color,
             topLeft = box.topLeft + Offset(x = offset * 0.2f, y = 0f),

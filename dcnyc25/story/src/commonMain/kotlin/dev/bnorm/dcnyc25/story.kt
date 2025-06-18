@@ -3,8 +3,8 @@ package dev.bnorm.dcnyc25
 import dev.bnorm.dcnyc25.sections.*
 import dev.bnorm.dcnyc25.template.FirstSample
 import dev.bnorm.dcnyc25.template.SecondSample
-import dev.bnorm.dcnyc25.template.storyDecorator
 import dev.bnorm.dcnyc25.template.ThirdSample
+import dev.bnorm.dcnyc25.template.storyDecorator
 import dev.bnorm.storyboard.SceneDecorator
 import dev.bnorm.storyboard.Storyboard
 
@@ -55,6 +55,7 @@ fun createStoryboard(
 ) {
     // TODO show code for each algorithm?
     // TODO do i need to show some pseudo code for MagicText?
+    // TODO do i need to show some code examples of MagicMove use?
 
     Title()
 
@@ -65,11 +66,8 @@ fun createStoryboard(
     // TODO !!! rework the opening to present the same ideas but faster
     Opening()
 
-    // TODO highlight common prefix of each line during algorithm explanation
     // TODO make highlighting truly dynamic based on sample
     // TODO use mono font for function names
-    // TODO update the description to go line-by-line from top-to-bottom
-    //  - i.e., what the implementation actually does
     LineEnding(FirstSample, SecondSample)
 
     // TODO joke about myers-briggs?
@@ -77,7 +75,7 @@ fun createStoryboard(
     //  mother: Katharine Cook Briggs
     MyersDiffChars(FirstSample, SecondSample)
 
-    // TODO use keyframes to compress navigation to single advancement
+    // TODO use keyframes to compress navigation to single advancement?
     // TODO actually implement the algorithm to get the true search path visualization
     EditGraph(start = "KotlinConf", end = "droidcon")
 
@@ -89,10 +87,6 @@ fun createStoryboard(
 
     PatienceStart(SecondSample, ThirdSample)
 
-    // TODO make dynamic?
-    // TODO i don't like that the stack goes LTR
-    // TODO should explain better why this demo is important to patience diff
-    //  - index unique elements from before, sort based on after, find longest increasing subsequence
     PatienceSort(
         cards = listOf(
             Card.Nine, Card.Four, Card.Six, Card.Queen,
@@ -102,29 +96,21 @@ fun createStoryboard(
         )
     )
 
-    // TODO bold the unique elements part of the info
     PatienceEnd(SecondSample, ThirdSample)
 
-    // TODO need to actually show matches and regions expanding
     Idea(SecondSample, ThirdSample)
 
     // TODO idea: expand LCS elements first before other elements
     // TODO maybe better idea: use patience but always perform step 3 globally?
     //  - https://bramcohen.livejournal.com/73318.html
 
-    // TODO add some show-off slides
-    //  - if samples are dynamic, redo the entire talk with different examples?!
-
     Samples()
-
-    // TODO do i need to show some code examples of MagicMove use?
 
     // TODO talk about improvements to MagicText
     //  - make it generic (not text specific)
     //  - check out DiffUtil for an alternative idea
     //  - benchmarks and optimizations
 
-    Others()
-
+    // TODO include a reference to blog post series
     Closing()
 }
