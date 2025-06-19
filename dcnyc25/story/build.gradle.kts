@@ -45,9 +45,9 @@ kotlin {
                 implementation(compose.material)
                 api(compose.components.resources)
 
-                api("dev.bnorm.storyboard:storyboard:0.1.0-alpha02")
-                api("dev.bnorm.storyboard:storyboard-easel:0.1.0-alpha02")
-                api("dev.bnorm.storyboard:storyboard-text:0.1.0-alpha02")
+                api("dev.bnorm.storyboard:storyboard:0.1.0-alpha03")
+                api("dev.bnorm.storyboard:storyboard-easel:0.1.0-alpha03")
+                api("dev.bnorm.storyboard:storyboard-text:0.1.0-alpha03")
 
                 implementation("io.github.petertrr:kotlin-multiplatform-diff:0.7.0")
             }
