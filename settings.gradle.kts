@@ -33,7 +33,6 @@ rootProject.name = "deck.bnorm.dev"
 includeBuild("storyboard")
 
 include(":deck.bnorm.dev")
-include(":dcnyc25:companion")
 include(":dcnyc25:story")
 include(":kotlinconf2025:companion")
 include(":kotlinconf2025:story")

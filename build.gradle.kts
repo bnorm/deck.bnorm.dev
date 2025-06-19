@@ -1,7 +1,5 @@
 import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.compose.resources.ResourcesExtension
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
@@ -46,8 +44,5 @@ tasks.register<Sync>("site") {
 
     into("dcnyc25") {
         from(project(":dcnyc25:story").tasks.named("wasmJsBrowserDistribution"))
-        into("companion") {
-            from(project(":dcnyc25:companion").tasks.named("wasmJsBrowserDistribution"))
-        }
     }
 }
