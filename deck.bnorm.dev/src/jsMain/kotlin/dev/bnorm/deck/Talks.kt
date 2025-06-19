@@ -15,6 +15,7 @@ fun Talks() {
                 boxSizing("border-box")
             }
         }) {
+            Talk("Writing Your Third Kotlin Compiler Plugin", "9P7qUGi5_gc", "kc25")
             Talk("Kotlin + Power-Assert = Love", "N8u-6d0iCiE", "kotlinconf2024")
             Talk("Declarative Test Setup", "_K25Z--4hxg")
             Talk("Elevated Gardening with the Kotlin Ecosystem", "nVj9mbWz-Os")
