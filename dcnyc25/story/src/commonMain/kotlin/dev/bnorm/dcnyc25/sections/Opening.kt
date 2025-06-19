@@ -1,62 +1,73 @@
 package dev.bnorm.dcnyc25.sections
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.bnorm.dcnyc25.broadcast.LocalVoteTally
-import dev.bnorm.dcnyc25.broadcast.VoteMessage
-import dev.bnorm.dcnyc25.broadcast.VoteMessage.MultiVoteMessage
-import dev.bnorm.dcnyc25.broadcast.VoteTally
-import dev.bnorm.dcnyc25.broadcast.votes
 import dev.bnorm.dcnyc25.template.*
+import dev.bnorm.deck.shared.socials.Bluesky
+import dev.bnorm.deck.shared.socials.JetBrainsEmployee
+import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
-import dev.bnorm.deck.story.generated.resources.github_review
-import dev.bnorm.deck.story.generated.resources.intellij
-import dev.bnorm.deck.story.generated.resources.keynote
-import dev.bnorm.deck.story.generated.resources.qr
-import dev.bnorm.storyboard.*
-import dev.bnorm.storyboard.easel.rememberSharedContentState
-import dev.bnorm.storyboard.easel.sharedElement
+import dev.bnorm.deck.story.generated.resources.background_building
+import dev.bnorm.deck.story.generated.resources.droidcon_newyork
+import dev.bnorm.deck.story.generated.resources.twitter
+import dev.bnorm.storyboard.SceneScope
+import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.easel.LocalStoryboard
 import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
-import org.jetbrains.compose.resources.imageResource
+import dev.bnorm.storyboard.toDpSize
+import dev.bnorm.storyboard.toState
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Opening() {
     scene(
-        stateCount = 1,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        stateCount = 3,
+        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
+        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
-        Column {
-            TitleHeader()
+        val offset = transition.createChildTransition { it.toState() }
+
+        val scrollState = rememberScrollState()
+        offset.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {
+            with(LocalDensity.current) { (SceneHalfHeight * it).roundToPx() }
+        }
+
+        Column(Modifier.verticalScroll(scrollState, enabled = false)) {
+            Horizontal(MaterialTheme.colors.primary) {
+                TitleHeader()
+            }
 
             Horizontal(MaterialTheme.colors.secondary) {
-                Box(Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
+                TitleContent()
+            }
+
+            Full(MaterialTheme.colors.primary) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Image(
-                        imageResource(Res.drawable.qr),
-                        contentDescription = null,
+                        painter = painterResource(Res.drawable.twitter),
+                        contentDescription = "IntelliJ",
+                        alignment = Alignment.TopStart,
+                        contentScale = ContentScale.FillHeight,
+                        modifier = Modifier.clip(RoundedCornerShape(16.dp))
                     )
                 }
             }
@@ -65,125 +76,114 @@ fun StoryboardBuilder.Opening() {
 
     scene(
         stateCount = 5,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
+        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
+        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
-        val offset by transition.animateDp(transitionSpec = { tween(durationMillis = 750) }) {
-            SceneHalfHeight * when (it.toState()) {
-                0 -> 0
-                else -> 1
-            }
-        }
+        Full(MaterialTheme.colors.secondary) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val storyboard = buildAnnotatedString {
+                        append("and created ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Storyboard") }
+                        append("!")
+                    }
 
-        val questionHeight by transition.animateDp(transitionSpec = { tween(durationMillis = 750) }) {
-            SceneHalfHeight * when (it.toState()) {
-                0 -> 1f
-                else -> 0.5f
-            }
-        }
-
-        Column(
-            Modifier
-                .wrapContentSize(align = Alignment.TopStart, unbounded = true)
-                .offset(y = -offset)
-        ) {
-            TitleHeader()
-
-            val yesPercent = LocalVoteTally.current?.toCodePercent() ?: 0.5f
-            HowManyCode(questionHeight, yesPercent)
-
-            Surface(
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier
-                    .width(SceneWidth)
-                    .height(SceneHeight - questionHeight)
-                    .sharedElement(rememberSharedContentState("opening-panels"))
-            ) {
-                Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxSize()) {
-                    val padding = 16.dp
-                    val eachWidth = (SceneWidth - padding * 4f) / 3f
-
-                    Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
-                        transition.AnimatedVisibility(
-                            visible = { it.toState() >= 2 },
-                            enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
-                        ) {
-                            IntelliJPanel {
-                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                                    Text("Editor", style = MaterialTheme.typography.h2)
-                                }
-                            }
+                    Row {
+                        OutlinedText("Well…", style = MaterialTheme.typography.h2)
+                        Reveal(step = 1) {
+                            OutlinedText(" I did it anyways", style = MaterialTheme.typography.h2)
                         }
                     }
-                    Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
-                        transition.AnimatedVisibility(
-                            visible = { it.toState() >= 3 },
-                            enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
-                        ) {
-                            GitHubPanel {
-                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                                    Text("Review", style = MaterialTheme.typography.h2)
-                                }
-                            }
-                        }
+
+                    Reveal(step = 2) {
+                        OutlinedText(storyboard, style = MaterialTheme.typography.h2)
                     }
-                    Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
-                        transition.AnimatedVisibility(
-                            visible = { it.toState() >= 4 },
-                            enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
-                        ) {
-                            KeynotePanel {
-                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                                    Text("Slides", style = MaterialTheme.typography.h2)
-                                }
-                            }
-                        }
+
+                    Reveal(step = 3) {
+                        OutlinedText(
+                            "(not Storytale, JetBrains' Compose gallery generator)",
+                            style = MaterialTheme.typography.h5
+                        )
+                    }
+                    Reveal(step = 4) {
+                        OutlinedText("(and not Storyboard, the XCode tool)", style = MaterialTheme.typography.h5)
                     }
                 }
             }
         }
     }
 
-    Question(
-        buildAnnotatedString {
-            append("Does it provide good ")
-            withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
-                append("context")
-            }
-            append("?")
-        },
-        votes = { votes<VoteMessage.Context>() },
-    )
+    scene(
+        stateCount = 4,
+        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
+        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
+    ) {
+        Full(MaterialTheme.colors.primary) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val framework = buildAnnotatedString {
+                        append("Storyboard is a ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("framework") }
+                    }
+                    val presentations = buildAnnotatedString {
+                        append("for writing ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("presentations") }
+                    }
+                    val compose = buildAnnotatedString {
+                        append("with ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Compose Multiplatform") }
+                        append(".")
+                    }
 
-    Question(
-        buildAnnotatedString {
-            append("Does it have good ")
-            withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
-                append("styling")
+                    Reveal(step = 0) {
+                        OutlinedText(framework, style = MaterialTheme.typography.h2)
+                    }
+                    Reveal(step = 1) {
+                        OutlinedText(presentations, style = MaterialTheme.typography.h2)
+                    }
+                    Reveal(step = 2) {
+                        OutlinedText(compose, style = MaterialTheme.typography.h2)
+                    }
+                    Reveal(step = 3) {
+                        OutlinedText("(It's actually not that interesting)", style = MaterialTheme.typography.h5)
+                    }
+                }
             }
-            append("?")
-        },
-        votes = { votes<VoteMessage.Style>() },
-    )
+        }
+    }
 
-    Question(
-        question = buildAnnotatedString {
-            append("Does it provide enough ")
-            withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
-                append("time")
+    scene(
+        stateCount = 3,
+        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
+        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
+    ) {
+        Full(MaterialTheme.colors.secondary) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val interesting = buildAnnotatedString {
+                        append("But what ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("is") }
+                        append(" interesting")
+                    }
+                    val code = buildAnnotatedString {
+                        append("are the tools for ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("code") }
+                        append("!")
+                    }
+
+                    Reveal(step = 0) {
+                        OutlinedText(interesting, style = MaterialTheme.typography.h2)
+                    }
+                    Reveal(step = 1) {
+                        OutlinedText(code, style = MaterialTheme.typography.h2)
+                    }
+                    Reveal(step = 2) {
+                        OutlinedText("(Specifically, code changes)", style = MaterialTheme.typography.h5)
+                    }
+                }
             }
-            append("?")
-        },
-        votes = { votes<VoteMessage.Time>() },
-        enterTransition = enter(
-            start = SceneEnter(alignment = Alignment.CenterEnd),
-            end = SceneEnter(alignment = Alignment.BottomCenter),
-        ),
-        exitTransition = exit(
-            start = SceneExit(alignment = Alignment.CenterEnd),
-            end = SceneExit(alignment = Alignment.BottomCenter),
-        ),
-    )
+        }
+    }
 
     scene(
         stateCount = 4,
@@ -196,7 +196,7 @@ fun StoryboardBuilder.Opening() {
             end = SceneExit(alignment = Alignment.CenterEnd),
         ),
     ) {
-        Full(MaterialTheme.colors.secondary) {
+        Full(MaterialTheme.colors.primary) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -223,13 +223,13 @@ fun StoryboardBuilder.Opening() {
 
                     OutlinedText(title, style = MaterialTheme.typography.h2)
                     Column {
-                        Conclusion(step = 1) {
+                        Reveal(step = 1) {
                             OutlinedText(familiar, style = MaterialTheme.typography.h4)
                         }
-                        Conclusion(step = 2) {
+                        Reveal(step = 2) {
                             OutlinedText(pretty, style = MaterialTheme.typography.h4)
                         }
-                        Conclusion(step = 3) {
+                        Reveal(step = 3) {
                             OutlinedText(read, style = MaterialTheme.typography.h4)
                         }
                     }
@@ -237,322 +237,57 @@ fun StoryboardBuilder.Opening() {
             }
         }
     }
-
-    scene(
-        stateCount = 3,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    ) {
-        Full(MaterialTheme.colors.primary) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val storyboard = buildAnnotatedString {
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Storyboard") }
-                        append("!")
-                    }
-
-                    OutlinedText("This is why I created", style = MaterialTheme.typography.h2)
-                    OutlinedText(storyboard, style = MaterialTheme.typography.h2)
-
-                    Conclusion(step = 1) {
-                        OutlinedText(
-                            "(not Storytale, JetBrains' Compose gallery generator)",
-                            style = MaterialTheme.typography.h5
-                        )
-                    }
-                    Conclusion(step = 2) {
-                        OutlinedText("(and not Storyboard, the XCode tool)", style = MaterialTheme.typography.h5)
-                    }
-                }
-            }
-        }
-    }
-
-    scene(
-        stateCount = 4,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    ) {
-        Full(MaterialTheme.colors.secondary) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val framework = buildAnnotatedString {
-                        append("Storyboard is a ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("framework") }
-                    }
-                    val presentations = buildAnnotatedString {
-                        append("for writing ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("presentations") }
-                    }
-                    val compose = buildAnnotatedString {
-                        append("with ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Compose Multiplatform") }
-                        append(".")
-                    }
-
-                    Conclusion(step = 0) {
-                        OutlinedText(framework, style = MaterialTheme.typography.h2)
-                    }
-                    Conclusion(step = 1) {
-                        OutlinedText(presentations, style = MaterialTheme.typography.h2)
-                    }
-                    Conclusion(step = 2) {
-                        OutlinedText(compose, style = MaterialTheme.typography.h2)
-                    }
-                    Conclusion(step = 3) {
-                        OutlinedText("(It's actually not that interesting)", style = MaterialTheme.typography.h5)
-                    }
-                }
-            }
-        }
-    }
-
-    scene(
-        stateCount = 3,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    ) {
-        Full(MaterialTheme.colors.primary) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val interesting = buildAnnotatedString {
-                        append("But what ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("is") }
-                        append(" interesting")
-                    }
-                    val code = buildAnnotatedString {
-                        append("are the tools for ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("code") }
-                        append("!")
-                    }
-
-                    Conclusion(step = 0) {
-                        OutlinedText(interesting, style = MaterialTheme.typography.h2)
-                    }
-                    Conclusion(step = 1) {
-                        OutlinedText(code, style = MaterialTheme.typography.h2)
-                    }
-                    Conclusion(step = 2) {
-                        OutlinedText("(Specifically, code changes)", style = MaterialTheme.typography.h5)
-                    }
-                }
-            }
-        }
-    }
-}
-
-private fun VoteTally.toCodePercent(): Float {
-    val votes = votes<VoteMessage.Code>().filter { it.value != null }
-    if (votes.isEmpty()) return 0.5f
-    return votes.count { it.value == true } / votes.size.toFloat()
 }
 
 @Composable
-private fun SceneScope<*>.HowManyCode(questionHeight: Dp, yesPercent: Float? = null) {
-    Surface(
-        color = MaterialTheme.colors.secondary,
-        modifier = Modifier.width(SceneWidth).height(questionHeight)
-    ) {
-        VoteRow(transition.createChildTransition { it is Frame.State }, yesPercent)
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            OutlinedText("How many of you read code?", style = MaterialTheme.typography.h2)
-        }
-    }
-}
-
-private fun StoryboardBuilder.Question(
-    question: AnnotatedString,
-    votes: VoteTally.() -> List<MultiVoteMessage>,
-    enterTransition: SceneEnterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-    exitTransition: SceneExitTransition = SceneExit(alignment = Alignment.CenterEnd),
-) {
-    scene(
-        stateCount = 1,
-        enterTransition = enterTransition,
-        exitTransition = exitTransition,
-    ) {
-        val tally = LocalVoteTally.current
-        val votes = tally?.votes() ?: emptyList()
-        val editorPercent = votes.count { it.editor != null }
-            .let { count -> if (count == 0) 0.5f else votes.count { it.editor == true } / count.toFloat() }
-        val reviewPercent = votes.count { it.review != null }
-            .let { count -> if (count == 0) 0.5f else votes.count { it.review == true } / count.toFloat() }
-        val slidesPercent = votes.count { it.slides != null }
-            .let { count -> if (count == 0) 0.5f else votes.count { it.slides == true } / count.toFloat() }
-
-        Column {
-            Surface(
-                color = MaterialTheme.colors.secondary,
-                modifier = Modifier.width(SceneWidth).height(SceneHeight * 0.25f)
-            ) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    OutlinedText(question, style = MaterialTheme.typography.h2)
-                }
-            }
-
-            Surface(
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier
-                    .width(SceneWidth)
-                    .height(SceneHeight * 0.75f)
-                    .sharedElement(rememberSharedContentState("opening-panels"))
-            ) {
-                Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxSize()) {
-                    val padding = 16.dp
-                    val eachWidth = (SceneWidth - padding * 4f) / 3f
-
-                    Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
-                        IntelliJPanel {
-                            VoteColumn(transition.createChildTransition { it is Frame.State }, editorPercent)
-                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                                Text("Editor", style = MaterialTheme.typography.h2)
-                            }
-                        }
-                    }
-                    Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
-                        GitHubPanel {
-                            VoteColumn(transition.createChildTransition { it is Frame.State }, reviewPercent)
-                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                                Text("Review", style = MaterialTheme.typography.h2)
-                            }
-                        }
-                    }
-                    Box(Modifier.width(eachWidth).fillMaxHeight().padding(vertical = padding)) {
-                        KeynotePanel {
-                            VoteColumn(transition.createChildTransition { it is Frame.State }, slidesPercent)
-                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                                Text("Slides", style = MaterialTheme.typography.h2)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun IntelliJPanel(content: @Composable () -> Unit) {
-    Surface(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxSize()) {
+fun TitleHeader() {
+    Row {
         Image(
-            painter = painterResource(Res.drawable.intellij),
-            contentDescription = "IntelliJ",
-            alignment = Alignment.TopStart,
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.alpha(0.5f)
+            painter = painterResource(Res.drawable.droidcon_newyork),
+            contentDescription = "title",
+            modifier = Modifier.width(LocalStoryboard.current!!.format.toDpSize().width / 2)
+                .padding(32.dp)
         )
-        content()
-    }
-}
-
-@Composable
-private fun GitHubPanel(content: @Composable () -> Unit) {
-    Surface(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxSize()) {
+        Spacer(Modifier.weight(1f))
         Image(
-            painter = painterResource(Res.drawable.github_review),
-            contentDescription = "GitHub Review",
-            alignment = Alignment.TopStart,
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.alpha(0.5f)
+            painter = painterResource(Res.drawable.background_building),
+            contentDescription = "building",
         )
-        content()
     }
 }
 
 @Composable
-private fun KeynotePanel(content: @Composable () -> Unit) {
-    Surface(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(Res.drawable.keynote),
-            contentDescription = "Keynote",
-            alignment = Alignment.TopStart,
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.alpha(0.5f)
-        )
-        content()
-    }
-}
-
-@Composable
-private fun VoteRow(visible: Transition<Boolean>, percent: Float?) {
-    Box(Modifier.fillMaxSize().alpha(0.75f)) {
-        visible.AnimatedVisibility(
-            visible = { it && percent != null },
-            enter = fadeIn(tween(750)),
-            exit = fadeOut(tween(750))
+private fun TitleContent() {
+    Row {
+        Box(
+            contentAlignment = Alignment.BottomStart,
+            modifier = Modifier.fillMaxHeight().weight(1f).padding(24.dp)
         ) {
-            val percent by animateFloatAsState(percent ?: 0.5f)
-            Row(Modifier.fillMaxSize()) {
-                if (percent > 0f) {
-                    Box(
-                        Modifier.fillMaxHeight().weight(percent).background(
-                            Brush.horizontalGradient(
-                                0f to YesColor.copy(alpha = 0f),
-                                1f to YesColor.copy(alpha = 1f),
-                            )
-                        )
-                    )
-                }
-                if (percent < 1f) {
-                    Box(
-                        Modifier.fillMaxHeight().weight(1f - percent).background(
-                            Brush.horizontalGradient(
-                                0f to NoColor.copy(alpha = 1f),
-                                1f to NoColor.copy(alpha = 0f),
-                            )
-                        )
-                    )
-                }
-            }
-            Row(Modifier.fillMaxSize()) {
-                Box(Modifier.fillMaxHeight().weight(1f), contentAlignment = Alignment.CenterStart) {
-                    Text("Yes", modifier = Modifier.padding(12.dp))
-                }
-                Box(Modifier.fillMaxHeight().weight(1f), contentAlignment = Alignment.CenterEnd) {
-                    Text("No", modifier = Modifier.padding(12.dp))
-                }
-            }
+            OutlinedText(
+                text = buildAnnotatedString {
+                    append("re")
+                    withStyle(SpanStyle(fontWeight = EmphasisWeight)) {
+                        append("creating\nmagic")
+                    }
+                    append("move\nwith compose")
+                },
+                style = MaterialTheme.typography.h2,
+            )
         }
-    }
-}
-
-@Composable
-private fun VoteColumn(visible: Transition<Boolean>, percent: Float?) {
-    Box(Modifier.fillMaxSize().alpha(0.75f)) {
-        visible.AnimatedVisibility(
-            visible = { it && percent != null },
-            enter = fadeIn(tween(750)),
-            exit = fadeOut(tween(750))
+        Box(
+            contentAlignment = Alignment.BottomEnd,
+            modifier = Modifier.fillMaxHeight().weight(1f).padding(24.dp),
         ) {
-            val percent by animateFloatAsState(percent ?: 0.5f)
-            Column(Modifier.fillMaxSize()) {
-                if (percent < 1f) {
-                    Box(
-                        Modifier.fillMaxWidth().weight(1f - percent).background(
-                            Brush.verticalGradient(
-                                0f to NoColor.copy(alpha = 0f),
-                                1f to NoColor.copy(alpha = 1f),
-                            )
-                        )
-                    )
-                }
-                if (percent > 0f) {
-                    Box(
-                        Modifier.fillMaxWidth().weight(percent).background(
-                            Brush.verticalGradient(
-                                0f to YesColor.copy(alpha = 1f),
-                                1f to YesColor.copy(alpha = 0f),
-                            )
-                        )
-                    )
-                }
-            }
-            Column(Modifier.fillMaxSize()) {
-                Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.TopCenter) {
-                    Text("No", modifier = Modifier.padding(12.dp))
-                }
-                Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.BottomCenter) {
-                    Text("Yes", modifier = Modifier.padding(12.dp))
+            Column {
+                JetBrainsEmployee(
+                    name = "Brian Norman",
+                    title = "Kotlin Compiler Developer",
+                )
+                Spacer(Modifier.size(4.dp))
+                Column(Modifier.padding(start = 12.dp)) {
+                    Mastodon(username = "bnorm@kotlin.social")
+                    Spacer(Modifier.size(4.dp))
+                    Bluesky(username = "@bnorm.dev")
                 }
             }
         }
@@ -560,11 +295,24 @@ private fun VoteColumn(visible: Transition<Boolean>, percent: Float?) {
 }
 
 @Composable
-fun SceneScope<Int>.Conclusion(step: Int, content: @Composable () -> Unit) {
-    transition.AnimatedVisibility(
+context(scope: SceneScope<Int>)
+private fun ColumnScope.Reveal(step: Int, content: @Composable () -> Unit) {
+    scope.transition.AnimatedVisibility(
         visible = { it.toState() >= step },
         enter = expandVertically(tween(750), clip = false, expandFrom = Alignment.Top) + fadeIn(tween(750)),
         exit = shrinkVertically(tween(750), clip = false, shrinkTowards = Alignment.Top) + fadeOut(tween(750)),
+    ) {
+        content()
+    }
+}
+
+@Composable
+context(scope: SceneScope<Int>)
+private fun RowScope.Reveal(step: Int, content: @Composable () -> Unit) {
+    scope.transition.AnimatedVisibility(
+        visible = { it.toState() >= step },
+        enter = expandHorizontally(tween(750), clip = false, expandFrom = Alignment.Start) + fadeIn(tween(750)),
+        exit = shrinkHorizontally(tween(750), clip = false, shrinkTowards = Alignment.Start) + fadeOut(tween(750)),
     ) {
         content()
     }

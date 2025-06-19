@@ -5,27 +5,22 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Typography
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.bnorm.dcnyc25.broadcast.LocalVoteTally
-import dev.bnorm.dcnyc25.broadcast.VoteTally
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.SceneDecorator
 
-fun storyDecorator(tally: VoteTally? = null): SceneDecorator = SceneDecorator { content ->
+fun storyDecorator(): SceneDecorator = SceneDecorator { content ->
     MaterialTheme(
         colors = COLORS,
         typography = dcnyc25Typography(),
     ) {
-        CompositionLocalProvider(LocalVoteTally provides tally) {
-            Surface {
-                content()
-            }
+        Surface {
+            content()
         }
     }
 }
@@ -37,12 +32,9 @@ val COLORS = lightColors(
     onSecondary = Color(0xFFF8F8F8),
 )
 
-val YesColor = Color.LightGray
-val NoColor = Color.DarkGray
-
-val MatchColor = Color.Blue.copy(alpha = 0.5f)
+val MatchColor = Color.Blue.copy(alpha = 0.4f)
 val AddColor = Color.Green.copy(alpha = 0.5f)
-val DeleteColor = Color.Red.copy(alpha = 0.5f)
+val DeleteColor = Color.Red.copy(alpha = 0.4f)
 
 val Typography.code1: TextStyle
     @Composable

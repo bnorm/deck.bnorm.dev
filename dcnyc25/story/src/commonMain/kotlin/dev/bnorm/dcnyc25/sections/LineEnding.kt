@@ -19,7 +19,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.CodeString
@@ -28,6 +28,7 @@ import dev.bnorm.dcnyc25.old.kc24.startAnimation
 import dev.bnorm.dcnyc25.old.kc24.thenLineEndDiff
 import dev.bnorm.dcnyc25.sections.LineEndingState.*
 import dev.bnorm.dcnyc25.template.*
+import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -96,7 +97,7 @@ private enum class LineEndingState(
 
 fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
     scene(
-        states = LineEndingState.entries,
+        states = entries,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnter(alignment = Alignment.BottomCenter),
@@ -119,9 +120,9 @@ fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
             }
 
             LineEndingSample(
-                state,
-                before,
-                after,
+                state = state,
+                before = before,
+                after = after,
                 modifier = Modifier.sharedElement(rememberSharedContentState("diff-example")),
             )
         }
@@ -136,21 +137,37 @@ private fun LineEndingInfo(state: Transition<LineEndingState>) {
         }
         TextSurface {
             @Composable
-            fun Bullet(step: Int, text: String) {
+            fun Reveal(step: Int, text: AnnotatedString) {
                 state.AnimatedVisibility(
                     visible = { it.infoProgress >= step },
                     enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
                 ) {
-                    Text("• $text")
+                    Text(text)
                 }
             }
 
+            @Composable
+            fun Reveal(step: Int, text: String) = Reveal(step, AnnotatedString(text))
+
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(BulletSpacing)) {
-                Bullet(step = 1, text = "Find the common prefix of each line.")
-                Bullet(step = 2, text = "Create a sequence which iterates from the first line to the last.")
-                Bullet(step = 3, text = "Create substrings of the line by removing each non-prefix character.")
-                Bullet(step = 4, text = "Continue creating substrings by adding each non-prefix character.")
-                Bullet(step = 5, text = "Use 'animateIntAsState' with 'LinearEasing' to iterate through the sequence.")
+                Reveal(step = 1, text = "• Find the common prefix of each line.")
+                Reveal(step = 2, text = "• Create a sequence which iterates from the first line to the last.")
+                Reveal(step = 3, text = "• Create substrings of the line by removing each non-prefix character.")
+                Reveal(step = 4, text = "• Continue creating substrings by adding each non-prefix character.")
+                Reveal(
+                    step = 5,
+                    text = buildAnnotatedString {
+                        append("• Use '")
+                        withStyle(SpanStyle(fontFamily = JetBrainsMono)) {
+                            append("animateIntAsState")
+                        }
+                        append("' with '")
+                        withStyle(SpanStyle(fontFamily = JetBrainsMono)) {
+                            append("LinearEasing")
+                        }
+                        append("' to iterate through the sequence.")
+                    },
+                )
             }
         }
     }

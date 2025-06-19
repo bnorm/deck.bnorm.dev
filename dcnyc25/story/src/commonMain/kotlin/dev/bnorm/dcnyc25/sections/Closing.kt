@@ -75,7 +75,7 @@ fun StoryboardBuilder.Closing() {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         OutlinedText("Write a diff algorithm.", style = MaterialTheme.typography.h2)
-                        step.Conclusion(step = 3) {
+                        step.Reveal(step = 3) {
                             OutlinedText("It's fun!", style = MaterialTheme.typography.h3)
                         }
                     }
@@ -85,7 +85,7 @@ fun StoryboardBuilder.Closing() {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         OutlinedText("Fin", style = MaterialTheme.typography.h1)
-                        step.Conclusion(step = 5) {
+                        step.Reveal(step = 5) {
                             OutlinedText(
                                 text = "(github.com/bnorm/storyboard)",
                                 style = MaterialTheme.typography.h5.copy(fontFamily = JetBrainsMono)
@@ -99,7 +99,7 @@ fun StoryboardBuilder.Closing() {
 }
 
 @Composable
-fun Transition<Int>.Conclusion(step: Int, content: @Composable () -> Unit) {
+fun Transition<Int>.Reveal(step: Int, content: @Composable () -> Unit) {
     AnimatedVisibility(
         visible = { it >= step },
         enter = expandVertically(tween(750), clip = false, expandFrom = Alignment.Top) + fadeIn(tween(750)),
