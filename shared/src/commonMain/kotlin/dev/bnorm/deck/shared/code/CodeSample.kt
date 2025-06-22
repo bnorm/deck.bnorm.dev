@@ -85,10 +85,10 @@ class CodeSample private constructor(
         return copy(replaced = replaced - tags)
     }
 
-    fun focus(tag: TextTag, scroll: Boolean = true): CodeSample =
+    fun focus(tag: TextTag, scroll: Boolean = false): CodeSample =
         copy(focus = tag, scrollTag = if (scroll) tag else scrollTag)
 
-    fun unfocus(unscroll: Boolean = true): CodeSample =
+    fun unfocus(unscroll: Boolean = false): CodeSample =
         copy(focus = null, scrollTag = if (unscroll) null else scrollTag)
 
     fun styled(tag: TextTag, style: SpanStyle): CodeSample = copy(styled = styled + (tag to style))

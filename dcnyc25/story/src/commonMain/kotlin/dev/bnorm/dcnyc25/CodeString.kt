@@ -32,12 +32,22 @@ import dev.bnorm.storyboard.text.splitByTags
 class CodeString(
     initialText: String,
 ) {
-    var text: AnnotatedString by mutableStateOf(initialText.highlight())
+    var text: AnnotatedString by mutableStateOf(style(initialText))
         private set
 
     fun update(newText: String) {
-        text = newText.highlight()
+        text = style(newText)
     }
+
+    private fun style(newText: String): AnnotatedString = newText.highlight(
+        codeStyle = INTELLIJ_LIGHT,
+        identifierStyle = {
+            when (it) {
+                "println" -> INTELLIJ_LIGHT.staticFunctionCall
+                else -> null
+            }
+        }
+    )
 }
 
 fun String.highlight(

@@ -241,14 +241,14 @@ private val MagicDiffSample = buildCodeSamples {
                 }${script}
 
               ${layout}SharedTransitionLayout {
-                AnimatedContent(asAfter) { asAfter ->
+                AnimatedContent(asAfter) {
                   Column {
                     val iter = editScript.iterator()
                     while (iter.hasNext()) {
                       Row {
                         while (iter.hasNext()) {
                           val edit = iter.next()
-                          Edit(edit, asAfter)
+                          Edit(edit, asAfter = it)
                          ${collapse}${collapse}
                         }
                       }
@@ -310,8 +310,8 @@ private val MagicDiffSample = buildCodeSamples {
     }
 
     CodeSample(base).collapse(body).hide(edit).collapse(collapse)
-        .then { reveal(body).focus(script) }
-        .then { focus(layout).reveal(edit) }
+        .then { reveal(body).focus(script).reveal(edit) }
+        .then { focus(layout).scroll(layout) }
         .then { scroll(edit).focus(modifier) }
         .then { focus(text) }
         .then { unfocus() }

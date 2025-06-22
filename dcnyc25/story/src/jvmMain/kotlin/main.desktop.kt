@@ -4,9 +4,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.application
+ import dev.bnorm.dcnyc25.ScriptCaption
 import dev.bnorm.dcnyc25.createStoryboard
 import dev.bnorm.dcnyc25.template.COLORS
-import dev.bnorm.dcnyc25.template.SampleCaption
 import dev.bnorm.dcnyc25.template.storyDecorator
 import dev.bnorm.deck.shared.Laser
 import dev.bnorm.storyboard.SceneDecorator
@@ -23,7 +23,7 @@ fun main() {
 
     val captions = persistentListOf(
         laser.caption,
-        SampleCaption()
+        ScriptCaption(state),
     )
 
     application {
@@ -33,7 +33,10 @@ fun main() {
                 laser.decorator,
                 SceneIndexDecorator(state),
             )
-            createStoryboard(decorator).also { state.updateStoryboard(it) }
+            createStoryboard(
+                decorator,
+                includeTextFieldSamples = true,
+            ).also { state.updateStoryboard(it) }
         }
 
         MaterialTheme(colors = darkColors()) {

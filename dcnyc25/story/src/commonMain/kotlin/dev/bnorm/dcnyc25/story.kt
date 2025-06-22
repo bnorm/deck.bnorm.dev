@@ -10,6 +10,7 @@ import dev.bnorm.storyboard.Storyboard
 
 fun createStoryboard(
     decorator: SceneDecorator = storyDecorator(),
+    includeTextFieldSamples: Boolean = false,
 ): Storyboard = Storyboard.build(
     title = "(Re)creating Magic(Move) with Compose",
     description = """
@@ -27,6 +28,8 @@ fun createStoryboard(
     decorator = decorator,
 ) {
     // TODO need to run through this opening a couple times to make sure it works
+    // TODO feels weird to talk about code presenting being hard
+    //  and then not really directly answer the problems
     Opening()
 
     // TODO make line ending highlighting dynamic based on sample
@@ -78,6 +81,10 @@ fun createStoryboard(
     //  - https://blog.jcoglan.com/2017/09/19/the-patience-diff-algorithm/
     // TODO this is all just DiffUtil?!
     //  - https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
+
+    if (includeTextFieldSamples) {
+        MagicTextField(SecondSample, ThirdSample)
+    }
 
     MagicSamples()
 
