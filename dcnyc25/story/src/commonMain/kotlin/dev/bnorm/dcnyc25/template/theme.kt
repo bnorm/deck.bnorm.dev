@@ -26,9 +26,9 @@ fun storyDecorator(): SceneDecorator = SceneDecorator { content ->
 }
 
 val COLORS = lightColors(
-    primary = Color(0xFFFF7156),
+    primary = Color(0xFFFF7156), // TODO alternative 0xFFF05E42
     onPrimary = Color(0xFFF8F8F8),
-    secondary = Color(0xFF050CEB),
+    secondary = Color(0xFF050CEB), // TODO alternative 0xFF171EEB
     onSecondary = Color(0xFFF8F8F8),
 )
 
@@ -43,6 +43,15 @@ val Typography.code1: TextStyle
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
         lineHeight = 24.sp,
+    )
+
+val Typography.code2: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = JetBrainsMono,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 18.sp,
     )
 
 val EmphasisWeight = FontWeight.ExtraBold

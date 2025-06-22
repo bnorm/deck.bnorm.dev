@@ -26,10 +26,6 @@ fun createStoryboard(
     """.trimIndent(),
     decorator = decorator,
 ) {
-    // TODO show code for each algorithm?
-    // TODO do i need to show some pseudo code for MagicText?
-    // TODO do i need to show some code examples of MagicMove use?
-
     // TODO need to run through this opening a couple times to make sure it works
     Opening()
 
@@ -65,6 +61,7 @@ fun createStoryboard(
     PatienceEnd(SecondSample, ThirdSample)
 
     // TODO make expansion highlighting dynamic based on sample
+    // TODO animate expansion rather than cross-fade
     Idea(SecondSample, ThirdSample)
 
     // TODO talk about other improvements to MagicText
@@ -82,7 +79,7 @@ fun createStoryboard(
     // TODO this is all just DiffUtil?!
     //  - https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
 
-    Samples()
+    MagicSamples()
 
     Closing()
 }

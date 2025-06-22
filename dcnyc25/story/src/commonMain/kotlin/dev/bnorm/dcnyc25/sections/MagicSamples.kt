@@ -11,11 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import dev.bnorm.dcnyc25.highlight
 import dev.bnorm.dcnyc25.template.Full
 import dev.bnorm.dcnyc25.template.TextSurface
 import dev.bnorm.dcnyc25.template.code1
@@ -28,16 +27,13 @@ import dev.bnorm.storyboard.easel.SceneMode
 import dev.bnorm.storyboard.easel.assist.SceneCaption
 import dev.bnorm.storyboard.easel.template.*
 import dev.bnorm.storyboard.text.highlight.CodeScope
-import dev.bnorm.storyboard.text.highlight.CodeStyle
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-fun StoryboardBuilder.Samples() {
+fun StoryboardBuilder.MagicSamples() {
     scene(
         stateCount = 1,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
@@ -92,26 +88,6 @@ fun StoryboardBuilder.Samples() {
         }
     }
 }
-
-private fun AnnotatedString.toCode(
-    codeStyle: CodeStyle = INTELLIJ_LIGHT,
-    scope: CodeScope = CodeScope.File,
-    identifierStyle: (String) -> SpanStyle? = { _ -> null },
-): AnnotatedString {
-    val styled = text.highlight(
-        codeStyle = codeStyle,
-        language = Language.Kotlin,
-        scope = scope,
-        identifierStyle = { identifierStyle(it) }
-    )
-    return buildAnnotatedString {
-        append(this@toCode)
-        for (range in styled.spanStyles) {
-            addStyle(range.item, range.start, range.end)
-        }
-    }
-}
-
 
 @Composable
 private fun animateSampleIndex(
@@ -308,7 +284,7 @@ private val PowerAssertSamples = buildCodeSamples {
 
     fun String.toCodeSample(): CodeSample {
         return CodeSample(lazy {
-            extractTags(this).toCode(
+            extractTags(this).highlight(
                 scope = CodeScope.Function,
                 identifierStyle = { identifier ->
                     when (identifier) {
@@ -331,7 +307,7 @@ private val PowerAssertSamples = buildCodeSamples {
 private val ComposeSamples = buildCodeSamples {
     fun String.toCodeSample(): CodeSample {
         return CodeSample(lazy {
-            extractTags(this).toCode(identifierStyle = {
+            extractTags(this).highlight(identifierStyle = {
                 when (it) {
                     "skipping" -> INTELLIJ_LIGHT.property
                     "mutableStateOf" -> INTELLIJ_LIGHT.extensionFunctionCall

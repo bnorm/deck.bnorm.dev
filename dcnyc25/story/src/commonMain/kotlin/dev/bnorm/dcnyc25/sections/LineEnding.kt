@@ -8,27 +8,26 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.CodeString
+import dev.bnorm.dcnyc25.highlight
 import dev.bnorm.dcnyc25.old.kc24.animateList
 import dev.bnorm.dcnyc25.old.kc24.startAnimation
 import dev.bnorm.dcnyc25.old.kc24.thenLineEndDiff
-import dev.bnorm.dcnyc25.sections.LineEndingState.*
 import dev.bnorm.dcnyc25.template.*
+import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.deck.shared.JetBrainsMono
+import dev.bnorm.deck.shared.code.CodeSample
+import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
@@ -36,68 +35,42 @@ import dev.bnorm.storyboard.easel.template.SceneEnter
 import dev.bnorm.storyboard.easel.template.SceneExit
 import dev.bnorm.storyboard.easel.template.enter
 import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.text.magic.MagicText
+import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toState
 
-private enum class LineEndingState(
-    val showHighlight: Boolean,
-    val showInfo: Boolean,
-    val infoProgress: Int,
-) {
-    Sample(
-        showHighlight = false,
-        showInfo = false,
-        infoProgress = 0,
-    ),
-    HighlightDiff(
-        showHighlight = true,
-        showInfo = false,
-        infoProgress = 0,
-    ),
-    IntroAlgorithm(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 0,
-    ),
-    Algorithm1(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 1,
-    ),
-    Algorithm2(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 2,
-    ),
-    Algorithm3(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 3,
-    ),
-    Algorithm4(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 4,
-    ),
-    Algorithm5(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 5,
-    ),
-    SampleAlgorithm(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 5,
-    ),
-    RevertAlgorithm(
-        showHighlight = false,
-        showInfo = true,
-        infoProgress = 5,
-    ),
-}
+private data class LineEndingState(
+    val highlightDiff: Boolean = false,
+    val highlightPrefix: Boolean = false,
+    val highlightDelete: Boolean = false,
+    val highlightAdd: Boolean = false,
+    val showInfo: Boolean = false,
+    val infoProgress: Int = 0,
+    val showCompose: Boolean = false,
+    val composeIndex: Int = 0,
+    val showAfter: Boolean = false,
+)
 
 fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
+    val states = start { LineEndingState() }
+        .then { copy(highlightDiff = true) }
+        .then { copy(highlightDiff = false, showInfo = true) }
+        .then { copy(infoProgress = 1, highlightPrefix = true) }
+        .then { copy(infoProgress = 2) }
+        .then { copy(infoProgress = 3, highlightDelete = true) }
+        .then { copy(infoProgress = 4, highlightAdd = true) }
+        .then { copy(infoProgress = 5, highlightPrefix = false, highlightDelete = false, highlightAdd = false) }
+        .then { copy(showCompose = true) }
+        .then { copy(composeIndex = 1) }
+        .then { copy(composeIndex = 2) }
+        .then { copy(composeIndex = 3) }
+        .then { copy(composeIndex = 4) }
+        .then { copy(showAfter = true) }
+        .then { copy(showAfter = false) }
+        .then { copy(showCompose = false) }
+
     scene(
-        states = entries,
+        states = states,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnter(alignment = Alignment.BottomCenter),
@@ -111,7 +84,12 @@ fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
 
         val scrollState = rememberScrollState()
         state.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {
-            with(LocalDensity.current) { (SceneHalfWidth * if (it.showInfo) 0 else 1).roundToPx() }
+            val pane = when {
+                it.showCompose -> 1
+                it.showInfo -> 0
+                else -> 1
+            }
+            with(LocalDensity.current) { (SceneHalfWidth * pane).roundToPx() }
         }
 
         Row(Modifier.horizontalScroll(scrollState, enabled = false)) {
@@ -125,6 +103,21 @@ fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
                 after = after,
                 modifier = Modifier.sharedElement(rememberSharedContentState("diff-example")),
             )
+
+            Vertical(MaterialTheme.colors.primary) {
+                Box(Modifier.padding(16.dp)) {
+                    TextSurface {
+                        Box(Modifier.padding(16.dp)) {
+                            val code = state.createChildTransition {
+                                MagicLineEndingSample[it.composeIndex].string.splitByTags()
+                            }
+                            ProvideTextStyle(MaterialTheme.typography.code2) {
+                                MagicText(code)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -180,10 +173,10 @@ private fun LineEndingSample(
     after: CodeString,
     modifier: Modifier = Modifier,
 ) {
-    val highlightDiff = state.createChildTransition { it.showHighlight }
-    val highlightPrefix = state.createChildTransition { it == Algorithm1 || it == Algorithm2 || it == Algorithm3 || it == Algorithm4 }
-    val highlightDelete = state.createChildTransition { it == Algorithm3 || it == Algorithm4 }
-    val highlightAdd = state.createChildTransition { it == Algorithm4 }
+    val highlightDiff = state.createChildTransition { it.highlightDiff }
+    val highlightPrefix = state.createChildTransition { it.highlightPrefix }
+    val highlightDelete = state.createChildTransition { it.highlightDelete }
+    val highlightAdd = state.createChildTransition { it.highlightAdd }
 
     val commonPrefix = remember {
         // TODO ew
@@ -204,7 +197,7 @@ private fun LineEndingSample(
         values = sampleAnimation,
         transitionSpec = { typing(sampleAnimation.size) }
     ) {
-        if (it == SampleAlgorithm) sampleAnimation.lastIndex else 0
+        if (it.showAfter) sampleAnimation.lastIndex else 0
     }
 
     @Composable
@@ -304,15 +297,17 @@ private fun LineEndingSample(
                         }
                     }
                 }
-                Vertical(MaterialTheme.colors.primary) {
-                    if (!it.showInfo) {
-                        Box(Modifier.padding(16.dp)) {
-                            After(
-                                Modifier.sharedElement(
-                                    rememberSharedContentState("after"),
-                                    boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
+                if (it.infoProgress == 0) {
+                    Vertical(MaterialTheme.colors.primary) {
+                        if (!it.showInfo) {
+                            Box(Modifier.padding(16.dp)) {
+                                After(
+                                    Modifier.sharedElement(
+                                        rememberSharedContentState("after"),
+                                        boundsTransform = BoundsTransform { _, _ -> tween(durationMillis = 750) }
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -337,26 +332,55 @@ fun TextLayoutResult.getBoundingBox(from: Int, to: Int): Rect {
     )
 }
 
-fun Modifier.highlight(
-    rect: Rect,
-    color: Color,
-    radius: Dp = Dp.Hairline,
-    padding: Dp = Dp.Hairline,
-): Modifier {
-    return drawBehind {
-        val topLeft = rect.topLeft
-        val bottomRight = rect.bottomRight
-        val padding = padding.toPx()
-        val radius = radius.toPx()
-        drawRoundRect(
-            color = color,
-            topLeft = topLeft - Offset(padding, padding),
-            size = Size(
-                width = bottomRight.x - topLeft.x + 2 * padding,
-                height = bottomRight.y - topLeft.y + 2 * padding,
-            ),
-            cornerRadius = CornerRadius(radius, radius),
-        )
-    }
-}
+private val MagicLineEndingSample = buildCodeSamples {
+    val body by tag("body")
+    val seq by tag("seq")
+    val index by tag("index")
+    val text by tag("text")
 
+    val base = extractTags(
+        """
+            @Composable 
+            fun MagicLineEnding(
+              before: AnnotatedString,
+              after: AnnotatedString,
+              asAfter: Boolean,
+            ) {${body}
+              ${seq}val sequence: List<AnnotatedString> =
+                remember(before, after) {
+                  buildSequence(before, after)
+                }${seq}
+    
+              ${index}val index: Int by animateIntAsState(
+                targetValue = when {
+                  asAfter -> sequence.lastIndex
+                  else -> 0
+                },
+                animationSpec = tween(
+                  durationMillis = 35 * sequence.size,
+                  easing = LinearEasing
+                )
+              )${index}
+    
+              ${text}Text(sequence[index])${text}
+            ${body}}
+        """.trimIndent()
+    ).highlight(
+        identifierStyle = {
+            when (it) {
+                "size" -> INTELLIJ_LIGHT.property
+                "lastIndex", "LinearEasing" -> INTELLIJ_LIGHT.staticProperty
+                "buildSequence", "tween" -> INTELLIJ_LIGHT.staticFunctionCall
+                // Compose function call.
+                "remember", "animateIntAsState", "Text" -> SpanStyle(color = Color(0xFF009900))
+                else -> null
+            }
+        }
+    )
+
+    CodeSample(base).collapse(body)
+        .then { reveal(body).focus(seq) }
+        .then { focus(index) }
+        .then { focus(text) }
+        .then { unfocus() }
+}
