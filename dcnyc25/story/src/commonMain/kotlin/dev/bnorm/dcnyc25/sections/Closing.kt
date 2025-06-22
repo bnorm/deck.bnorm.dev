@@ -27,7 +27,8 @@ import dev.bnorm.dcnyc25.template.Horizontal
 import dev.bnorm.dcnyc25.template.OutlinedText
 import dev.bnorm.dcnyc25.template.SceneHalfHeight
 import dev.bnorm.dcnyc25.template.animateScroll
-import dev.bnorm.deck.shared.JetBrainsMono
+import dev.bnorm.dcnyc25.template.code1
+import dev.bnorm.dcnyc25.template.code2
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.alex
 import dev.bnorm.deck.story.generated.resources.jesse
@@ -47,6 +48,7 @@ fun StoryboardBuilder.Closing() {
             2 to 3,
             3 to 4,
             3 to 5,
+            3 to 6,
         ),
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
@@ -88,7 +90,14 @@ fun StoryboardBuilder.Closing() {
                         step.Reveal(step = 5) {
                             OutlinedText(
                                 text = "(github.com/bnorm/storyboard)",
-                                style = MaterialTheme.typography.h5.copy(fontFamily = JetBrainsMono)
+                                style = MaterialTheme.typography.code1
+                            )
+                        }
+                        step.Reveal(step = 6) {
+                            OutlinedText(
+                                text = "(deck.bnorm.dev/dcnyc25)",
+                                style = MaterialTheme.typography.code2,
+                                modifier = Modifier.padding(top = 8.dp)
                             )
                         }
                     }
