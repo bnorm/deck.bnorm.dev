@@ -23,12 +23,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.bnorm.dcnyc25.template.Horizontal
-import dev.bnorm.dcnyc25.template.OutlinedText
-import dev.bnorm.dcnyc25.template.SceneHalfHeight
-import dev.bnorm.dcnyc25.template.animateScroll
-import dev.bnorm.dcnyc25.template.code1
-import dev.bnorm.dcnyc25.template.code2
+import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.alex
 import dev.bnorm.deck.story.generated.resources.jesse
@@ -46,9 +41,10 @@ fun StoryboardBuilder.Closing() {
             1 to 1,
             2 to 2,
             2 to 3,
-            3 to 4,
+            2 to 4,
             3 to 5,
             3 to 6,
+            3 to 7,
         ),
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
@@ -80,6 +76,9 @@ fun StoryboardBuilder.Closing() {
                         step.Reveal(step = 3) {
                             OutlinedText("It's fun!", style = MaterialTheme.typography.h3)
                         }
+                        step.Reveal(step = 4) {
+                            OutlinedText("(and you'll probably learn something)", style = MaterialTheme.typography.h5)
+                        }
                     }
                 }
             }
@@ -87,13 +86,13 @@ fun StoryboardBuilder.Closing() {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         OutlinedText("Fin", style = MaterialTheme.typography.h1)
-                        step.Reveal(step = 5) {
+                        step.Reveal(step = 6) {
                             OutlinedText(
                                 text = "(github.com/bnorm/storyboard)",
                                 style = MaterialTheme.typography.code1
                             )
                         }
-                        step.Reveal(step = 6) {
+                        step.Reveal(step = 7) {
                             OutlinedText(
                                 text = "(deck.bnorm.dev/dcnyc25)",
                                 style = MaterialTheme.typography.code2,

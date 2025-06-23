@@ -36,18 +36,20 @@ fun <T> myers(
         val distance = (target - path.last()).let { abs(it.x) + abs(it.y) }
 
         override fun compareTo(other: SearchNode): Int {
-            val c = compareValues(cost, other.cost)
-            if (c != 0) return c
-            return -compareValues(direction, other.direction) // Reverse order.
+            return compareValues(cost, other.cost)
         }
 
         fun right(): SearchNode? {
             val last = path.last()
             if (last.x == start.size) return null
-            val extra = if (direction == SearchDirection.Down) 1 else 0
+
+            // Never move right (delete) after moving down (insert).
+            // Always delete first (right) and then insert (down).
+            if (direction == SearchDirection.Down) return null
+
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x + 1, it.y) }),
-                cost = cost + 1 + extra,
+                cost = cost + 1,
                 direction = SearchDirection.Right
             )
         }
@@ -55,10 +57,9 @@ fun <T> myers(
         fun down(): SearchNode? {
             val last = path.last()
             if (last.y == end.size) return null
-            val extra = if (direction == SearchDirection.Right) 1 else 0
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x, it.y + 1) }),
-                cost = cost + 1 + extra,
+                cost = cost + 1,
                 direction = SearchDirection.Down
             )
         }
@@ -69,7 +70,7 @@ fun <T> myers(
             if (start[last.x] != end[last.y]) return null
             return SearchNode(
                 path = path.add(last.let { IntOffset(it.x + 1, it.y + 1) }),
-                cost = cost,
+                cost = cost, // Diagonal is free!
                 direction = SearchDirection.Diagonal
             )
         }

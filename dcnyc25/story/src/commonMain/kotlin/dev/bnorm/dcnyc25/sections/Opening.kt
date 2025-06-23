@@ -75,7 +75,7 @@ fun StoryboardBuilder.Opening() {
     }
 
     scene(
-        stateCount = 5,
+        stateCount = 4,
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
@@ -100,52 +100,7 @@ fun StoryboardBuilder.Opening() {
                     }
 
                     Reveal(step = 3) {
-                        OutlinedText(
-                            "(not Storytale, JetBrains' Compose gallery generator)",
-                            style = MaterialTheme.typography.h5
-                        )
-                    }
-                    Reveal(step = 4) {
-                        OutlinedText("(and not Storyboard, the XCode tool)", style = MaterialTheme.typography.h5)
-                    }
-                }
-            }
-        }
-    }
-
-    scene(
-        stateCount = 4,
-        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
-        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
-    ) {
-        Full(MaterialTheme.colors.primary) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val framework = buildAnnotatedString {
-                        append("Storyboard is a ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("framework") }
-                    }
-                    val presentations = buildAnnotatedString {
-                        append("for writing ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("presentations") }
-                    }
-                    val compose = buildAnnotatedString {
-                        append("with ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Compose Multiplatform") }
-                        append(".")
-                    }
-
-                    Reveal(step = 0) {
-                        OutlinedText(framework, style = MaterialTheme.typography.h2)
-                    }
-                    Reveal(step = 1) {
-                        OutlinedText(presentations, style = MaterialTheme.typography.h2)
-                    }
-                    Reveal(step = 2) {
-                        OutlinedText(compose, style = MaterialTheme.typography.h2)
-                    }
-                    Reveal(step = 3) {
-                        OutlinedText("(It's actually not that interesting)", style = MaterialTheme.typography.h5)
+                        OutlinedText("(and it's not really that interesting)", style = MaterialTheme.typography.h5)
                     }
                 }
             }
@@ -154,39 +109,6 @@ fun StoryboardBuilder.Opening() {
 
     scene(
         stateCount = 3,
-        enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
-        exitTransition = SceneExit(alignment = Alignment.BottomCenter),
-    ) {
-        Full(MaterialTheme.colors.secondary) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val interesting = buildAnnotatedString {
-                        append("But what ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("is") }
-                        append(" interesting")
-                    }
-                    val code = buildAnnotatedString {
-                        append("are the tools for ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("code") }
-                        append("!")
-                    }
-
-                    Reveal(step = 0) {
-                        OutlinedText(interesting, style = MaterialTheme.typography.h2)
-                    }
-                    Reveal(step = 1) {
-                        OutlinedText(code, style = MaterialTheme.typography.h2)
-                    }
-                    Reveal(step = 2) {
-                        OutlinedText("(Specifically, code changes)", style = MaterialTheme.typography.h5)
-                    }
-                }
-            }
-        }
-    }
-
-    scene(
-        stateCount = 4,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.BottomCenter),
             end = SceneEnter(alignment = Alignment.CenterEnd),
@@ -198,40 +120,31 @@ fun StoryboardBuilder.Opening() {
     ) {
         Full(MaterialTheme.colors.primary) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val title = buildAnnotatedString {
-                        append("Presenting code is ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("hard") }
+                    val interesting = buildAnnotatedString {
+                        append("But what ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("is") }
+                        append(" interesting")
+                    }
+                    val move = buildAnnotatedString {
+                        append("is a Compose ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("Magic Move") }
                         append("!")
                     }
-                    val familiar = buildAnnotatedString {
-                        append("Code needs to be ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("familiar") }
-                        append(".")
-                    }
-                    val pretty = buildAnnotatedString {
-                        append("Code needs to be ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("pretty") }
-                        append(".")
-                    }
-                    val read = buildAnnotatedString {
-                        append("Code needs to be ")
-                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("read") }
-                        append(".")
+                    val text = buildAnnotatedString {
+                        append("(well, move like ")
+                        withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("MagicText") }
+                        append(")")
                     }
 
-                    OutlinedText(title, style = MaterialTheme.typography.h2)
-                    Column {
-                        Reveal(step = 1) {
-                            OutlinedText(familiar, style = MaterialTheme.typography.h4)
-                        }
-                        Reveal(step = 2) {
-                            OutlinedText(pretty, style = MaterialTheme.typography.h4)
-                        }
-                        Reveal(step = 3) {
-                            OutlinedText(read, style = MaterialTheme.typography.h4)
-                        }
+                    Reveal(step = 0) {
+                        OutlinedText(interesting, style = MaterialTheme.typography.h2)
+                    }
+                    Reveal(step = 1) {
+                        OutlinedText(move, style = MaterialTheme.typography.h2)
+                    }
+                    Reveal(step = 2) {
+                        OutlinedText(text, style = MaterialTheme.typography.h5)
                     }
                 }
             }
