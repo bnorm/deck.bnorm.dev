@@ -132,7 +132,7 @@ fun StoryboardBuilder.Opening() {
                         append("!")
                     }
                     val text = buildAnnotatedString {
-                        append("(well, move like ")
+                        append("(well, more like ")
                         withStyle(SpanStyle(fontWeight = EmphasisWeight)) { append("MagicText") }
                         append(")")
                     }

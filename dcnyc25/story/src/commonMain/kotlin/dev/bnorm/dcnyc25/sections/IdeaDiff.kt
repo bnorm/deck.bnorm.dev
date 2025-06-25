@@ -361,8 +361,8 @@ private val MagicTextSample = buildCodeSamples {
     }
 
     CodeSample(base).collapse(body).hide(piece).collapse(collapse)
-        .then { reveal(body).focus(pieces) }
-        .then { focus(layout).reveal(piece) }
+        .then { reveal(body).focus(pieces).reveal(piece) }
+        .then { focus(layout).scroll(layout) }
         .then { scroll(piece).focus(modifier) }
         .then { focus(text) }
         .then { unfocus() }

@@ -5,19 +5,16 @@ import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -161,31 +158,26 @@ private fun DroidconTalk(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(32.dp),
         modifier = Modifier.padding(48.dp),
     ) {
-        Image(
-            imageResource(head),
-            contentDescription = null,
-            modifier = Modifier.clip(CircleShape)
-        )
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Column {
-                for (line in titleLines) {
-                    OutlinedText(line, style = titleStyle)
-                }
-            }
-            OutlinedText(speaker, style = speakerStyle)
-            OutlinedText(time, style = timeStyle)
+        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+            Image(
+                imageResource(head),
+                contentDescription = null,
+                modifier = Modifier.clip(CircleShape)
+            )
         }
-        Spacer(Modifier.weight(1f))
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxHeight().aspectRatio(16f / 9f)
-                .border(2.dp, Color.White),
-        ) {
-            Text("(title slide here)")
+        Box(Modifier.weight(2f), contentAlignment = Alignment.CenterStart) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column {
+                    for (line in titleLines) {
+                        OutlinedText(line, style = titleStyle)
+                    }
+                }
+                OutlinedText(speaker, style = speakerStyle)
+                OutlinedText(time, style = timeStyle)
+            }
         }
     }
 }

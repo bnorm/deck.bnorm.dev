@@ -17,12 +17,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.MagicCodeSample
 import dev.bnorm.dcnyc25.highlight
 import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
+import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -126,21 +129,36 @@ fun MyersDiffInfo(title: Transition<Boolean>, progress: Transition<Int>, modifie
         }
         TextSurface {
             @Composable
-            fun Bullet(step: Int, text: String) {
+            fun Reveal(step: Int, text: AnnotatedString) {
                 progress.AnimatedVisibility(
                     visible = { it >= step },
                     enter = fadeIn(tween(750)), exit = fadeOut(tween(750)),
                 ) {
-                    Text("• $text")
+                    Text(text)
                 }
             }
 
+            @Composable
+            fun Reveal(step: Int, text: String) = Reveal(step, AnnotatedString(text))
+
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(BulletSpacing)) {
-                Bullet(step = 1, text = "Most common algorithm published in 1986 by Eugene Myers.")
-                Bullet(step = 2, text = "Computes the shortest edit script for transforming one string into another.")
-                Bullet(step = 3, text = "Each edit will get a unique key used by shared element 'Modifier'.")
-                Bullet(step = 4, text = "Transform edit script into a column of rows of 'Text' Composables.")
-                Bullet(step = 5, text = "Instead of characters, use 'words' to break up code into elements.")
+                Reveal(step = 1, text = "• Most common algorithm published in 1986 by Eugene Myers.")
+                Reveal(step = 2, text = "• Computes the shortest edit script for transforming one string into another.")
+                Reveal(step = 3, text = buildAnnotatedString {
+                    append("• Each edit will get a unique key used by shared element '")
+                    withStyle(SpanStyle(fontFamily = JetBrainsMono)) {
+                        append("Modifier")
+                    }
+                    append("'.")
+                })
+                Reveal(step = 4, text = buildAnnotatedString {
+                    append("• Transform edit script into a column of rows of '")
+                    withStyle(SpanStyle(fontFamily = JetBrainsMono)) {
+                        append("Text")
+                    }
+                    append("' Composables.")
+                })
+                Reveal(step = 5, text = "• Instead of characters, use 'words' to break up code into elements.")
             }
         }
     }
