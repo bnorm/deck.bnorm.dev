@@ -15,10 +15,11 @@ fun Talks() {
                 boxSizing("border-box")
             }
         }) {
-            Talk("Writing Your Third Kotlin Compiler Plugin", "9P7qUGi5_gc", "kc25")
-            Talk("Kotlin + Power-Assert = Love", "N8u-6d0iCiE", "kotlinconf2024")
-            Talk("Declarative Test Setup", "_K25Z--4hxg")
-            Talk("Elevated Gardening with the Kotlin Ecosystem", "nVj9mbWz-Os")
+            Talk("(Re)creating Magic(Move) with Compose", Video.Vimeo("1100418290"), "dcnyc25")
+            Talk("Writing Your Third Kotlin Compiler Plugin", Video.Youtube("9P7qUGi5_gc"), "kc25")
+            Talk("Kotlin + Power-Assert = Love", Video.Youtube("N8u-6d0iCiE"), "kotlinconf2024")
+            Talk("Declarative Test Setup", Video.Youtube("_K25Z--4hxg"))
+            Talk("Elevated Gardening with the Kotlin Ecosystem", Video.Youtube("nVj9mbWz-Os"))
         }
     }
 }

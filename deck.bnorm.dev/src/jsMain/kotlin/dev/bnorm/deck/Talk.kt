@@ -9,7 +9,7 @@ import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun Talk(title: String, videoId: String, storyId: String? = null) {
+fun Talk(title: String, video: Video, storyId: String? = null) {
     Section({
         style {
             boxSizing("border-box")
@@ -24,7 +24,10 @@ fun Talk(title: String, videoId: String, storyId: String? = null) {
         Column {
             Title(title)
             Row {
-                EmbeddedYouTubeVideo(videoId)
+                when (video) {
+                    is Video.Youtube -> EmbeddedYouTubeVideo(video.id)
+                    is Video.Vimeo -> EmbeddedVimeoVideo(video.id)
+                }
                 if (storyId != null) {
                     EmbeddedStory(storyId)
                 }
