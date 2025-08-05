@@ -25,7 +25,7 @@ fun Talk(title: String, video: Video, storyId: String? = null) {
             Title(title)
             Row {
                 when (video) {
-                    is Video.Youtube -> EmbeddedYouTubeVideo(video.id)
+                    is Video.YouTube -> EmbeddedYouTubeVideo(video.id)
                     is Video.Vimeo -> EmbeddedVimeoVideo(video.id)
                 }
                 if (storyId != null) {
