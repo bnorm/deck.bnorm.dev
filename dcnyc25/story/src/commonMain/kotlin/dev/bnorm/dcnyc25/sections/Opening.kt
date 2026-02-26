@@ -30,21 +30,21 @@ import dev.bnorm.deck.story.generated.resources.twitter
 import dev.bnorm.storyboard.SceneScope
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.LocalStoryboard
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.toDpSize
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Opening() {
     scene(
-        stateCount = 3,
+        frameCount = 3,
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
-        val offset = transition.createChildTransition { it.toState() }
+        val offset = transition.createChildTransition { it.toValue() }
 
         val scrollState = rememberScrollState()
         offset.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {
@@ -75,7 +75,7 @@ fun StoryboardBuilder.Opening() {
     }
 
     scene(
-        stateCount = 4,
+        frameCount = 4,
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
@@ -108,7 +108,7 @@ fun StoryboardBuilder.Opening() {
     }
 
     scene(
-        stateCount = 3,
+        frameCount = 3,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.BottomCenter),
             end = SceneEnter(alignment = Alignment.CenterEnd),
@@ -211,7 +211,7 @@ private fun TitleContent() {
 context(scope: SceneScope<Int>)
 private fun ColumnScope.Reveal(step: Int, content: @Composable () -> Unit) {
     scope.transition.AnimatedVisibility(
-        visible = { it.toState() >= step },
+        visible = { it.toValue() >= step },
         enter = expandVertically(tween(750), clip = false, expandFrom = Alignment.Top) + fadeIn(tween(750)),
         exit = shrinkVertically(tween(750), clip = false, shrinkTowards = Alignment.Top) + fadeOut(tween(750)),
     ) {
@@ -223,7 +223,7 @@ private fun ColumnScope.Reveal(step: Int, content: @Composable () -> Unit) {
 context(scope: SceneScope<Int>)
 private fun RowScope.Reveal(step: Int, content: @Composable () -> Unit) {
     scope.transition.AnimatedVisibility(
-        visible = { it.toState() >= step },
+        visible = { it.toValue() >= step },
         enter = expandHorizontally(tween(750), clip = false, expandFrom = Alignment.Start) + fadeIn(tween(750)),
         exit = shrinkHorizontally(tween(750), clip = false, shrinkTowards = Alignment.Start) + fadeOut(tween(750)),
     ) {

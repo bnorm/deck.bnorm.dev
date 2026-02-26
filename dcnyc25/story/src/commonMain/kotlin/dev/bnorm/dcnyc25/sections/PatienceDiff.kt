@@ -18,19 +18,19 @@ import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.PatienceStart(before: CodeString, after: CodeString) {
     scene(
-        stateCount = 4,
+        frameCount = 4,
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
-        val state = transition.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toValue() }
 
         Patience(state, before, after)
     }
@@ -38,7 +38,7 @@ fun StoryboardBuilder.PatienceStart(before: CodeString, after: CodeString) {
 
 fun StoryboardBuilder.PatienceEnd(before: CodeString, after: CodeString) {
     scene(
-        stateCount = 3,
+        frameCount = 3,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.TopCenter),
             end = SceneEnter(alignment = Alignment.BottomCenter),
@@ -48,7 +48,7 @@ fun StoryboardBuilder.PatienceEnd(before: CodeString, after: CodeString) {
             end = SceneExit(alignment = Alignment.BottomCenter),
         ),
     ) {
-        val state = transition.createChildTransition { it.toState() + 3 }
+        val state = transition.createChildTransition { it.toValue() + 3 }
 
         Patience(state, before, after)
     }

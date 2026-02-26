@@ -40,11 +40,11 @@ import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 
 private sealed class EditGraphState(
     val deleteVisible: Boolean = true,
@@ -74,7 +74,7 @@ fun StoryboardBuilder.EditGraph(start: String, end: String) {
     })
     val solution = paths.last()
 
-    val states = buildList {
+    val frames = buildList {
         add(EditGraphState.Blank)
         add(EditGraphState.Delete)
         add(EditGraphState.Insert)
@@ -88,7 +88,7 @@ fun StoryboardBuilder.EditGraph(start: String, end: String) {
     }
 
     scene(
-        states = states,
+        frames = frames,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.BottomCenter),
             end = SceneEnter(alignment = Alignment.TopCenter),
@@ -115,7 +115,7 @@ fun StoryboardBuilder.EditGraph(start: String, end: String) {
                         paths = paths,
                         solution = solution,
                         size = SceneHalfWidth,
-                        transition = transition.createChildTransition { it.toState() },
+                        transition = transition.createChildTransition { it.toValue() },
                     )
                 }
             }

@@ -17,10 +17,10 @@ import dev.bnorm.storyboard.*
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedBounds
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 
 enum class CompilerStage {
     Parse,
@@ -47,11 +47,11 @@ private fun <T> fadeInSpec(): TweenSpec<T> =
     tween(250, delayMillis = 0, easing = EaseIn)
 
 fun StoryboardBuilder.StageDetail(
-    stateCount: Int,
+    frameCount: Int,
     stage: CompilerStage,
     content: SceneContent<Int>,
 ) {
-    scene(stateCount) {
+    scene(frameCount) {
         Box(
             modifier = Modifier
                 .padding(32.dp)
@@ -78,7 +78,7 @@ fun StoryboardBuilder.StageDetail(
                 )
 
                 transition.AnimatedVisibility(
-                    visible = { it is Frame.State<*> },
+                    visible = { it is Frame.Value },
                     enter = fadeIn(fadeInSpec()),
                     exit = fadeOut(fadeOutSpec()),
                 ) {
@@ -99,7 +99,7 @@ fun StoryboardBuilder.StageTimeline(
     slideEnd: Boolean = false,
 ) {
     scene(
-        states = states,
+        frames = states,
         enterTransition = enter(
             start = if (slideStart) SceneEnter(alignment = Alignment.CenterEnd) else SceneEnterTransition.None,
             end = if (slideEnd) SceneEnter(alignment = Alignment.CenterEnd) else SceneEnterTransition.None,
@@ -118,17 +118,17 @@ fun StoryboardBuilder.StageTimeline(
         ) {
             for (stage in CompilerStage.entries) {
                 val boxVisible = transition.createChildTransition {
-                    it.toState(start, end)?.get(stage)?.visible ?: false
+                    it.toValue(start, end)?.get(stage)?.visible ?: false
                 }
 
                 val contentVisible = transition.createChildTransition {
-                    it.toState(start, end)?.get(stage)?.content ?: false
+                    it.toValue(start, end)?.get(stage)?.content ?: false
                 }
 
                 val borderColor by transition.animateColor(
                     transitionSpec = { tween(500, easing = EaseOut) },
                 ) {
-                    val focus = it.toState(start, end)?.get(stage)?.focused ?: false
+                    val focus = it.toValue(start, end)?.get(stage)?.focused ?: false
                     if (focus) MaterialTheme.colors.secondary else MaterialTheme.colors.primary
                 }
 

@@ -5,18 +5,16 @@ pluginManagement {
         mavenCentral()
         google()
         gradlePluginPortal()
-        maven("https://central.sonatype.com/repository/maven-snapshots/")
     }
 
     plugins {
-         val kotlinVersion = "2.2.0-RC"
+         val kotlinVersion = "2.3.0"
 
         kotlin("multiplatform") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
         kotlin("plugin.compose") version kotlinVersion
         kotlin("plugin.power-assert") version kotlinVersion
-        id("org.jetbrains.compose") version "1.8.0"
-        id("org.jetbrains.compose.hot-reload") version "1.0.0-alpha10"
+        id("org.jetbrains.compose") version "1.10.1"
     }
 }
 
@@ -24,7 +22,6 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
-        maven("https://central.sonatype.com/repository/maven-snapshots/")
     }
 }
 

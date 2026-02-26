@@ -17,17 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.bnorm.deck.kc25.companion.cards.CompilerPlugins
-import dev.bnorm.deck.kc25.companion.cards.EmbeddedStory
-import dev.bnorm.deck.kc25.companion.cards.Resources
-import dev.bnorm.deck.kc25.companion.cards.SendAReaction
-import dev.bnorm.deck.kc25.companion.cards.Stages
-import dev.bnorm.deck.kc25.companion.cards.Title
+import dev.bnorm.deck.kc25.companion.cards.*
 import dev.bnorm.deck.kc25.companion.utils.ListenToStory
 import dev.bnorm.deck.kc25.companion.utils.rememberMaxIndex
 import dev.bnorm.kc25.broadcast.BroadcastMessage
 import dev.bnorm.storyboard.Storyboard
-import dev.bnorm.storyboard.easel.StoryState
+import dev.bnorm.storyboard.easel.Animatic
 
 fun BroadcastMessage.toStoryboard(): Storyboard.Index {
     return Storyboard.Index(sceneIndex, stateIndex)
@@ -36,8 +31,8 @@ fun BroadcastMessage.toStoryboard(): Storyboard.Index {
 // TODO doesn't seem to work on iOS Chrome: https://developer.chrome.com/blog/debugging-chrome-on-ios
 // TODO the app seems to become non-responsive on Android Chrome after the phone goes to sleep
 @Composable
-fun App(storyState: StoryState) {
-    ListenToStory(storyState)
+fun App(animatic: Animatic) {
+    ListenToStory(animatic)
 
     // TODO switch between light and dark themes?
     MaterialTheme(colors = lightColors(background = Color.LightGray)) {
@@ -59,20 +54,20 @@ fun App(storyState: StoryState) {
                     .widthIn(max = 960.dp)
                     .requiredWidthIn(min = 720.dp)
             ) {
-                Content(storyState)
+                Content(animatic)
             }
         }
     }
 }
 
 @Composable
-private fun ColumnScope.Content(storyState: StoryState) {
+private fun ColumnScope.Content(animatic: Animatic) {
     ContentCard {
         Title()
     }
 
     ContentCard(Modifier.padding(top = 16.dp)) {
-        EmbeddedStory(storyState)
+        EmbeddedStory(animatic)
     }
 
     ContentCard(Modifier.padding(top = 16.dp)) {
@@ -93,8 +88,8 @@ private fun ColumnScope.Content(storyState: StoryState) {
     //  * [ ] card with link to test documentation:
     //    - https://github.com/JetBrains/kotlin/blob/v2.2.0-Beta1/compiler/test-infrastructure/ReadMe.md
 
-    val maxIndex by rememberMaxIndex(storyState)
-//    val maxIndex = storyState.targetIndex
+    val maxIndex by rememberMaxIndex(animatic)
+//    val maxIndex = animatic.targetIndex
 
     ContentCard(Modifier.padding(top = 16.dp)) {
         Text(maxIndex.toString())

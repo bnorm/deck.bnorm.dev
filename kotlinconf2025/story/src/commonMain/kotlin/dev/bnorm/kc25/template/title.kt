@@ -19,9 +19,9 @@ import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.SceneSection
+import dev.bnorm.storyboard.layout.template.SceneSection
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 
 fun StoryboardBuilder.SectionTitle(
     animateFromHeader: Boolean = false,
@@ -29,7 +29,7 @@ fun StoryboardBuilder.SectionTitle(
     title: (@Composable () -> Unit)? = null,
 ) {
     scene(
-        stateCount = 1,
+        frameCount = 1,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
@@ -38,7 +38,7 @@ fun StoryboardBuilder.SectionTitle(
                 when (it) {
                     Frame.Start -> animateFromHeader
                     Frame.End -> animateToHeader
-                    is Frame.State -> false
+                    is Frame.Value -> false
                 }
             },
             title = title ?: SceneSection.title,

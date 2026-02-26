@@ -32,12 +32,12 @@ import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 private data class IdeaState(
     val highlightUnique: Boolean = false,
@@ -49,7 +49,7 @@ private data class IdeaState(
 )
 
 fun StoryboardBuilder.Idea(sampleStart: CodeString, sampleEnd: CodeString) {
-    val states = start { IdeaState(highlightUnique = true) }
+    val frames = start { IdeaState(highlightUnique = true) }
         .then { copy(infoProgress = 1) }
         .then { copy(infoProgress = 2, highlightUnique = false, highlightExpanded = true) }
         .then { copy(infoProgress = 3) }
@@ -66,7 +66,7 @@ fun StoryboardBuilder.Idea(sampleStart: CodeString, sampleEnd: CodeString) {
         .then { copy(infoProgress = 5) }
 
     scene(
-        states = states,
+        frames = frames,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.BottomCenter),
             end = SceneEnter(alignment = Alignment.CenterEnd),
@@ -76,7 +76,7 @@ fun StoryboardBuilder.Idea(sampleStart: CodeString, sampleEnd: CodeString) {
             end = SceneExit(alignment = Alignment.CenterEnd),
         ),
     ) {
-        val state = transition.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toValue() }
 
         val scrollState = rememberScrollState()
         state.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {

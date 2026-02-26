@@ -25,15 +25,15 @@ import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.alex
 import dev.bnorm.deck.story.generated.resources.jesse
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.imageResource
 
 fun StoryboardBuilder.Closing() {
     scene(
-        states = listOf(
+        frames = listOf(
             0 to 0,
             1 to 1,
             2 to 2,
@@ -46,8 +46,8 @@ fun StoryboardBuilder.Closing() {
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
-        val offset = transition.createChildTransition { it.toState().first }
-        val step = transition.createChildTransition { it.toState().second }
+        val offset = transition.createChildTransition { it.toValue().first }
+        val step = transition.createChildTransition { it.toValue().second }
 
         val scrollState = rememberScrollState()
         offset.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {

@@ -11,10 +11,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.RevealEach
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.RevealEach
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 
 const val BULLET_1 = " • "
 const val BULLET_2 = " ◦ "
@@ -30,7 +30,7 @@ fun StoryboardBuilder.RevealScene(vararg items: AnnotatedString) {
 
 fun StoryboardBuilder.RevealScene(items: List<AnnotatedString>) {
     scene(
-        stateCount = items.size,
+        frameCount = items.size,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
@@ -39,7 +39,7 @@ fun StoryboardBuilder.RevealScene(items: List<AnnotatedString>) {
                 modifier = Modifier.padding(padding),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                RevealEach(transition.createChildTransition { it.toState() }) {
+                RevealEach(transition.createChildTransition { it.toValue() }) {
                     for (value in items) {
                         item { Text(value) }
                     }

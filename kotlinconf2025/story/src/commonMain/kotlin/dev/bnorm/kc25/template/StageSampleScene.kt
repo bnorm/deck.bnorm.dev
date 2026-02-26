@@ -17,9 +17,9 @@ import dev.bnorm.kc25.components.RightPanel
 import dev.bnorm.kc25.sections.stages.CompilerStage
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 
 data class RightPanel(
     val sampleIndex: Int,
@@ -42,11 +42,11 @@ fun StoryboardBuilder.StageSampleScene(
     require(endExclusive <= samples.size) { "end must be less than or equal to ${samples.size}" }
 
     scene(
-        stateCount = endExclusive - start,
+        frameCount = endExclusive - start,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        val sample = transition.createChildTransition { samples[start + it.toState()] }
+        val sample = transition.createChildTransition { samples[start + it.toValue()] }
 
         StageScaffold(updateTransition(setOfNotNull(stage))) { padding ->
             ProvideTextStyle(MaterialTheme.typography.code1) {

@@ -19,11 +19,11 @@ import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.RevealEach
+import dev.bnorm.storyboard.layout.template.RevealEach
 import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.magic.toWords
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.StageTransform() {
     val items = listOf(
@@ -39,11 +39,11 @@ fun StoryboardBuilder.StageTransform() {
         AnnotatedString("$BULLET_1 Performed in phases that each reduce or optimize."),
     )
 
-    StageDetail(stateCount = items.size + 1 + SAMPLES.size, stage = CompilerStage.Transform) {
-        val sampleTransition = transition.createChildTransition { it.toState() - 1 - items.size }
+    StageDetail(frameCount = items.size + 1 + SAMPLES.size, stage = CompilerStage.Transform) {
+        val sampleTransition = transition.createChildTransition { it.toValue() - 1 - items.size }
 
         Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            RevealEach(transition.createChildTransition { it.toState() - 1 }) {
+            RevealEach(transition.createChildTransition { it.toValue() - 1 }) {
                 for (value in items) {
                     item { Text(value) }
                 }

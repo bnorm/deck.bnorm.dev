@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.StoryEffect
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.storyboard.easel.LocalSceneMode
 import dev.bnorm.storyboard.easel.SceneMode
 import dev.bnorm.storyboard.easel.assist.SceneCaption
-import dev.bnorm.storyboard.easel.template.StoryEffect
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

@@ -16,38 +16,38 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.kc25.companion.utils.rememberMaxIndex
 import dev.bnorm.storyboard.AdvanceDirection
-import dev.bnorm.storyboard.easel.Story
-import dev.bnorm.storyboard.easel.StoryState
-import dev.bnorm.storyboard.easel.overlay.StoryOverlay
-import dev.bnorm.storyboard.easel.overlay.StoryOverlayScope
+import dev.bnorm.storyboard.easel.Animatic
+import dev.bnorm.storyboard.easel.Easel
+import dev.bnorm.storyboard.easel.overlay.EaselOverlay
+import dev.bnorm.storyboard.easel.overlay.EaselOverlayScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Composable
-fun EmbeddedStory(storyState: StoryState) {
+fun EmbeddedStory(animatic: Animatic) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Slides", style = MaterialTheme.typography.h2)
         Spacer(Modifier.height(16.dp))
 
         // TODO do we need to disable key events? doesn't seem like it...
-        StoryOverlay(
-            overlay = { OverlayNavigation(storyState) }
+        EaselOverlay(
+            overlay = { OverlayNavigation(animatic) }
         ) {
-            Story(storyState)
+            Easel(animatic)
         }
     }
 }
 
 @Composable
-private fun StoryOverlayScope.OverlayNavigation(
-    storyState: StoryState,
+private fun EaselOverlayScope.OverlayNavigation(
+    animatic: Animatic,
     alignment: Alignment = Alignment.BottomCenter,
 ) {
     val coroutineScope = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
-    val indices = storyState.storyboard.indices
+    val indices = animatic.storyboard.indices
 
-    val maxIndex = rememberMaxIndex(storyState)
+    val maxIndex = rememberMaxIndex(animatic)
 
     Surface(
         modifier = Modifier
@@ -60,11 +60,11 @@ private fun StoryOverlayScope.OverlayNavigation(
             IconButton(
                 text = "Previous",
                 icon = Icons.AutoMirrored.Rounded.ArrowBack,
-                enabled = storyState.targetIndex > indices.first(),
+                enabled = animatic.targetIndex > indices.first(),
                 onClick = {
                     job?.cancel()
                     job = coroutineScope.launch {
-                        storyState.advance(AdvanceDirection.Backward)
+                        animatic.advance(AdvanceDirection.Backward)
                         job = null
                     }
                 }
@@ -72,11 +72,11 @@ private fun StoryOverlayScope.OverlayNavigation(
             IconButton(
                 text = "Next",
                 icon = Icons.AutoMirrored.Rounded.ArrowForward,
-                enabled = storyState.targetIndex < indices.last() && storyState.targetIndex < maxIndex.value,
+                enabled = animatic.targetIndex < indices.last() && animatic.targetIndex < maxIndex.value,
                 onClick = {
                     job?.cancel()
                     job = coroutineScope.launch {
-                        storyState.advance(AdvanceDirection.Forward)
+                        animatic.advance(AdvanceDirection.Forward)
                         job = null
                     }
                 }

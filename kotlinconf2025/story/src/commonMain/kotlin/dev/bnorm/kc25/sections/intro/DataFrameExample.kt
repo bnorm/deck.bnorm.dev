@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import dev.bnorm.deck.shared.StoryEffect
 import dev.bnorm.kc25.components.BottomPanel
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.code.CodeSample
@@ -19,7 +20,7 @@ import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.kc25.template.code2
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.*
+import dev.bnorm.storyboard.layout.template.*
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import kotlinx.coroutines.delay

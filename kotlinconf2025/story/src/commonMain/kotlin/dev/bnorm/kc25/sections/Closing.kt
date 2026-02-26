@@ -1,25 +1,10 @@
 package dev.bnorm.kc25.sections
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.EaseInCubic
-import androidx.compose.animation.core.EaseOutCubic
-import androidx.compose.animation.core.EaseOutElastic
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
@@ -43,15 +28,15 @@ import dev.bnorm.deck.story.generated.resources.end_badge
 import dev.bnorm.deck.story.generated.resources.end_phone
 import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Closing() {
     scene(
-        stateCount = 1,
+        frameCount = 1,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnter(alignment = Alignment.CenterStart),
@@ -62,7 +47,7 @@ fun StoryboardBuilder.Closing() {
         ),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val visible = transition.createChildTransition { it is Frame.State }
+            val visible = transition.createChildTransition { it is Frame.Value }
             val arcFraction by visible.animateFloat(
                 transitionSpec = {
                     when (targetState) {

@@ -3,27 +3,28 @@ package dev.bnorm.kc25.story.desktop
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.window.application
 import dev.bnorm.deck.shared.Laser
+import dev.bnorm.deck.shared.SceneIndexDecorator
 import dev.bnorm.kc25.broadcast.Broadcast
 import dev.bnorm.kc25.components.validateAllSamples
 import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.kc25.template.DARK_COLORS
 import dev.bnorm.kc25.template.storyDecorator
-import dev.bnorm.storyboard.SceneDecorator
-import dev.bnorm.storyboard.easel.DesktopStoryEasel
-import dev.bnorm.storyboard.easel.ExperimentalStoryStateApi
-import dev.bnorm.storyboard.easel.StoryState
-import dev.bnorm.storyboard.easel.template.SceneIndexDecorator
+import dev.bnorm.storyboard.ContentDecorator
+import dev.bnorm.storyboard.Storyboard
+import dev.bnorm.storyboard.easel.Animatic
+import dev.bnorm.storyboard.easel.DesktopEasel
+import dev.bnorm.storyboard.easel.assist.rememberAssistantWindow
+import dev.bnorm.storyboard.easel.rememberAnimatic
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
-@OptIn(ExperimentalStoryStateApi::class)
 fun main() {
-    val state = StoryState()
-    val broadcast = Broadcast(state, coroutineScope = CoroutineScope(Dispatchers.IO))
+    val broadcast = Broadcast()
     val laser = Laser(color = DARK_COLORS.secondary)
 
     val captions = persistentListOf(
@@ -31,26 +32,45 @@ fun main() {
         broadcast.caption,
     )
 
+    val currentIndex = mutableStateOf(Storyboard.Index(0, 0))
+
     application {
         validateAllSamples()
         val infiniteTransition = rememberInfiniteTransition()
 
-        remember {
-            val decorator = SceneDecorator.from(
+        val animatic = rememberAnimatic {
+            val decorator = ContentDecorator.from(
                 laser.decorator,
-                SceneIndexDecorator(state),
+                SceneIndexDecorator(currentIndex),
                 storyDecorator(infiniteTransition),
                 broadcast.decorator,
             )
-            createStoryboard(decorator).also { state.updateStoryboard(it) }
+            createStoryboard(decorator)
         }
+        AttachAnimatic(animatic, broadcast, currentIndex)
 
         MaterialTheme(colors = darkColors()) {
-            DesktopStoryEasel(
-                storyState = state,
+            DesktopEasel(
+                animatic = animatic,
                 overlay = {},
-                captions = captions
+                windows = listOf(
+                    rememberAssistantWindow(animatic, captions)
+                ),
             )
         }
+    }
+}
+
+@Composable
+private fun AttachAnimatic(
+    animatic: Animatic,
+    broadcast: Broadcast,
+    currentIndex: MutableState<Storyboard.Index>,
+) {
+    LaunchedEffect(animatic) {
+        broadcast.attach(animatic)
+    }
+    LaunchedEffect(animatic.currentIndex) {
+        currentIndex.value = animatic.currentIndex
     }
 }

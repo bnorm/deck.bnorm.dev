@@ -16,7 +16,7 @@ import dev.bnorm.deck.story.generated.resources.buildable_repo_qr
 import dev.bnorm.kc25.broadcast.ReactionListener
 import dev.bnorm.kc25.broadcast.ReactionMessage
 import dev.bnorm.kc25.components.KodeeWave
-import dev.bnorm.storyboard.SceneDecorator
+import dev.bnorm.storyboard.ContentDecorator
 import dev.bnorm.storyboard.easel.LocalSceneMode
 import dev.bnorm.storyboard.easel.SceneMode
 import io.ktor.util.date.*
@@ -61,7 +61,7 @@ fun QrCodeKodee(infiniteTransition: InfiniteTransition?, modifier: Modifier = Mo
 
 fun KodeeReactionDecorator(
     reactionListener: State<ReactionListener?>,
-): SceneDecorator = SceneDecorator { content ->
+): ContentDecorator = ContentDecorator { content ->
     content()
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {

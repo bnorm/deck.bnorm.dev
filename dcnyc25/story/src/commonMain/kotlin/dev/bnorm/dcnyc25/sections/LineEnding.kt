@@ -31,13 +31,13 @@ import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 private data class LineEndingState(
     val highlightDiff: Boolean = false,
@@ -52,7 +52,7 @@ private data class LineEndingState(
 )
 
 fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
-    val states = start { LineEndingState() }
+    val frames = start { LineEndingState() }
         .then { copy(highlightDiff = true) }
         .then { copy(highlightDiff = false, showInfo = true) }
         .then { copy(infoProgress = 1, highlightPrefix = true) }
@@ -70,7 +70,7 @@ fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
         .then { copy(showCompose = false) }
 
     scene(
-        states = states,
+        frames = frames,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnter(alignment = Alignment.BottomCenter),
@@ -80,7 +80,7 @@ fun StoryboardBuilder.LineEnding(before: CodeString, after: CodeString) {
             end = SceneExit(alignment = Alignment.BottomCenter),
         ),
     ) {
-        val state = transition.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toValue() }
 
         val scrollState = rememberScrollState()
         state.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {

@@ -22,14 +22,18 @@ import dev.bnorm.kc25.sections.write.transform.Visitor
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.storyDecorator
-import dev.bnorm.storyboard.SceneDecorator
+import dev.bnorm.storyboard.ContentDecorator
 import dev.bnorm.storyboard.Storyboard
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.*
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.section
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 
 // TODO review all slides for consistent code formatting!
 fun createStoryboard(
-    decorator: SceneDecorator = storyDecorator(),
+    decorator: ContentDecorator = storyDecorator(),
     sink: MutableList<CodeSample> = mutableListOf(),
 ): Storyboard {
     return Storyboard.build(

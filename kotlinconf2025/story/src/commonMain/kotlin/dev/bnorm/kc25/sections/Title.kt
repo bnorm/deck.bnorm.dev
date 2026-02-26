@@ -23,19 +23,19 @@ import dev.bnorm.kc25.components.KotlinConfBird
 import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.LocalStoryboard
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import org.jetbrains.compose.resources.painterResource
 
 fun StoryboardBuilder.Title() {
     scene(
-        stateCount = 1,
+        frameCount = 1,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
         Box(Modifier.fillMaxSize()) {
             Image(
-                painter = KotlinConfBird(transition.createChildTransition { it is Frame.State }),
+                painter = KotlinConfBird(transition.createChildTransition { it is Frame.Value }),
                 contentDescription = "",
                 modifier = Modifier.size(548.dp).offset(416.dp, 0.dp),
             )

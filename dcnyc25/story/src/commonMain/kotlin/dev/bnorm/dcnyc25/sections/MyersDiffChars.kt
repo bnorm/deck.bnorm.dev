@@ -31,10 +31,10 @@ import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 private data class MyersDiffState(
     val infoProgress: Int = 0,
@@ -60,11 +60,11 @@ fun StoryboardBuilder.MyersDiffChars(before: CodeString, after: CodeString) {
         .then { copy(showCompose = false) }
 
     scene(
-        states = states,
+        frames = states,
         enterTransition = SceneEnter(alignment = Alignment.BottomCenter),
         exitTransition = SceneExit(alignment = Alignment.BottomCenter),
     ) {
-        val state = transition.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toValue() }
 
         val scrollState = rememberScrollState()
         state.animateScroll(scrollState, transitionSpec = { tween(durationMillis = 750) }) {

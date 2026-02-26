@@ -22,9 +22,9 @@ import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.components.temp.BULLET_2
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 
 private fun <T> tSpec(): @Composable Transition.Segment<Int>.() -> FiniteAnimationSpec<T> = { tween(300) }
 private fun <T> spec(): FiniteAnimationSpec<T> = tween(300)
@@ -33,11 +33,11 @@ private fun vExit(): ExitTransition = fadeOut(spec()) + slideOutHorizontally(spe
 
 fun StoryboardBuilder.ThirdPlugin() {
     scene(
-        stateCount = 9,
+        frameCount = 9,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        val state = transition.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toValue() }
         HeaderScaffold { padding ->
             Box(
                 contentAlignment = Alignment.TopEnd,

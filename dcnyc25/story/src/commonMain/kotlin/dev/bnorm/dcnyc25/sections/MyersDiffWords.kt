@@ -28,12 +28,12 @@ import dev.bnorm.dcnyc25.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.text.magic.toWords
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 // TODO sequence
 //  1. highlight character diff
@@ -121,7 +121,7 @@ private enum class MyersDiffWordsState(
 
 fun StoryboardBuilder.MyersDiffWords(before: CodeString, after: CodeString, problem: CodeString) {
     scene(
-        states = MyersDiffWordsState.entries.toList(),
+        frames = MyersDiffWordsState.entries.toList(),
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.TopCenter),
             end = SceneEnter(alignment = Alignment.BottomCenter),
@@ -131,7 +131,7 @@ fun StoryboardBuilder.MyersDiffWords(before: CodeString, after: CodeString, prob
             end = SceneExit(alignment = Alignment.BottomCenter),
         ),
     ) {
-        val state = transition.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toValue() }
 
         Row {
             Vertical(MaterialTheme.colors.primary) {

@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.dcnyc25.CodeString
 import dev.bnorm.dcnyc25.template.*
+import dev.bnorm.deck.shared.StoryEffect
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.assist.SceneCaption
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.StoryEffect
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.text.magic.MagicText
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.onEach
 
 fun StoryboardBuilder.MagicTextField(before: CodeString, after: CodeString) {
     scene(
-        stateCount = 1,
+        frameCount = 1,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {

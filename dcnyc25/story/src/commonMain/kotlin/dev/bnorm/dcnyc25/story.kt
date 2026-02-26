@@ -5,11 +5,11 @@ import dev.bnorm.dcnyc25.template.FirstSample
 import dev.bnorm.dcnyc25.template.SecondSample
 import dev.bnorm.dcnyc25.template.ThirdSample
 import dev.bnorm.dcnyc25.template.storyDecorator
-import dev.bnorm.storyboard.SceneDecorator
+import dev.bnorm.storyboard.ContentDecorator
 import dev.bnorm.storyboard.Storyboard
 
 fun createStoryboard(
-    decorator: SceneDecorator = storyDecorator(),
+    decorator: ContentDecorator = storyDecorator(),
     includeTextFieldSamples: Boolean = false,
 ): Storyboard = Storyboard.build(
     title = "(Re)creating Magic(Move) with Compose",

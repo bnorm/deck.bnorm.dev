@@ -19,16 +19,16 @@ import dev.bnorm.kc25.components.temp.RevealScene
 import dev.bnorm.kc25.template.HeaderScaffold
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.RevealEach
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.section
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.section
+import dev.bnorm.storyboard.layout.template.RevealEach
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.Summary() {
     section("Your Plugin") {
         scene(
-            states = listOf(-1, 1, 3, 4),
+            frames = listOf(-1, 1, 3, 4),
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
@@ -51,7 +51,7 @@ fun StoryboardBuilder.Summary() {
                     modifier = Modifier.padding(padding),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    RevealEach(transition.createChildTransition { it.toState() }) {
+                    RevealEach(transition.createChildTransition { it.toValue() }) {
                         for (value in items) {
                             item { Text(value) }
                         }
@@ -63,7 +63,7 @@ fun StoryboardBuilder.Summary() {
 
     section("Other Plugins") {
         scene(
-            states = listOf(-1, 1, 2, 4, 5, 7, 8),
+            frames = listOf(-1, 1, 2, 4, 5, 7, 8),
             enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
             exitTransition = SceneExit(alignment = Alignment.CenterEnd),
         ) {
@@ -93,7 +93,7 @@ fun StoryboardBuilder.Summary() {
                     modifier = Modifier.padding(padding),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    RevealEach(transition.createChildTransition { it.toState() }) {
+                    RevealEach(transition.createChildTransition { it.toValue() }) {
                         for (value in items) {
                             item { Text(value) }
                         }

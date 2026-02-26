@@ -19,13 +19,14 @@ import dev.bnorm.dcnyc25.template.Full
 import dev.bnorm.dcnyc25.template.TextSurface
 import dev.bnorm.dcnyc25.template.code1
 import dev.bnorm.deck.shared.INTELLIJ_LIGHT
+import dev.bnorm.deck.shared.StoryEffect
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.LocalSceneMode
 import dev.bnorm.storyboard.easel.SceneMode
 import dev.bnorm.storyboard.easel.assist.SceneCaption
-import dev.bnorm.storyboard.easel.template.*
+import dev.bnorm.storyboard.layout.template.*
 import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
@@ -35,7 +36,7 @@ import kotlin.time.Duration.Companion.seconds
 
 fun StoryboardBuilder.MagicSamples() {
     scene(
-        stateCount = 1,
+        frameCount = 1,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
@@ -59,7 +60,7 @@ fun StoryboardBuilder.MagicSamples() {
         }
     }
     scene(
-        stateCount = 1,
+        frameCount = 1,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.CenterEnd),
             end = SceneEnter(alignment = Alignment.BottomCenter),

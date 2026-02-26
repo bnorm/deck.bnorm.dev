@@ -15,8 +15,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.RevealEach
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.RevealEach
+import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.StageParse() {
     val items = listOf(
@@ -30,15 +30,15 @@ fun StoryboardBuilder.StageParse() {
         },
     )
 
-    StageDetail(stateCount = items.size + 1 + 14, stage = CompilerStage.Parse) {
+    StageDetail(frameCount = items.size + 1 + 14, stage = CompilerStage.Parse) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            RevealEach(transition.createChildTransition { it.toState() - 1 }) {
+            RevealEach(transition.createChildTransition { it.toValue() - 1 }) {
                 for (value in items) {
                     item { Text(value) }
                 }
             }
-            if (transition.currentState.toState() > items.size) {
-                transition.createChildTransition { it.toState() - items.size - 1 }.FirTree()
+            if (transition.currentState.toValue() > items.size) {
+                transition.createChildTransition { it.toValue() - items.size - 1 }.FirTree()
             }
         }
     }

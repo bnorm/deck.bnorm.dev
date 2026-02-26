@@ -12,9 +12,9 @@ import dev.bnorm.kc25.template.code.CodeSample
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 
 private val SAMPLES = buildCodeSamples {
     val ctor by tag("buildable annotated constructor")
@@ -95,11 +95,11 @@ fun StoryboardBuilder.BuildableIntro(sink: MutableList<CodeSample>, start: Int =
     sink.addAll(SAMPLES)
 
     scene(
-        stateCount = endExclusive - start,
+        frameCount = endExclusive - start,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
-        val sample = transition.createChildTransition { SAMPLES[start + it.toState()] }
+        val sample = transition.createChildTransition { SAMPLES[start + it.toValue()] }
 
         HeaderScaffold { padding ->
             ProvideTextStyle(MaterialTheme.typography.code1) {

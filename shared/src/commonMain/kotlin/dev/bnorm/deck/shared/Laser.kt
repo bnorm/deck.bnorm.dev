@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.unit.dp
-import dev.bnorm.storyboard.SceneDecorator
+import dev.bnorm.storyboard.ContentDecorator
 import dev.bnorm.storyboard.easel.assist.Caption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -40,7 +40,7 @@ import kotlin.time.ExperimentalTime
 
     val caption: Caption = LaserCaption(state)
     // TODO add overlay controls?
-    val decorator: SceneDecorator = LaserDecorator(state, color)
+    val decorator: ContentDecorator = LaserDecorator(state, color)
 }
 
 internal class LaserPath(
@@ -148,8 +148,8 @@ fun LaserCaption(
 fun LaserDecorator(
     laserState: LaserState = LaserState(),
     laserColor: Color = Color.Red,
-): SceneDecorator {
-    return SceneDecorator { content ->
+): ContentDecorator {
+    return ContentDecorator { content ->
         content()
         Laser(laserState, laserColor)
     }

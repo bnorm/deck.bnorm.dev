@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
-import dev.bnorm.storyboard.SceneDecorator
+import dev.bnorm.storyboard.ContentDecorator
 
-fun storyDecorator(): SceneDecorator = SceneDecorator { content ->
+fun storyDecorator(): ContentDecorator = ContentDecorator { content ->
     MaterialTheme(
         colors = COLORS,
         typography = dcnyc25Typography(),

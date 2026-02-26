@@ -21,12 +21,12 @@ import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.map
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
     val sc by tag("super class")
@@ -78,7 +78,7 @@ fun StoryboardBuilder.PluginRegistrar(sink: MutableList<CodeSample>, start: Int 
     sink.addAll(SAMPLES)
 
     scene(
-        stateCount = endExclusive - start,
+        frameCount = endExclusive - start,
         enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
         exitTransition = SceneExit(alignment = Alignment.CenterEnd),
     ) {
@@ -99,7 +99,7 @@ fun StoryboardBuilder.PluginRegistrar(sink: MutableList<CodeSample>, start: Int 
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = transition.createChildTransition { frame ->
-                        val index = frame.map { it + 1 }.toState(start = 0, end = SAMPLES_WITH_TRANSITION.lastIndex)
+                        val index = frame.map { it + 1 }.toValue(start = 0, end = SAMPLES_WITH_TRANSITION.lastIndex)
                         SAMPLES_WITH_TRANSITION[start + index].string.splitByTags()
                     }
                     MagicText(text)

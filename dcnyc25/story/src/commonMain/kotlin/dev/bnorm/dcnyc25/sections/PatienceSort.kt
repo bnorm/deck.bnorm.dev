@@ -29,11 +29,11 @@ import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.animateEnterExit
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.easel.template.SceneEnter
-import dev.bnorm.storyboard.easel.template.SceneExit
-import dev.bnorm.storyboard.easel.template.enter
-import dev.bnorm.storyboard.easel.template.exit
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.enter
+import dev.bnorm.storyboard.layout.template.exit
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
+import dev.bnorm.storyboard.toValue
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -43,7 +43,7 @@ import org.jetbrains.compose.resources.imageResource
 fun StoryboardBuilder.PatienceSort(cards: List<Card>): Scene<*> {
     val states = computeStates(cards)
     return scene(
-        states = states,
+        frames = states,
         enterTransition = enter(
             start = SceneEnter(alignment = Alignment.BottomCenter),
             end = SceneEnter(alignment = Alignment.TopCenter),
@@ -63,7 +63,7 @@ fun StoryboardBuilder.PatienceSort(cards: List<Card>): Scene<*> {
 
             Vertical(MaterialTheme.colors.secondary) {
                 PatienceSort(
-                    transition.createChildTransition { it.toState() },
+                    transition.createChildTransition { it.toValue() },
                     modifier = Modifier.padding(32.dp)
                 )
             }

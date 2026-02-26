@@ -22,10 +22,10 @@ import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code2
 import dev.bnorm.kc25.template.code3
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.RevealEach
+import dev.bnorm.storyboard.layout.template.RevealEach
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.StageResolve() {
     val items = listOf(
@@ -34,11 +34,11 @@ fun StoryboardBuilder.StageResolve() {
         "$BULLET_1 Order is extremely important, as phases build on each other.",
     )
 
-    StageDetail(stateCount = items.size + 2 + ExamplePhase.entries.size, stage = CompilerStage.Resolve) {
-        val phases = transition.createChildTransition { it.toState() - items.size - 1 }
+    StageDetail(frameCount = items.size + 2 + ExamplePhase.entries.size, stage = CompilerStage.Resolve) {
+        val phases = transition.createChildTransition { it.toValue() - items.size - 1 }
 
         Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            RevealEach(transition.createChildTransition { it.toState() - 1 }) {
+            RevealEach(transition.createChildTransition { it.toValue() - 1 }) {
                 for (value in items) {
                     item { Text(value) }
                 }

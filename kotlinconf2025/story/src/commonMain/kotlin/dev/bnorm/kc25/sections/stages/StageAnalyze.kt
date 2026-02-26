@@ -25,8 +25,8 @@ import dev.bnorm.kc25.components.temp.BULLET_1
 import dev.bnorm.kc25.template.code.buildCodeSamples
 import dev.bnorm.kc25.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.RevealEach
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.layout.template.RevealEach
+import dev.bnorm.storyboard.toValue
 import kotlin.time.Duration.Companion.seconds
 
 fun StoryboardBuilder.StageAnalyze() {
@@ -35,11 +35,11 @@ fun StoryboardBuilder.StageAnalyze() {
         "$BULLET_1 Most error occurrences are due to resolution.",
         "$BULLET_1 But most error and warning types are reported by analysis.",
     )
-    StageDetail(stateCount = items.size + 1 + 6, stage = CompilerStage.Analyze) {
-        val errorTransition = transition.createChildTransition { it.toState() - 1 - items.size }
+    StageDetail(frameCount = items.size + 1 + 6, stage = CompilerStage.Analyze) {
+        val errorTransition = transition.createChildTransition { it.toValue() - 1 - items.size }
 
         Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            RevealEach(transition.createChildTransition { it.toState() - 1 }) {
+            RevealEach(transition.createChildTransition { it.toValue() - 1 }) {
                 for (value in items) {
                     item { Text(value) }
                 }

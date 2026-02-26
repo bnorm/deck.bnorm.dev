@@ -16,14 +16,14 @@ import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 
 fun StoryboardBuilder.StageTimelineTransition() {
-    scene(stateCount = 0) {
+    scene(frameCount = 0) {
         SharedTransitionLayout {
             transition.AnimatedContent(
                 transitionSpec = { EnterTransition.None togetherWith ExitTransition.None }
             ) {
                 when (it) {
-                    // Impossible since 'stateCount' is 0.
-                    is Frame.State<*> -> {}
+                    // Impossible since 'frameCount' is 0.
+                    is Frame.Value -> {}
 
                     Frame.Start -> {
                         Row(

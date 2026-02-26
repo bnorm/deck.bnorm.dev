@@ -18,11 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.deck.shared.JetBrainsMono
-import dev.bnorm.storyboard.SceneDecorator
+import dev.bnorm.storyboard.ContentDecorator
 
 fun storyDecorator(
     infiniteTransition: InfiniteTransition? = null,
-): SceneDecorator = SceneDecorator { content ->
+): ContentDecorator = ContentDecorator { content ->
     MaterialTheme(
         colors = DARK_COLORS,
         typography = Kc25Typography(),

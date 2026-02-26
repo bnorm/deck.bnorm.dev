@@ -24,7 +24,7 @@ import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.map
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 private val SAMPLES_WITH_TRANSITION = buildCodeSamples {
     val sup by tag("super class")
@@ -71,7 +71,7 @@ fun StoryboardBuilder.FirRegistrar(
     sink.addAll(SAMPLES)
 
     scene(
-        stateCount = endExclusive - start,
+        frameCount = endExclusive - start,
         enterTransition = { _ -> fadeIn(tween(250, delayMillis = 500, easing = EaseIn)) },
         exitTransition = { _ -> fadeOut(tween(250, easing = EaseOut)) },
     ) {
@@ -92,7 +92,7 @@ fun StoryboardBuilder.FirRegistrar(
             ) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     val text = transition.createChildTransition { frame ->
-                        val index = frame.map { it + 1 }.toState(start = 0, end = SAMPLES_WITH_TRANSITION.lastIndex)
+                        val index = frame.map { it + 1 }.toValue(start = 0, end = SAMPLES_WITH_TRANSITION.lastIndex)
                         SAMPLES_WITH_TRANSITION[start + index].string.splitByTags()
                     }
                     MagicText(text, modifier = Modifier.fillMaxSize())

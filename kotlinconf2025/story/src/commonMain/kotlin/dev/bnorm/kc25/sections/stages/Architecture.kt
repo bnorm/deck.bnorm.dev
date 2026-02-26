@@ -2,7 +2,7 @@ package dev.bnorm.kc25.sections.stages
 
 import dev.bnorm.kc25.template.SectionTitle
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.template.section
+import dev.bnorm.storyboard.layout.template.section
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
 

@@ -5,7 +5,6 @@ plugins {
     kotlin("plugin.serialization")
     kotlin("plugin.compose")
     id("org.jetbrains.compose")
-    id("org.jetbrains.compose.hot-reload")
 }
 
 group = "dev.bnorm.deck"
@@ -47,6 +46,7 @@ kotlin {
 
                 api("dev.bnorm.storyboard:storyboard:0.1.0-alpha03")
                 api("dev.bnorm.storyboard:storyboard-easel:0.1.0-alpha03")
+                api("dev.bnorm.storyboard:storyboard-layout:0.1.0-alpha03")
                 api("dev.bnorm.storyboard:storyboard-text:0.1.0-alpha03")
 
                 implementation("io.github.petertrr:kotlin-multiplatform-diff:0.7.0")

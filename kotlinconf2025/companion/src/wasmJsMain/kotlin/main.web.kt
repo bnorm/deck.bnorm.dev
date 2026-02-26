@@ -1,10 +1,10 @@
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import dev.bnorm.deck.kc25.companion.App
 import dev.bnorm.kc25.createStoryboard
 import dev.bnorm.kc25.template.code.CodeSample
-import dev.bnorm.storyboard.easel.rememberStoryState
+import dev.bnorm.storyboard.easel.rememberAnimatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 fun main() {
     val samples = mutableListOf<CodeSample>()
     val storyboard = createStoryboard(sink = samples)
-    CanvasBasedWindow(canvasElementId = "ComposeTarget") {
+    ComposeViewport(viewportContainerId = "ComposeTarget") {
         LaunchedEffect(Unit) {
             withContext(Dispatchers.Default) {
                 for (sample in samples) {
@@ -23,7 +23,7 @@ fun main() {
             }
         }
 
-        val storyState = rememberStoryState(storyboard)
-        App(storyState)
+        val animatic = rememberAnimatic { storyboard }
+        App(animatic)
     }
 }

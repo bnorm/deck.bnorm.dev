@@ -33,7 +33,7 @@ import dev.bnorm.storyboard.easel.animateEnterExit
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
 import dev.bnorm.storyboard.toDpSize
-import dev.bnorm.storyboard.toState
+import dev.bnorm.storyboard.toValue
 
 enum class Component {
     CompilerPluginRegistrar,
@@ -66,11 +66,11 @@ fun StoryboardBuilder.RegistrarComponent(
     exitTransition: (AdvanceDirection) -> ExitTransition,
 ) {
     scene(
-        states = states.toList(),
+        frames = states.toList(),
         enterTransition = enterTransition,
         exitTransition = exitTransition,
     ) {
-        val state = transition.createChildTransition { it.toState() }
+        val state = transition.createChildTransition { it.toValue() }
         StageScaffold(state.createChildTransition { it.stages }) { padding ->
             RegistrarComponentTree(
                 state = state,
