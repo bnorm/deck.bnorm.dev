@@ -19,16 +19,12 @@ fun EmbeddedYouTubeVideo(
     var player by remember { mutableStateOf<YouTubePlayer?>(null) }
 
     Iframe({
+        classes("talk-video")
         attr("src", "https://www.youtube.com/embed/$videoId")
         attr("title", "YouTube video player")
         attr("frameborder", "0")
         attr("referrerpolicy", "strict-origin-when-cross-origin")
         attr("allowfullscreen", "")
-        style {
-            width(560.px)
-            height(315.px)
-            marginRight(32.px)
-        }
     }) {
         DisposableEffect(Unit) {
             player = PlayerFactory(

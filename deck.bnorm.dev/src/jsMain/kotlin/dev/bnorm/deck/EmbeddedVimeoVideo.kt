@@ -12,6 +12,7 @@ fun EmbeddedVimeoVideo(
     videoId: String,
 ) {
     Iframe({
+        classes("talk-video")
         attr("src", "https://player.vimeo.com/video/$videoId?autopause=0&amp;autoplay=0&amp;color=00adef&amp;portrait=0&amp;byline=0&amp;title=0")
         attr("title", "Vimeo video player")
         attr("webkitallowfullscreen", "")
@@ -19,10 +20,5 @@ fun EmbeddedVimeoVideo(
         attr("allowfullscreen", "")
         attr("data-vimeo-tracked", "true")
         attr("data-ready", "true")
-        style {
-            width(560.px)
-            height(315.px)
-            marginRight(32.px)
-        }
     })
 }
