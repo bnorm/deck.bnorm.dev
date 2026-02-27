@@ -12,8 +12,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     val samples = mutableListOf<CodeSample>()
-    val storyboard = createStoryboard(sink = samples)
-    ComposeViewport(viewportContainerId = "ComposeTarget") {
+    ComposeViewport("composeApp") {
         LaunchedEffect(Unit) {
             withContext(Dispatchers.Default) {
                 for (sample in samples) {
@@ -23,7 +22,7 @@ fun main() {
             }
         }
 
-        val animatic = rememberAnimatic { storyboard }
+        val animatic = rememberAnimatic { createStoryboard(sink = samples) }
         App(animatic)
     }
 }

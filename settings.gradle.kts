@@ -31,6 +31,8 @@ includeBuild("storyboard")
 
 include(":deck.bnorm.dev")
 include(":dcnyc25:story")
+include(":kc26:companion")
+include(":kc26:story")
 include(":kotlinconf2025:companion")
 include(":kotlinconf2025:story")
 include(":shared")

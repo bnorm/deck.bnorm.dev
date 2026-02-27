@@ -17,10 +17,7 @@ import org.w3c.dom.HTMLCanvasElement
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     val samples = mutableListOf<CodeSample>()
-    val storyboard = createStoryboard(sink = samples)
-    val element = document.getElementById("ComposeTarget") as HTMLCanvasElement
-    element.focus()
-    ComposeViewport(viewportContainer = element) {
+    ComposeViewport("composeApp") {
         LaunchedEffect(Unit) {
             withContext(Dispatchers.Default) {
                 for (sample in samples) {
@@ -31,7 +28,7 @@ fun main() {
         }
 
         MaterialTheme(colors = darkColors()) {
-            WebEasel { storyboard }
+            WebEasel { createStoryboard(sink = samples) }
         }
     }
 }
