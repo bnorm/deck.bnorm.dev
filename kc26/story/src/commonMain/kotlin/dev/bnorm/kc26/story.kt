@@ -1,8 +1,13 @@
 package dev.bnorm.kc26
 
+import dev.bnorm.kc26.sections.*
+import dev.bnorm.kc26.template.sectioned
+import dev.bnorm.kc26.template.themeDecorator
+import dev.bnorm.storyboard.ContentDecorator
 import dev.bnorm.storyboard.Storyboard
 
 fun createStoryboard(
+    decorator: ContentDecorator = ContentDecorator.None,
 ): Storyboard = Storyboard.build(
     title = "Powering Up Your Assertions",
     description = """
@@ -16,7 +21,19 @@ fun createStoryboard(
 
         And we might even take a brief look at what we’ll be working on next!
     """.trimIndent(),
+    decorator = ContentDecorator.from(
+        themeDecorator(),
+        decorator,
+    ),
 ) {
+    // TODO go through samples and pick a fun theme
+    //  - LOTR again?
+    //  - star trek?
+    //  - make it a choice from the audience companion?!
+    //  - examples should include...
+    //      - an array to show improvement there
+    //      - a String to show quotes
+
     // TODO Companion
     //  - survey of who knows/uses power-assert
     //  - scene reactions?
@@ -25,43 +42,23 @@ fun createStoryboard(
     //  - use companion to survey audience about their experience with power-assert
 
     // TODO Title (waiting on template)
+    Title()
 
-    // TODO Section: What's Power-Assert?
-    //  - use survey data to adjust introduction?
-    //  - quick introduction to what power-assert can do
-    //  - quick introduction to how power-assert works
-    //  - quick introduction to known problems with using power-assert
+    sectioned {
+        WhatIsIt()
 
-    // TODO Section: What's changing for those that use Power-Assert?
-    //  - slide showing difference in diagram
-    //      - "pause for effect" ... "you're welcome!"
-    //      - "wait, that's it?!" ... "you sure promised a lot"
-    //  - review how power-assert works
-    //  - show change to `CallExplanation(...).toDefaultMessage()`
+        WhatIsChanging()
+        // TODO merge changing and new?
+        WhatIsNew()
 
-    // TODO Section: What's new for libraries wanting to use Power-Assert?
-    //  - PowerAssert annotation
-    //  - function transformation
-    //  - CallExplanation and related data structures
-    //  - examples of integration
-    //      - basic JUnit example
-    //      - fluent assertion example
+        WhatIsPossible()
 
-    // TODO Section: What's coming next for Power-Assert?
-    //  - the elephant ("not that elephant") : kotlin-test support
-    //  - local variables (VariableExplanation and VariableAccessExpression)
-    //  - parameter forwarding (ArgumentExplanation and VariableAccessExpression)
-    //  - diffs
-    //  - other use cases
-    //      - pprintln (StringTemplateExpression)
-    //      - deep IntelliJ integration (ExplainedException for test failures and Explanations for debugging)
-    //  - future ideas
-    //      - AST
-    //      - cite replacement? (additional source information)
-    //      - oh god, lambda tracing...
-    //  - generic Explain feature in Kotlin
-    //      - balancing features, security, and performance
-    //      - syntax idea? calls and variables
+        // TODO do we need a summary at this point? to review problems and goals?
+        // TODO QRCode to example GitHub repository
+
+        WhatIsNext()
+    }
 
     // TODO Closing (waiting on template)
+    Closing()
 }

@@ -1,6 +1,10 @@
 package dev.bnorm.deck.shared.mac
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
@@ -26,7 +30,8 @@ fun MacTerminal(
     content: @Composable () -> Unit,
 ) {
     MacWindow(
-        color = Color(0xFFF0F0F1), modifier = modifier
+        color = Color(0xFFF0F0F1),
+        modifier = modifier
             .width(IntrinsicSize.Min)
             .height(IntrinsicSize.Min)
     ) {
@@ -52,8 +57,38 @@ fun <T> SceneScope<T>.MacTerminalPopup(
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
         transition.AnimatedVisibility(
             visible = visible,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOutVertically(targetOffsetY = { it }),
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(400, easing = EaseIn),
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(400, easing = EaseOut),
+            ),
+        ) {
+            MacTerminal(modifier = Modifier.fillMaxWidth().offset(y = 16.dp)) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+fun MacTerminalPopup(
+    visible: Transition<Boolean>,
+    content: @Composable () -> Unit,
+) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+        visible.AnimatedVisibility(
+            visible = { it },
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(400, easing = EaseIn),
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(400, easing = EaseOut),
+            ),
         ) {
             MacTerminal(modifier = Modifier.fillMaxWidth().offset(y = 16.dp)) {
                 content()

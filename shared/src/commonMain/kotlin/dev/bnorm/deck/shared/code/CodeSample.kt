@@ -4,9 +4,14 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import dev.bnorm.storyboard.text.TextTag
 import dev.bnorm.storyboard.text.TextTagScope
 import dev.bnorm.storyboard.text.addStyleByTag
+import dev.bnorm.storyboard.text.highlight.CodeScope
+import dev.bnorm.storyboard.text.highlight.CodeStyle
+import dev.bnorm.storyboard.text.highlight.Language
+import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.replaceAllByTag
 
 @Immutable
@@ -20,6 +25,7 @@ class CodeSample private constructor(
 ) {
     constructor(sample: AnnotatedString) : this(lazyOf(sample), null, emptyMap(), emptyMap(), null, null)
     constructor(sample: Lazy<AnnotatedString>) : this(sample, null, emptyMap(), emptyMap(), null, null)
+    constructor(sample: () -> AnnotatedString) : this(lazy { sample() }, null, emptyMap(), emptyMap(), null, null)
 
     val string: AnnotatedString by lazy {
         var str = base.value
@@ -134,10 +140,10 @@ class CodeSample private constructor(
 fun <R> buildCodeSamples(builder: CodeSamplesBuilder.() -> R): R =
     CodeSamplesBuilder().builder()
 
-class CodeSamplesBuilder : TextTagScope.Default() {
-    fun CodeSample.collapse(data: Any?): CodeSample = collapse(tags.filter { data == it.data })
-    fun CodeSample.hide(data: Any?): CodeSample = hide(tags.filter { data == it.data })
-    fun CodeSample.reveal(data: Any?): CodeSample = reveal(tags.filter { data == it.data })
+open class CodeSamplesBuilder : TextTagScope.Default() {
+    fun CodeSample.collapseBy(data: Any?): CodeSample = collapse(tags.filter { data == it.data })
+    fun CodeSample.hideBy(data: Any?): CodeSample = hide(tags.filter { data == it.data })
+    fun CodeSample.revealBy(data: Any?): CodeSample = reveal(tags.filter { data == it.data })
 
     fun CodeSample.then(transformer: CodeSample.() -> CodeSample): List<CodeSample> {
         return listOf(this, transformer(this))
@@ -149,5 +155,29 @@ class CodeSamplesBuilder : TextTagScope.Default() {
 
     fun List<CodeSample>.instead(transformer: CodeSample.() -> CodeSample): List<CodeSample> {
         return this.subList(fromIndex = 0, toIndex = lastIndex) + transformer(this.last())
+    }
+
+    fun String.toCodeSample(
+        codeStyle: CodeStyle,
+        language: Language = Language.Kotlin,
+        scope: CodeScope = CodeScope.Function,
+        identifierStyle: (String) -> SpanStyle? = { _ -> null },
+    ): CodeSample {
+        return CodeSample(lazy {
+            val extractTags = extractTags(this)
+            val styled = extractTags.text.highlight(
+                codeStyle = codeStyle,
+                language = language,
+                scope = scope,
+                identifierStyle = identifierStyle
+            )
+            buildAnnotatedString {
+                this.append(extractTags)
+                for (range in styled.spanStyles) {
+                    // TODO need to break range based on tags
+                    addStyle(range.item, range.start, range.end)
+                }
+            }
+        })
     }
 }
