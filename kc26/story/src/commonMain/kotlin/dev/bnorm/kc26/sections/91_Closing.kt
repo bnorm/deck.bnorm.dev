@@ -80,9 +80,9 @@ fun StoryboardBuilder.Closing() {
             DrawArc(arcFraction)
 
             Column(Modifier.align(Alignment.TopStart).padding(start = 40.dp, top = 40.dp)) {
-                Bluesky(username = "@bnorm.dev")
-                Spacer(Modifier.size(4.dp))
                 Mastodon(username = "bnorm@kotlin.social")
+                Spacer(Modifier.size(4.dp))
+                Bluesky(username = "@bnorm.dev")
             }
             Column(Modifier.align(Alignment.BottomStart).padding(start = 40.dp, bottom = 28.dp)) {
                 ProvideTextStyle(
@@ -90,7 +90,6 @@ fun StoryboardBuilder.Closing() {
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 54.sp,
                         lineHeight = 54.sp,
-                        color = Color.Blue,
                     )
                 ) {
                     Text("Thank You,\nand Don't\nForget to Vote")
