@@ -1,11 +1,14 @@
 package dev.bnorm.kc26.sections
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -23,31 +26,58 @@ import dev.bnorm.deck.shared.socials.Bluesky
 import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.badge
-import dev.bnorm.deck.story.generated.resources.closing
 import dev.bnorm.deck.story.generated.resources.phone
 import dev.bnorm.kc26.template.carouselScene
+import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 
 fun StoryboardBuilder.Closing() {
     carouselScene {
         Box(modifier = Modifier.fillMaxSize()) {
-            ResourceImage(
-                Res.drawable.badge,
-                modifier = Modifier
-                    .size(218.7f.dp, 401.4f.dp)
-                    .offset(472.dp, 0.dp)
-            )
+            val visible = transition.createChildTransition { it is Frame.Value }
+            val arcFraction by visible.animateFloat(
+                transitionSpec = {
+                    when (targetState) {
+                        true -> tween(500, delayMillis = 500, easing = EaseInCubic)
+                        false -> tween(500, easing = EaseOutCubic)
+                    }
+                }
+            ) {
+                when (it) {
+                    true -> 1.2f
+                    false -> 0f
+                }
+            }
 
-            // TODO there's a subtle border around the phone in the template
-            //  due to another background image behind the phone from 2025
-            ResourceImage(
-                Res.drawable.phone,
-                modifier = Modifier
-                    .size(217.4f.dp, 401.4f.dp)
-                    .offset(716f.dp, 62.7f.dp)
-            )
+            visible.AnimatedVisibility(
+                visible = { it },
+                enter = slideInVertically(tween(800, easing = EaseOutBounce)) { -it },
+                exit = slideOutVertically(tween(500, delayMillis = 500, easing = EaseInCubic)) { -it },
+            ) {
+                ResourceImage(
+                    Res.drawable.badge,
+                    modifier = Modifier
+                        .size(218.7f.dp, 401.4f.dp)
+                        .offset(472.dp, 0.dp)
+                )
+            }
 
-            DrawArc(1.2f)
+            visible.AnimatedVisibility(
+                visible = { it },
+                enter = slideInHorizontally(tween(500, easing = EaseOutCubic)) { 5 * it / 4 },
+                exit = slideOutHorizontally(tween(500, delayMillis = 500, easing = EaseInCubic)) { 5 * it / 4 },
+            ) {
+                // TODO there's a subtle border around the phone in the template
+                //  due to another background image behind the phone from 2025
+                ResourceImage(
+                    Res.drawable.phone,
+                    modifier = Modifier
+                        .size(217.4f.dp, 401.4f.dp)
+                        .offset(716f.dp, 62.7f.dp)
+                )
+            }
+
+            DrawArc(arcFraction)
 
             Column(Modifier.align(Alignment.TopStart).padding(start = 40.dp, top = 40.dp)) {
                 Bluesky(username = "@bnorm.dev")
