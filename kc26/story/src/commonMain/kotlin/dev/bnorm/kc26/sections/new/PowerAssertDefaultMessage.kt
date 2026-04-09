@@ -6,14 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.template.CODE_STYLE
 import dev.bnorm.kc26.template.SectionSceneScaffold
-import dev.bnorm.kc26.template.WIP
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder

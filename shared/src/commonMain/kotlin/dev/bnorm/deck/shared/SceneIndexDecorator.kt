@@ -19,7 +19,7 @@ import dev.bnorm.storyboard.easel.SceneMode
 fun SceneIndexDecorator(currentIndex: State<Storyboard.Index>): ContentDecorator = ContentDecorator { content ->
     content()
 
-    Box(contentAlignment = Alignment.BottomStart, modifier = Modifier.fillMaxSize()) {
+    Box(contentAlignment = Alignment.BottomEnd, modifier = Modifier.fillMaxSize()) {
         Surface(modifier = Modifier.alpha(0.5f)) {
             SceneIndex(currentIndex, MaterialTheme.typography.caption)
         }

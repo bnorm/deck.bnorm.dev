@@ -15,7 +15,11 @@ import dev.bnorm.deck.shared.generated.resources.bluesky_logo
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun Bluesky(username: String, modifier: Modifier = Modifier) {
+fun Bluesky(
+    username: String,
+    modifier: Modifier = Modifier,
+    style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.body2,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
             painter = painterResource(Res.drawable.bluesky_logo),
@@ -23,6 +27,6 @@ fun Bluesky(username: String, modifier: Modifier = Modifier) {
             modifier = modifier.size(20.dp),
         )
         Spacer(modifier = Modifier.size(8.dp))
-        Text(text = username, style = MaterialTheme.typography.body2)
+        Text(text = username, style = style)
     }
 }

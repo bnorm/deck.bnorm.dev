@@ -1,7 +1,14 @@
 package dev.bnorm.kc26
 
-import dev.bnorm.kc26.sections.*
-import dev.bnorm.kc26.template.sectioned
+import dev.bnorm.kc26.components.TimelineScene
+import dev.bnorm.kc26.components.TimelineState
+import dev.bnorm.kc26.sections.Closing
+import dev.bnorm.kc26.sections.FutureSection
+import dev.bnorm.kc26.sections.MajorSection
+import dev.bnorm.kc26.sections.MinorSection
+import dev.bnorm.kc26.sections.StartSection
+import dev.bnorm.kc26.sections.Title
+import dev.bnorm.kc26.template.gradientDecorator
 import dev.bnorm.kc26.template.themeDecorator
 import dev.bnorm.storyboard.ContentDecorator
 import dev.bnorm.storyboard.Storyboard
@@ -24,6 +31,7 @@ fun createStoryboard(
     decorator = ContentDecorator.from(
         themeDecorator(),
         decorator,
+        gradientDecorator(),
     ),
 ) {
     // TODO go through samples and pick a fun theme
@@ -41,23 +49,32 @@ fun createStoryboard(
     // TODO Pre-slide: survey of who knows/uses power-assert
     //  - use companion to survey audience about their experience with power-assert
 
-    // TODO Title (waiting on template)
     Title()
 
-    sectioned {
-        WhatIsIt()
+    // TODO do we need the third-party dot?
+    TimelineScene(end = TimelineState.Bundled)
+    StartSection()
+    TimelineScene(start = TimelineState.Bundled, end = TimelineState.Improvements)
+    MinorSection()
+    TimelineScene(start = TimelineState.Improvements, end = TimelineState.Explanations)
+    MajorSection()
+    TimelineScene(start = TimelineState.Explanations, end = TimelineState.Future)
+    FutureSection()
 
-        WhatIsChanging()
-        // TODO merge changing and new?
-        WhatIsNew()
-
-        WhatIsPossible()
-
-        // TODO do we need a summary at this point? to review problems and goals?
-        // TODO QRCode to example GitHub repository
-
-        WhatIsNext()
-    }
+//    sectioned {
+//        WhatIsIt()
+//
+//        WhatIsChanging()
+//        // TODO merge changing and new?
+//        WhatIsNew()
+//
+//        WhatIsPossible()
+//
+//        // TODO do we need a summary at this point? to review problems and goals?
+//        // TODO QRCode to example GitHub repository
+//
+//        WhatIsNext()
+//    }
 
     // TODO Closing (waiting on template)
     Closing()

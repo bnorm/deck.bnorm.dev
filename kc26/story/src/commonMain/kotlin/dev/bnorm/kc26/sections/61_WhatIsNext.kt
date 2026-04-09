@@ -8,6 +8,7 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.bnorm.kc26.components.WIP
 import dev.bnorm.kc26.sections.next.PowerAssertLocalVariables
 import dev.bnorm.kc26.template.*
 

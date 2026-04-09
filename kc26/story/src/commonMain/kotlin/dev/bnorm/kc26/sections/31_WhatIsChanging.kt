@@ -14,9 +14,8 @@ fun SectionBuilder.WhatIsChanging() {
     //      - "wait, that's it?!" ... "you sure promised a lot"
     //  - fake ending?
 
-    nextSection("What's Changing?")
-    NewMessageDiagramOutput()
-    Closing() // TODO if there is a closing animation, can we stop it mid-animation and reverse?
-    clearSection()
+//    nextSection("What's Changing?")
+//    Closing() // TODO if there is a closing animation, can we stop it mid-animation and reverse?
+//    clearSection()
 }
 

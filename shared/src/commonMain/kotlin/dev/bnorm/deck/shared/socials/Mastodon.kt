@@ -9,13 +9,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.generated.resources.Res
 import dev.bnorm.deck.shared.generated.resources.mastodon
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun Mastodon(username: String, modifier: Modifier = Modifier) {
+fun Mastodon(
+    username: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.body2,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
             painter = painterResource(Res.drawable.mastodon),
@@ -23,6 +28,6 @@ fun Mastodon(username: String, modifier: Modifier = Modifier) {
             modifier = modifier.size(20.dp),
         )
         Spacer(modifier = Modifier.size(8.dp))
-        Text(text = username, style = MaterialTheme.typography.body2)
+        Text(text = username, style = style)
     }
 }

@@ -1,6 +1,5 @@
 package dev.bnorm.kc26.sections
 
-import androidx.compose.animation.core.createChildTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
@@ -8,14 +7,12 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.bnorm.kc26.components.WIP
+import dev.bnorm.kc26.sections.changing.NewMessageDiagramOutput
 import dev.bnorm.kc26.sections.changing.PowerAssertDefaultMessage
 import dev.bnorm.kc26.sections.changing.PowerAssertMessageExamples
 import dev.bnorm.kc26.sections.new.*
 import dev.bnorm.kc26.template.*
-import dev.bnorm.storyboard.layout.template.RevealEach
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
-import dev.bnorm.storyboard.toValue
 
 fun SectionBuilder.WhatIsNew() {
     // TODO Section: What's new for libraries wanting to use Power-Assert?
@@ -31,18 +28,7 @@ fun SectionBuilder.WhatIsNew() {
 
     nextSection("What's Changing?")
 
-    carouselScene(4) {
-        SectionSceneScaffold { padding ->
-            Column(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Power-Assert has some problems.")
-                RevealEach(transition.createChildTransition { it.toValue() - 1 }) {
-                    item { Text("    $BULLET_1 Verbose configuration that complicates onboarding.") }
-                    item { Text("    $BULLET_1 Brittle function parameter requirements that confuse adopters.") }
-                    item { Text("    $BULLET_1 Static diagram generation that limits tooling integration.") }
-                }
-            }
-        }
-    }
+    NewMessageDiagramOutput()
 
     PowerAssertDefaultMessage()
     CallExplanationIntro()

@@ -18,10 +18,9 @@ import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.MagicCodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.deck.shared.mac.MacTerminalPopup
+import dev.bnorm.kc26.components.WIP
 import dev.bnorm.kc26.template.*
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.text.highlight.Language
-import dev.bnorm.storyboard.text.highlight.highlight
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.toValue
 

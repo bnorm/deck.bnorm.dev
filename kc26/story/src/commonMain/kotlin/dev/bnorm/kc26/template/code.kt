@@ -8,14 +8,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import dev.bnorm.deck.shared.INTELLIJ_DARK
+import dev.bnorm.deck.shared.INTELLIJ_LIGHT
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.highlight.CodeStyle
 import dev.bnorm.storyboard.text.highlight.Language
 import dev.bnorm.storyboard.text.highlight.highlight
 
-val CODE_STYLE = INTELLIJ_DARK
+val CODE_STYLE = INTELLIJ_LIGHT
 
 fun String.toKotlin(
     scope: CodeScope = CodeScope.File,

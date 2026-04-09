@@ -48,7 +48,7 @@ fun StoryboardBuilder.PowerAssertIntroExample() {
     }
 }
 
-private val Sample = """
+val Sample = """
     @Test fun test() {
         val hello = "Hello"
         assert(hello.length == "World".substring(1, 4).length)

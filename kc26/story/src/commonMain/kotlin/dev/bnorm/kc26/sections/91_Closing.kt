@@ -17,10 +17,12 @@ import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.deck.shared.ResourceImage
 import dev.bnorm.deck.shared.socials.Bluesky
 import dev.bnorm.deck.shared.socials.Mastodon
@@ -28,6 +30,7 @@ import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.badge
 import dev.bnorm.deck.story.generated.resources.phone
 import dev.bnorm.kc26.template.carouselScene
+import dev.bnorm.kc26.template.gradientOverlay
 import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 
@@ -49,6 +52,7 @@ fun StoryboardBuilder.Closing() {
                 }
             }
 
+            // TODO switch to dark image versions to avoid weird color contrast with the gradient background?
             visible.AnimatedVisibility(
                 visible = { it },
                 enter = slideInVertically(tween(800, easing = EaseOutBounce)) { -it },
@@ -80,9 +84,10 @@ fun StoryboardBuilder.Closing() {
             DrawArc(arcFraction)
 
             Column(Modifier.align(Alignment.TopStart).padding(start = 40.dp, top = 40.dp)) {
-                Mastodon(username = "bnorm@kotlin.social")
+                val handleStyle = MaterialTheme.typography.body2 + TextStyle(fontFamily = JetBrainsMono)
+                Mastodon(username = "bnorm@kotlin.social", style = handleStyle)
                 Spacer(Modifier.size(4.dp))
-                Bluesky(username = "@bnorm.dev")
+                Bluesky(username = "@bnorm.dev", style = handleStyle)
             }
             Column(Modifier.align(Alignment.BottomStart).padding(start = 40.dp, bottom = 28.dp)) {
                 ProvideTextStyle(
@@ -102,6 +107,7 @@ fun StoryboardBuilder.Closing() {
 
 @Composable
 private fun DrawArc(fraction: Float) {
+    // TODO Modifier.gradientOverlay()?
     Canvas(Modifier.fillMaxSize()) {
         val xEnd = 1488.0f
         val yEnd = 962.0f

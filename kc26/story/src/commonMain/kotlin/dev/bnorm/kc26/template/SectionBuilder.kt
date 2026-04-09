@@ -8,19 +8,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.animateTextStyle
+import dev.bnorm.kc26.components.GradientText
 import dev.bnorm.storyboard.*
 import dev.bnorm.storyboard.SceneContent
 import dev.bnorm.storyboard.easel.rememberSharedContentState
 import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.layout.template.SceneEnter
-import dev.bnorm.storyboard.layout.template.SceneExit
 
 // TODO cleanup on aisle section!
 
@@ -49,6 +46,13 @@ class SectionBuilder(
     private var prevTitle: SceneTitle? = null
     private var builder = upstream
 
+    override fun <T> scene(
+        frames: List<T>,
+        enterTransition: SceneEnterTransition,
+        exitTransition: SceneExitTransition,
+        content: SceneContent<T>,
+    ): Scene<T> = builder.scene(frames, enterTransition, exitTransition, content)
+
     fun nextSection(next: String) {
         prevTitle?.let { prev ->
             SectionTitle(prev.title, animateFromHeader = true)
@@ -62,8 +66,23 @@ class SectionBuilder(
                 content()
             }
         }
-        this.builder = DecoratedStoryboardBuilder(upstream, decorator)
+
         this.prevTitle = title
+        this.builder = object : StoryboardBuilder {
+            override fun <T> scene(
+                frames: List<T>,
+                enterTransition: SceneEnterTransition,
+                exitTransition: SceneExitTransition,
+                content: SceneContent<T>,
+            ): Scene<T> {
+                return this@SectionBuilder.upstream.scene(
+                    frames = frames,
+                    enterTransition = enterTransition,
+                    exitTransition = exitTransition,
+                    content = content.decorated(decorator)
+                )
+            }
+        }
     }
 
     fun endSection() {
@@ -77,16 +96,9 @@ class SectionBuilder(
         prevTitle = null
         builder = upstream
     }
-
-    override fun <T> scene(
-        frames: List<T>,
-        enterTransition: SceneEnterTransition,
-        exitTransition: SceneExitTransition,
-        content: SceneContent<T>,
-    ): Scene<T> = builder.scene(frames, enterTransition, exitTransition, content)
 }
 
-fun StoryboardBuilder.SectionChange(
+private fun StoryboardBuilder.SectionChange(
     start: String,
     end: String,
 ) {
@@ -102,40 +114,40 @@ fun StoryboardBuilder.SectionChange(
             val textHeight = with(LocalDensity.current) { textStyle.lineHeight.toDp() }
             val height = (maxHeight - textHeight) / 2 - 16.dp
 
-            ProvideTextStyle(textStyle) {
-                val headerTransition = transition.createChildTransition {
-                    when (it) {
-                        Frame.Start -> startSuffix
-                        Frame.End -> endSuffix
-                        is Frame.Value<*> -> error("!")
-                    }
+            val headerTransition = transition.createChildTransition {
+                when (it) {
+                    Frame.Start -> startSuffix
+                    Frame.End -> endSuffix
+                    is Frame.Value<*> -> error("!")
                 }
+            }
 
-                Box(
-                    modifier = Modifier
-                        .sharedElement(rememberSharedContentState(key = SceneTitle))
-                        .fillMaxSize()
-                        .padding(top = height)
-                ) {
-                    headerTransition.AnimatedContent(
-                        transitionSpec = {
-                            fun <T> animOut() = tween<T>(400, delayMillis = 250, easing = EaseOut)
-                            fun <T> animIn(): TweenSpec<T> = tween(400, easing = EaseIn)
-                            val direction = if (targetState == startSuffix) -1 else 1
+            Box(
+                modifier = Modifier
+                    .sharedElement(rememberSharedContentState(key = SceneTitle))
+                    .fillMaxSize()
+                    .padding(top = height)
+            ) {
+                headerTransition.AnimatedContent(
+                    transitionSpec = {
+                        fun <T> animOut() = tween<T>(400, delayMillis = 250, easing = EaseOut)
+                        fun <T> animIn(): TweenSpec<T> = tween(400, easing = EaseIn)
+                        val direction = if (targetState == startSuffix) -1 else 1
 
-                            val enter = fadeIn(animIn()) +
-                                    slideInVertically(animIn()) { -it * direction }
-                            val exit = fadeOut(animOut()) +
-                                    slideOutVertically(animOut()) { it * direction }
-                            enter togetherWith exit using SizeTransform(clip = false)
-                        },
-                    ) { header ->
-                        SectionHeader(lineFraction = 0f) {
-                            Text(
+                        val enter = fadeIn(animIn()) +
+                                slideInVertically(animIn()) { -it * direction }
+                        val exit = fadeOut(animOut()) +
+                                slideOutVertically(animOut()) { it * direction }
+                        enter togetherWith exit using SizeTransform(clip = false)
+                    },
+                ) { header ->
+                    SectionHeader(lineFraction = 0f) {
+                        ProvideTextStyle(textStyle) {
+                            GradientText(
                                 prefix,
                                 modifier = Modifier.sharedElement(rememberSharedContentState(key = "header-shared"))
                             )
-                            Text(header)
+                            GradientText(header)
                         }
                     }
                 }
@@ -144,16 +156,12 @@ fun StoryboardBuilder.SectionChange(
     }
 }
 
-fun StoryboardBuilder.SectionTitle(
+private fun StoryboardBuilder.SectionTitle(
     header: String,
     animateFromHeader: Boolean = false,
     animateToHeader: Boolean = false,
 ) {
-    scene(
-        frameCount = 1,
-        enterTransition = SceneEnter(alignment = Alignment.CenterEnd),
-        exitTransition = SceneExit(alignment = Alignment.CenterEnd),
-    ) {
+    carouselScene {
         SectionTitle(
             showAsHeader = transition.createChildTransition {
                 when (it) {
@@ -169,7 +177,7 @@ fun StoryboardBuilder.SectionTitle(
 
 @Composable
 context(_: AnimatedVisibilityScope, _: SharedTransitionScope)
-fun SectionTitle(
+private fun SectionTitle(
     showAsHeader: Transition<Boolean>,
     header: String,
 ) {
@@ -198,9 +206,8 @@ fun SectionTitle(
                 }
             },
             targetValueByState = {
-                val textHeight = with(LocalDensity.current) { titleTextStyle.lineHeight.toDp() }
                 when (it) {
-                    false -> (maxHeight - textHeight) / 2 - 16.dp
+                    false -> with(LocalDensity.current) { (maxHeight - titleTextStyle.lineHeight.toDp()) / 2 - 16.dp }
                     true -> 0.dp
                 }
             },
@@ -217,15 +224,15 @@ fun SectionTitle(
             targetValueByState = { if (it) 1f else 0f },
         )
 
-        ProvideTextStyle(headerTextStyle + textStyle) {
-            Box(
-                modifier = Modifier
-                    .sharedElement(rememberSharedContentState(key = SceneTitle))
-                    .fillMaxSize()
-                    .padding(top = height)
-            ) {
-                SectionHeader(lineFraction = lineFraction) {
-                    Text(header)
+        Box(
+            modifier = Modifier
+                .sharedElement(rememberSharedContentState(key = SceneTitle))
+                .fillMaxSize()
+                .padding(top = height)
+        ) {
+            SectionHeader(lineFraction = lineFraction) {
+                ProvideTextStyle(headerTextStyle + textStyle) {
+                    GradientText(header)
                 }
             }
         }

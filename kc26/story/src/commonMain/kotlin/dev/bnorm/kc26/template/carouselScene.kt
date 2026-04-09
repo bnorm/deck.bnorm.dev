@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.storyboard.*
+import dev.bnorm.storyboard.SceneContent
 import dev.bnorm.storyboard.layout.template.SceneEnter
 import dev.bnorm.storyboard.layout.template.SceneExit
 

@@ -10,12 +10,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.kc26.template.SectionBuilder
 import dev.bnorm.kc26.template.SectionSceneScaffold
-import dev.bnorm.kc26.template.WIP
+import dev.bnorm.kc26.components.WIP
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.code1
 import dev.bnorm.kc26.template.code2

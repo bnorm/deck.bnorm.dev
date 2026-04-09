@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -14,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
-import dev.chrisbanes.haze.*
 
 private enum class SceneContent {
     Header,
@@ -27,14 +25,6 @@ fun SceneScaffold(
     modifier: Modifier = Modifier,
     body: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
-    val hazeState = remember { HazeState() }
-    val style = HazeDefaults.style(
-        backgroundColor = Color.Transparent,
-        tint = HazeTint(color = Color(0xFF1D002E)),
-        blurRadius = 16.dp,
-        noiseFactor = 0f,
-    )
-
     val contentPadding = remember {
         object : PaddingValues {
             var paddingHolder by mutableStateOf(PaddingValues(0.dp))
@@ -57,12 +47,7 @@ fun SceneScaffold(
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
         val headerPlaceables = subcompose(SceneContent.Header) {
-            Box(
-                modifier = Modifier
-                    .hazeEffect(state = hazeState, style = style) {
-                        progressive = HazeProgressive.verticalGradient(startIntensity = 1f, endIntensity = 0f)
-                    }
-            ) {
+            Box {
                 header()
             }
         }.fastMap { it.measure(looseConstraints) }
@@ -70,14 +55,14 @@ fun SceneScaffold(
         val headerHeight = headerPlaceables.fastMaxBy { it.height }?.height ?: 0
 
         contentPadding.paddingHolder = PaddingValues(
-            top = headerHeight.toDp() + 32.dp,
+            top = headerHeight.toDp(),
             bottom = 0.dp,
-            start = 32.dp,
-            end = 32.dp,
+            start = 0.dp,
+            end = 0.dp,
         )
 
         val bodyPlaceables = subcompose(SceneContent.Body) {
-            Box(Modifier.fillMaxSize().hazeSource(state = hazeState)) {
+            Box(Modifier.fillMaxSize()) {
                 body(contentPadding)
             }
         }.fastMap { it.measure(looseConstraints) }
