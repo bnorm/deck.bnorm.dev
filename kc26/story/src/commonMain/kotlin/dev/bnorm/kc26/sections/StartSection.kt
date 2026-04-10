@@ -11,23 +11,18 @@ import dev.bnorm.kc26.components.SampleComparison
 import dev.bnorm.kc26.components.VersionCompareState
 import dev.bnorm.kc26.sections.it.Sample
 import dev.bnorm.kc26.template.SectionHeader
+import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.mapToValue
 
 fun StoryboardBuilder.StartSection() {
-    scene(
+    carouselScene(
         frames = listOf(
             VersionCompareState.Hidden,
             VersionCompareState.Before,
         ),
-        enterTransition = { fadeIn(tween(durationMillis = 750)) },
-        exitTransition = { fadeOut(tween(durationMillis = 750)) },
     ) {
         Column {
-            SectionHeader {
-                GradientText("Kotlin 2.0")
-            }
-
             SampleComparison(
                 sample = { Text(Sample) },
                 beforeVersion = { GradientText("2.0") },

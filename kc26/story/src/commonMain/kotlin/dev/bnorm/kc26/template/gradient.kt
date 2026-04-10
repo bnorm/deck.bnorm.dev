@@ -1,13 +1,12 @@
 package dev.bnorm.kc26.template
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
@@ -22,13 +21,8 @@ fun gradientDecorator(): ContentDecorator = ContentDecorator { content ->
     val coordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
     Box(modifier = Modifier.fillMaxSize().onPlaced { coordinates.value = it }) {
         CompositionLocalProvider(SceneCoordinatesLocal provides coordinates) {
-            Surface(
-                border = BorderStroke(2.dp, Kc26Colors.colorGradient),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                LightBox {
-                    content()
-                }
+            Box(modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)).background(Kc26Colors.colorGradient)) {
+                content()
             }
         }
     }

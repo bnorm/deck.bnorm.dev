@@ -1,24 +1,15 @@
 package dev.bnorm.kc26.template
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Typography
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.bnorm.deck.shared.Inter
 import dev.bnorm.storyboard.ContentDecorator
@@ -123,7 +114,9 @@ object Kc26Colors {
     val pinkTextDark = Color(0xFFFF66C3)
     val orangeTextDark = Color(0xFFFF9100)
 
-    val gradientColors = listOf(purple100, pink100, orangeTextDark)
+    // TODO is the gradient too intense?
+    private fun Color.darken(): Color = lerp(Color.Gray, this, 0.9f)
+    val gradientColors = listOf(purple100.darken(), pink100.darken(), orangeTextDark.darken())
     val colorGradient = Brush.linearGradient(
         colors = gradientColors,
         start = Offset(0f, Float.POSITIVE_INFINITY),

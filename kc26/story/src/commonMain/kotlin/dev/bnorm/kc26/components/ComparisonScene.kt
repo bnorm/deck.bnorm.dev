@@ -4,7 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
@@ -16,7 +18,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.unit.dp
-import dev.bnorm.kc26.template.DarkBox
+import androidx.compose.ui.zIndex
 import dev.bnorm.kc26.template.code1
 import dev.bnorm.kc26.template.gradientBackground
 
@@ -31,29 +33,41 @@ fun SampleComparison(
     showAfter: Transition<Boolean>,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier) {
+    val availableHeight = 474.dp
+    val sampleHeight = 224.dp
+    val outputHeight = availableHeight - sampleHeight
+    val outputBorder = 2.dp
+
+    Column(modifier.fillMaxSize()) {
         ProvideTextStyle(MaterialTheme.typography.code1) {
-            Box(Modifier.padding(32.dp)) {
-                sample()
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                modifier = Modifier.padding(32.dp).fillMaxWidth().height(sampleHeight)
+            ) {
+                Box(Modifier.padding(32.dp)) {
+                    sample()
+                }
             }
         }
 
         val fraction by hideOutput.animateFloat(
-            transitionSpec = { tween(300, easing = EaseInOut) },
+            transitionSpec = {
+                if (targetState) tween(500, easing = EaseIn)
+                else tween(500, easing = EaseOut)
+             },
         ) { if (it) 1f else 0f }
 
-        // TODO make this a constant size
-        //  so it rises from the bottom without animating title placement.
-        //  also so the 92 padding is not needed between sample and output
-//        Spacer(Modifier.size(32.dp))
-        Spacer(Modifier.fillMaxHeight(fraction))
-        Spacer(Modifier.height(2.dp).fillMaxWidth().gradientBackground())
         OutputComparison(
             beforeVersion = beforeVersion,
             beforeOutput = beforeOutput,
             afterVersion = afterVersion,
             afterOutput = afterOutput,
             showAfter = showAfter,
+            modifier = Modifier
+                .padding(horizontal = outputBorder)
+                .height(outputHeight)
+                .offset(y = (outputHeight + outputBorder) * fraction),
         )
     }
 }
@@ -68,19 +82,18 @@ fun OutputComparison(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        color = Color.Black,
+        shape = RoundedCornerShape(16.dp),
+        color = Color.Transparent,
         contentColor = Color.White,
         modifier = modifier,
     ) {
-        DarkBox {
-            VersionWipe(
-                showAfter = showAfter,
-                beforeTitle = beforeVersion,
-                beforeOutput = beforeOutput,
-                afterTitle = afterVersion,
-                afterOutput = afterOutput,
-            )
-        }
+        VersionWipe(
+            showAfter = showAfter,
+            beforeTitle = beforeVersion,
+            beforeOutput = beforeOutput,
+            afterTitle = afterVersion,
+            afterOutput = afterOutput,
+        )
     }
 }
 
@@ -108,7 +121,10 @@ private fun VersionWipe(
     //  - should this be a box?
     //    - versions in the bottom corners?
     Row(modifier) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.width(128.dp).fillMaxHeight()) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.width(128.dp).fillMaxHeight().zIndex(1f).background(Color.Black)
+        ) {
             showAfter.AnimatedVisibility(
                 visible = { !it },
                 enter = fadeIn(spec()), exit = fadeOut(spec()),
@@ -119,9 +135,10 @@ private fun VersionWipe(
             }
         }
         Spacer(Modifier.width(2.dp).fillMaxHeight().gradientBackground())
-        Box(Modifier.weight(1f).fillMaxHeight()) {
+        Box(Modifier.weight(1f).fillMaxHeight().zIndex(-1f).background(Color.Black)) {
             // TODO this animation causes all animations after it to take just as long
             //  is there some way we can detach it when complete?
+            // TODO easing should be slow at the start and fast at the end
             val clipPercent by showAfter.animateFloat(
                 transitionSpec = { spec() }
             ) {
@@ -153,13 +170,16 @@ private fun VersionWipe(
             BoxWithConstraints(Modifier.matchParentSize()) {
                 Spacer(
                     Modifier
-                        .width(2.dp).offset(x = (maxWidth + 2.dp) * clipPercent - 2.dp)
+                        .width(4.dp).offset(x = (maxWidth + 4.dp) * clipPercent - 4.dp)
                         .fillMaxHeight().gradientBackground()
                 )
             }
         }
         Spacer(Modifier.width(2.dp).fillMaxHeight().gradientBackground())
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.width(128.dp).fillMaxHeight()) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.width(128.dp).fillMaxHeight().zIndex(1f).background(Color.Black)
+        ) {
             showAfter.AnimatedVisibility(
                 visible = { it },
                 enter = fadeIn(spec()), exit = fadeOut(spec()),

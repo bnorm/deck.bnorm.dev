@@ -4,15 +4,22 @@ import androidx.compose.animation.core.createChildTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.components.GradientText
 import dev.bnorm.kc26.components.SampleComparison
 import dev.bnorm.kc26.template.CODE_STYLE
+import dev.bnorm.kc26.template.Kc26Colors
 import dev.bnorm.kc26.template.SectionHeader
+import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.layout.template.SceneEnter
+import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.mapToValue
 import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.magic.MagicText
@@ -73,25 +80,25 @@ fun StoryboardBuilder.FutureSection() {
                                 ${s}false${s}
             """.toCodeSample(),
             """
-                val expected = ${s}"Hello".length${s}
+                val expected ${s}= "Hello".length${s}
                                        ${s}|${s}
                                        ${s}5${s}
-                val actual = ${s}"World".substring(1, 4).length${s}
-                                     ${s}|${s}               ${s}|${s}
-                                     ${s}orl${s}             ${s}3${s}
+                val actual ${s}= "World".substring(1, 4).length${s}
+                                     ${s}|               |${s}
+                                     ${s}orl             3${s}
                 assert(expected == actual)
                        |        |  |
-                       5        |  3
+                       5        ${s}|${s}  3
                                 ${s}false${s}
             """.toCodeSample(),
             """
                 assert(expected == actual)
                        |        |  |
-                       |        |  = ${s}"World".substring(1, 4).length${s}
-                       |        |            ${s}|${s}               ${s}|${s}
-                       |        |            ${s}orl${s}             ${s}3${s}
+                       |        ${s}|${s}  ${s}= "World".substring(1, 4).length${s}
+                       |        |            ${s}|               |${s}
+                       |        |            ${s}orl             3${s}
                        |        ${s}false${s}
-                       = ${s}"Hello".length${s}
+                       ${s}= "Hello".length${s}
                                  ${s}|${s}
                                  ${s}5${s}
             """.toCodeSample(),
@@ -105,7 +112,7 @@ fun StoryboardBuilder.FutureSection() {
         val afterOutput: CodeSample,
     )
 
-    scene(
+    carouselScene(
         frames = listOf(
             SceneState(showOutput = false, showAfter = false, sample = samples[0], afterOutput = outputs[1]),
             SceneState(showOutput = false, showAfter = false, sample = samples[1], afterOutput = outputs[1]),
@@ -114,14 +121,8 @@ fun StoryboardBuilder.FutureSection() {
             SceneState(showOutput = true, showAfter = true, sample = samples[2], afterOutput = outputs[1]),
             SceneState(showOutput = true, showAfter = true, sample = samples[2], afterOutput = outputs[2]),
         ),
-        enterTransition = { fadeIn(tween(durationMillis = 750)) },
-        exitTransition = { fadeOut(tween(durationMillis = 750)) },
     ) {
         Column {
-            SectionHeader {
-                GradientText("Kotlin 2.?")
-            }
-
             SampleComparison(
                 sample = { MagicText(transition.createChildTransition { it.toValue().sample.string.splitByTags() }) },
                 beforeVersion = { GradientText("2.4") },

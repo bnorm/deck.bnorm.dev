@@ -2,10 +2,13 @@ package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,75 +32,82 @@ import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.badge
 import dev.bnorm.deck.story.generated.resources.phone
-import dev.bnorm.kc26.template.carouselScene
-import dev.bnorm.kc26.template.gradientOverlay
+import dev.bnorm.kc26.template.Kc26Colors
 import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 
 fun StoryboardBuilder.Closing() {
-    carouselScene {
-        Box(modifier = Modifier.fillMaxSize()) {
-            val visible = transition.createChildTransition { it is Frame.Value }
-            val arcFraction by visible.animateFloat(
-                transitionSpec = {
-                    when (targetState) {
-                        true -> tween(500, delayMillis = 500, easing = EaseInCubic)
-                        false -> tween(500, easing = EaseOutCubic)
+    scene(
+        enterTransition = { fadeIn(animationSpec = tween(750, delayMillis = 750)) },
+        exitTransition = { fadeOut(animationSpec = tween(750)) },
+    ) {
+        Surface(
+            border = BorderStroke(2.dp, Kc26Colors.colorGradient),
+            shape = RoundedCornerShape(16.dp),
+            color = Color.White,
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                val visible = transition.createChildTransition { it is Frame.Value }
+                val arcFraction by visible.animateFloat(
+                    transitionSpec = {
+                        when (targetState) {
+                            true -> tween(500, delayMillis = 500, easing = EaseInCubic)
+                            false -> tween(500, easing = EaseOutCubic)
+                        }
+                    }
+                ) {
+                    when (it) {
+                        true -> 1.2f
+                        false -> 0f
                     }
                 }
-            ) {
-                when (it) {
-                    true -> 1.2f
-                    false -> 0f
-                }
-            }
 
-            // TODO switch to dark image versions to avoid weird color contrast with the gradient background?
-            visible.AnimatedVisibility(
-                visible = { it },
-                enter = slideInVertically(tween(800, easing = EaseOutBounce)) { -it },
-                exit = slideOutVertically(tween(500, delayMillis = 500, easing = EaseInCubic)) { -it },
-            ) {
-                ResourceImage(
-                    Res.drawable.badge,
-                    modifier = Modifier
-                        .size(218.7f.dp, 401.4f.dp)
-                        .offset(472.dp, 0.dp)
-                )
-            }
-
-            visible.AnimatedVisibility(
-                visible = { it },
-                enter = slideInHorizontally(tween(500, easing = EaseOutCubic)) { 5 * it / 4 },
-                exit = slideOutHorizontally(tween(500, delayMillis = 500, easing = EaseInCubic)) { 5 * it / 4 },
-            ) {
-                // TODO there's a subtle border around the phone in the template
-                //  due to another background image behind the phone from 2025
-                ResourceImage(
-                    Res.drawable.phone,
-                    modifier = Modifier
-                        .size(217.4f.dp, 401.4f.dp)
-                        .offset(716f.dp, 62.7f.dp)
-                )
-            }
-
-            DrawArc(arcFraction)
-
-            Column(Modifier.align(Alignment.TopStart).padding(start = 40.dp, top = 40.dp)) {
-                val handleStyle = MaterialTheme.typography.body2 + TextStyle(fontFamily = JetBrainsMono)
-                Mastodon(username = "bnorm@kotlin.social", style = handleStyle)
-                Spacer(Modifier.size(4.dp))
-                Bluesky(username = "@bnorm.dev", style = handleStyle)
-            }
-            Column(Modifier.align(Alignment.BottomStart).padding(start = 40.dp, bottom = 28.dp)) {
-                ProvideTextStyle(
-                    MaterialTheme.typography.h2.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 54.sp,
-                        lineHeight = 54.sp,
-                    )
+                visible.AnimatedVisibility(
+                    visible = { it },
+                    enter = slideInVertically(tween(800, easing = EaseOutBounce)) { -it },
+                    exit = slideOutVertically(tween(500, delayMillis = 500, easing = EaseInCubic)) { -it },
                 ) {
-                    Text("Thank You,\nand Don't\nForget to Vote")
+                    ResourceImage(
+                        Res.drawable.badge,
+                        modifier = Modifier
+                            .size(218.7f.dp, 401.4f.dp)
+                            .offset(472.dp, 0.dp)
+                    )
+                }
+
+                visible.AnimatedVisibility(
+                    visible = { it },
+                    enter = slideInHorizontally(tween(500, easing = EaseOutCubic)) { 5 * it / 4 },
+                    exit = slideOutHorizontally(tween(500, delayMillis = 500, easing = EaseInCubic)) { 5 * it / 4 },
+                ) {
+                    // TODO there's a subtle border around the phone in the template
+                    //  due to another background image behind the phone from 2025
+                    ResourceImage(
+                        Res.drawable.phone,
+                        modifier = Modifier
+                            .size(217.4f.dp, 401.4f.dp)
+                            .offset(716f.dp, 62.7f.dp)
+                    )
+                }
+
+                DrawArc(arcFraction)
+
+                Column(Modifier.align(Alignment.TopStart).padding(start = 40.dp, top = 40.dp)) {
+                    val handleStyle = MaterialTheme.typography.body2 + TextStyle(fontFamily = JetBrainsMono)
+                    Mastodon(username = "bnorm@kotlin.social", style = handleStyle)
+                    Spacer(Modifier.size(4.dp))
+                    Bluesky(username = "@bnorm.dev", style = handleStyle)
+                }
+                Column(Modifier.align(Alignment.BottomStart).padding(start = 40.dp, bottom = 28.dp)) {
+                    ProvideTextStyle(
+                        MaterialTheme.typography.h2.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 54.sp,
+                            lineHeight = 54.sp,
+                        )
+                    ) {
+                        Text("Thank You,\nand Don't\nForget to Vote")
+                    }
                 }
             }
         }
@@ -107,7 +117,6 @@ fun StoryboardBuilder.Closing() {
 
 @Composable
 private fun DrawArc(fraction: Float) {
-    // TODO Modifier.gradientOverlay()?
     Canvas(Modifier.fillMaxSize()) {
         val xEnd = 1488.0f
         val yEnd = 962.0f

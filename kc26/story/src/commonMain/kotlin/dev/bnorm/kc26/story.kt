@@ -53,6 +53,11 @@ fun createStoryboard(
 
     // TODO do we need the third-party dot?
     TimelineScene(end = TimelineState.Bundled)
+    // TODO i'm not happy with the transition between timeline and sections
+    //  - i like the expand of the timeline (maybe it's a zoom instead?)
+    //  - but the entrance of the next scene is weird coming out of the gradient
+    //  - there needs to be a reason to expand into the gradient like that
+    //    - maybe double expand a gradient and then a white box?
     StartSection()
     TimelineScene(start = TimelineState.Bundled, end = TimelineState.Improvements)
     MinorSection()

@@ -1,22 +1,14 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
 import dev.bnorm.kc26.components.GradientText
 import dev.bnorm.kc26.components.SampleComparison
 import dev.bnorm.kc26.components.VersionCompareState
-import dev.bnorm.kc26.template.SectionHeader
+import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.toKotlin
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.layout.template.SceneEnter
-import dev.bnorm.storyboard.layout.template.SceneExit
-import dev.bnorm.storyboard.layout.template.enter
-import dev.bnorm.storyboard.layout.template.exit
 import dev.bnorm.storyboard.mapToValue
 
 fun StoryboardBuilder.MinorSection() {
@@ -38,26 +30,20 @@ fun StoryboardBuilder.MinorSection() {
     // Kotlin 2.4
     // https://youtrack.jetbrains.com/issue/KT-75873/PowerAssert-display-callable-reference-value-under
 
-    scene(
+    Kotlin21Improvements()
+    Kotlin22Improvements()
+    // TODO slide showing
+}
+
+private fun StoryboardBuilder.Kotlin21Improvements() {
+    carouselScene(
         frames = listOf(
             VersionCompareState.Hidden,
             VersionCompareState.Before,
             VersionCompareState.After,
         ),
-        enterTransition = enter(
-            start = { fadeIn(tween(durationMillis = 750)) },
-            end = SceneEnter(alignment = Alignment.CenterEnd),
-        ),
-        exitTransition = exit(
-            start = { fadeOut(tween(durationMillis = 750)) },
-            end = SceneExit(alignment = Alignment.CenterEnd),
-        ),
     ) {
         Column {
-            SectionHeader {
-                GradientText("Kotlin 2.1")
-            }
-
             SampleComparison(
                 sample = {
                     Text(
@@ -108,26 +94,17 @@ fun StoryboardBuilder.MinorSection() {
             )
         }
     }
-    scene(
+}
+
+private fun StoryboardBuilder.Kotlin22Improvements() {
+    carouselScene(
         frames = listOf(
             VersionCompareState.Hidden,
             VersionCompareState.Before,
             VersionCompareState.After,
         ),
-        enterTransition = enter(
-            end = { fadeIn(tween(durationMillis = 750)) },
-            start = SceneEnter(alignment = Alignment.CenterEnd),
-        ),
-        exitTransition = exit(
-            start = SceneExit(alignment = Alignment.CenterEnd),
-            end = { fadeOut(tween(durationMillis = 750)) },
-        ),
     ) {
         Column {
-            SectionHeader {
-                GradientText("Kotlin 2.2")
-            }
-
             SampleComparison(
                 sample = {
                     Text(

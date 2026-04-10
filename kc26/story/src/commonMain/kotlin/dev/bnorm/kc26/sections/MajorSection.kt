@@ -14,6 +14,7 @@ import dev.bnorm.kc26.components.GradientText
 import dev.bnorm.kc26.components.SampleComparison
 import dev.bnorm.kc26.template.SceneTitle
 import dev.bnorm.kc26.template.SectionHeader
+import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.toKotlin
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.easel.rememberSharedContentState
@@ -84,27 +85,15 @@ private fun StoryboardBuilder.ArrayProblem() {
         val afterOutput: CodeSample,
     )
 
-    scene(
+    carouselScene(
         frames = listOf(
             SceneState(showOutput = false, showAfter = false, afterOutput = arrayOutput[1]),
             SceneState(showOutput = true, showAfter = false, afterOutput = arrayOutput[1]),
             SceneState(showOutput = true, showAfter = true, afterOutput = arrayOutput[1]),
             SceneState(showOutput = true, showAfter = true, afterOutput = arrayOutput[2]),
         ),
-        enterTransition = enter(
-            start = { fadeIn(tween(durationMillis = 750)) },
-            end = SceneEnter(alignment = Alignment.CenterEnd),
-        ),
-        exitTransition = exit(
-            start = { fadeOut(tween(durationMillis = 750)) },
-            end = SceneExit(alignment = Alignment.CenterEnd),
-        ),
     ) {
         Column {
-            SectionHeader(Modifier.sharedElement(rememberSharedContentState(key = SceneTitle))) {
-                GradientText("Kotlin 2.4")
-            }
-
             SampleComparison(
                 sample = { Text(arraySample) },
                 beforeVersion = { GradientText("2.0") },
@@ -181,27 +170,15 @@ private fun StoryboardBuilder.MultilineProblem() {
         val afterOutput: CodeSample,
     )
 
-    scene(
+    carouselScene(
         frames = listOf(
             SceneState(showOutput = false, showAfter = false, afterOutput = stringOutput[1]),
             SceneState(showOutput = true, showAfter = false, afterOutput = stringOutput[1]),
             SceneState(showOutput = true, showAfter = true, afterOutput = stringOutput[1]),
             SceneState(showOutput = true, showAfter = true, afterOutput = stringOutput[2]),
         ),
-        enterTransition = enter(
-            end = { fadeIn(tween(durationMillis = 750)) },
-            start = SceneEnter(alignment = Alignment.CenterEnd),
-        ),
-        exitTransition = exit(
-            start = SceneExit(alignment = Alignment.CenterEnd),
-            end = { fadeOut(tween(durationMillis = 750)) },
-        ),
     ) {
         Column {
-            SectionHeader(Modifier.sharedElement(rememberSharedContentState(key = SceneTitle))) {
-                GradientText("Kotlin 2.4")
-            }
-
             SampleComparison(
                 sample = { Text(stringSample) },
                 beforeVersion = { GradientText("2.0") },
