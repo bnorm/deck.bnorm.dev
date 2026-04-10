@@ -1,15 +1,25 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
+import androidx.compose.ui.Modifier
+import dev.bnorm.deck.shared.code.CodeSample
+import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.components.GradientText
-import dev.bnorm.kc26.components.SampleComparison
+import dev.bnorm.kc26.components.OutputComparison
+import dev.bnorm.kc26.components.SceneCodeSample
 import dev.bnorm.kc26.components.VersionCompareState
+import dev.bnorm.kc26.template.CODE_STYLE
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.toKotlin
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.mapToValue
+import dev.bnorm.storyboard.text.highlight.CodeScope
+import dev.bnorm.storyboard.text.magic.MagicText
+import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.MinorSection() {
     // TICKETS:
@@ -32,7 +42,9 @@ fun StoryboardBuilder.MinorSection() {
 
     Kotlin21Improvements()
     Kotlin22Improvements()
-    // TODO slide showing
+    Kotlin23Problems()
+    Kotlin23Implementation()
+    // TODO scene showing existing problems
 }
 
 private fun StoryboardBuilder.Kotlin21Improvements() {
@@ -44,8 +56,8 @@ private fun StoryboardBuilder.Kotlin21Improvements() {
         ),
     ) {
         Column {
-            SampleComparison(
-                sample = {
+            SceneCodeSample(
+                content = {
                     Text(
                         """
                             @Test fun test() {
@@ -59,37 +71,39 @@ private fun StoryboardBuilder.Kotlin21Improvements() {
                         }
                     )
                 },
-                beforeVersion = { GradientText("2.0") },
-                beforeOutput = {
-                    Text(
-                        """
-                            java.lang.AssertionError: Assertion failed
-                            assert(listOf("Hello", "World")[1] == "Hello")
-                                   |                           |
-                                   |                           false
-                                   World
-                                   [Hello, World]
-                        """.trimIndent()
-                    )
-                },
-                afterVersion = { GradientText("2.1") },
-                afterOutput = {
-                    Text(
-                        """
-                            java.lang.AssertionError: Assertion failed
-                            assert(listOf("Hello", "World")[1] == "Hello")
-                                   |                       |   |
-                                   |                       |   false
-                                   |                       World
-                                   [Hello, World]
-                        """.trimIndent()
+                output = {
+                    OutputComparison(
+                        beforeVersion = { GradientText("2.0") },
+                        beforeOutput = {
+                            Text(
+                                """
+                                    assert(listOf("Hello", "World")[1] == "Hello")
+                                           |                           |
+                                           |                           false
+                                           World
+                                           [Hello, World]
+                                """.trimIndent()
+                            )
+                        },
+                        afterVersion = { GradientText("2.1") },
+                        afterOutput = {
+                            Text(
+                                """
+                                    assert(listOf("Hello", "World")[1] == "Hello")
+                                           |                       |   |
+                                           |                       |   false
+                                           |                       World
+                                           [Hello, World]
+                                """.trimIndent()
+                            )
+                        },
+                        showAfter = transition.createChildTransition { frame ->
+                            frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
+                        },
                     )
                 },
                 hideOutput = transition.createChildTransition { frame ->
                     frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
-                },
-                showAfter = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
                 },
             )
         }
@@ -105,8 +119,8 @@ private fun StoryboardBuilder.Kotlin22Improvements() {
         ),
     ) {
         Column {
-            SampleComparison(
-                sample = {
+            SceneCodeSample(
+                content = {
                     Text(
                         """
                             @Test fun test() {
@@ -121,37 +135,261 @@ private fun StoryboardBuilder.Kotlin22Improvements() {
                         }
                     )
                 },
-                beforeVersion = { GradientText("2.1") },
-                beforeOutput = {
-                    Text(
-                        """
-                            java.lang.AssertionError: Assertion failed
-                            assert(a!!)
-                                   ||
-                                   |false
-                                   false
-                        """.trimIndent()
-                    )
-                },
-                afterVersion = { GradientText("2.2") },
-                afterOutput = {
-                    Text(
-                        """
-                            java.lang.AssertionError: Assertion failed
-                            assert(a!!)
-                                   |
-                                   |
-                                   false
-                        """.trimIndent()
+                output = {
+                    OutputComparison(
+                        beforeVersion = { GradientText("2.1") },
+                        beforeOutput = {
+                            Text(
+                                """
+                                    assert(a!!)
+                                           ||
+                                           |false
+                                           false
+                                """.trimIndent()
+                            )
+                        },
+                        afterVersion = { GradientText("2.2") },
+                        afterOutput = {
+                            Text(
+                                """
+                                    assert(a!!)
+                                           |
+                                           |
+                                           false
+                                """.trimIndent()
+                            )
+                        },
+                        showAfter = transition.createChildTransition { frame ->
+                            frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
+                        },
                     )
                 },
                 hideOutput = transition.createChildTransition { frame ->
                     frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
                 },
-                showAfter = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
+            )
+        }
+    }
+}
+
+private fun StoryboardBuilder.Kotlin23Problems() {
+    val sample = """
+        @Test fun test() {
+            assert(arrayOf(true, false)[1])
+        }
+    """.trimIndent().toKotlin {
+        when (it) {
+            "assert", "listOf" -> staticFunctionCall
+            else -> null
+        }
+    }
+
+    val output = """
+        assert(arrayOf(true, false)[1])
+               |                   |
+               |                   false
+               [Ljava.lang.Boolean;@47caedad
+    """.trimIndent()
+
+    carouselScene(
+        frames = listOf(
+            VersionCompareState.Hidden,
+            VersionCompareState.Before,
+        ),
+    ) {
+        Column {
+            SceneCodeSample(
+                content = { Text(sample) },
+                output = {
+                    OutputComparison(
+                        version = { GradientText("2.3") },
+                        output = { Text(output) },
+                    )
+                },
+                hideOutput = transition.createChildTransition { frame ->
+                    frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
                 },
             )
+        }
+    }
+}
+
+private fun StoryboardBuilder.Kotlin23Implementation() {
+    val samples = buildCodeSamples {
+        fun String.toCodeSample(): CodeSample {
+            return toCodeSample(CODE_STYLE, scope = CodeScope.Function) { identifier ->
+                when (identifier) {
+                    "assert" -> CODE_STYLE.staticFunctionCall
+                    "trimIndent" -> CODE_STYLE.extensionFunctionCall
+                    "length" -> CODE_STYLE.property
+                    else -> null
+                }
+            }
+        }
+
+        val samples = listOf(
+            """
+                assert(str.length >= 1 && str[0] == 'x')
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                assert(tmp1.length >= 1 && str[0] == 'x')
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                assert(tmp2 >= 1 && str[0] == 'x')
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                assert(tmp3 && str[0] == 'x')
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                assert(when {
+                    tmp3 -> str[0] == 'x'
+                    else -> false
+                })
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                when {
+                    tmp3 -> assert(str[0] == 'x')
+                    else -> assert(false)
+                }
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                when {
+                    tmp3 -> {
+                        val tmp4 = str
+                        assert(tmp4[0] == 'x')
+                    }
+                    else -> assert(false)
+                }
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                when {
+                    tmp3 -> {
+                        val tmp4 = str
+                        val tmp5 = tmp4[0]
+                        assert(tmp5 == 'x')
+                    }
+                    else -> assert(false)
+                }
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                when {
+                    tmp3 -> {
+                        val tmp4 = str
+                        val tmp5 = tmp4[0]
+                        val tmp6 = tmp5 == 'x'
+                        assert(tmp6)
+                    }
+                    else -> assert(false)
+                }
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                when {
+                    tmp3 -> {
+                        val tmp4 = str
+                        val tmp5 = tmp4[0]
+                        val tmp6 = tmp5 == 'x'
+                        assert(tmp6)
+                    }
+                    else -> assert(false)
+                }
+            """.trimIndent(),
+            """
+                val tmp1 = str
+                val tmp2 = tmp1.length
+                val tmp3 = tmp2 >= 1
+                when {
+                    tmp3 -> {
+                        val tmp4 = str
+                        val tmp5 = tmp4[0]
+                        val tmp6 = tmp5 == 'x'
+                        assert(tmp6)
+                    }
+                    else -> assert(false) {
+                        "${'"'}"
+                            assert(str.length >= 1 && str[0] == 'x')
+                                   |   |      |
+                                   |   |      ${'$'}tmp3
+                                   |   ${'$'}tmp2
+                                   ${'$'}tmp1
+                        "${'"'}".trimIndent()
+                    }
+                }
+            """.trimIndent(),
+        )
+
+        val m by tag("message")
+        val finalExample = """
+            val tmp1 = str
+            val tmp2 = tmp1.length
+            val tmp3 = tmp2 >= 1
+            when {
+                tmp3 -> {
+                    val tmp4 = str
+                    val tmp5 = tmp4[0]
+                    val tmp6 = tmp5 == 'x'
+                    assert(tmp6) {$m
+                        "${'"'}"
+                            assert(str.length >= 1 && str[0] == 'x')
+                                   |   |      |       |  |   |
+                                   |   |      |       |  |   ${'$'}tmp6
+                                   |   |      |       |  ${'$'}tmp5
+                                   |   |      |       ${'$'}tmp4
+                                   |   |      ${'$'}tmp3
+                                   |   ${'$'}tmp2
+                                   ${'$'}tmp1
+                        "${'"'}".trimIndent()
+                    $m}
+                }
+                else -> assert(false) {$m
+                    "${'"'}"
+                        assert(str.length >= 1 && str[0] == 'x')
+                               |   |      |
+                               |   |      ${'$'}tmp3
+                               |   ${'$'}tmp2
+                               ${'$'}tmp1
+                    "${'"'}".trimIndent()
+                $m}
+            }
+        """.trimIndent()
+
+        val transformation = samples.map { it.toCodeSample() }
+            .then { finalExample.toCodeSample() }
+            .then { collapse(m) }
+        transformation +
+                transformation[0] +
+                transformation[transformation.lastIndex] +
+                transformation[transformation.lastIndex - 1]
+    }
+
+    carouselScene(frames = samples) {
+        SceneCodeSample {
+            Box(Modifier.fillMaxSize()) {
+                MagicText(transition.createChildTransition { it.toValue().string })
+            }
         }
     }
 }

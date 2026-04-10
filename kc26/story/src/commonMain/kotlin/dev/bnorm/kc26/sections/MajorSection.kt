@@ -1,28 +1,20 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.components.GradientText
-import dev.bnorm.kc26.components.SampleComparison
-import dev.bnorm.kc26.template.SceneTitle
-import dev.bnorm.kc26.template.SectionHeader
+import dev.bnorm.kc26.components.OutputComparison
+import dev.bnorm.kc26.components.SceneCodeSample
+import dev.bnorm.kc26.template.CODE_STYLE
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.toKotlin
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.easel.rememberSharedContentState
-import dev.bnorm.storyboard.easel.sharedElement
-import dev.bnorm.storyboard.layout.template.SceneEnter
-import dev.bnorm.storyboard.layout.template.SceneExit
-import dev.bnorm.storyboard.layout.template.enter
-import dev.bnorm.storyboard.layout.template.exit
 import dev.bnorm.storyboard.mapToValue
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
@@ -35,6 +27,7 @@ fun StoryboardBuilder.MajorSection() {
 
     ArrayProblem()
     MultilineProblem()
+    CallExplanationSolution()
     // TODO talk about the new API that makes this all possible
     // TODO talk about the Gradle improvements a little?
 }
@@ -94,19 +87,23 @@ private fun StoryboardBuilder.ArrayProblem() {
         ),
     ) {
         Column {
-            SampleComparison(
-                sample = { Text(arraySample) },
-                beforeVersion = { GradientText("2.0") },
-                beforeOutput = { Text(arrayOutput[0].string) },
-                afterVersion = { GradientText("2.4") },
-                afterOutput = {
-                    MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
+            SceneCodeSample(
+                content = { Text(arraySample) },
+                output = {
+                    OutputComparison(
+                        beforeVersion = { GradientText("2.0") },
+                        beforeOutput = { Text(arrayOutput[0].string) },
+                        afterVersion = { GradientText("2.4") },
+                        afterOutput = {
+                            MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
+                        },
+                        showAfter = transition.createChildTransition { frame ->
+                            frame.mapToValue(start = false, end = true) { it.showAfter }
+                        },
+                    )
                 },
                 hideOutput = transition.createChildTransition { frame ->
                     frame.mapToValue(start = true, end = true) { !it.showOutput }
-                },
-                showAfter = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = false, end = true) { it.showAfter }
                 },
             )
         }
@@ -179,21 +176,106 @@ private fun StoryboardBuilder.MultilineProblem() {
         ),
     ) {
         Column {
-            SampleComparison(
-                sample = { Text(stringSample) },
-                beforeVersion = { GradientText("2.0") },
-                beforeOutput = { Text(stringOutput[0].string) },
-                afterVersion = { GradientText("2.4") },
-                afterOutput = {
-                    MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
+            SceneCodeSample(
+                content = { Text(stringSample) },
+                output = {
+                    OutputComparison(
+                        beforeVersion = { GradientText("2.0") },
+                        beforeOutput = { Text(stringOutput[0].string) },
+                        afterVersion = { GradientText("2.4") },
+                        afterOutput = {
+                            MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
+                        },
+                        showAfter = transition.createChildTransition { frame ->
+                            frame.mapToValue(start = false, end = true) { it.showAfter }
+                        },
+                    )
                 },
                 hideOutput = transition.createChildTransition { frame ->
                     frame.mapToValue(start = true, end = true) { !it.showOutput }
                 },
-                showAfter = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = false, end = true) { it.showAfter }
-                },
             )
+        }
+    }
+}
+
+private fun StoryboardBuilder.CallExplanationSolution() {
+    val samples = buildCodeSamples {
+        fun String.toCodeSample(): CodeSample = trimIndent().toCodeSample(CODE_STYLE) { identifier ->
+            when (identifier) {
+                "assert" -> CODE_STYLE.staticFunctionCall
+                "trimIndent", "toDefaultMessage" -> CODE_STYLE.extensionFunctionCall
+                "length" -> CODE_STYLE.property
+                else -> null
+            }
+        }
+
+        val e by tag("explanation")
+        val m by tag("default message")
+
+        val start = """
+            val tmp1 = str
+            val tmp2 = tmp1.length
+            val tmp3 = tmp2 >= 1
+            when {
+                tmp3 -> {
+                    val tmp4 = str
+                    val tmp5 = tmp4[0]
+                    val tmp6 = tmp5 == 'x'
+                    assert(tmp6) {$e
+                        "${'"'}"
+                            assert(str.length >= 1 && str[0] == 'x')
+                                   |   |      |       |  |   |
+                                   |   |      |       |  |   ${'$'}tmp6
+                                   |   |      |       |  ${'$'}tmp5
+                                   |   |      |       ${'$'}tmp4
+                                   |   |      ${'$'}tmp3
+                                   |   ${'$'}tmp2
+                                   ${'$'}tmp1
+                        "${'"'}".trimIndent()
+                    $e}
+                }
+                else -> assert(false) {$e
+                    "${'"'}"
+                        assert(str.length >= 1 && str[0] == 'x')
+                               |   |      |
+                               |   |      ${'$'}tmp3
+                               |   ${'$'}tmp2
+                               ${'$'}tmp1
+                    "${'"'}".trimIndent()
+                $e}
+            }
+        """.toCodeSample()
+
+        val end = """
+            val tmp1 = str
+            val tmp2 = tmp1.length
+            val tmp3 = tmp2 >= 1
+            when {
+                tmp3 -> {
+                    val tmp4 = str
+                    val tmp5 = tmp4[0]
+                    val tmp6 = tmp5 == 'x'
+                    assert(tmp6) {$e
+                        CallExplanation(/* ... */)${m}.toDefaultMessage()${m}
+                    $e}
+                }
+                else -> assert(false) {$e
+                    CallExplanation(/* ... */)${m}.toDefaultMessage()${m}
+                $e}
+            }
+        """.toCodeSample()
+
+        start.collapse(e)
+            .then { reveal(e) }
+            .then { end }
+    }
+
+    carouselScene(frames = samples) {
+        SceneCodeSample {
+            Box(Modifier.fillMaxSize()) {
+                MagicText(transition.createChildTransition { it.toValue().string.splitByTags() })
+            }
         }
     }
 }

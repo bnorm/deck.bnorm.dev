@@ -1,25 +1,16 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.components.GradientText
-import dev.bnorm.kc26.components.SampleComparison
+import dev.bnorm.kc26.components.OutputComparison
+import dev.bnorm.kc26.components.SceneCodeSample
 import dev.bnorm.kc26.template.CODE_STYLE
-import dev.bnorm.kc26.template.Kc26Colors
-import dev.bnorm.kc26.template.SectionHeader
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.storyboard.StoryboardBuilder
-import dev.bnorm.storyboard.layout.template.SceneEnter
-import dev.bnorm.storyboard.layout.template.SceneExit
 import dev.bnorm.storyboard.mapToValue
 import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.magic.MagicText
@@ -27,6 +18,12 @@ import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.FutureSection() {
+    LocalVariables()
+    // TODO arguments?
+    // TODO diffs?
+}
+
+private fun StoryboardBuilder.LocalVariables() {
     val samples = buildCodeSamples {
         fun String.toCodeSample(): CodeSample = trimIndent().toCodeSample(
             codeStyle = CODE_STYLE,
@@ -123,17 +120,21 @@ fun StoryboardBuilder.FutureSection() {
         ),
     ) {
         Column {
-            SampleComparison(
-                sample = { MagicText(transition.createChildTransition { it.toValue().sample.string.splitByTags() }) },
-                beforeVersion = { GradientText("2.4") },
-                beforeOutput = { Text(outputs[0].string) },
-                afterVersion = { GradientText("2.?") },
-                afterOutput = { MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() }) },
+            SceneCodeSample(
+                content = { MagicText(transition.createChildTransition { it.toValue().sample.string.splitByTags() }) },
+                output = {
+                    OutputComparison(
+                        beforeVersion = { GradientText("2.4") },
+                        beforeOutput = { Text(outputs[0].string) },
+                        afterVersion = { GradientText("2.?") },
+                        afterOutput = { MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() }) },
+                        showAfter = transition.createChildTransition { frame ->
+                            frame.mapToValue(start = false, end = true) { it.showAfter }
+                        },
+                    )
+                },
                 hideOutput = transition.createChildTransition { frame ->
                     frame.mapToValue(start = true, end = true) { !it.showOutput }
-                },
-                showAfter = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = false, end = true) { it.showAfter }
                 },
             )
         }

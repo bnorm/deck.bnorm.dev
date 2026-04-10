@@ -18,58 +18,69 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import dev.bnorm.kc26.template.code1
 import dev.bnorm.kc26.template.gradientBackground
 
 @Composable
-fun SampleComparison(
-    sample: @Composable () -> Unit,
-    beforeVersion: @Composable () -> Unit,
-    beforeOutput: @Composable () -> Unit,
-    afterVersion: @Composable () -> Unit,
-    afterOutput: @Composable () -> Unit,
-    hideOutput: Transition<Boolean>,
-    showAfter: Transition<Boolean>,
+fun SceneCodeSample(
     modifier: Modifier = Modifier,
+    output: @Composable () -> Unit = {},
+    hideOutput: Transition<Boolean> = updateTransition(true),
+    content: @Composable () -> Unit,
 ) {
-    val availableHeight = 474.dp
-    val sampleHeight = 224.dp
+    val availableHeight = 540.dp
+    val sampleHeight = 256.dp
     val outputHeight = availableHeight - sampleHeight
-    val outputBorder = 2.dp
 
-    Column(modifier.fillMaxSize()) {
-        ProvideTextStyle(MaterialTheme.typography.code1) {
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = Color.White,
-                modifier = Modifier.padding(32.dp).fillMaxWidth().height(sampleHeight)
-            ) {
-                Box(Modifier.padding(32.dp)) {
-                    sample()
+    Box(modifier.fillMaxSize()) {
+        val height by hideOutput.animateDp(
+            transitionSpec = {
+                if (targetState) tween(500, easing = EaseIn)
+                else tween(500, easing = EaseOut)
+            },
+            targetValueByState = { if (it) availableHeight else sampleHeight },
+        )
+
+        val padding = 32.dp
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Color.White,
+            modifier = Modifier.padding(padding).fillMaxWidth().height(height - 2 * padding)
+        ) {
+            Box(Modifier.padding(32.dp)) {
+                ProvideTextStyle(MaterialTheme.typography.code1) {
+                    content()
                 }
             }
         }
 
-        val fraction by hideOutput.animateFloat(
-            transitionSpec = {
-                if (targetState) tween(500, easing = EaseIn)
-                else tween(500, easing = EaseOut)
-             },
-        ) { if (it) 1f else 0f }
-
-        OutputComparison(
-            beforeVersion = beforeVersion,
-            beforeOutput = beforeOutput,
-            afterVersion = afterVersion,
-            afterOutput = afterOutput,
-            showAfter = showAfter,
-            modifier = Modifier
-                .padding(horizontal = outputBorder)
+        Box(
+            Modifier
                 .height(outputHeight)
-                .offset(y = (outputHeight + outputBorder) * fraction),
-        )
+                .offset(y = height)
+                .padding(2.dp)
+        ) {
+            output()
+        }
     }
+}
+
+@Composable
+fun OutputComparison(
+    version: @Composable () -> Unit,
+    output: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutputComparison(
+        beforeVersion = version,
+        beforeOutput = output,
+        afterVersion = {},
+        afterOutput = {},
+        showAfter = updateTransition(false),
+        modifier = modifier
+    )
 }
 
 @Composable
