@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import dev.bnorm.kc26.template.code1
+import dev.bnorm.kc26.template.code2
 import dev.bnorm.kc26.template.gradientBackground
 
 @Composable
@@ -151,10 +152,9 @@ private fun VersionWipe(
             //  is there some way we can detach it when complete?
             // TODO easing should be slow at the start and fast at the end
             val clipPercent by showAfter.animateFloat(
-                transitionSpec = { spec() }
-            ) {
-                if (it) 1f else 0f
-            }
+                transitionSpec = { spec() },
+                targetValueByState = { if (it) 1f else 0f },
+            )
 
             Box(Modifier.drawWithContent {
                 clipRect(left = clipPercent * size.width) {
@@ -162,7 +162,7 @@ private fun VersionWipe(
                 }
             }) {
                 Box(Modifier.fillMaxSize().padding(16.dp)) {
-                    ProvideTextStyle(MaterialTheme.typography.code1) {
+                    ProvideTextStyle(MaterialTheme.typography.code2) {
                         beforeOutput()
                     }
                 }
@@ -173,7 +173,7 @@ private fun VersionWipe(
                 }
             }) {
                 Box(Modifier.fillMaxSize().padding(16.dp)) {
-                    ProvideTextStyle(MaterialTheme.typography.code1) {
+                    ProvideTextStyle(MaterialTheme.typography.code2) {
                         afterOutput()
                     }
                 }

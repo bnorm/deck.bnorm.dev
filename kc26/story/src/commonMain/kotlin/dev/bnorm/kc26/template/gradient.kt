@@ -78,31 +78,3 @@ fun Modifier.gradientBackground(): Modifier {
             }
         }
 }
-
-@Composable
-fun LightBox(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .gradientBackground()
-            .background(Color.White.copy(alpha = 0.9f))
-    ) {
-        content()
-    }
-}
-
-@Composable
-fun DarkBox(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .gradientBackground()
-            .background(Color.Black.copy(alpha = 0.9f))
-    ) {
-        content()
-    }
-}

@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.generated.resources.Res
 import dev.bnorm.deck.shared.generated.resources.bluesky_logo
@@ -18,7 +19,7 @@ import org.jetbrains.compose.resources.painterResource
 fun Bluesky(
     username: String,
     modifier: Modifier = Modifier,
-    style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.body2,
+    style: TextStyle = MaterialTheme.typography.body2,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(

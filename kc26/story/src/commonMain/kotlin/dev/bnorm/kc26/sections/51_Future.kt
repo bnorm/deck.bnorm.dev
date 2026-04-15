@@ -30,7 +30,7 @@ private fun StoryboardBuilder.LocalVariables() {
             scope = CodeScope.Function,
         ) { identifier ->
             when (identifier) {
-                "assert" -> CODE_STYLE.staticFunctionCall
+                "powerAssert" -> CODE_STYLE.staticFunctionCall
                 "trimIndent" -> CODE_STYLE.extensionFunctionCall
                 "length" -> CODE_STYLE.property
                 else -> null
@@ -42,21 +42,21 @@ private fun StoryboardBuilder.LocalVariables() {
         listOf(
             """
                 @Test fun test() {
-                    assert(${s}"Hello".length${s} == ${s}"World".substring(1, 4).length${s})
+                    powerAssert(${s}"Hello".length${s} == ${s}"World".substring(1, 4).length${s})
                 }
             """.toCodeSample(),
             """
                 @Test fun test() {
                     ${s}${s}val expected = ${s}"Hello".length${s}
                     ${s}${s}val actual = ${s}"World".substring(1, 4).length${s}
-                    assert(${s}expected${s} == ${s}actual${s})
+                    powerAssert(${s}expected${s} == ${s}actual${s})
                 }
             """.toCodeSample(),
             """
                 @Test fun test() {
                     ${s}@PowerAssert ${s}val expected = ${s}"Hello".length${s}
                     ${s}@PowerAssert ${s}val actual = ${s}"World".substring(1, 4).length${s}
-                    assert(${s}expected${s} == ${s}actual${s})
+                    powerAssert(${s}expected${s} == ${s}actual${s})
                 }
             """.toCodeSample(),
         )
@@ -71,10 +71,14 @@ private fun StoryboardBuilder.LocalVariables() {
 
         listOf(
             """
-                assert(expected == actual)
-                       |        |  |
-                       5        ${s}|${s}  3
-                                ${s}false${s}
+                powerAssert(expected == actual)
+                            |        |  |
+                            5        ${s}|${s}  3
+                                     ${s}false${s}
+
+                Expected :3
+                Actual   :5
+                <Click to see difference>
             """.toCodeSample(),
             """
                 val expected ${s}= "Hello".length${s}
@@ -82,22 +86,30 @@ private fun StoryboardBuilder.LocalVariables() {
                                        ${s}5${s}
                 val actual ${s}= "World".substring(1, 4).length${s}
                                      ${s}|               |${s}
-                                     ${s}orl             3${s}
-                assert(expected == actual)
-                       |        |  |
-                       5        ${s}|${s}  3
-                                ${s}false${s}
+                                     ${s}"orl"           3${s}
+                powerAssert(expected == actual)
+                            |        |  |
+                            5        ${s}|${s}  3
+                                     ${s}false${s}
+
+                Expected :3
+                Actual   :5
+                <Click to see difference>
             """.toCodeSample(),
             """
-                assert(expected == actual)
-                       |        |  |
-                       |        ${s}|${s}  ${s}= "World".substring(1, 4).length${s}
-                       |        |            ${s}|               |${s}
-                       |        |            ${s}orl             3${s}
-                       |        ${s}false${s}
-                       ${s}= "Hello".length${s}
-                                 ${s}|${s}
-                                 ${s}5${s}
+                powerAssert(expected == actual)
+                            |        |  |
+                            |        ${s}|${s}  ${s}= "World".substring(1, 4).length${s}
+                            |        |            ${s}|               |${s}
+                            |        |            ${s}"orl"           3${s}
+                            |        ${s}false${s}
+                            ${s}= "Hello".length${s}
+                                      ${s}|${s}
+                                      ${s}5${s}
+
+                Expected :3
+                Actual   :5
+                <Click to see difference>
             """.toCodeSample(),
         )
     }

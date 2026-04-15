@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -20,24 +21,28 @@ import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.deck.shared.ResourceImage
+import dev.bnorm.deck.shared.generated.resources.JetBrains
 import dev.bnorm.deck.shared.socials.Bluesky
 import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.badge
 import dev.bnorm.deck.story.generated.resources.phone
 import dev.bnorm.kc26.template.Kc26Colors
-import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.toValue
+import org.jetbrains.compose.resources.painterResource
+import dev.bnorm.deck.shared.generated.resources.Res as SharedRes
 
 fun StoryboardBuilder.Closing() {
     scene(
+        frames = listOf(false, true),
         enterTransition = { fadeIn(animationSpec = tween(750, delayMillis = 750)) },
         exitTransition = { fadeOut(animationSpec = tween(750)) },
     ) {
@@ -47,25 +52,23 @@ fun StoryboardBuilder.Closing() {
             color = Color.White,
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                val visible = transition.createChildTransition { it is Frame.Value }
+                val visible = transition.createChildTransition { it.toValue() }
                 val arcFraction by visible.animateFloat(
                     transitionSpec = {
                         when (targetState) {
-                            true -> tween(500, delayMillis = 500, easing = EaseInCubic)
-                            false -> tween(500, easing = EaseOutCubic)
+                            true -> tween(500, delayMillis = 500, easing = EaseOut)
+                            false -> tween(500, easing = EaseIn)
                         }
-                    }
-                ) {
-                    when (it) {
-                        true -> 1.2f
-                        false -> 0f
-                    }
-                }
+                    },
+                    targetValueByState = { if (it) 1.2f else 0f },
+                )
 
+                // TODO instead of the bounce, what would a y-axis spin animation look like?
+                //  it's cool, but can't figure out the right easing.
                 visible.AnimatedVisibility(
                     visible = { it },
                     enter = slideInVertically(tween(800, easing = EaseOutBounce)) { -it },
-                    exit = slideOutVertically(tween(500, delayMillis = 500, easing = EaseInCubic)) { -it },
+                    exit = slideOutVertically(tween(500, delayMillis = 500, easing = EaseIn)) { -it },
                 ) {
                     ResourceImage(
                         Res.drawable.badge,
@@ -77,8 +80,8 @@ fun StoryboardBuilder.Closing() {
 
                 visible.AnimatedVisibility(
                     visible = { it },
-                    enter = slideInHorizontally(tween(500, easing = EaseOutCubic)) { 5 * it / 4 },
-                    exit = slideOutHorizontally(tween(500, delayMillis = 500, easing = EaseInCubic)) { 5 * it / 4 },
+                    enter = slideInHorizontally(tween(500, easing = EaseOut)) { 5 * it / 4 },
+                    exit = slideOutHorizontally(tween(500, delayMillis = 500, easing = EaseIn)) { 5 * it / 4 },
                 ) {
                     // TODO there's a subtle border around the phone in the template
                     //  due to another background image behind the phone from 2025
@@ -94,23 +97,62 @@ fun StoryboardBuilder.Closing() {
 
                 Column(Modifier.align(Alignment.TopStart).padding(start = 40.dp, top = 40.dp)) {
                     val handleStyle = MaterialTheme.typography.body2 + TextStyle(fontFamily = JetBrainsMono)
-                    Mastodon(username = "bnorm@kotlin.social", style = handleStyle)
+                    Link(text = "kotl.in/power-assert-keep", style = handleStyle)
                     Spacer(Modifier.size(4.dp))
-                    Bluesky(username = "@bnorm.dev", style = handleStyle)
+                    Link(text = "kotl.in/power-assert", style = handleStyle)
+                    visible.AnimatedVisibility(
+                        visible = { it },
+                        enter = fadeIn(tween(500)), exit = fadeOut(tween(500)),
+                    ) {
+                        Column {
+                            Spacer(Modifier.size(4.dp))
+                            Mastodon(username = "bnorm@kotlin.social", style = handleStyle)
+                            Spacer(Modifier.size(4.dp))
+                            Bluesky(username = "@bnorm.dev", style = handleStyle)
+                        }
+                    }
                 }
                 Column(Modifier.align(Alignment.BottomStart).padding(start = 40.dp, bottom = 28.dp)) {
-                    ProvideTextStyle(
-                        MaterialTheme.typography.h2.copy(
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 54.sp,
-                            lineHeight = 54.sp,
-                        )
+                    visible.AnimatedVisibility(
+                        visible = { it },
+                        enter = fadeIn(tween(500)), exit = fadeOut(tween(500)),
                     ) {
-                        Text("Thank You,\nand Don't\nForget to Vote")
+                        ProvideTextStyle(
+                            MaterialTheme.typography.h2.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 54.sp,
+                                lineHeight = 54.sp,
+                            )
+                        ) {
+                            Text("Thank You,\nand Don't\nForget to Vote")
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun Link(text: String, style: TextStyle, modifier: Modifier = Modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            painter = painterResource(SharedRes.drawable.JetBrains),
+            contentDescription = "",
+            modifier = modifier.size(20.dp),
+        )
+        Spacer(modifier = Modifier.size(8.dp))
+        Text(text = buildAnnotatedString {
+            withLink(
+                LinkAnnotation.Clickable(
+                    text,
+                    styles = TextLinkStyles(style = style.toSpanStyle()),
+                    linkInteractionListener = {}
+                )
+            ) {
+                append(text)
+            }
+        }, style = style)
     }
 }
 

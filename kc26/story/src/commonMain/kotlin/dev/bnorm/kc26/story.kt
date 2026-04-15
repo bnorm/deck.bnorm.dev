@@ -1,7 +1,7 @@
 package dev.bnorm.kc26
 
-import dev.bnorm.kc26.components.TimelineScene
-import dev.bnorm.kc26.components.TimelineState
+import dev.bnorm.kc26.sections.TimelineScene
+import dev.bnorm.kc26.sections.TimelineState
 import dev.bnorm.kc26.sections.Closing
 import dev.bnorm.kc26.sections.FutureSection
 import dev.bnorm.kc26.sections.MajorSection
@@ -51,7 +51,7 @@ fun createStoryboard(
 
     Title()
 
-    // TODO do we need the third-party dot?
+    // TODO pick 1: all examples include '@Test' or all examples don't.
     TimelineScene(end = TimelineState.Bundled)
     StartSection()
     TimelineScene(start = TimelineState.Bundled, end = TimelineState.Improvements)
@@ -61,21 +61,5 @@ fun createStoryboard(
     TimelineScene(start = TimelineState.Explanations, end = TimelineState.Future)
     FutureSection()
 
-//    sectioned {
-//        WhatIsIt()
-//
-//        WhatIsChanging()
-//        // TODO merge changing and new?
-//        WhatIsNew()
-//
-//        WhatIsPossible()
-//
-//        // TODO do we need a summary at this point? to review problems and goals?
-//        // TODO QRCode to example GitHub repository
-//
-//        WhatIsNext()
-//    }
-
-    // TODO Closing (waiting on template)
     Closing()
 }

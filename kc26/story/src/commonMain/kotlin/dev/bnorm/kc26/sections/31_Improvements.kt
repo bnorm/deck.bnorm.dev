@@ -1,10 +1,10 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
@@ -40,14 +40,12 @@ fun StoryboardBuilder.MinorSection() {
     // Kotlin 2.4
     // https://youtrack.jetbrains.com/issue/KT-75873/PowerAssert-display-callable-reference-value-under
 
-    Kotlin21Improvements()
-    Kotlin22Improvements()
-    Kotlin23Problems()
+    WhenExpressionImprovements()
+    DiagramImprovementsAndProblems()
     Kotlin23Implementation()
-    // TODO scene showing existing problems
 }
 
-private fun StoryboardBuilder.Kotlin21Improvements() {
+private fun StoryboardBuilder.WhenExpressionImprovements() {
     carouselScene(
         frames = listOf(
             VersionCompareState.Hidden,
@@ -60,12 +58,16 @@ private fun StoryboardBuilder.Kotlin21Improvements() {
                 content = {
                     Text(
                         """
-                            @Test fun test() {
-                                assert(listOf("Hello", "World")[1] == "Hello")
-                            }
+                            assert(
+                                when (mascot.status) {
+                                    Status.INACTIVE -> mascot.location == null
+                                    Status.ACTIVE -> mascot.location == "Munich"
+                                }
+                            )
                         """.trimIndent().toKotlin {
                             when (it) {
                                 "assert" -> staticFunctionCall
+                                "status", "location" -> property
                                 else -> null
                             }
                         }
@@ -77,24 +79,38 @@ private fun StoryboardBuilder.Kotlin21Improvements() {
                         beforeOutput = {
                             Text(
                                 """
-                                    assert(listOf("Hello", "World")[1] == "Hello")
-                                           |                           |
-                                           |                           false
-                                           World
-                                           [Hello, World]
-                                """.trimIndent()
+                                    assert(
+                                        when (mascot.status) {
+                                        |
+                                        false
+                                            Status.INACTIVE -> mascot.location == null
+                                            Status.ACTIVE -> mascot.location == "Munich"
+                                        }
+                                    )
+                                """.trimIndent(),
                             )
                         },
-                        afterVersion = { GradientText("2.1") },
+                        afterVersion = { GradientText("2.3") },
                         afterOutput = {
                             Text(
                                 """
-                                    assert(listOf("Hello", "World")[1] == "Hello")
-                                           |                       |   |
-                                           |                       |   false
-                                           |                       World
-                                           [Hello, World]
-                                """.trimIndent()
+                                    assert(
+                                        when (mascot.status) {
+                                              |      |
+                                              |      ACTIVE
+                                              Mascot(name=Kodee, status=ACTIVE, location=München)
+                                    
+                                            Status.INACTIVE -> mascot.location == "Munich"
+                                            Status.ACTIVE -> mascot.location == "Munich"
+                                                             |      |        |
+                                                             |      |        false
+                                                             |      München
+                                                             Mascot(name=Kodee, status=ACTIVE, location=München)
+                                    
+                                        }
+                                    )
+                                """.trimIndent(),
+                                modifier = Modifier.wrapContentSize(align = Alignment.TopStart, unbounded = true)
                             )
                         },
                         showAfter = transition.createChildTransition { frame ->
@@ -110,7 +126,7 @@ private fun StoryboardBuilder.Kotlin21Improvements() {
     }
 }
 
-private fun StoryboardBuilder.Kotlin22Improvements() {
+private fun StoryboardBuilder.DiagramImprovementsAndProblems() {
     carouselScene(
         frames = listOf(
             VersionCompareState.Hidden,
@@ -123,13 +139,11 @@ private fun StoryboardBuilder.Kotlin22Improvements() {
                 content = {
                     Text(
                         """
-                            @Test fun test() {
-                                val a : Boolean? = false
-                                assert(a!!)
-                            }
+                            val a: Boolean? = false
+                            assert(arrayOf(false, a)[0]!!)
                         """.trimIndent().toKotlin {
                             when (it) {
-                                "assert", "listOf" -> staticFunctionCall
+                                "assert", "arrayOf" -> staticFunctionCall
                                 else -> null
                             }
                         }
@@ -137,73 +151,34 @@ private fun StoryboardBuilder.Kotlin22Improvements() {
                 },
                 output = {
                     OutputComparison(
-                        beforeVersion = { GradientText("2.1") },
+                        beforeVersion = { GradientText("2.0") },
                         beforeOutput = {
                             Text(
                                 """
-                                    assert(a!!)
-                                           ||
-                                           |false
-                                           false
+                                    powerAssert(arrayOf(false, a)[0]!!)
+                                                |              |    |
+                                                |              |    false
+                                                |              false
+                                                false
+                                                [Ljava.lang.Boolean;@47caedad
                                 """.trimIndent()
                             )
                         },
-                        afterVersion = { GradientText("2.2") },
+                        afterVersion = { GradientText("2.3") },
                         afterOutput = {
                             Text(
                                 """
-                                    assert(a!!)
-                                           |
-                                           |
-                                           false
+                                    powerAssert(arrayOf(false, a)[0]!!)
+                                                |              | |
+                                                |              | false
+                                                |              false
+                                                [Ljava.lang.Boolean;@47caedad
                                 """.trimIndent()
                             )
                         },
                         showAfter = transition.createChildTransition { frame ->
                             frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
                         },
-                    )
-                },
-                hideOutput = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
-                },
-            )
-        }
-    }
-}
-
-private fun StoryboardBuilder.Kotlin23Problems() {
-    val sample = """
-        @Test fun test() {
-            assert(arrayOf(true, false)[1])
-        }
-    """.trimIndent().toKotlin {
-        when (it) {
-            "assert", "listOf" -> staticFunctionCall
-            else -> null
-        }
-    }
-
-    val output = """
-        assert(arrayOf(true, false)[1])
-               |                   |
-               |                   false
-               [Ljava.lang.Boolean;@47caedad
-    """.trimIndent()
-
-    carouselScene(
-        frames = listOf(
-            VersionCompareState.Hidden,
-            VersionCompareState.Before,
-        ),
-    ) {
-        Column {
-            SceneCodeSample(
-                content = { Text(sample) },
-                output = {
-                    OutputComparison(
-                        version = { GradientText("2.3") },
-                        output = { Text(output) },
                     )
                 },
                 hideOutput = transition.createChildTransition { frame ->
@@ -314,20 +289,6 @@ private fun StoryboardBuilder.Kotlin23Implementation() {
                         val tmp6 = tmp5 == 'x'
                         assert(tmp6)
                     }
-                    else -> assert(false)
-                }
-            """.trimIndent(),
-            """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                when {
-                    tmp3 -> {
-                        val tmp4 = str
-                        val tmp5 = tmp4[0]
-                        val tmp6 = tmp5 == 'x'
-                        assert(tmp6)
-                    }
                     else -> assert(false) {
                         "${'"'}"
                             assert(str.length >= 1 && str[0] == 'x')
@@ -376,20 +337,14 @@ private fun StoryboardBuilder.Kotlin23Implementation() {
             }
         """.trimIndent()
 
-        val transformation = samples.map { it.toCodeSample() }
+        samples.map { it.toCodeSample() }
             .then { finalExample.toCodeSample() }
             .then { collapse(m) }
-        transformation +
-                transformation[0] +
-                transformation[transformation.lastIndex] +
-                transformation[transformation.lastIndex - 1]
     }
 
     carouselScene(frames = samples) {
         SceneCodeSample {
-            Box(Modifier.fillMaxSize()) {
-                MagicText(transition.createChildTransition { it.toValue().string })
-            }
+            MagicText(transition.createChildTransition { it.toValue().string })
         }
     }
 }

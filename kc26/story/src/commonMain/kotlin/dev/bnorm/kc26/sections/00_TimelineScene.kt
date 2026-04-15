@@ -1,10 +1,11 @@
-package dev.bnorm.kc26.components
+package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -13,9 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import dev.bnorm.kc26.components.GradientText
+import dev.bnorm.kc26.components.OutlinedText
 import dev.bnorm.storyboard.Frame
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.toValue
@@ -25,7 +29,6 @@ enum class TimelineState(
     val description: String?,
 ) {
     Empty("", null),
-    ThirdParty("Kotlin 1.3.60", "Power-Assert\nCompiler Plugin"),
     Bundled("Kotlin 2.0", "Power-Assert\nBundled"),
     Improvements("", "Improvements\nand Problems"),
     Explanations("Kotlin 2.4", "Explanations"),
@@ -33,7 +36,7 @@ enum class TimelineState(
     // TODO money bad emoji for joke?
     // TODO eyes emoji for description?
     // TODO change to 2.8 as joke?
-    Future("Kotlin 2.?", "???");
+    Future("Kotlin 2.?", "???"),
 }
 
 // TODO add an outline to everything against the gradient?
@@ -67,11 +70,14 @@ fun Timeline(
     end: TimelineState = TimelineState.Future,
     transition: Transition<out Frame<TimelineState>>,
 ) {
-    val dateStyle = MaterialTheme.typography.h6
-    val descriptionStyle = MaterialTheme.typography.body2
+    val dateStyle = MaterialTheme.typography.h5
+    val descriptionStyle = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold)
+    val outline = 1.dp
     val spacing = 8.dp
     val circleSize = 16.dp
     val lineHeight = 4.dp
+    val lineWidth = 4.dp
+    val lineLength = 32.dp
 
     @Composable
     fun <T> spec(delay: Int = 0): TweenSpec<T> = tween(500, delayMillis = delay, easing = EaseInOut)
@@ -85,7 +91,7 @@ fun Timeline(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 32.dp)
+                modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 // TODO would be cool to animate this more
                 //  1. dot should slide all the way from the right
@@ -96,16 +102,33 @@ fun Timeline(
                 Spacer(Modifier.size(spacing))
                 Box(contentAlignment = Alignment.Center) {
                     Box(Modifier.size(circleSize).clip(CircleShape).background(Color.Black))
-                    Box(Modifier.size(circleSize - 1.dp).clip(CircleShape).background(Color.White))
+                    Box(Modifier.size(circleSize - outline).clip(CircleShape).background(Color.White))
                 }
                 if (state.description != null) {
                     Spacer(Modifier.size(spacing))
                     Box(contentAlignment = Alignment.Center) {
-                        Box(Modifier.size(width = 3.dp, height = 32.dp).background(Color.Black))
-                        Box(Modifier.size(width = 2.dp, height = 31.dp).background(Color.White))
+                        Box(Modifier.size(width = lineWidth, height = lineLength).background(Color.Black))
+                        Box(
+                            Modifier.size(width = lineWidth - outline, height = lineLength - outline)
+                                .background(Color.White)
+                        )
                     }
                     Spacer(Modifier.size(spacing))
-                    OutlinedText(text = state.description, style = descriptionStyle, textAlign = TextAlign.Center)
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = Color.White,
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.size(192.dp, 80.dp).padding(8.dp)
+                        ) {
+                            GradientText(
+                                text = state.description,
+                                style = descriptionStyle,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -132,7 +155,7 @@ fun Timeline(
                     Spacer(Modifier.size(spacing))
                     Spacer(Modifier.size((circleSize - lineHeight) / 2f))
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.height(lineHeight)) {
-                        Box(Modifier.height(lineHeight - 1.dp).fillMaxWidth().background(Color.White))
+                        Box(Modifier.height(lineHeight - outline).fillMaxWidth().background(Color.White))
                     }
                 }
 
