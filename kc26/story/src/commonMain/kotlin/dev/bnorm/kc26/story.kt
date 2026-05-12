@@ -4,9 +4,9 @@ import dev.bnorm.kc26.sections.TimelineScene
 import dev.bnorm.kc26.sections.TimelineState
 import dev.bnorm.kc26.sections.Closing
 import dev.bnorm.kc26.sections.FutureSection
-import dev.bnorm.kc26.sections.MajorSection
-import dev.bnorm.kc26.sections.MinorSection
-import dev.bnorm.kc26.sections.StartSection
+import dev.bnorm.kc26.sections.ExplanationsSection
+import dev.bnorm.kc26.sections.ImprovementsSection
+import dev.bnorm.kc26.sections.BundledSection
 import dev.bnorm.kc26.sections.Title
 import dev.bnorm.kc26.template.gradientDecorator
 import dev.bnorm.kc26.template.themeDecorator
@@ -53,13 +53,18 @@ fun createStoryboard(
 
     // TODO pick 1: all examples include '@Test' or all examples don't.
     TimelineScene(end = TimelineState.Bundled)
-    StartSection()
+    // TODO slow down the start here
+    //  - there still seems to be a little assumed knowledge?
+    //  - more high-level introduction to power-assert?
+    //  - this might help with splitting the library author stuff
+    BundledSection()
     TimelineScene(start = TimelineState.Bundled, end = TimelineState.Improvements)
-    MinorSection()
+    ImprovementsSection()
     TimelineScene(start = TimelineState.Improvements, end = TimelineState.Explanations)
-    MajorSection()
+    ExplanationsSection()
     TimelineScene(start = TimelineState.Explanations, end = TimelineState.Future)
     FutureSection()
 
+    // TODO need a smoother transition to closing
     Closing()
 }

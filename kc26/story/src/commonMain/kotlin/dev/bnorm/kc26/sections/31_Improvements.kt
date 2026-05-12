@@ -1,7 +1,6 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.core.createChildTransition
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
@@ -21,7 +20,7 @@ import dev.bnorm.storyboard.text.highlight.CodeScope
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.toValue
 
-fun StoryboardBuilder.MinorSection() {
+fun StoryboardBuilder.ImprovementsSection() {
     // TICKETS:
     //
     // Kotlin 2.1
@@ -42,6 +41,9 @@ fun StoryboardBuilder.MinorSection() {
 
     WhenExpressionImprovements()
     DiagramImprovementsAndProblems()
+    // TODO add multi-line string problem
+
+    // TODO move all implementation details to explanations section instead
     Kotlin23Implementation()
 }
 
@@ -53,76 +55,77 @@ private fun StoryboardBuilder.WhenExpressionImprovements() {
             VersionCompareState.After,
         ),
     ) {
-        Column {
-            SceneCodeSample(
-                content = {
-                    Text(
-                        """
+        Timeline(current = TimelineState.Improvements)
+        SceneCodeSample(
+            content = {
+                Text(
+                    """
+                        @Test fun test() {
                             assert(
                                 when (mascot.status) {
                                     Status.INACTIVE -> mascot.location == null
                                     Status.ACTIVE -> mascot.location == "Munich"
                                 }
                             )
-                        """.trimIndent().toKotlin {
-                            when (it) {
-                                "assert" -> staticFunctionCall
-                                "status", "location" -> property
-                                else -> null
-                            }
                         }
-                    )
-                },
-                output = {
-                    OutputComparison(
-                        beforeVersion = { GradientText("2.0") },
-                        beforeOutput = {
-                            Text(
-                                """
-                                    assert(
-                                        when (mascot.status) {
-                                        |
-                                        false
-                                            Status.INACTIVE -> mascot.location == null
-                                            Status.ACTIVE -> mascot.location == "Munich"
-                                        }
-                                    )
-                                """.trimIndent(),
-                            )
-                        },
-                        afterVersion = { GradientText("2.3") },
-                        afterOutput = {
-                            Text(
-                                """
-                                    assert(
-                                        when (mascot.status) {
-                                              |      |
-                                              |      ACTIVE
-                                              Mascot(name=Kodee, status=ACTIVE, location=München)
-                                    
-                                            Status.INACTIVE -> mascot.location == "Munich"
-                                            Status.ACTIVE -> mascot.location == "Munich"
-                                                             |      |        |
-                                                             |      |        false
-                                                             |      München
-                                                             Mascot(name=Kodee, status=ACTIVE, location=München)
-                                    
-                                        }
-                                    )
-                                """.trimIndent(),
-                                modifier = Modifier.wrapContentSize(align = Alignment.TopStart, unbounded = true)
-                            )
-                        },
-                        showAfter = transition.createChildTransition { frame ->
-                            frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
-                        },
-                    )
-                },
-                hideOutput = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
-                },
-            )
-        }
+                    """.trimIndent().toKotlin {
+                        when (it) {
+                            "assert" -> staticFunctionCall
+                            "status", "location" -> property
+                            else -> null
+                        }
+                    }
+                )
+            },
+            output = {
+                OutputComparison(
+                    beforeVersion = { GradientText("2.0") },
+                    beforeOutput = {
+                        Text(
+                            """
+                                assert(
+                                    when (mascot.status) {
+                                    |
+                                    false
+                                        Status.INACTIVE -> mascot.location == null
+                                        Status.ACTIVE -> mascot.location == "Munich"
+                                    }
+                                )
+                            """.trimIndent(),
+                        )
+                    },
+                    afterVersion = { GradientText("2.3") },
+                    afterOutput = {
+                        Text(
+                            """
+                                assert(
+                                    when (mascot.status) {
+                                          |      |
+                                          |      ACTIVE
+                                          Mascot(name=Kodee, status=ACTIVE, location=München)
+                                
+                                        Status.INACTIVE -> mascot.location == "Munich"
+                                        Status.ACTIVE -> mascot.location == "Munich"
+                                                         |      |        |
+                                                         |      |        false
+                                                         |      München
+                                                         Mascot(name=Kodee, status=ACTIVE, location=München)
+                                
+                                    }
+                                )
+                            """.trimIndent(),
+                            modifier = Modifier.wrapContentSize(align = Alignment.TopStart, unbounded = true)
+                        )
+                    },
+                    showAfter = transition.createChildTransition { frame ->
+                        frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
+                    },
+                )
+            },
+            hideOutput = transition.createChildTransition { frame ->
+                frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
+            },
+        )
     }
 }
 
@@ -134,58 +137,57 @@ private fun StoryboardBuilder.DiagramImprovementsAndProblems() {
             VersionCompareState.After,
         ),
     ) {
-        Column {
-            SceneCodeSample(
-                content = {
-                    Text(
-                        """
-                            val a: Boolean? = false
-                            assert(arrayOf(false, a)[0]!!)
-                        """.trimIndent().toKotlin {
-                            when (it) {
-                                "assert", "arrayOf" -> staticFunctionCall
-                                else -> null
-                            }
+        Timeline(current = TimelineState.Improvements)
+        SceneCodeSample(
+            content = {
+                Text(
+                    """
+                        val a: Boolean? = false
+                        assert(arrayOf(false, a)[0]!!)
+                    """.trimIndent().toKotlin {
+                        when (it) {
+                            "assert", "arrayOf" -> staticFunctionCall
+                            else -> null
                         }
-                    )
-                },
-                output = {
-                    OutputComparison(
-                        beforeVersion = { GradientText("2.0") },
-                        beforeOutput = {
-                            Text(
-                                """
-                                    powerAssert(arrayOf(false, a)[0]!!)
-                                                |              |    |
-                                                |              |    false
-                                                |              false
-                                                false
-                                                [Ljava.lang.Boolean;@47caedad
-                                """.trimIndent()
-                            )
-                        },
-                        afterVersion = { GradientText("2.3") },
-                        afterOutput = {
-                            Text(
-                                """
-                                    powerAssert(arrayOf(false, a)[0]!!)
-                                                |              | |
-                                                |              | false
-                                                |              false
-                                                [Ljava.lang.Boolean;@47caedad
-                                """.trimIndent()
-                            )
-                        },
-                        showAfter = transition.createChildTransition { frame ->
-                            frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
-                        },
-                    )
-                },
-                hideOutput = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
-                },
-            )
-        }
+                    }
+                )
+            },
+            output = {
+                OutputComparison(
+                    beforeVersion = { GradientText("2.0") },
+                    beforeOutput = {
+                        Text(
+                            """
+                                powerAssert(arrayOf(false, a)[0]!!)
+                                            |              |    |
+                                            |              |    false
+                                            |              false
+                                            false
+                                            [Ljava.lang.Boolean;@47caedad
+                            """.trimIndent()
+                        )
+                    },
+                    afterVersion = { GradientText("2.3") },
+                    afterOutput = {
+                        Text(
+                            """
+                                powerAssert(arrayOf(false, a)[0]!!)
+                                            |              | |
+                                            |              | false
+                                            |              false
+                                            [Ljava.lang.Boolean;@47caedad
+                            """.trimIndent()
+                        )
+                    },
+                    showAfter = transition.createChildTransition { frame ->
+                        frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
+                    },
+                )
+            },
+            hideOutput = transition.createChildTransition { frame ->
+                frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
+            },
+        )
     }
 }
 
@@ -343,6 +345,7 @@ private fun StoryboardBuilder.Kotlin23Implementation() {
     }
 
     carouselScene(frames = samples) {
+        Timeline(current = TimelineState.Improvements)
         SceneCodeSample {
             MagicText(transition.createChildTransition { it.toValue().string })
         }

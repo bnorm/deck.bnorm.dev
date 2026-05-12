@@ -131,24 +131,26 @@ private fun StoryboardBuilder.LocalVariables() {
             SceneState(showOutput = true, showAfter = true, sample = samples[2], afterOutput = outputs[2]),
         ),
     ) {
-        Column {
-            SceneCodeSample(
-                content = { MagicText(transition.createChildTransition { it.toValue().sample.string.splitByTags() }) },
-                output = {
-                    OutputComparison(
-                        beforeVersion = { GradientText("2.4") },
-                        beforeOutput = { Text(outputs[0].string) },
-                        afterVersion = { GradientText("2.?") },
-                        afterOutput = { MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() }) },
-                        showAfter = transition.createChildTransition { frame ->
-                            frame.mapToValue(start = false, end = true) { it.showAfter }
-                        },
-                    )
-                },
-                hideOutput = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = true, end = true) { !it.showOutput }
-                },
-            )
-        }
+        Timeline(current = TimelineState.Future)
+        SceneCodeSample(
+            content = { MagicText(transition.createChildTransition { it.toValue().sample.string.splitByTags() }) },
+            output = {
+                OutputComparison(
+                    beforeVersion = { GradientText("2.4") },
+                    beforeOutput = { Text(outputs[0].string) },
+                    afterVersion = { GradientText("2.?") },
+                    afterOutput = { MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() }) },
+                    showAfter = transition.createChildTransition { frame ->
+                        frame.mapToValue(start = false, end = true) { it.showAfter }
+                    },
+                )
+            },
+            hideOutput = transition.createChildTransition { frame ->
+                frame.mapToValue(start = true, end = true) { !it.showOutput }
+            },
+        )
     }
+
+    // TODO argument explanation as well
+
 }

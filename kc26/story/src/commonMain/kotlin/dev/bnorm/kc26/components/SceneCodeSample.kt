@@ -33,10 +33,11 @@ fun SceneCodeSample(
 ) {
     val availableHeight = 540.dp
     val sampleHeight = 256.dp
-    val outputHeight = availableHeight - sampleHeight
+    val outputHeight = availableHeight - sampleHeight + 16.dp
+    val timelineHeight = availableHeight - 64.dp
 
     Box(modifier.fillMaxSize()) {
-        val height by hideOutput.animateDp(
+        val outputOffset by hideOutput.animateDp(
             transitionSpec = {
                 if (targetState) tween(500, easing = EaseIn)
                 else tween(500, easing = EaseOut)
@@ -48,9 +49,12 @@ fun SceneCodeSample(
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = Color.White,
-            modifier = Modifier.padding(padding).fillMaxWidth().height(height - 2 * padding)
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .height(minOf(outputOffset, timelineHeight) - 2 * padding)
         ) {
-            Box(Modifier.padding(32.dp)) {
+            Box(Modifier.padding(horizontal = 32.dp).padding(top = 24.dp)) {
                 ProvideTextStyle(MaterialTheme.typography.code1) {
                     content()
                 }
@@ -60,7 +64,7 @@ fun SceneCodeSample(
         Box(
             Modifier
                 .height(outputHeight)
-                .offset(y = height)
+                .offset(y = outputOffset)
                 .padding(2.dp)
         ) {
             output()

@@ -1,7 +1,10 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.EaseInCubic
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.createChildTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
@@ -29,10 +32,9 @@ import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toValue
 
-fun StoryboardBuilder.StartSection() {
-    Kotlin20Gradle(initial = true)
+fun StoryboardBuilder.BundledSection() {
     Kotlin20Output()
-    Kotlin20Gradle(initial = false)
+    Kotlin20Gradle()
 }
 
 private fun StoryboardBuilder.Kotlin20Output() {
@@ -104,7 +106,6 @@ private fun StoryboardBuilder.Kotlin20Output() {
                              |     |      ${s}   ${s}      |               |
                              |     |      ${s}   ${s}      |               3
                              |     |      ${s}   ${s}      orl
-                             |     |      ${s}   ${s}
                              |     5
                              Hello
         
@@ -115,7 +116,8 @@ private fun StoryboardBuilder.Kotlin20Output() {
         )
     }
 
-    carouselScene(frameCount = 6) {
+    carouselScene(frameCount = outputs.size + 1) {
+        Timeline(current = TimelineState.Bundled)
         SceneCodeSample(
             output = {
                 OutputComparison(
@@ -137,7 +139,7 @@ private fun StoryboardBuilder.Kotlin20Output() {
     }
 }
 
-private fun StoryboardBuilder.Kotlin20Gradle(initial: Boolean) {
+private fun StoryboardBuilder.Kotlin20Gradle() {
     val gradle = buildCodeSamples {
         fun String.toCodeSample(): CodeSample = trimIndent().toCodeSample(
             codeStyle = CODE_STYLE,
@@ -188,32 +190,25 @@ private fun StoryboardBuilder.Kotlin20Gradle(initial: Boolean) {
             .then { reveal(s) }
     }
 
-    val frames = when (initial) {
-        true -> gradle.subList(0, 2)
-        false -> gradle.subList(1, gradle.size)
-    }
-    carouselScene(
-        frames = frames
-    ) {
-        SceneCodeSample(content = {
+    carouselScene(frames = gradle) {
+        Timeline(current = TimelineState.Bundled)
+        SceneCodeSample {
             Box(Modifier.fillMaxSize()) {
                 MagicText(transition.createChildTransition { it.toValue().string.splitByTags() })
 
-                if (!initial) {
-                    transition.AnimatedVisibility(
-                        visible = { it.toValue() !== frames.first() },
-                        modifier = Modifier.align(Alignment.BottomEnd),
-                        // Match the MagicText animation.
-                        enter = fadeIn(tween(300, delayMillis = 600, easing = EaseInCubic)),
-                        exit = fadeOut(tween(300, easing = EaseOutCubic)),
-                    ) {
-                        ResourceImage(
-                            Res.drawable.qr_power_assert,
-                            modifier = Modifier.height(120.dp)
-                        )
-                    }
+                transition.AnimatedVisibility(
+                    visible = { it.toValue() !== frames.first() },
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    // Match the MagicText animation.
+                    enter = fadeIn(tween(300, delayMillis = 600, easing = EaseInCubic)),
+                    exit = fadeOut(tween(300, easing = EaseOutCubic)),
+                ) {
+                    ResourceImage(
+                        Res.drawable.qr_power_assert,
+                        modifier = Modifier.height(98.dp)
+                    )
                 }
             }
-        })
+        }
     }
 }

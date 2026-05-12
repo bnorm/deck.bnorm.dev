@@ -20,7 +20,7 @@ import dev.bnorm.kc26.components.OutputComparison
 import dev.bnorm.kc26.components.SceneCodeSample
 import dev.bnorm.kc26.template.CODE_STYLE
 import dev.bnorm.kc26.template.carouselScene
-import dev.bnorm.kc26.template.code2
+import dev.bnorm.kc26.template.code1
 import dev.bnorm.kc26.template.toKotlin
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.mapToValue
@@ -28,7 +28,7 @@ import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
 import dev.bnorm.storyboard.toValue
 
-fun StoryboardBuilder.MajorSection() {
+fun StoryboardBuilder.ExplanationsSection() {
     // TICKETS:
     // https://youtrack.jetbrains.com/issue/KT-75266/PowerAssert-arrayOf-isnt-displayed-on-the-diagram
     // https://youtrack.jetbrains.com/issue/KT-69036/Power-Assert-indent-multiline-values
@@ -36,6 +36,8 @@ fun StoryboardBuilder.MajorSection() {
     CallExplanationSolution()
     ArrayProblem()
     MultilineProblem()
+
+    // TODO split this stuff off into it's own section?
     AnnotationTransformation()
     AnnotationUse()
 }
@@ -94,27 +96,26 @@ private fun StoryboardBuilder.ArrayProblem() {
             SceneState(showOutput = true, showAfter = true, afterOutput = arrayOutput[2]),
         ),
     ) {
-        Column {
-            SceneCodeSample(
-                content = { Text(arraySample) },
-                output = {
-                    OutputComparison(
-                        beforeVersion = { GradientText("2.0") },
-                        beforeOutput = { Text(arrayOutput[0].string) },
-                        afterVersion = { GradientText("2.4") },
-                        afterOutput = {
-                            MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
-                        },
-                        showAfter = transition.createChildTransition { frame ->
-                            frame.mapToValue(start = false, end = true) { it.showAfter }
-                        },
-                    )
-                },
-                hideOutput = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = true, end = true) { !it.showOutput }
-                },
-            )
-        }
+        Timeline(current = TimelineState.Explanations)
+        SceneCodeSample(
+            content = { Text(arraySample) },
+            output = {
+                OutputComparison(
+                    beforeVersion = { GradientText("2.0") },
+                    beforeOutput = { Text(arrayOutput[0].string) },
+                    afterVersion = { GradientText("2.4") },
+                    afterOutput = {
+                        MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
+                    },
+                    showAfter = transition.createChildTransition { frame ->
+                        frame.mapToValue(start = false, end = true) { it.showAfter }
+                    },
+                )
+            },
+            hideOutput = transition.createChildTransition { frame ->
+                frame.mapToValue(start = true, end = true) { !it.showOutput }
+            },
+        )
     }
 }
 
@@ -183,27 +184,26 @@ private fun StoryboardBuilder.MultilineProblem() {
             SceneState(showOutput = true, showAfter = true, afterOutput = stringOutput[2]),
         ),
     ) {
-        Column {
-            SceneCodeSample(
-                content = { Text(stringSample) },
-                output = {
-                    OutputComparison(
-                        beforeVersion = { GradientText("2.0") },
-                        beforeOutput = { Text(stringOutput[0].string) },
-                        afterVersion = { GradientText("2.4") },
-                        afterOutput = {
-                            MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
-                        },
-                        showAfter = transition.createChildTransition { frame ->
-                            frame.mapToValue(start = false, end = true) { it.showAfter }
-                        },
-                    )
-                },
-                hideOutput = transition.createChildTransition { frame ->
-                    frame.mapToValue(start = true, end = true) { !it.showOutput }
-                },
-            )
-        }
+        Timeline(current = TimelineState.Explanations)
+        SceneCodeSample(
+            content = { Text(stringSample) },
+            output = {
+                OutputComparison(
+                    beforeVersion = { GradientText("2.0") },
+                    beforeOutput = { Text(stringOutput[0].string) },
+                    afterVersion = { GradientText("2.4") },
+                    afterOutput = {
+                        MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
+                    },
+                    showAfter = transition.createChildTransition { frame ->
+                        frame.mapToValue(start = false, end = true) { it.showAfter }
+                    },
+                )
+            },
+            hideOutput = transition.createChildTransition { frame ->
+                frame.mapToValue(start = true, end = true) { !it.showOutput }
+            },
+        )
     }
 }
 
@@ -280,6 +280,7 @@ private fun StoryboardBuilder.CallExplanationSolution() {
     }
 
     carouselScene(frames = samples) {
+        Timeline(current = TimelineState.Explanations)
         SceneCodeSample {
             Box(Modifier.fillMaxSize()) {
                 MagicText(transition.createChildTransition { it.toValue().string.splitByTags() })
@@ -336,7 +337,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
                             1 -> AssertionFailedError(message, failures[0].rhs, failures[0].lhs)
                             else -> MultipleFailuresError(
                                 heading = message, failures = failures.map { 
-                                    AssertionFailedError(message = null, it.rhs, it.lhs)
+                                    AssertionFailedError(null, it.rhs, it.lhs)
                                 }
                             )
                         }${t}${c}
@@ -350,7 +351,8 @@ private fun StoryboardBuilder.AnnotationTransformation() {
             transformed.focus(c),
             sample.collapse(c),
             sample.focus(f),
-            sample.focus(t),
+            // TODO scroll to t
+            sample.focus(t).scroll(t),
         )
     }
 
@@ -400,7 +402,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
     @Composable
     fun OriginalFunction(transition: Transition<Int>, modifier: Modifier = Modifier) {
         Box(modifier) {
-            ProvideTextStyle(MaterialTheme.typography.code2) {
+            ProvideTextStyle(MaterialTheme.typography.code1) {
                 MagicText(transition.createChildTransition {
                     originalFun[it].string.splitByTags()
                 })
@@ -411,7 +413,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
     @Composable
     fun SyntheticFunction(transition: Transition<Int>, modifier: Modifier = Modifier) {
         Box(modifier) {
-            ProvideTextStyle(MaterialTheme.typography.code2) {
+            ProvideTextStyle(MaterialTheme.typography.code1) {
                 MagicText(transition.createChildTransition {
                     syntheticFun[it].string.splitByTags()
                 })
@@ -443,6 +445,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
     ) {
         fun <T> spec() = tween<T>(500, easing = EaseInOut)
 
+        Timeline(current = TimelineState.Explanations)
         SceneCodeSample {
             Box(Modifier.fillMaxSize()) {
                 val original = transition.createChildTransition { it.toValue().original }
@@ -461,7 +464,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
 
                 ResourceImage(
                     Res.drawable.qr_power_assert_keep,
-                    modifier = Modifier.align(Alignment.BottomEnd).height(120.dp)
+                    modifier = Modifier.align(Alignment.BottomEnd).height(98.dp)
                 )
             }
         }
@@ -520,6 +523,7 @@ private fun StoryboardBuilder.AnnotationUse() {
             SceneState(showOutput = true, afterOutput = arrayOutput[1]),
         ),
     ) {
+        Timeline(current = TimelineState.Explanations)
         SceneCodeSample(
             content = {
                 Text(arraySample)
