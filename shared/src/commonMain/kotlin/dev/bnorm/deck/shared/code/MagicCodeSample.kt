@@ -43,7 +43,7 @@ fun MagicCodeSample(
 }
 
 @Composable
-private fun Transition<CodeSample>.animateScroll(
+fun Transition<CodeSample>.animateScroll(
     verticalScrollState: ScrollState,
     style: TextStyle = LocalTextStyle.current,
     transitionSpec: @Composable Transition.Segment<CodeSample>.() -> FiniteAnimationSpec<Float> = {

@@ -165,7 +165,7 @@ private fun VersionWipe(
                     this@drawWithContent.drawContent()
                 }
             }) {
-                Box(Modifier.fillMaxSize().padding(16.dp)) {
+                Box(Modifier.fillMaxSize().wrapContentSize(align = Alignment.TopStart, unbounded = true).padding(16.dp)) {
                     ProvideTextStyle(MaterialTheme.typography.code2) {
                         beforeOutput()
                     }
@@ -176,7 +176,7 @@ private fun VersionWipe(
                     this@drawWithContent.drawContent()
                 }
             }) {
-                Box(Modifier.fillMaxSize().padding(16.dp)) {
+                Box(Modifier.fillMaxSize().wrapContentSize(align = Alignment.TopStart, unbounded = true).padding(16.dp)) {
                     ProvideTextStyle(MaterialTheme.typography.code2) {
                         afterOutput()
                     }

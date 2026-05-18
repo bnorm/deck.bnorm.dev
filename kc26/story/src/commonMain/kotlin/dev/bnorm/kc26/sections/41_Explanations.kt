@@ -3,6 +3,8 @@ package dev.bnorm.kc26.sections
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
@@ -12,16 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.ResourceImage
 import dev.bnorm.deck.shared.code.CodeSample
-import dev.bnorm.deck.shared.code.buildCodeSamples
+import dev.bnorm.deck.shared.code.animateScroll
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.qr_power_assert_keep
 import dev.bnorm.kc26.components.GradientText
 import dev.bnorm.kc26.components.OutputComparison
 import dev.bnorm.kc26.components.SceneCodeSample
-import dev.bnorm.kc26.template.CODE_STYLE
+import dev.bnorm.kc26.samples.Array2Sample
+import dev.bnorm.kc26.samples.FunctionSample
+import dev.bnorm.kc26.samples.MultilineSample
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.code1
-import dev.bnorm.kc26.template.toKotlin
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.mapToValue
 import dev.bnorm.storyboard.text.magic.MagicText
@@ -43,45 +46,6 @@ fun StoryboardBuilder.ExplanationsSection() {
 }
 
 private fun StoryboardBuilder.ArrayProblem() {
-    val arraySample = """
-        @Test fun test() {
-            assert(arrayOf(true, false)[1])
-        }
-    """.trimIndent().toKotlin {
-        when (it) {
-            "assert", "arrayOf" -> staticFunctionCall
-            else -> null
-        }
-    }
-
-    val arrayOutput = buildCodeSamples {
-        fun String.toCodeSample(): CodeSample = CodeSample(lazy {
-            extractTags(trimIndent())
-        })
-
-        val s by tag("splitter")
-
-        listOf(
-            """
-                assert(arrayOf(true, false)[1])
-                       |                   |
-                       |                   false
-                       [Ljava.lang.Boolean;@47caedad
-            """.toCodeSample(),
-            """
-                assert(arrayOf(true, false)[1])
-                       |                   |
-                       |                   ${s}false${s}
-                       ${s}[true, false]${s}
-            """.toCodeSample(),
-            """
-                assert(arrayOf(true, false)[1])
-                       |                   |
-                       ${s}[true, false]${s}       ${s}false${s}
-            """.toCodeSample(),
-        )
-    }
-
     data class SceneState(
         val showOutput: Boolean,
         val showAfter: Boolean,
@@ -90,19 +54,19 @@ private fun StoryboardBuilder.ArrayProblem() {
 
     carouselScene(
         frames = listOf(
-            SceneState(showOutput = false, showAfter = false, afterOutput = arrayOutput[1]),
-            SceneState(showOutput = true, showAfter = false, afterOutput = arrayOutput[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = arrayOutput[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = arrayOutput[2]),
+            SceneState(showOutput = false, showAfter = false, afterOutput = Array2Sample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = false, afterOutput = Array2Sample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = Array2Sample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = Array2Sample.v24Output[2]),
         ),
     ) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample(
-            content = { Text(arraySample) },
+            content = { Text(Array2Sample.arraySample) },
             output = {
                 OutputComparison(
                     beforeVersion = { GradientText("2.0") },
-                    beforeOutput = { Text(arrayOutput[0].string) },
+                    beforeOutput = { Text(Array2Sample.v24Output[0].string) },
                     afterVersion = { GradientText("2.4") },
                     afterOutput = {
                         MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
@@ -120,56 +84,6 @@ private fun StoryboardBuilder.ArrayProblem() {
 }
 
 private fun StoryboardBuilder.MultilineProblem() {
-    val stringSample = """
-        @Test fun test() {
-            val a = "another string"
-            val s = "this is a multiline\nstring. this is the second line"
-            assert(a == s)
-        }
-    """.trimIndent().toKotlin {
-        when (it) {
-            "assert" -> staticFunctionCall
-            else -> null
-        }
-    }
-
-    val stringOutput = buildCodeSamples {
-        fun String.toCodeSample(): CodeSample = CodeSample(lazy {
-            extractTags(trimIndent())
-        })
-
-        val s by tag("splitter")
-
-        listOf(
-            """
-                assert(a == s)
-                       | |  |
-                       | |  this is a multiline
-                string. this is the second line
-                       | false
-                       another string
-            """.toCodeSample(),
-            """
-                assert(a == s)
-                       | |  |
-                       | |  this is a multiline
-                       | |  string. this is the second line
-                       | false
-                       ${s}another string${s}
-            """.toCodeSample(),
-            """
-                assert(a == s)
-                       | |  |
-                       | |  ""${'"'}
-                       | |  this is a multiline
-                       | |  string. this is the second line
-                       | |  ""${'"'}
-                       | false
-                       "${s}another string${s}"
-            """.toCodeSample(),
-        )
-    }
-
     data class SceneState(
         val showOutput: Boolean,
         val showAfter: Boolean,
@@ -178,19 +92,19 @@ private fun StoryboardBuilder.MultilineProblem() {
 
     carouselScene(
         frames = listOf(
-            SceneState(showOutput = false, showAfter = false, afterOutput = stringOutput[1]),
-            SceneState(showOutput = true, showAfter = false, afterOutput = stringOutput[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = stringOutput[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = stringOutput[2]),
+            SceneState(showOutput = false, showAfter = false, afterOutput = MultilineSample.stringOutput[1]),
+            SceneState(showOutput = true, showAfter = false, afterOutput = MultilineSample.stringOutput[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.stringOutput[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.stringOutput[2]),
         ),
     ) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample(
-            content = { Text(stringSample) },
+            content = { Text(MultilineSample.stringSample) },
             output = {
                 OutputComparison(
                     beforeVersion = { GradientText("2.0") },
-                    beforeOutput = { Text(stringOutput[0].string) },
+                    beforeOutput = { Text(MultilineSample.stringOutput[0].string) },
                     afterVersion = { GradientText("2.4") },
                     afterOutput = {
                         MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
@@ -208,78 +122,7 @@ private fun StoryboardBuilder.MultilineProblem() {
 }
 
 private fun StoryboardBuilder.CallExplanationSolution() {
-    val samples = buildCodeSamples {
-        fun String.toCodeSample(): CodeSample = trimIndent().toCodeSample(CODE_STYLE) { identifier ->
-            when (identifier) {
-                "assert" -> CODE_STYLE.staticFunctionCall
-                "trimIndent", "toDefaultMessage" -> CODE_STYLE.extensionFunctionCall
-                "length" -> CODE_STYLE.property
-                else -> null
-            }
-        }
-
-        val e by tag("explanation")
-        val m by tag("default message")
-
-        val start = """
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            when {
-                tmp3 -> {
-                    val tmp4 = str
-                    val tmp5 = tmp4[0]
-                    val tmp6 = tmp5 == 'x'
-                    assert(tmp6) {$e
-                        "${'"'}"
-                            assert(str.length >= 1 && str[0] == 'x')
-                                   |   |      |       |  |   |
-                                   |   |      |       |  |   ${'$'}tmp6
-                                   |   |      |       |  ${'$'}tmp5
-                                   |   |      |       ${'$'}tmp4
-                                   |   |      ${'$'}tmp3
-                                   |   ${'$'}tmp2
-                                   ${'$'}tmp1
-                        "${'"'}".trimIndent()
-                    $e}
-                }
-                else -> assert(false) {$e
-                    "${'"'}"
-                        assert(str.length >= 1 && str[0] == 'x')
-                               |   |      |
-                               |   |      ${'$'}tmp3
-                               |   ${'$'}tmp2
-                               ${'$'}tmp1
-                    "${'"'}".trimIndent()
-                $e}
-            }
-        """.toCodeSample()
-
-        val end = """
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            when {
-                tmp3 -> {
-                    val tmp4 = str
-                    val tmp5 = tmp4[0]
-                    val tmp6 = tmp5 == 'x'
-                    assert(tmp6) {$e
-                        CallExplanation(/* ... */)${m}.toDefaultMessage()${m}
-                    $e}
-                }
-                else -> assert(false) {$e
-                    CallExplanation(/* ... */)${m}.toDefaultMessage()${m}
-                $e}
-            }
-        """.toCodeSample()
-
-        start.collapse(e)
-            .then { reveal(e) }
-            .then { end }
-    }
-
-    carouselScene(frames = samples) {
+    carouselScene(frames = Implementation2Sample.samples) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample {
             Box(Modifier.fillMaxSize()) {
@@ -290,122 +133,18 @@ private fun StoryboardBuilder.CallExplanationSolution() {
 }
 
 private fun StoryboardBuilder.AnnotationTransformation() {
-    val originalFun = buildCodeSamples {
-        fun String.toCodeSample(): CodeSample {
-            return CodeSample(lazy {
-                var count = 0
-                extractTags(this).toKotlin {
-                    when (it) {
-                        "PowerAssert" -> CODE_STYLE.annotation
-                        "explanation" if count == 0 -> CODE_STYLE.staticProperty.also { count++ } // TODO weird hack to avoid local property coloring
-                        "expressions", "size", "rhs", "lhs", "value" -> CODE_STYLE.property
-                        "filterIsInstance", "filter", "toDefaultMessage", "map" -> CODE_STYLE.extensionFunctionCall
-                        else -> null
-                    }
-                }
-            })
-        }
-
-        val exp by tag("explanation call")
-        val c by tag("collapse")
-        val f by tag("failures")
-        val t by tag("throw")
-
-        val transformed = """
-                @PowerAssert fun powerAssert(condition: Boolean) {
-                    if (!condition) {
-                        val explanation: CallExplanation? = ${exp}null${exp}
-                            ?: throw AssertionError("Assertion failed")
-                        ${c}// ...${c}
-                    }
-                }
-            """.trimIndent().toCodeSample().collapse(c)
-
-        val sample = """
-                @PowerAssert fun powerAssert(condition: Boolean) {
-                    if (!condition) {
-                        val explanation: CallExplanation? = ${exp}PowerAssert.explanation${exp}
-                            ?: throw AssertionError("Assertion failed")
-                        ${c}
-                        ${f}val failures = explanation.expressions
-                            .filterIsInstance<EqualityExpression>()
-                            .filter { it.value == false }${f}
-                
-                        ${t}val message = explanation.toDefaultMessage()
-                        throw when (failures.size) {
-                            0 -> AssertionFailedError(message)
-                            1 -> AssertionFailedError(message, failures[0].rhs, failures[0].lhs)
-                            else -> MultipleFailuresError(
-                                heading = message, failures = failures.map { 
-                                    AssertionFailedError(null, it.rhs, it.lhs)
-                                }
-                            )
-                        }${t}${c}
-                    }
-                }
-            """.trimIndent().toCodeSample()
-
-        listOf(
-            sample.collapse(c),
-            transformed,
-            transformed.focus(c),
-            sample.collapse(c),
-            sample.focus(f),
-            // TODO scroll to t
-            sample.focus(t).scroll(t),
-        )
-    }
-
-    val syntheticFun = buildCodeSamples {
-        fun String.toCodeSample(): CodeSample {
-            return CodeSample(lazy {
-                extractTags(this).toKotlin(identifierStyle = {
-                    when (it) {
-                        "explanation" -> CODE_STYLE.staticProperty
-                        "PowerAssert" -> CODE_STYLE.annotation
-                        else -> null
-                    }
-                })
-            })
-        }
-
-        val c by tag("collapse")
-        val h by tag("hide")
-        val exp by tag("explanation call")
-        val invoke by tag("explanation call")
-        val name by tag("explanation call")
-        val ann by tag("explanation call")
-        val param by tag("explanation call")
-
-        val base = """
-        ${ann}@PowerAssert ${ann}fun ${name}`${name}powerAssert${name}${'$'}powerassert`${name}($param
-            ${param}condition: Boolean${param},
-            `${'$'}explanation`: () -> CallExplanation,
-        ${param}) {
-            if (!condition) {
-                val explanation: CallExplanation? = ${exp}PowerAssert.explanation${exp}${h} ?: ${h}${invoke}`${'$'}explanation`.invoke()${invoke}
-                    ?: throw AssertionError("Assertion failed")
-                ${c}// ...${c}
-            }
-        }
-    """.trimIndent().toCodeSample()
-
-        base.hide(h, name, param, invoke).collapse(c).focus(h)
-            .then { unfocus() }
-            .then { reveal(name) }
-            .then { hide(ann) }
-            .then { reveal(param) }
-            .then { hide(exp).reveal(invoke) }
-            .then { focus(h) }
-    }
-
     @Composable
     fun OriginalFunction(transition: Transition<Int>, modifier: Modifier = Modifier) {
         Box(modifier) {
+            val sample = transition.createChildTransition { FunctionSample.originalFun[it] }
+            val state = rememberScrollState()
+            sample.animateScroll(state)
+
             ProvideTextStyle(MaterialTheme.typography.code1) {
-                MagicText(transition.createChildTransition {
-                    originalFun[it].string.splitByTags()
-                })
+                // Scroll should come before any padding, so it is not clipped.
+                Box(Modifier.verticalScroll(state, enabled = false)) {
+                    MagicText(sample.createChildTransition { it.string.splitByTags() })
+                }
             }
         }
     }
@@ -415,7 +154,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
         Box(modifier) {
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 MagicText(transition.createChildTransition {
-                    syntheticFun[it].string.splitByTags()
+                    FunctionSample.syntheticFun[it].string.splitByTags()
                 })
             }
         }
@@ -434,11 +173,11 @@ private fun StoryboardBuilder.AnnotationTransformation() {
             next { copy(original = original + 1) }
 
             before { copy(original = original + 1) }
-            while (current.synthetic + 2 < syntheticFun.size) {
+            while (current.synthetic + 2 < FunctionSample.syntheticFun.size) {
                 next { copy(synthetic = synthetic + 1) }
             }
             next { copy(original = original + 1, showSynthetic = false) }
-            while (current.original + 1 < originalFun.size) {
+            while (current.original + 1 < FunctionSample.originalFun.size) {
                 next { copy(original = original + 1) }
             }
         },
@@ -464,7 +203,10 @@ private fun StoryboardBuilder.AnnotationTransformation() {
 
                 ResourceImage(
                     Res.drawable.qr_power_assert_keep,
-                    modifier = Modifier.align(Alignment.BottomEnd).height(98.dp)
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = 24.dp)
+                        .height(98.dp)
                 )
             }
         }
@@ -472,45 +214,6 @@ private fun StoryboardBuilder.AnnotationTransformation() {
 }
 
 private fun StoryboardBuilder.AnnotationUse() {
-    val arraySample = """
-        val hello = "Hello"
-        powerAssert(hello.length == "World".substring(1, 4).length)
-    """.trimIndent().toKotlin {
-        when (it) {
-            "substring" -> extensionFunctionCall
-            "length" -> property
-            "powerAssert" -> staticFunctionCall
-            else -> null
-        }
-    }
-
-    val arrayOutput = buildCodeSamples {
-        fun String.toCodeSample(): CodeSample = CodeSample(lazy {
-            extractTags(trimIndent())
-        })
-
-        listOf(
-            """
-                com.willowtreeapps.opentest4k.AssertionFailedError:
-                powerAssert(hello.length == "World".substring(1, 4).length)
-                            |     |      |          |               |
-                            |     5      false      "orl"           3
-                            "Hello"
-            """.toCodeSample(),
-            """
-                com.willowtreeapps.opentest4k.AssertionFailedError:
-                powerAssert(hello.length == "World".substring(1, 4).length)
-                            |     |      |          |               |
-                            |     5      false      "orl"           3
-                            "Hello"
-
-                Expected :3
-                Actual   :5
-                <Click to see difference>
-            """.toCodeSample(),
-        )
-    }
-
     data class SceneState(
         val showOutput: Boolean,
         val afterOutput: CodeSample,
@@ -518,16 +221,14 @@ private fun StoryboardBuilder.AnnotationUse() {
 
     carouselScene(
         frames = listOf(
-            SceneState(showOutput = false, afterOutput = arrayOutput[0]),
-            SceneState(showOutput = true, afterOutput = arrayOutput[0]),
-            SceneState(showOutput = true, afterOutput = arrayOutput[1]),
+            SceneState(showOutput = false, afterOutput = FunctionSample.arrayOutput[0]),
+            SceneState(showOutput = true, afterOutput = FunctionSample.arrayOutput[0]),
+            SceneState(showOutput = true, afterOutput = FunctionSample.arrayOutput[1]),
         ),
     ) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample(
-            content = {
-                Text(arraySample)
-            },
+            content = { Text(FunctionSample.arraySample) },
             output = {
                 OutputComparison(
                     beforeVersion = {},
