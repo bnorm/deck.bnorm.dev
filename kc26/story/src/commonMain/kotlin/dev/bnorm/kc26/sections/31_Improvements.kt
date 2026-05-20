@@ -1,16 +1,22 @@
 package dev.bnorm.kc26.sections
 
 import androidx.compose.animation.core.createChildTransition
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
+import androidx.compose.ui.unit.dp
+import dev.bnorm.kc26.components.BULLET_1
 import dev.bnorm.kc26.components.GradientText
 import dev.bnorm.kc26.components.OutputComparison
 import dev.bnorm.kc26.components.SceneCodeSample
+import dev.bnorm.kc26.components.Summary
 import dev.bnorm.kc26.components.VersionCompareState
 import dev.bnorm.kc26.samples.ArraySample
 import dev.bnorm.kc26.samples.ImplementationSample
 import dev.bnorm.kc26.samples.WhenSample
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.layout.template.RevealEach
 import dev.bnorm.storyboard.mapToValue
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.toValue
@@ -36,10 +42,10 @@ fun StoryboardBuilder.ImprovementsSection() {
 
     WhenExpressionImprovements()
     DiagramImprovementsAndProblems()
-    // TODO add multi-line string problem
+    // TODO add multi-line string problem?
 
-    // TODO move all implementation details to explanations section instead
     Kotlin23Implementation()
+    PowerAssertProblemSummary()
 }
 
 private fun StoryboardBuilder.WhenExpressionImprovements() {
@@ -101,10 +107,32 @@ private fun StoryboardBuilder.DiagramImprovementsAndProblems() {
 }
 
 private fun StoryboardBuilder.Kotlin23Implementation() {
-    carouselScene(frames = ImplementationSample.samples) {
+    carouselScene(frames = ImplementationSample.samples.subList(0, ImplementationSample.samples.size - 1)) {
         Timeline(current = TimelineState.Improvements)
         SceneCodeSample {
             MagicText(transition.createChildTransition { it.toValue().string })
+        }
+    }
+}
+
+private fun StoryboardBuilder.PowerAssertProblemSummary() {
+    carouselScene(frameCount = 4) {
+        Timeline(current = TimelineState.Improvements)
+        Summary {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text("So we know about a few problems with Power-Assert:")
+                RevealEach(transition.createChildTransition { it.toValue() - 1 }) {
+                    item {
+                        Text("$BULLET_1 Verbose build-system configuration that complicates onboarding.")
+                    }
+                    item {
+                        Text("$BULLET_1 Confusing function parameter requirements that rely on convention.")
+                    }
+                    item {
+                        Text("$BULLET_1 Static diagram generation that limits tooling integration.")
+                    }
+                }
+            }
         }
     }
 }

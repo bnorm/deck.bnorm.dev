@@ -7,18 +7,20 @@ import dev.bnorm.kc26.template.toKotlin
 object MultilineSample {
     val stringSample = """
         @Test fun test() {
-            val a = "another string"
-            val s = "this is a multiline\nstring. this is the second line"
-            assert(a == s)
+            val protagonist = theFellowshipOfTheRing[0].shortName
+            val originalAnimated = theLordOfTheRingsMovies[0]
+            assert(protagonist in originalAnimated.synopsis)
         }
     """.trimIndent().toKotlin {
         when (it) {
             "assert" -> staticFunctionCall
+            "theFellowshipOfTheRing", "theLordOfTheRingsMovies" -> staticProperty
+            "shortName", "synopsis" -> property
             else -> null
         }
     }
 
-    val stringOutput = buildCodeSamples {
+    val v24Output = buildCodeSamples {
         fun String.toCodeSample(): CodeSample = CodeSample(lazy {
             extractTags(trimIndent())
         })
@@ -27,30 +29,31 @@ object MultilineSample {
 
         listOf(
             """
-                assert(a == s)
-                       | |  |
-                       | |  this is a multiline
-                string. this is the second line
-                       | false
-                       another string
+                assert(protagonist in originalAnimated.synopsis)
+                       |           |  |                |
+                       |           |  |                The Fellowship of the Ring embark on a journey to destroy the One Ring and end
+                Sauron's reign over Middle-earth.
+                       |           |  The Lord of the Rings (1978)
+                       |           false
+                       Frodo
             """.toCodeSample(),
             """
-                assert(a == s)
-                       | |  |
-                       | |  this is a multiline
-                       | |  string. this is the second line
-                       | false
-                       ${s}another string${s}
+                assert(protagonist in originalAnimated.synopsis)
+                       |           |  |                |
+                       ${s}Frodo${s}       ${s}|  |                The Fellowship of the Ring embark on a journey to destroy the One Ring and end${s}
+                                   ${s}|  |                Sauron's reign over Middle-earth.${s}
+                                   |  The Lord of the Rings (1978)
+                                   false
             """.toCodeSample(),
             """
-                assert(a == s)
-                       | |  |
-                       | |  ""${'"'}
-                       | |  this is a multiline
-                       | |  string. this is the second line
-                       | |  ""${'"'}
-                       | false
-                       "${s}another string${s}"
+                assert(protagonist in originalAnimated.synopsis)
+                       |           |  |                |
+                       "${s}Frodo${s}"     |  |                ""${'"'}
+                                   ${s}|  |                The Fellowship of the Ring embark on a journey to destroy the One Ring and end${s}
+                                   ${s}|  |                Sauron's reign over Middle-earth.${s}
+                                   |  |                ""${'"'}
+                                   |  The Lord of the Rings (1978)
+                                   false
             """.toCodeSample(),
         )
     }

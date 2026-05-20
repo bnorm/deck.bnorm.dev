@@ -5,7 +5,7 @@ import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.template.CODE_STYLE
 import dev.bnorm.storyboard.text.highlight.CodeScope
 
-object LocalVariableSample {
+object FunctionParameterSample {
     val samples = buildCodeSamples {
         fun String.toCodeSample(): CodeSample = trimIndent().toCodeSample(
             codeStyle = CODE_STYLE,
@@ -54,9 +54,9 @@ object LocalVariableSample {
         listOf(
             """
                 powerAssert(actual == expected)
-                            |      |  |
-                            4      ${s}|${s}  3
-                                   ${s}false${s}
+                            |     |  |
+                            4     ${s}|${s}  3
+                                  ${s}false${s}
 
                 Expected :3
                 Actual   :4

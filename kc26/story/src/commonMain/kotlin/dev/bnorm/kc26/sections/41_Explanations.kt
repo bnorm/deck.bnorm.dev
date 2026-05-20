@@ -11,21 +11,25 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import dev.bnorm.deck.shared.ResourceImage
 import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.animateScroll
 import dev.bnorm.deck.story.generated.resources.Res
 import dev.bnorm.deck.story.generated.resources.qr_power_assert_keep
-import dev.bnorm.kc26.components.GradientText
-import dev.bnorm.kc26.components.OutputComparison
-import dev.bnorm.kc26.components.SceneCodeSample
-import dev.bnorm.kc26.samples.Array2Sample
-import dev.bnorm.kc26.samples.FunctionSample
+import dev.bnorm.kc26.components.*
+import dev.bnorm.kc26.samples.ArraySample
+import dev.bnorm.kc26.samples.ImplementationSample
 import dev.bnorm.kc26.samples.MultilineSample
+import dev.bnorm.kc26.samples.PowerAssertSample
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.kc26.template.code1
 import dev.bnorm.storyboard.StoryboardBuilder
+import dev.bnorm.storyboard.layout.template.RevealEach
 import dev.bnorm.storyboard.mapToValue
 import dev.bnorm.storyboard.text.magic.MagicText
 import dev.bnorm.storyboard.text.splitByTags
@@ -43,6 +47,8 @@ fun StoryboardBuilder.ExplanationsSection() {
     // TODO split this stuff off into it's own section?
     AnnotationTransformation()
     AnnotationUse()
+
+    PowerAssertSolutionSummary()
 }
 
 private fun StoryboardBuilder.ArrayProblem() {
@@ -54,19 +60,19 @@ private fun StoryboardBuilder.ArrayProblem() {
 
     carouselScene(
         frames = listOf(
-            SceneState(showOutput = false, showAfter = false, afterOutput = Array2Sample.v24Output[1]),
-            SceneState(showOutput = true, showAfter = false, afterOutput = Array2Sample.v24Output[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = Array2Sample.v24Output[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = Array2Sample.v24Output[2]),
+            SceneState(showOutput = false, showAfter = false, afterOutput = ArraySample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = false, afterOutput = ArraySample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = ArraySample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = ArraySample.v24Output[2]),
         ),
     ) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample(
-            content = { Text(Array2Sample.arraySample) },
+            content = { Text(ArraySample.sample) },
             output = {
                 OutputComparison(
                     beforeVersion = { GradientText("2.0") },
-                    beforeOutput = { Text(Array2Sample.v24Output[0].string) },
+                    beforeOutput = { Text(ArraySample.v24Output[0].string) },
                     afterVersion = { GradientText("2.4") },
                     afterOutput = {
                         MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
@@ -92,10 +98,10 @@ private fun StoryboardBuilder.MultilineProblem() {
 
     carouselScene(
         frames = listOf(
-            SceneState(showOutput = false, showAfter = false, afterOutput = MultilineSample.stringOutput[1]),
-            SceneState(showOutput = true, showAfter = false, afterOutput = MultilineSample.stringOutput[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.stringOutput[1]),
-            SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.stringOutput[2]),
+            SceneState(showOutput = false, showAfter = false, afterOutput = MultilineSample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = false, afterOutput = MultilineSample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.v24Output[1]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.v24Output[2]),
         ),
     ) {
         Timeline(current = TimelineState.Explanations)
@@ -104,7 +110,7 @@ private fun StoryboardBuilder.MultilineProblem() {
             output = {
                 OutputComparison(
                     beforeVersion = { GradientText("2.0") },
-                    beforeOutput = { Text(MultilineSample.stringOutput[0].string) },
+                    beforeOutput = { Text(MultilineSample.v24Output[0].string) },
                     afterVersion = { GradientText("2.4") },
                     afterOutput = {
                         MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
@@ -122,7 +128,8 @@ private fun StoryboardBuilder.MultilineProblem() {
 }
 
 private fun StoryboardBuilder.CallExplanationSolution() {
-    carouselScene(frames = Implementation2Sample.samples) {
+    val samples = ImplementationSample.samples
+    carouselScene(frames = samples.subList(samples.size - 2, samples.size)) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample {
             Box(Modifier.fillMaxSize()) {
@@ -136,7 +143,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
     @Composable
     fun OriginalFunction(transition: Transition<Int>, modifier: Modifier = Modifier) {
         Box(modifier) {
-            val sample = transition.createChildTransition { FunctionSample.originalFun[it] }
+            val sample = transition.createChildTransition { PowerAssertSample.originalFun[it] }
             val state = rememberScrollState()
             sample.animateScroll(state)
 
@@ -154,7 +161,7 @@ private fun StoryboardBuilder.AnnotationTransformation() {
         Box(modifier) {
             ProvideTextStyle(MaterialTheme.typography.code1) {
                 MagicText(transition.createChildTransition {
-                    FunctionSample.syntheticFun[it].string.splitByTags()
+                    PowerAssertSample.syntheticFun[it].string.splitByTags()
                 })
             }
         }
@@ -173,11 +180,11 @@ private fun StoryboardBuilder.AnnotationTransformation() {
             next { copy(original = original + 1) }
 
             before { copy(original = original + 1) }
-            while (current.synthetic + 2 < FunctionSample.syntheticFun.size) {
+            while (current.synthetic + 2 < PowerAssertSample.syntheticFun.size) {
                 next { copy(synthetic = synthetic + 1) }
             }
             next { copy(original = original + 1, showSynthetic = false) }
-            while (current.original + 1 < FunctionSample.originalFun.size) {
+            while (current.original + 1 < PowerAssertSample.originalFun.size) {
                 next { copy(original = original + 1) }
             }
         },
@@ -215,20 +222,40 @@ private fun StoryboardBuilder.AnnotationTransformation() {
 
 private fun StoryboardBuilder.AnnotationUse() {
     data class SceneState(
+        val sample: CodeSample,
         val showOutput: Boolean,
         val afterOutput: CodeSample,
     )
 
     carouselScene(
         frames = listOf(
-            SceneState(showOutput = false, afterOutput = FunctionSample.arrayOutput[0]),
-            SceneState(showOutput = true, afterOutput = FunctionSample.arrayOutput[0]),
-            SceneState(showOutput = true, afterOutput = FunctionSample.arrayOutput[1]),
+            SceneState(
+                sample = PowerAssertSample.sample[0],
+                showOutput = false,
+                afterOutput = PowerAssertSample.v24Output[0]
+            ),
+            SceneState(
+                sample = PowerAssertSample.sample[0],
+                showOutput = true,
+                afterOutput = PowerAssertSample.v24Output[0]
+            ),
+            SceneState(
+                sample = PowerAssertSample.sample[1],
+                showOutput = true,
+                afterOutput = PowerAssertSample.v24Output[0]
+            ),
+            SceneState(
+                sample = PowerAssertSample.sample[1],
+                showOutput = true,
+                afterOutput = PowerAssertSample.v24Output[1]
+            ),
         ),
     ) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample(
-            content = { Text(FunctionSample.arraySample) },
+            content = {
+                MagicText(transition.createChildTransition { it.toValue().sample.string.splitByTags() })
+            },
             output = {
                 OutputComparison(
                     beforeVersion = {},
@@ -244,5 +271,54 @@ private fun StoryboardBuilder.AnnotationUse() {
                 frame.mapToValue(start = true, end = true) { !it.showOutput }
             },
         )
+    }
+}
+
+val codeSpan = SpanStyle(fontFamily = FontFamily.Monospace)
+private fun StoryboardBuilder.PowerAssertSolutionSummary() {
+    carouselScene(frameCount = 4) {
+        Timeline(current = TimelineState.Improvements)
+        Summary {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text(buildAnnotatedString {
+                    withStyle(codeSpan) { append("CallExplanation") }
+                    append(" and ")
+                    withStyle(codeSpan) { append("@PowerAssert") }
+                    append(" solve all of our problems:")
+                })
+                RevealEach(transition.createChildTransition { it.toValue() - 1 }) {
+                    item {
+                        Row(modifier = Modifier.padding(start = 16.dp)) {
+                            Text(BULLET_1)
+                            Text(buildAnnotatedString {
+                                withStyle(codeSpan) { append("@PowerAssert") }
+                                append(" functions are automatically discovered by the compiler plugin at the call-site.")
+                            })
+                        }
+                    }
+                    item {
+                        Row(modifier = Modifier.padding(start = 16.dp)) {
+                            Text(BULLET_1)
+                            Text(buildAnnotatedString {
+                                withStyle(codeSpan) { append("@PowerAssert") }
+                                append(" functions declarations are transformed by the compiler plugin, generating the needed signature to consume ")
+                                withStyle(codeSpan) { append("CallExplanation") }
+                                append(".")
+                            })
+                        }
+                    }
+                    item {
+                        Row(modifier = Modifier.padding(start = 16.dp)) {
+                            Text(BULLET_1)
+                            Text(buildAnnotatedString {
+                                append("Static diagram generation is replaced by runtime generation via the information provided by a ")
+                                withStyle(codeSpan) { append("CallExplanation") }
+                                append(", and in-depth information is available for advanced tooling.")
+                            })
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -8,153 +8,73 @@ import dev.bnorm.storyboard.text.highlight.CodeScope
 object ImplementationSample {
     val samples = buildCodeSamples {
         fun String.toCodeSample(): CodeSample {
-            return toCodeSample(CODE_STYLE, scope = CodeScope.Function) { identifier ->
+            return trimIndent().toCodeSample(CODE_STYLE, scope = CodeScope.Function) { identifier ->
                 when (identifier) {
                     "assert" -> CODE_STYLE.staticFunctionCall
-                    "trimIndent" -> CODE_STYLE.extensionFunctionCall
-                    "length" -> CODE_STYLE.property
+                    "size" -> CODE_STYLE.property
+                    "theLordOfTheRingsMovies" -> CODE_STYLE.staticProperty
+                    "trimIndent", "toDefaultMessage" -> CODE_STYLE.extensionFunctionCall
                     else -> null
                 }
             }
         }
 
+        val m by tag("message")
         val samples = listOf(
             """
-                assert(str.length >= 1 && str[0] == 'x')
-            """.trimIndent(),
+                assert(theLordOfTheRingsMovies.size == 3)
+            """,
             """
-                val tmp1 = str
-                assert(tmp1.length >= 1 && str[0] == 'x')
-            """.trimIndent(),
+                val tmp1 = theLordOfTheRingsMovies
+                assert(tmp1.size == 3)
+            """,
             """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                assert(tmp2 >= 1 && str[0] == 'x')
-            """.trimIndent(),
+                val tmp1 = theLordOfTheRingsMovies
+                val tmp2 = tmp1.size
+                assert(tmp2 == 3)
+            """,
             """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                assert(tmp3 && str[0] == 'x')
-            """.trimIndent(),
+                val tmp1 = theLordOfTheRingsMovies
+                val tmp2 = tmp1.size
+                val tmp3 = 3
+                assert(tmp2 == tmp3)
+            """,
             """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                assert(when {
-                    tmp3 -> str[0] == 'x'
-                    else -> false
-                })
-            """.trimIndent(),
+                val tmp1 = theLordOfTheRingsMovies
+                val tmp2 = tmp1.size
+                val tmp3 = 3
+                val tmp4 = tmp2 == tmp3
+                assert(tmp4)
+            """,
             """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                when {
-                    tmp3 -> assert(str[0] == 'x')
-                    else -> assert(false)
-                }
-            """.trimIndent(),
-            """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                when {
-                    tmp3 -> {
-                        val tmp4 = str
-                        assert(tmp4[0] == 'x')
-                    }
-                    else -> assert(false)
-                }
-            """.trimIndent(),
-            """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                when {
-                    tmp3 -> {
-                        val tmp4 = str
-                        val tmp5 = tmp4[0]
-                        assert(tmp5 == 'x')
-                    }
-                    else -> assert(false)
-                }
-            """.trimIndent(),
-            """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                when {
-                    tmp3 -> {
-                        val tmp4 = str
-                        val tmp5 = tmp4[0]
-                        val tmp6 = tmp5 == 'x'
-                        assert(tmp6)
-                    }
-                    else -> assert(false)
-                }
-            """.trimIndent(),
-            """
-                val tmp1 = str
-                val tmp2 = tmp1.length
-                val tmp3 = tmp2 >= 1
-                when {
-                    tmp3 -> {
-                        val tmp4 = str
-                        val tmp5 = tmp4[0]
-                        val tmp6 = tmp5 == 'x'
-                        assert(tmp6)
-                    }
-                    else -> assert(false) {
-                        "${'"'}"
-                            assert(str.length >= 1 && str[0] == 'x')
-                                   |   |      |
-                                   |   |      ${'$'}tmp3
-                                   |   ${'$'}tmp2
-                                   ${'$'}tmp1
-                        "${'"'}".trimIndent()
-                    }
-                }
-            """.trimIndent(),
-        )
-
-        val m by tag("message")
-        val finalExample = """
-            val tmp1 = str
-            val tmp2 = tmp1.length
-            val tmp3 = tmp2 >= 1
-            when {
-                tmp3 -> {
-                    val tmp4 = str
-                    val tmp5 = tmp4[0]
-                    val tmp6 = tmp5 == 'x'
-                    assert(tmp6) {$m
-                        "${'"'}"
-                            assert(str.length >= 1 && str[0] == 'x')
-                                   |   |      |       |  |   |
-                                   |   |      |       |  |   ${'$'}tmp6
-                                   |   |      |       |  ${'$'}tmp5
-                                   |   |      |       ${'$'}tmp4
-                                   |   |      ${'$'}tmp3
-                                   |   ${'$'}tmp2
-                                   ${'$'}tmp1
-                        "${'"'}".trimIndent()
-                    $m}
-                }
-                else -> assert(false) {$m
+                val tmp1 = theLordOfTheRingsMovies
+                val tmp2 = tmp1.size
+                val tmp3 = 3
+                val tmp4 = tmp2 == tmp3
+                assert(tmp4) {${m}
                     "${'"'}"
-                        assert(str.length >= 1 && str[0] == 'x')
-                               |   |      |
-                               |   |      ${'$'}tmp3
-                               |   ${'$'}tmp2
+                        assert(theLordOfTheRingsMovies.size == 3)
+                               |                       |    |
+                               |                       |    ${'$'}tmp4
+                               |                       ${'$'}tmp2
                                ${'$'}tmp1
                     "${'"'}".trimIndent()
-                $m}
-            }
-        """.trimIndent()
+                ${m}}
+            """,
+        )
+
+        val explanation =
+            """
+                val tmp1 = theLordOfTheRingsMovies
+                val tmp2 = tmp1.size
+                val tmp3 = 3
+                val tmp4 = tmp2 == tmp3
+                assert(tmp4) {${m}
+                    CallExplanation(/* ... */).toDefaultMessage()
+                ${m}}
+            """
 
         samples.map { it.toCodeSample() }
-            .then { finalExample.toCodeSample() }
-            .then { collapse(m) }
+            .then { explanation.toCodeSample() }
     }
 }

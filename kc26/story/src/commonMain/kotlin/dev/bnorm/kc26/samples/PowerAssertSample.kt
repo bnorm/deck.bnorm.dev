@@ -5,7 +5,7 @@ import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.template.CODE_STYLE
 import dev.bnorm.kc26.template.toKotlin
 
-object FunctionSample {
+object PowerAssertSample {
     val originalFun = buildCodeSamples {
         fun String.toCodeSample(): CodeSample {
             return CodeSample(lazy {
@@ -119,40 +119,56 @@ object FunctionSample {
             .then { focus(h) }
     }
 
-    val arraySample = """
-        val hello = "Hello"
-        powerAssert(hello.length == "World".substring(1, 4).length)
-    """.trimIndent().toKotlin {
-        when (it) {
-            "substring" -> extensionFunctionCall
-            "length" -> property
-            "powerAssert" -> staticFunctionCall
-            else -> null
+    val sample = buildCodeSamples {
+        fun String.toCodeSample(): CodeSample = trimIndent().toCodeSample(
+            codeStyle = CODE_STYLE,
+        ) { identifier ->
+            when (identifier) {
+                "assert", "powerAssert" -> CODE_STYLE.staticFunctionCall
+                "size" -> CODE_STYLE.property
+                "theLordOfTheRingsMovies" -> CODE_STYLE.staticProperty
+                else -> null
+            }
         }
+
+        val s by tag("splitter")
+
+        val base = """
+            @Test fun test() {
+                ${s}assert${s}(theLordOfTheRingsMovies.size == 3)
+            }
+        """.trimIndent()
+
+        listOf(
+            base.toCodeSample(),
+            base.replace("assert", "powerAssert").toCodeSample(),
+        )
     }
 
-    val arrayOutput = buildCodeSamples {
+    val v24Output = buildCodeSamples {
         fun String.toCodeSample(): CodeSample = CodeSample(lazy {
             extractTags(trimIndent())
         })
 
+        val s by tag("splitter")
+
         listOf(
             """
-                com.willowtreeapps.opentest4k.AssertionFailedError:
-                powerAssert(hello.length == "World".substring(1, 4).length)
-                            |     |      |          |               |
-                            |     5      false      "orl"           3
-                            "Hello"
+                java.lang.AssertionError:
+                ${s}assert${s}(theLordOfTheRingsMovies.size == 3)
+                       |                       |    |
+                       |                       4    false
+                       [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]
             """.toCodeSample(),
             """
                 com.willowtreeapps.opentest4k.AssertionFailedError:
-                powerAssert(hello.length == "World".substring(1, 4).length)
-                            |     |      |          |               |
-                            |     5      false      "orl"           3
-                            "Hello"
+                ${s}powerAssert${s}(theLordOfTheRingsMovies.size == 3)
+                            |                       |    |
+                            |                       4    false
+                            [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]
 
                 Expected :3
-                Actual   :5
+                Actual   :4
                 <Click to see difference>
             """.toCodeSample(),
         )

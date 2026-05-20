@@ -4,15 +4,15 @@ import dev.bnorm.deck.shared.code.CodeSample
 import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.template.CODE_STYLE
 
-object IntroSample {
+object BasicSample {
     val samples = buildCodeSamples {
         fun String.toCodeSample(): CodeSample = trimIndent().toCodeSample(
             codeStyle = CODE_STYLE,
         ) { identifier ->
             when (identifier) {
                 "assert", "assertTrue", "assertEquals" -> CODE_STYLE.staticFunctionCall
-                "substring" -> CODE_STYLE.extensionFunctionCall
-                "length" -> CODE_STYLE.property
+                "size" -> CODE_STYLE.property
+                "theLordOfTheRingsMovies" -> CODE_STYLE.staticProperty
                 else -> null
             }
         }
@@ -20,8 +20,7 @@ object IntroSample {
         val s by tag("splitter")
         val base = """
             @Test fun test() {
-                val hello = "Hello"
-                assert${s}${s}(hello.length${s} == ${s}"World".substring(1, 4).length)
+                assert${s}${s}(theLordOfTheRingsMovies.size${s} == ${s}3)
             }
         """.trimIndent()
 
@@ -45,38 +44,32 @@ object IntroSample {
             """.toCodeSample(),
             """
                 java.lang.AssertionError:
-                assert${s}${s}(hello.length${s} == ${s}"World".substring(1, 4).length)
+                assert${s}${s}(theLordOfTheRingsMovies.size${s} == ${s}3)
             """.toCodeSample(),
             """
                 java.lang.AssertionError:
-                assert${s}${s}(hello.length${s} == ${s}"World".substring(1, 4).length)
-                       |     |      ${s}|    ${s}      |               |
-                       |     |      ${s}|    ${s}      |               3
-                       |     |      ${s}|    ${s}      orl
-                       |     |      ${s}false${s}
-                       |     5
-                       Hello
+                assert${s}${s}(theLordOfTheRingsMovies.size${s} == ${s}3)
+                       ${s}|                       |    |${s}
+                       |                       |${s}    false${s}
+                       |                       4
+                       [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]
             """.toCodeSample(),
             """
                 java.lang.AssertionError:
-                assert${s}True${s}(hello.length${s} == ${s}"World".substring(1, 4).length)
-                           |     |      ${s}|    ${s}      |               |
-                           |     |      ${s}|    ${s}      |               3
-                           |     |      ${s}|    ${s}      orl
-                           |     |      ${s}false${s}
-                           |     5
-                           Hello
+                assert${s}True${s}(theLordOfTheRingsMovies.size${s} == ${s}3)
+                           ${s}|                       |    |${s}
+                           |                       |${s}    false${s}
+                           |                       4
+                           [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]
             """.toCodeSample(),
             """
                 java.lang.AssertionError:
-                assert${s}Equals${s}(hello.length${s}, ${s}"World".substring(1, 4).length)
-                             |     |      ${s}   ${s}      |               |
-                             |     |      ${s}   ${s}      |               3
-                             |     |      ${s}   ${s}      orl
-                             |     5
-                             Hello
+                assert${s}Equals${s}(theLordOfTheRingsMovies.size${s}, ${s}3)
+                             |                       |${s}${s}
+                             |                       4
+                             [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]
         
-                Expected :5
+                Expected :4
                 Actual   :3
                 <Click to see difference>
             """.toCodeSample(),

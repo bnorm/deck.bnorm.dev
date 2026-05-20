@@ -5,12 +5,12 @@ import dev.bnorm.kc26.template.toKotlin
 object WhenSample {
     val sample = """
         @Test fun test() {
-            for (character in theFellowshipOfTheRing) {
-                assert(when (character.race) {
-                    is Race.Men -> character.age in 0..<80
-                    Race.Dwarf -> character.age in 0..<250
-                    Race.Elf -> character.age >= 0
-                    Race.Maia -> character.age == -1
+            for (member in theFellowshipOfTheRing) {
+                assert(when (member.race) {
+                    is Race.Men -> member.age in 0..<80
+                    Race.Dwarf -> member.age in 0..<250
+                    Race.Elf -> member.age >= 0
+                    Race.Maia -> member.age == -1
                 })
             }
         }
@@ -24,31 +24,33 @@ object WhenSample {
     }
 
     val v20Output = """
-        assert(
-            when (mascot.status) {
-            |
-            false
-                Status.INACTIVE -> mascot.location == null
-                Status.ACTIVE -> mascot.location == "Munich"
-            }
-        )
+        assert(when (member.race) {
+               |
+               false
+            is Race.Men -> member.age in 0..<80
+            Race.Dwarf -> member.age in 0..<250
+            Race.Elf -> member.age >= 0
+            Race.Maia -> member.age == -1
+        })
     """.trimIndent()
 
     val v23Output = """
-        assert(
-            when (mascot.status) {
-                  |      |
-                  |      ACTIVE
-                  Mascot(name=Kodee, status=ACTIVE, location=München)
+        assert(when (member.race) {
+                     |      |
+                     |      Dúnadan
+                     Aragorn
         
-                Status.INACTIVE -> mascot.location == "Munich"
-                Status.ACTIVE -> mascot.location == "Munich"
-                                 |      |        |
-                                 |      |        false
-                                 |      München
-                                 Mascot(name=Kodee, status=ACTIVE, location=München)
+            is Race.Men -> member.age in 0..<80
+            |              |      |   |   |
+            |              |      |   |   0..79
+            |              |      |   false
+            |              |      87
+            |              Aragorn
+            true
         
-            }
-        )
+            Race.Dwarf -> member.age in 0..<250
+            Race.Elf -> member.age >= 0
+            Race.Maia -> member.age == -1
+        })
     """.trimIndent()
 }
