@@ -29,6 +29,7 @@ import androidx.compose.ui.util.lerp
 import dev.bnorm.deck.shared.JetBrainsMono
 import dev.bnorm.deck.shared.ResourceImage
 import dev.bnorm.deck.shared.generated.resources.JetBrains
+import dev.bnorm.deck.shared.generated.resources.Slack
 import dev.bnorm.deck.shared.socials.Bluesky
 import dev.bnorm.deck.shared.socials.Mastodon
 import dev.bnorm.deck.story.generated.resources.Res
@@ -37,6 +38,7 @@ import dev.bnorm.deck.story.generated.resources.phone
 import dev.bnorm.kc26.template.Kc26Colors
 import dev.bnorm.storyboard.StoryboardBuilder
 import dev.bnorm.storyboard.toValue
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import dev.bnorm.deck.shared.generated.resources.Res as SharedRes
 
@@ -63,8 +65,6 @@ fun StoryboardBuilder.Closing() {
                     targetValueByState = { if (it) 1.2f else 0f },
                 )
 
-                // TODO instead of the bounce, what would a y-axis spin animation look like?
-                //  it's cool, but can't figure out the right easing.
                 visible.AnimatedVisibility(
                     visible = { it },
                     enter = slideInVertically(tween(800, easing = EaseOutBounce)) { -it },
@@ -83,8 +83,6 @@ fun StoryboardBuilder.Closing() {
                     enter = slideInHorizontally(tween(500, easing = EaseOut)) { 5 * it / 4 },
                     exit = slideOutHorizontally(tween(500, delayMillis = 500, easing = EaseIn)) { 5 * it / 4 },
                 ) {
-                    // TODO there's a subtle border around the phone in the template
-                    //  due to another background image behind the phone from 2025
                     ResourceImage(
                         Res.drawable.phone,
                         modifier = Modifier
@@ -97,9 +95,11 @@ fun StoryboardBuilder.Closing() {
 
                 Column(Modifier.align(Alignment.TopStart).padding(start = 40.dp, top = 40.dp)) {
                     val handleStyle = MaterialTheme.typography.body2 + TextStyle(fontFamily = JetBrainsMono)
-                    Link(text = "kotl.in/power-assert-keep", style = handleStyle)
+                    Link(text = "kotl.in/power-assert-keep", style = handleStyle, icon = SharedRes.drawable.JetBrains)
                     Spacer(Modifier.size(4.dp))
-                    Link(text = "kotl.in/power-assert", style = handleStyle)
+                    Link(text = "kotl.in/power-assert", style = handleStyle, icon = SharedRes.drawable.JetBrains)
+                    Spacer(Modifier.size(4.dp))
+                    Link(text = "#power-assert (KotlinLang)", style = handleStyle, icon = SharedRes.drawable.Slack)
                     visible.AnimatedVisibility(
                         visible = { it },
                         enter = fadeIn(tween(500)), exit = fadeOut(tween(500)),
@@ -134,10 +134,10 @@ fun StoryboardBuilder.Closing() {
 }
 
 @Composable
-private fun Link(text: String, style: TextStyle, modifier: Modifier = Modifier) {
+private fun Link(text: String, style: TextStyle, icon: DrawableResource, modifier: Modifier = Modifier) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
-            painter = painterResource(SharedRes.drawable.JetBrains),
+            painter = painterResource(icon),
             contentDescription = "",
             modifier = modifier.size(20.dp),
         )
