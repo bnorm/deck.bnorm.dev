@@ -5,11 +5,10 @@ import dev.bnorm.deck.shared.code.buildCodeSamples
 import dev.bnorm.kc26.template.toKotlin
 
 object MultilineSample {
-    val stringSample = """
+    val sample = """
         @Test fun test() {
             val protagonist = theFellowshipOfTheRing[0].shortName
-            val originalAnimated = theLordOfTheRingsMovies[0]
-            assert(protagonist in originalAnimated.synopsis)
+            assert(protagonist in theLordOfTheRingsMovies[0].synopsis)
         }
     """.trimIndent().toKotlin {
         when (it) {
@@ -20,6 +19,28 @@ object MultilineSample {
         }
     }
 
+    val v20Output = """
+            assert(protagonist in theLordOfTheRingsMovies[0].synopsis)
+                   |           |  |                          |
+                   |           |  |                          The Fellowship of the Ring embark on a journey to destroy the One Ring and end
+            Sauron's reign over Middle-earth.
+                   |           |  The Lord of the Rings (1978)
+                   |           |  [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]
+                   |           false
+                   Frodo
+    """.trimIndent()
+
+    val v23Output = """
+            assert(protagonist in theLordOfTheRingsMovies[0].synopsis)
+                   |           |  |                      |   |
+                   |           |  |                      |   The Fellowship of the Ring embark on a journey to destroy the One Ring and end
+            Sauron's reign over Middle-earth.
+                   |           |  |                      The Lord of the Rings (1978)
+                   |           |  [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]
+                   |           false
+                   Frodo
+    """.trimIndent()
+
     val v24Output = buildCodeSamples {
         fun String.toCodeSample(): CodeSample = CodeSample(lazy {
             extractTags(trimIndent())
@@ -29,31 +50,34 @@ object MultilineSample {
 
         listOf(
             """
-                assert(protagonist in originalAnimated.synopsis)
-                       |           |  |                |
-                       |           |  |                The Fellowship of the Ring embark on a journey to destroy the One Ring and end
-                Sauron's reign over Middle-earth.
-                       |           |  The Lord of the Rings (1978)
-                       |           false
-                       Frodo
+                assert(protagonist in theLordOfTheRingsMovies[0].synopsis)
+                       |           |  |                      |   |
+                       |           ${s}|  |                      |   The Fellowship of the Ring embark on a journey to destroy the One Ring and end${s}
+                       |           ${s}|  |                      |   Sauron's reign over Middle-earth.${s}
+                       |           ${s}|  |                      The Lord of the Rings (1978)${s}
+                       |           ${s}|  [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]${s}
+                       |           ${s}false${s}
+                       ${s}Frodo${s}
             """.toCodeSample(),
             """
-                assert(protagonist in originalAnimated.synopsis)
-                       |           |  |                |
-                       ${s}Frodo${s}       ${s}|  |                The Fellowship of the Ring embark on a journey to destroy the One Ring and end${s}
-                                   ${s}|  |                Sauron's reign over Middle-earth.${s}
-                                   |  The Lord of the Rings (1978)
-                                   false
+                assert(protagonist in theLordOfTheRingsMovies[0].synopsis)
+                       |           |  |                      |   |
+                       ${s}Frodo${s}       ${s}|  |                      |   The Fellowship of the Ring embark on a journey to destroy the One Ring and end${s}
+                                   ${s}|  |                      |   Sauron's reign over Middle-earth.${s}
+                                   ${s}|  |                      The Lord of the Rings (1978)${s}
+                                   ${s}|  [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]${s}
+                                   ${s}false${s}
             """.toCodeSample(),
             """
-                assert(protagonist in originalAnimated.synopsis)
-                       |           |  |                |
-                       "${s}Frodo${s}"     |  |                ""${'"'}
-                                   ${s}|  |                The Fellowship of the Ring embark on a journey to destroy the One Ring and end${s}
-                                   ${s}|  |                Sauron's reign over Middle-earth.${s}
-                                   |  |                ""${'"'}
-                                   |  The Lord of the Rings (1978)
-                                   false
+                assert(protagonist in theLordOfTheRingsMovies[0].synopsis)
+                       |           |  |                      |   |
+                       "${s}Frodo${s}"     |  |                      |   ""${'"'}
+                                   ${s}|  |                      |   The Fellowship of the Ring embark on a journey to destroy the One Ring and end${s}
+                                   ${s}|  |                      |   Sauron's reign over Middle-earth.${s}
+                                   |  |                      |   ""${'"'}
+                                   ${s}|  |                      The Lord of the Rings (1978)${s}
+                                   ${s}|  [The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]${s}
+                                   ${s}false${s}
             """.toCodeSample(),
         )
     }

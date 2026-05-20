@@ -13,6 +13,7 @@ import dev.bnorm.kc26.components.Summary
 import dev.bnorm.kc26.components.VersionCompareState
 import dev.bnorm.kc26.samples.ArraySample
 import dev.bnorm.kc26.samples.ImplementationSample
+import dev.bnorm.kc26.samples.MultilineSample
 import dev.bnorm.kc26.samples.WhenSample
 import dev.bnorm.kc26.template.carouselScene
 import dev.bnorm.storyboard.StoryboardBuilder
@@ -41,8 +42,8 @@ fun StoryboardBuilder.ImprovementsSection() {
     // https://youtrack.jetbrains.com/issue/KT-75873/PowerAssert-display-callable-reference-value-under
 
     WhenExpressionImprovements()
-    DiagramImprovementsAndProblems()
-    // TODO add multi-line string problem?
+    ArrayProblem()
+    MultilineProblem()
 
     Kotlin23Implementation()
     PowerAssertProblemSummary()
@@ -77,7 +78,7 @@ private fun StoryboardBuilder.WhenExpressionImprovements() {
     }
 }
 
-private fun StoryboardBuilder.DiagramImprovementsAndProblems() {
+private fun StoryboardBuilder.ArrayProblem() {
     carouselScene(
         frames = listOf(
             VersionCompareState.Hidden,
@@ -106,8 +107,38 @@ private fun StoryboardBuilder.DiagramImprovementsAndProblems() {
     }
 }
 
+private fun StoryboardBuilder.MultilineProblem() {
+    carouselScene(
+        frames = listOf(
+            VersionCompareState.Hidden,
+            VersionCompareState.Before,
+            VersionCompareState.After,
+        ),
+    ) {
+        Timeline(current = TimelineState.Improvements)
+        SceneCodeSample(
+            content = { Text(MultilineSample.sample) },
+            output = {
+                OutputComparison(
+                    beforeVersion = { GradientText("2.0") },
+                    beforeOutput = { Text(MultilineSample.v20Output) },
+                    afterVersion = { GradientText("2.3") },
+                    afterOutput = { Text(MultilineSample.v23Output) },
+                    showAfter = transition.createChildTransition { frame ->
+                        frame.mapToValue(start = false, end = true) { it == VersionCompareState.After }
+                    },
+                )
+            },
+            hideOutput = transition.createChildTransition { frame ->
+                frame.mapToValue(start = true, end = true) { it == VersionCompareState.Hidden }
+            },
+        )
+    }
+}
+
 private fun StoryboardBuilder.Kotlin23Implementation() {
-    carouselScene(frames = ImplementationSample.samples.subList(0, ImplementationSample.samples.size - 1)) {
+    val samples = ImplementationSample.samples
+    carouselScene(frames = samples.subList(0, samples.size - 1)) {
         Timeline(current = TimelineState.Improvements)
         SceneCodeSample {
             MagicText(transition.createChildTransition { it.toValue().string })

@@ -41,8 +41,8 @@ fun StoryboardBuilder.ExplanationsSection() {
     // https://youtrack.jetbrains.com/issue/KT-69036/Power-Assert-indent-multiline-values
 
     CallExplanationSolution()
-    ArrayProblem()
-    MultilineProblem()
+    ArraySolution()
+    MultilineSolution()
 
     // TODO split this stuff off into it's own section?
     AnnotationTransformation()
@@ -51,7 +51,7 @@ fun StoryboardBuilder.ExplanationsSection() {
     PowerAssertSolutionSummary()
 }
 
-private fun StoryboardBuilder.ArrayProblem() {
+private fun StoryboardBuilder.ArraySolution() {
     data class SceneState(
         val showOutput: Boolean,
         val showAfter: Boolean,
@@ -89,7 +89,7 @@ private fun StoryboardBuilder.ArrayProblem() {
     }
 }
 
-private fun StoryboardBuilder.MultilineProblem() {
+private fun StoryboardBuilder.MultilineSolution() {
     data class SceneState(
         val showOutput: Boolean,
         val showAfter: Boolean,
@@ -98,19 +98,20 @@ private fun StoryboardBuilder.MultilineProblem() {
 
     carouselScene(
         frames = listOf(
-            SceneState(showOutput = false, showAfter = false, afterOutput = MultilineSample.v24Output[1]),
-            SceneState(showOutput = true, showAfter = false, afterOutput = MultilineSample.v24Output[1]),
+            SceneState(showOutput = false, showAfter = false, afterOutput = MultilineSample.v24Output[0]),
+            SceneState(showOutput = true, showAfter = false, afterOutput = MultilineSample.v24Output[0]),
+            SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.v24Output[0]),
             SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.v24Output[1]),
             SceneState(showOutput = true, showAfter = true, afterOutput = MultilineSample.v24Output[2]),
         ),
     ) {
         Timeline(current = TimelineState.Explanations)
         SceneCodeSample(
-            content = { Text(MultilineSample.stringSample) },
+            content = { Text(MultilineSample.sample) },
             output = {
                 OutputComparison(
                     beforeVersion = { GradientText("2.0") },
-                    beforeOutput = { Text(MultilineSample.v24Output[0].string) },
+                    beforeOutput = { Text(MultilineSample.v23Output) },
                     afterVersion = { GradientText("2.4") },
                     afterOutput = {
                         MagicText(transition.createChildTransition { it.toValue().afterOutput.string.splitByTags() })
