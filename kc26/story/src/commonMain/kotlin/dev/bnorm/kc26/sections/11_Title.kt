@@ -20,10 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import com.sinasamaki.kotlinconf.logo.KotlinLogo
 import dev.bnorm.deck.shared.ResourceImage
 import dev.bnorm.deck.shared.socials.JetBrainsEmployee
 import dev.bnorm.deck.story.generated.resources.Res
-import dev.bnorm.deck.story.generated.resources.conf_logo
 import dev.bnorm.deck.story.generated.resources.conf_title
 import dev.bnorm.kc26.components.GradientText
 import dev.bnorm.kc26.template.Kc26Colors
@@ -116,10 +116,11 @@ fun TitleBackground(modifier: Modifier = Modifier) {
                 .align(Alignment.TopStart)
                 .height(40.dp)
         )
-        ResourceImage(
-            Res.drawable.conf_logo,
+        KotlinLogo(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .aspectRatio(1f)
                 .gradientOverlay()
         )
         JetBrainsEmployee(
