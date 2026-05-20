@@ -12,35 +12,35 @@ object FunctionParameterSample {
             scope = CodeScope.Function,
         ) { identifier ->
             when (identifier) {
-                "powerAssert" -> CODE_STYLE.staticFunctionCall
-                "size" -> CODE_STYLE.property
-                "theLordOfTheRingsMovies" -> CODE_STYLE.staticProperty
+                "powerAssert", "assertMember" -> CODE_STYLE.staticFunctionCall
+                "size", "alive", "race", "age" -> CODE_STYLE.property
+                "theFellowshipOfTheRing" -> CODE_STYLE.staticProperty
+                "lastOrNull" -> CODE_STYLE.extensionFunctionCall
                 else -> null
             }
         }
 
-        val s by tag("splitter")
+        val h by tag("hide")
+
+        val base = """
+                @Test fun test() {
+                    assertMember(theFellowshipOfTheRing.lastOrNull()!!)
+                }
+                
+                ${h}@PowerAssert ${h}fun assertMember(member: Character) {
+                    powerAssert(member.alive)
+                    powerAssert(when (member.race) {
+                        is Race.Men -> member.age in 0..<100
+                        Race.Dwarf -> member.age in 0..<250
+                        Race.Elf -> member.age >= 0
+                        Race.Maia -> member.age == -1
+                    })
+                }
+            """.toCodeSample()
 
         listOf(
-            """
-                @Test fun test() {
-                    powerAssert(${s}theLordOfTheRingsMovies.size${s} == ${s}3${s})
-                }
-            """.toCodeSample(),
-            """
-                @Test fun test() {
-                    ${s}${s}val actual = ${s}theLordOfTheRingsMovies.size${s}
-                    ${s}${s}val expected = ${s}3${s}
-                    powerAssert(${s}actual${s} == ${s}expected${s})
-                }
-            """.toCodeSample(),
-            """
-                @Test fun test() {
-                    ${s}@PowerAssert ${s}val actual = ${s}theLordOfTheRingsMovies.size${s}
-                    ${s}@PowerAssert ${s}val expected = ${s}3${s}
-                    powerAssert(${s}actual${s} == ${s}expected${s})
-                }
-            """.toCodeSample(),
+            base.hide(h),
+            base,
         )
     }
 
@@ -53,43 +53,20 @@ object FunctionParameterSample {
 
         listOf(
             """
-                powerAssert(actual == expected)
-                            |     |  |
-                            4     ${s}|${s}  3
-                                  ${s}false${s}
-
-                Expected :3
-                Actual   :4
-                <Click to see difference>
+                powerAssert(member.alive)
+                            |      |
+                            |      false
+                            Boromir
             """.toCodeSample(),
             """
-                val actual ${s}= theLordOfTheRingsMovies.size${s}
-                             ${s}|                       |${s}
-                             ${s}|                       4${s}
-                             ${s}[The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]${s}
-                val expected ${s}= 3${s}
-                powerAssert(actual == expected)
-                            |      |  |
-                            4      ${s}|${s}  3
-                                   ${s}false${s}
-
-                Expected :3
-                Actual   :4
-                <Click to see difference>
-            """.toCodeSample(),
-            """
-                powerAssert(actual == expected)
-                            |      |  |
-                            |      ${s}|${s}  ${s}= 3${s}
-                            |      ${s}false${s}
-                            ${s}= theLordOfTheRingsMovies.size${s}
-                              ${s}|                       |${s}
-                              ${s}|                       4${s}
-                              ${s}[The Lord of the Rings (1978), The Fellowship of the Ring (2001), The Two Towers (2002), The Return of the King (2003)]${s}
-
-                Expected :3
-                Actual   :4
-                <Click to see difference>
+                powerAssert(member.alive)
+                            |      |
+                            |      false
+                            = theFellowshipOfTheRing.lastOrNull()!!
+                              |                      |
+                              |                      Boromir
+                              [Frodo, Sam, Merry, Pippin, Gandalf, Aragorn, Legolas, Gimli, Boromir]
+                            
             """.toCodeSample(),
         )
     }

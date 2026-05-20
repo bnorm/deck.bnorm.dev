@@ -15,8 +15,7 @@ import dev.bnorm.storyboard.toValue
 
 fun StoryboardBuilder.FutureSection() {
     LocalVariables()
-    // TODO finish
-//    FunctionParameters()
+    FunctionParameters()
 }
 
 private fun StoryboardBuilder.LocalVariables() {
@@ -69,11 +68,9 @@ private fun StoryboardBuilder.FunctionParameters() {
     carouselScene(
         frames = listOf(
             SceneState(showOutput = false, showAfter = false, sample = FunctionParameterSample.samples[0], afterOutput = FunctionParameterSample.outputs[1]),
-            SceneState(showOutput = false, showAfter = false, sample = FunctionParameterSample.samples[1], afterOutput = FunctionParameterSample.outputs[1]),
+            SceneState(showOutput = true, showAfter = false, sample = FunctionParameterSample.samples[0], afterOutput = FunctionParameterSample.outputs[1]),
             SceneState(showOutput = true, showAfter = false, sample = FunctionParameterSample.samples[1], afterOutput = FunctionParameterSample.outputs[1]),
-            SceneState(showOutput = true, showAfter = false, sample = FunctionParameterSample.samples[2], afterOutput = FunctionParameterSample.outputs[1]),
-            SceneState(showOutput = true, showAfter = true, sample = FunctionParameterSample.samples[2], afterOutput = FunctionParameterSample.outputs[1]),
-            SceneState(showOutput = true, showAfter = true, sample = FunctionParameterSample.samples[2], afterOutput = FunctionParameterSample.outputs[2]),
+            SceneState(showOutput = true, showAfter = true, sample = FunctionParameterSample.samples[1], afterOutput = FunctionParameterSample.outputs[1]),
         ),
     ) {
         Timeline(current = TimelineState.Future)

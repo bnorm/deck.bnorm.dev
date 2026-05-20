@@ -59,10 +59,6 @@ enum class TimelineState {
     Bundled,
     Improvements,
     Explanations,
-
-    // TODO money bad emoji for joke?
-    // TODO eyes emoji for description?
-    // TODO change to 2.8 as joke?
     Future,
 }
 

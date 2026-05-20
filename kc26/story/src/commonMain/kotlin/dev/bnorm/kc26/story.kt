@@ -34,29 +34,9 @@ fun createStoryboard(
         gradientDecorator(),
     ),
 ) {
-    // TODO go through samples and pick a fun theme
-    //  - LOTR again?
-    //  - star trek?
-    //  - make it a choice from the audience companion?!
-    //  - examples should include...
-    //      - an array to show improvement there
-    //      - a String to show quotes
-
-    // TODO Companion
-    //  - survey of who knows/uses power-assert
-    //  - scene reactions?
-
-    // TODO Pre-slide: survey of who knows/uses power-assert
-    //  - use companion to survey audience about their experience with power-assert
-
     Title()
 
-    // TODO pick 1: all examples include '@Test' or all examples don't.
     TimelineScene(end = TimelineState.Bundled)
-    // TODO slow down the start here
-    //  - there still seems to be a little assumed knowledge?
-    //  - more high-level introduction to power-assert?
-    //  - this might help with splitting the library author stuff
     BundledSection()
     TimelineScene(start = TimelineState.Bundled, end = TimelineState.Improvements)
     ImprovementsSection()
@@ -65,6 +45,6 @@ fun createStoryboard(
     TimelineScene(start = TimelineState.Explanations, end = TimelineState.Future)
     FutureSection()
 
-    // TODO need a smoother transition to closing
+    // TODO need a smoother transition to closing?
     Closing()
 }
