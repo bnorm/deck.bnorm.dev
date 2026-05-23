@@ -278,7 +278,7 @@ private fun StoryboardBuilder.AnnotationUse() {
 val codeSpan = SpanStyle(fontFamily = FontFamily.Monospace)
 private fun StoryboardBuilder.PowerAssertSolutionSummary() {
     carouselScene(frameCount = 4) {
-        Timeline(current = TimelineState.Improvements)
+        Timeline(current = TimelineState.Explanations)
         Summary {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(buildAnnotatedString {
