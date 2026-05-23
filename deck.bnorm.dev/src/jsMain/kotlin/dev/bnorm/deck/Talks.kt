@@ -14,6 +14,12 @@ fun Talks() {
         FlexColumn(gap = 32.px) {
             Div {} // Header gap hack.
             Talk(
+                title = "Powering Up Your Assertions",
+                subtitle = "KotlinConf 2026",
+                video = null,
+                storyId = "kc26"
+            )
+            Talk(
                 title = "(Re)creating Magic(Move) with Compose",
                 subtitle = "Droidcon NYC 2025",
                 video = Video.YouTube("PgzBWebeJsk"),

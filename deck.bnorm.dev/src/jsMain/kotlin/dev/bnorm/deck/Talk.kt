@@ -11,7 +11,7 @@ import org.jetbrains.compose.web.dom.Section
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun Talk(title: String, subtitle: String, video: Video, storyId: String? = null) {
+fun Talk(title: String, subtitle: String, video: Video? = null, storyId: String? = null) {
     Section({ classes("talk-card") }) {
         FlexColumn(gap = 32.px) {
             FlexColumn(gap = 4.px, alignItems = AlignItems.Center) {
@@ -26,6 +26,7 @@ fun Talk(title: String, subtitle: String, video: Video, storyId: String? = null)
                 when (video) {
                     is Video.YouTube -> EmbeddedYouTubeVideo(video.id)
                     is Video.Vimeo -> EmbeddedVimeoVideo(video.id)
+                    else -> Div({ classes("talk-video") })
                 }
                 if (storyId != null) {
                     EmbeddedStory(storyId)

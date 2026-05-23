@@ -45,13 +45,6 @@ jobs:
 
       - uses: robinraju/release-downloader@v1
         with:
-          tag: 'PowerAssertEvolved'
-          fileName: 'PowerAssertEvolved.zip'
-          extract: 'true'
-          out-file-path: build/_site
-
-      - uses: robinraju/release-downloader@v1
-        with:
           tag: 'kc25'
           fileName: 'kc25.zip'
           extract: 'true'
