@@ -4,6 +4,3 @@
 [submodule "samples/buildable"]
 	path = kotlinconf2025/buildable
 	url = https://github.com/bnorm/buildable
-[submodule "kc26/KotlinConf26AnimatedLogo"]
-	path = kc26/KotlinConf26AnimatedLogo
-	url = git@github.com:sinasamaki/KotlinConf26AnimatedLogo.git
