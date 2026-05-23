@@ -46,11 +46,4 @@ tasks.register<Sync>("site") {
     into("dcnyc25") {
         from(project(":dcnyc25:story").tasks.named("wasmJsBrowserDistribution"))
     }
-
-    into("kc26") {
-        from(project(":kc26:story").tasks.named("wasmJsBrowserDistribution"))
-        into("companion") {
-            from(project(":kc26:companion").tasks.named("jsBrowserDistribution"))
-        }
-    }
 }
