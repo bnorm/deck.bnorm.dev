@@ -42,8 +42,4 @@ tasks.register<Sync>("site") {
     from(project(":deck.bnorm.dev").tasks.named("jsBrowserDistribution"))
 
     // TODO download archived talks here instead of in GitHub workflow?
-
-    into("dcnyc25") {
-        from(project(":dcnyc25:story").tasks.named("wasmJsBrowserDistribution"))
-    }
 }

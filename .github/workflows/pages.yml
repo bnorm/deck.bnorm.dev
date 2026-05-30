@@ -52,6 +52,13 @@ jobs:
 
       - uses: robinraju/release-downloader@v1
         with:
+          tag: 'dcnyc25'
+          fileName: 'dcnyc25.zip'
+          extract: 'true'
+          out-file-path: build/_site
+
+      - uses: robinraju/release-downloader@v1
+        with:
           tag: 'kc26'
           fileName: 'kc26.zip'
           extract: 'true'
